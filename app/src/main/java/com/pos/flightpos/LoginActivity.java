@@ -3,11 +3,13 @@ package com.pos.flightpos;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -33,7 +35,10 @@ import android.widget.TextView;
 
 import com.pos.flightpos.utils.SaveSharedPreference;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -64,20 +69,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    Button mEmailSignInButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-
-        if(SaveSharedPreference.getUserName(LoginActivity.this).length() != 0)
-        {
-            reDirectToMainPage(SaveSharedPreference.getUserName(LoginActivity.this));
+        mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        try {
+            if(isAppExpired()){
+                return;
+            }
+        } catch (ParseException e) {
+            e.printStackTrace();
         }
-        // Set up the login form.
+        String userName = SaveSharedPreference.getStringValues(this,"userName");
+        if(userName != null && userName.length() != 0)
+        {
+            reDirectToMainPage(SaveSharedPreference.getStringValues(this,"userName"));
+        }
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        //populateAutoComplete();
-
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -90,7 +101,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,6 +110,19 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+    }
+
+    private boolean isAppExpired() throws ParseException {
+        String expiredDate = "01/01/2020";
+        Date date=new SimpleDateFormat("dd/MM/yyyy").parse(expiredDate);
+        Date today = new Date();
+        if (today.compareTo(date) > 0) { //Date1 is after Date2 - system is expired.
+            mEmailSignInButton.setEnabled(false);
+            TextView warningTextView = findViewById(R.id.warningTextView);
+            warningTextView.setText("This application is expired. Please contact administrator.");
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -135,7 +158,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // perform the user login attempt.
             //showProgress(true);
             if(isLoggingSuccessful(email,password)){
-                SaveSharedPreference.setUserName(LoginActivity.this,email);
+                SaveSharedPreference.setStringValues(this,"userName",email);
+                //SaveSharedPreference.setUserName(LoginActivity.this,email);
                 reDirectToMainPage(email);
             }
             else{

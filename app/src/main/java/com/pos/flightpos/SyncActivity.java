@@ -1,15 +1,16 @@
 package com.pos.flightpos;
 
-import android.database.sqlite.SQLiteDatabase;
-import android.os.Environment;
+import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.LinearLayout;
+import android.widget.TableRow;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.client.AWSStartupHandler;
 import com.amazonaws.mobile.client.AWSStartupResult;
-import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.s3.transferutility.*;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.pos.flightpos.utils.POSDBHandler;
@@ -19,25 +20,34 @@ import java.io.File;
 
 public class SyncActivity extends AppCompatActivity {
 
+    LinearLayout syncLayout;
+    POSDBHandler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sync);
+        syncLayout = (LinearLayout) findViewById(R.id.syncLayout);
+        handler = new POSDBHandler(this);
         SaveSharedPreference.setStringValues(this,"syncKeyPressed","true");
-        downloadData();
+        downloadData("users");
+        downloadData("flights");
+        downloadData("item_list");
+        downloadData("kit_number_list");
+        downloadData("kit_list");
+        downloadData("equipment_type");
 
     }
 
-    public void downloadData() {
+    public void downloadData(final String fileName) {
         AWSMobileClient.getInstance().initialize(this, new AWSStartupHandler() {
             @Override
             public void onComplete(AWSStartupResult awsStartupResult) {
-                downloadWithTransferUtility();
+                downloadWithTransferUtility(fileName);
             }
         }).execute();
     }
 
-    public void downloadWithTransferUtility() {
+    public void downloadWithTransferUtility(final String fileName) {
 
         TransferUtility transferUtility =
                 TransferUtility.builder()
@@ -48,8 +58,8 @@ public class SyncActivity extends AppCompatActivity {
 
         TransferObserver downloadObserver =
                 transferUtility.download("posappbucket",
-                        "users.xml",
-                        new File(getApplicationContext().getFilesDir(),"users.xml"));
+                        fileName+".xml",
+                        new File(getApplicationContext().getFilesDir(),fileName+".xml"));
 
         // Attach a listener to the observer to get state update and progress notifications
         downloadObserver.setTransferListener(new TransferListener() {
@@ -57,7 +67,8 @@ public class SyncActivity extends AppCompatActivity {
             @Override
             public void onStateChanged(int id, TransferState state) {
                 if (TransferState.COMPLETED == state) {
-                    insertDataIntoSQLIteDB();
+                    insertDataIntoSQLIteDB(fileName);
+                    showCompletedFiles(fileName);
                 }
             }
 
@@ -67,7 +78,7 @@ public class SyncActivity extends AppCompatActivity {
                 int percentDone = (int)percentDonef;
 
                 Toast.makeText(getApplicationContext(),
-                        "   ID:" + id + "   bytesCurrent: " + bytesCurrent + "   bytesTotal: " + bytesTotal + " " + percentDone + "%",
+                        "File Name: "+fileName+"   ID:" + id + "   bytesCurrent: " + bytesCurrent + "   bytesTotal: " + bytesTotal + " " + percentDone + "%",
                         Toast.LENGTH_SHORT).show();
             }
 
@@ -82,16 +93,33 @@ public class SyncActivity extends AppCompatActivity {
         // If you prefer to poll for the data, instead of attaching a
         // listener, check for the state and progress in the observer.
         if (TransferState.COMPLETED == downloadObserver.getState()) {
-            insertDataIntoSQLIteDB();
+            insertDataIntoSQLIteDB(fileName);
         }
 
         Toast.makeText(getApplicationContext(), "Bytes Transferred: " + downloadObserver.getBytesTransferred(),
                 Toast.LENGTH_SHORT).show();
     }
 
-    private void insertDataIntoSQLIteDB(){
+    private void showCompletedFiles(String fileName){
 
-        POSDBHandler handler = new POSDBHandler(this);
-        handler.insertUserData(getApplicationContext());
+        TextView view = new TextView(this);
+        view.setText("Sync " +fileName+" completed.");
+        view.setLayoutParams(new TableRow.LayoutParams(
+                TableRow.LayoutParams.MATCH_PARENT,
+                TableRow.LayoutParams.WRAP_CONTENT));
+        view.setTextSize(25);
+        view.setTextColor(Color.GREEN);
+        syncLayout.addView(view);
+    }
+
+    private void insertDataIntoSQLIteDB(String fileName){
+
+        handler = new POSDBHandler(this);
+        if(fileName.equals("users"))handler.insertUserData(getApplicationContext());
+        if(fileName.equals("flights"))handler.insertFlightData(getApplicationContext());
+        if(fileName.equals("item_list"))handler.insertItemData(getApplicationContext());
+        if(fileName.equals("kit_number_list"))handler.insertKITNumbersList(getApplicationContext());
+        if(fileName.equals("kit_list"))handler.insertKITList(getApplicationContext());
+        if(fileName.equals("equipment_type"))handler.insertEquipmentTypeList(getApplicationContext());
     }
 }

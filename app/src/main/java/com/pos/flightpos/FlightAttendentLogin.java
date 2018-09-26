@@ -29,6 +29,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -42,7 +43,6 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class FlightAttendentLogin extends AppCompatActivity implements LoaderCallbacks<Cursor> {
     private static final int REQUEST_READ_CONTACTS = 0;
-    private static final String SHARED_PREFERENCE_KEY = "flightAttendedName";
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -59,10 +59,10 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        String storedValue = SaveSharedPreference.getStringValues(FlightAttendentLogin.this,SHARED_PREFERENCE_KEY);
+        String storedValue = SaveSharedPreference.getStringValues(FlightAttendentLogin.this, Constants.SHARED_PREFERENCE_KEY);
         if(storedValue != null && storedValue.length() != 0)
         {
-            reDirectToMainPage(SaveSharedPreference.getStringValues(FlightAttendentLogin.this,SHARED_PREFERENCE_KEY));
+            reDirectToMainPage(SaveSharedPreference.getStringValues(FlightAttendentLogin.this,Constants.SHARED_PREFERENCE_KEY));
         }
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
@@ -124,7 +124,7 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             if(isLoggingSuccessful(email,password)){
-                SaveSharedPreference.setStringValues(this,SHARED_PREFERENCE_KEY,email);
+                SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_KEY,email);
                 reDirectToMainPage(email);
             }
             else{

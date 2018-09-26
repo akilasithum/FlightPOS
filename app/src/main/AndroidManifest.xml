@@ -34,8 +34,25 @@
             android:name=".FlightAttendentLogin"
             android:label="@string/title_activity_flight_attendent_login" />
         <activity android:name=".AttendendMainActivity" />
-        <activity android:name=".SyncActivity"></activity>
-        <service android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService" android:enabled="true" />
+        <activity android:name=".SyncActivity" />
+
+        <service
+            android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
+            android:enabled="true" />
+
+        <activity android:name=".PrintActivity" />
+        <activity android:name=".AttCheckInfo" />
+        <activity android:name=".ICCardReader" />
+        <activity android:name=".MSReader" />
+        <activity android:name=".AddSeal" />
+        <activity android:name=".SellarInfoActivity" />
+        <activity android:name=".SellItemsActivity" />
+        <activity android:name=".BuyItemsFromServiceTypeActivity" />
+        <activity android:name=".PaymentMethodsActivity" />
+        <activity android:name=".InventoryReportActivity" />
+        <activity android:name=".VerifyInventoryActivity" />
+        <activity android:name=".CheckInventoryActivity" />
+        <activity android:name=".VerifyDrawerActivity"></activity>
     </application>
 
 </manifest>

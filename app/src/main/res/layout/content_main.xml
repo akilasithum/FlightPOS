@@ -41,20 +41,38 @@
         android:orientation="horizontal"
         android:clickable="true"
         android:padding="20dp">
-
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:background="@drawable/icon_synchronize"
             android:textSize="20dp" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="Sync"
             android:textSize="25dp" />
+    </LinearLayout>
 
+    <LinearLayout
+        android:id="@+id/adminLogutLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:orientation="horizontal"
+        android:clickable="true"
+        android:padding="20dp">
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/icon_logout"
+            android:textSize="20dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Admin Logout"
+            android:textSize="25dp" />
     </LinearLayout>
 
 </LinearLayout>

@@ -6,17 +6,8 @@ import android.preference.PreferenceManager;
 
 public class SaveSharedPreference {
 
-    static final String PREF_USER_NAME= "username";
-
     static SharedPreferences getSharedPreferences(Context ctx) {
         return PreferenceManager.getDefaultSharedPreferences(ctx);
-    }
-
-    public static void setUserName(Context ctx, String userName)
-    {
-        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
-        editor.putString(PREF_USER_NAME, userName);
-        editor.commit();
     }
 
     public static void setStringValues(Context ctx, String key,
@@ -30,20 +21,9 @@ public class SaveSharedPreference {
         return getSharedPreferences(ctx).getString(key, null);
     }
 
-    public static String getUserName(Context ctx)
-    {
-        return getSharedPreferences(ctx).getString(PREF_USER_NAME, "");
-    }
-
-    public static void removeUserName(Context ctx){
-        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
-        editor.remove(getSharedPreferences(ctx).getString(PREF_USER_NAME, ""));
-        editor.commit();
-    }
-
     public static void removeValue(Context ctx,String key){
         SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
-        editor.remove(getSharedPreferences(ctx).getString(key, ""));
+        editor.remove(key);
         editor.commit();
     }
 }
