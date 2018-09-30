@@ -7,6 +7,8 @@ import android.pt.printer.Printer;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.pos.flightpos.objects.Constants;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -33,7 +35,7 @@ public class PrintActivity extends AppCompatActivity {
        Printer printer = new Printer();
        printer.open();
        printer.setAlignment(1);
-        printer.printPictureByRelativePath("res/drawable/no_back.jpg", 200, 200);
+        printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 200, 200);
         printer.printBlankLines(4);
         printer.printString("CMB123 CMB-KUL");
         Date date = new Date();

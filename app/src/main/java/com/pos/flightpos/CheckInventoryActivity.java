@@ -37,6 +37,7 @@ public class CheckInventoryActivity extends AppCompatActivity {
         for(Map.Entry<String, List<KITItem>> entry : drawerKitItemMap.entrySet()){
             final List<KITItem> kitItems = entry.getValue();
             final String drawerName = entry.getKey();
+            final String cartNo = kitItems.get(0).getEquipmentNo();
             int qty = 0;
             for(KITItem kitItem : entry.getValue()){
                 qty += Integer.parseInt(kitItem.getQuantity());
@@ -81,7 +82,8 @@ public class CheckInventoryActivity extends AppCompatActivity {
             tr.addView(qtyView);
 
             TextView isValidated = new TextView(this);
-            isValidated.setText("NV");
+            String validatedText = handler.isDrawerValidated(cartNo,drawerName) ? "OK" : "NV";
+            isValidated.setText(validatedText);
             isValidated.setTextSize(20);
             isValidated.setLayoutParams(cellParams2);
             isValidated.setGravity(Gravity.CENTER);
@@ -89,4 +91,5 @@ public class CheckInventoryActivity extends AppCompatActivity {
             checkInventoryTable.addView(tr);
         }
     }
+
 }

@@ -1,5 +1,6 @@
 package com.pos.flightpos;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,10 +9,12 @@ import android.widget.LinearLayout;
 
 public class VerifyInventoryActivity extends AppCompatActivity {
 
+    String parent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_inventory);
+        parent = getIntent().getExtras().getString("parent");
         registerLayoutClickEvents();
     }
 
@@ -31,7 +34,7 @@ public class VerifyInventoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(VerifyInventoryActivity.this, CheckInventoryActivity.class);
-                intent.putExtra("ServiceType","BOB");
+                intent.putExtra("ServiceType","DTP");
                 startActivity(intent);
             }
         });
@@ -53,5 +56,21 @@ public class VerifyInventoryActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        if("AttCheckInfo".equals(parent)) {
+            Intent intent = new Intent(this, AttCheckInfo.class);
+            startActivity(intent);
+        }
+        else if("CloseFlightActivity".equals(parent)) {
+            Intent intent = new Intent(this, CloseFlightActivity.class);
+            startActivity(intent);
+        }
+        else{
+            super.onBackPressed();
+        }
     }
 }

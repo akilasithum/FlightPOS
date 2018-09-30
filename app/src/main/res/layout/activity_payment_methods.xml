@@ -8,13 +8,114 @@
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="50dp"
-        android:paddingRight="75dp"
-        android:paddingTop="50dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp"
         android:focusable="true"
         android:focusableInTouchMode="true">
 
         <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_margin="10dp"
+            android:text="select Payment Method"
+            android:textSize="20dp" />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <LinearLayout
+                android:id="@+id/cashSettleLayout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:background="@drawable/textinputborder"
+                android:padding="3dp">
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/icon_cash_payment" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Cash"
+                    android:textSize="13dp" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/creditCardPaymentLayout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:background="@drawable/textinputborder"
+                android:padding="3dp">
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/icon_credit_card_payment"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Credit Card"
+                    android:textSize="13dp" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/voucherPaymentLayout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:background="@drawable/textinputborder"
+                android:padding="3dp">
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/icon_voucher_payment"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Voucher"
+                    android:textSize="13dp" />
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/loyaltyPaymentLayout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:background="@drawable/textinputborder"
+                android:padding="3dp">
+                <ImageView
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/icon_loyalty_payments" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Loyalty"
+                    android:textSize="13dp" />
+            </LinearLayout>
+        </TableRow>
+
+        <!--<TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
             <TextView
@@ -43,7 +144,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Add Payment method" />
-        </TableRow>
+        </TableRow>-->
     </TableLayout>
 
     <TableLayout
@@ -124,24 +225,39 @@
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
-
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:paddingTop="30dp"
                 android:text=""/>
+        </TableRow>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="30dp"
+                android:paddingBottom="30dp"
+                android:text=""/>
             <Button
                 android:id="@+id/printReceipt"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:textSize="20dp"
                 android:text="Print Receipt" />
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:paddingTop="30dp"
+                android:paddingBottom="30dp"
                 android:text=""/>
         </TableRow>
     </TableLayout>

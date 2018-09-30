@@ -30,6 +30,7 @@ public class VerifyDrawerActivity extends AppCompatActivity {
     Map<String,String> updatedMap;
     String drawerName;
     String serviceType;
+    String equipmentNo = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,14 +51,14 @@ public class VerifyDrawerActivity extends AppCompatActivity {
             }
         });
         updatedMap = new HashMap<>();
+        equipmentNo = drawerItems.get(0).getEquipmentNo();
         showDataInTable(drawerItems);
     }
 
     private void verifyDrawer(){
+        POSDBHandler handler = new POSDBHandler(this);
         if(isValueUpdated && updatedMap != null && !updatedMap.isEmpty()){
-
             for(Map.Entry<String,String> entry : updatedMap.entrySet()) {
-                POSDBHandler handler = new POSDBHandler(this);
                 KITItem kitItem = new KITItem();
                 kitItem.setQuantity(entry.getValue());
                 String[] strings = entry.getKey().split("-");
@@ -67,9 +68,7 @@ public class VerifyDrawerActivity extends AppCompatActivity {
                 handler.updateItemCountOfKITItems(kitItem);
             }
         }
-        else {
-            super.onBackPressed();
-        }
+        handler.updateDrawerValidation(equipmentNo,drawerName,"YES");
         Intent intent = new Intent(this,CheckInventoryActivity.class);
         intent.putExtra("ServiceType",serviceType);
         startActivity(intent);

@@ -6,9 +6,8 @@
     android:orientation="vertical"
     android:paddingLeft="30dp"
     android:paddingRight="30dp"
-    android:paddingTop="100dp"
+    android:paddingTop="35dp"
     android:weightSum="1">
-
 
     <TableLayout
         android:layout_width="fill_parent"
@@ -18,7 +17,7 @@
             android:layout_height="fill_parent">
 
             <LinearLayout
-                android:id="@+id/verifyBuyOnBoard"
+                android:id="@+id/verifyCloseFightInventory"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -31,93 +30,14 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_buy_onboard"
+                    android:background="@drawable/icon_verify"
                     android:textSize="20dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:layout_gravity="center"
-                    android:text="Buy On Board" android:textSize="25dp" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/verifyDutyPaid"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:clickable="true"
-                android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:padding="10dp">
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/icon_duty_paid"
-                    android:textSize="20dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_gravity="center"
-                    android:text="Duty Paid"
+                    android:text="Verify"
                     android:textSize="25dp" />
-            </LinearLayout>
-
-        </TableRow>
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <LinearLayout
-                android:id="@+id/verifyDutyFree"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:clickable="true"
-                android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:padding="10dp">
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/icon_duty_free"
-                    android:textSize="20dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Duty Free"
-                    android:layout_gravity="center"
-                    android:textSize="25dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/verifyVirtualInventory"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:clickable="true"
-                android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:padding="10dp">
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/icon_virtual_inventory"
-                    android:textSize="20dp" />
-                <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:text="Virtual"
-                android:textSize="25dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -125,7 +45,170 @@
                     android:text="Inventory"
                     android:textSize="25dp" />
             </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/closeInventoryReport"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:background="@drawable/textinputborder"
+                android:padding="10dp">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/icon_report"
+                    android:textSize="20dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Inventory"
+                    android:textSize="25dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Report"
+                    android:textSize="25dp" />
+            </LinearLayout>
+
+        </TableRow>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <LinearLayout
+                android:id="@+id/closeFlightSalesReport"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:background="@drawable/textinputborder"
+                android:padding="10dp">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/icon_sales_report"
+                    android:textSize="20dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_gravity="center"
+                    android:text="Sales Report"
+                    android:textSize="25dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/messageToBond"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:background="@drawable/textinputborder"
+                android:padding="10dp">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/icon_message"
+                    android:textSize="20dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Message to"
+                    android:textSize="25dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Bond"
+                    android:textSize="25dp" />
+            </LinearLayout>
+
+        </TableRow>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <LinearLayout
+                android:id="@+id/closingSeals"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:background="@drawable/textinputborder"
+                android:padding="10dp">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/icon_seal_info"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_gravity="center"
+                    android:text="Closing Seal"
+                    android:textSize="25dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1">
+            </LinearLayout>
+
+        </TableRow>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <LinearLayout
+                android:id="@+id/closeFlightFinal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:background="@drawable/textinputborder"
+                android:padding="10dp">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/icon_close_flight"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_gravity="center"
+                    android:text="Close Flight"
+                    android:textSize="25dp" />
+            </LinearLayout>
+
         </TableRow>
     </TableLayout>
+
 
 </LinearLayout>

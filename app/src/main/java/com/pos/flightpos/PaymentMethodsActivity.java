@@ -24,6 +24,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.CreditCard;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.utils.POSCommonUtils;
@@ -40,8 +41,8 @@ import java.util.Map;
 
 public class PaymentMethodsActivity extends AppCompatActivity {
 
-    Button addPaymentMethodBtn;
-    Spinner paymentMethodSpinner;
+    //Button addPaymentMethodBtn;
+    //Spinner paymentMethodSpinner;
     private float dueBalance = 0;
     private ArrayList<SoldItem> soldItems;
     TableLayout paymentTable;
@@ -57,43 +58,64 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     List<CreditCard> creditCardList;
     Map<String,String> paymentMethodsMap;
     String seatNumber;
+    String orderNumber;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_methods);
 
-        paymentMethodSpinner = (Spinner) findViewById(R.id.paymentMethodSpinner);
-        addPaymentMethodBtn = (Button) findViewById(R.id.addPaymentMethodBtn);
+        //paymentMethodSpinner = (Spinner) findViewById(R.id.paymentMethodSpinner);
+        //addPaymentMethodBtn = (Button) findViewById(R.id.addPaymentMethodBtn);
         paymentTable = (TableLayout) findViewById(R.id.paymentMethodTable);
         printReceiptBtn = (Button) findViewById(R.id.printReceipt);
         balanceDueTextView = (TextView)  findViewById(R.id.balanceDueTextView);
 
-        addPaymentMethodBtn.setOnClickListener(new View.OnClickListener() {
+        /*addPaymentMethodBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 addPurchaseItem();
             }
-        });
+        });*/
         printReceiptBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 printReceipt();
             }
         });
-        populatePaymentMethodField();
+        //populatePaymentMethodField();
         Intent intent = getIntent();
         Bundle args = intent.getBundleExtra("BUNDLE");
         soldItems = (ArrayList<SoldItem>) args.getSerializable("soldItemList");
         String subTotal = intent.getExtras().get("subTotal").toString();
         seatNumber = intent.getExtras().get("SeatNumber").toString();
+        orderNumber = intent.getExtras().get("orderNumber").toString();
         dueBalance = Float.parseFloat(subTotal);
         balanceDueTextView.setText(String.valueOf(dueBalance));
         creditCardList = new ArrayList<>();
         paymentMethodsMap = new HashMap<>();
+        registerLayoutClickEvents();
     }
 
-    private void addPurchaseItem() {
+    private void registerLayoutClickEvents() {
+
+        LinearLayout cashSettleLayout = (LinearLayout) findViewById(R.id.cashSettleLayout);
+        cashSettleLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addCashSettlement();
+            }
+        });
+        LinearLayout creditCardLayout = (LinearLayout) findViewById(R.id.creditCardPaymentLayout);
+        creditCardLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addCreditCardSettlementDetails();
+            }
+        });
+    }
+
+    /*private void addPurchaseItem() {
 
         String paymentMethod = paymentMethodSpinner.getSelectedItem() == null ? null : paymentMethodSpinner.getSelectedItem().toString();
 
@@ -108,7 +130,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             addCreditCardSettlementDetails();
         }
         paymentMethodSpinner.setSelection(0);
-    }
+    }*/
 
     private void showToastMsg(String msg){
         Toast.makeText(getApplicationContext(), msg,
@@ -326,7 +348,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         paymentTable.addView(tr,paymentMethodsCount);
     }
 
-    private void populatePaymentMethodField(){
+    /*private void populatePaymentMethodField(){
 
         ArrayList<String> options=new ArrayList<String>();
         options.add("");
@@ -336,7 +358,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         options.add("Loyalty");
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,options);
         paymentMethodSpinner.setAdapter(adapter);
-    }
+    }*/
 
     private void printReceipt(){
         if(dueBalance <= 0){
@@ -344,7 +366,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             printer.open();
             printer.init();
             printer.setAlignment(1);
-            printer.printPictureByRelativePath("/res/drawable/no_back.jpg", 150, 150);
+            printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 150, 150);
             printer.printString("");
             printer.setBold(true);
             printer.printString("CMB123 CMB-KUL");
@@ -356,6 +378,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             printer.printString(" ");
             printer.printString("Sale transaction");
             printer.setAlignment(0);
+            printer.printString("Order Number : " + orderNumber);
             printer.printString("Seat Number : " + seatNumber);
             float total = 0;
             for(SoldItem item : soldItems){
@@ -404,6 +427,9 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             printer.printString(" ");
             printer.printString(" ");
             printer.close();
+
+            Intent intent = new Intent(this,SellItemsActivity.class);
+            startActivity(intent);
         }
         else{
             showToastMsg("Due balance should be zero");

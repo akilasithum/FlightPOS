@@ -32,6 +32,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -70,6 +71,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private View mProgressView;
     private View mLoginFormView;
     Button mEmailSignInButton;
+    long mExitTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -82,6 +84,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         } catch (ParseException e) {
             e.printStackTrace();
+        }
+        String isFlightOpen = SaveSharedPreference.getStringValues(this,"isOpenFlight");
+        if(isFlightOpen != null && isFlightOpen.equals("yes")){
+            Intent intent = new Intent(LoginActivity.this, SellItemsActivity.class);
+            startActivity(intent);
+            return;
         }
         String userName = SaveSharedPreference.getStringValues(this,"userName");
         if(userName != null && userName.length() != 0)
@@ -261,6 +269,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        if((System.currentTimeMillis() - mExitTime) < 2000)
+        {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+        else
+        {
+            Toast.makeText(this, "Press the back button once again to close the application.", Toast.LENGTH_SHORT).show();
+            mExitTime = System.currentTimeMillis();
+        }
     }
 }
 

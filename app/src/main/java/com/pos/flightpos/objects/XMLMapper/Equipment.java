@@ -56,4 +56,12 @@ public class Equipment {
     public void setKitCode(String kitCode) {
         this.kitCode = kitCode;
     }
+
+    @Override
+    public String toString() {
+        if(equipmentNo == null){
+            return "";
+        }
+        return equipmentNo + " - " + equipmentDesc;
+    }
 }

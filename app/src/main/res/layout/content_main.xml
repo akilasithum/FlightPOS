@@ -4,75 +4,106 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:paddingLeft="70dp"
-    android:paddingTop="200dp"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
+    android:paddingTop="100dp"
     android:weightSum="1">
 
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <LinearLayout
+                android:id="@+id/userLoginLayout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:background="@drawable/textinputborder"
+                android:padding="20dp">
 
-    <LinearLayout
-        android:id="@+id/userLoginLayout"
-        android:layout_width="match_parent"
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/icon_customer"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_gravity="center"
+                    android:text="User Login"
+                    android:textSize="25dp" />
+
+            </LinearLayout>
+        </TableRow>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <LinearLayout
+                android:id="@+id/syncLayout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:background="@drawable/textinputborder"
+                android:padding="20dp">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/icon_synchronize"
+                    android:textSize="20dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_gravity="center"
+                    android:text="Sync"
+                    android:textSize="25dp" />
+            </LinearLayout>
+        </TableRow>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <LinearLayout
+                android:id="@+id/adminLogutLayout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:background="@drawable/textinputborder"
+                android:padding="20dp">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/icon_logout"
+                    android:layout_gravity="center"
+                    android:textSize="20dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_gravity="center"
+                    android:text="Admin Logout"
+                    android:textSize="25dp" />
+            </LinearLayout>
+        </TableRow>
+    </TableLayout>
+
+    <Button
+        android:id="@+id/goToICCardBrn"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:clickable="true"
-        android:orientation="horizontal"
-        android:padding="20dp">
-
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/icon_customer"
-            android:textSize="20dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="User Login"
-            android:textSize="25dp" />
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/syncLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:orientation="horizontal"
-        android:clickable="true"
-        android:padding="20dp">
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/icon_synchronize"
-            android:textSize="20dp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="Sync"
-            android:textSize="25dp" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/adminLogutLayout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="20dp"
-        android:orientation="horizontal"
-        android:clickable="true"
-        android:padding="20dp">
-        <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/icon_logout"
-            android:textSize="20dp" />
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="Admin Logout"
-            android:textSize="25dp" />
-    </LinearLayout>
-
+        android:text="Test IC Card" />
 </LinearLayout>

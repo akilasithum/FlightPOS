@@ -9,6 +9,8 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".LoginActivity">
 
     <!-- Login progress -->
@@ -23,13 +25,31 @@
     <ScrollView
         android:id="@+id/login_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:paddingTop="80dp">
 
         <LinearLayout
             android:id="@+id/email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/orange"
+                android:layout_gravity="center"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="10dp"
+                    android:src="@drawable/sunwing_logo" />
+        </LinearLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
@@ -42,7 +62,8 @@
                     android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:drawableLeft="@drawable/icon_user"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -60,7 +81,8 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:drawableLeft="@drawable/icon_passowrd"/>
 
             </android.support.design.widget.TextInputLayout>
 

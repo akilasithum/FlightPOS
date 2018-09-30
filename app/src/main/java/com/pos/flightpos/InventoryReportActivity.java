@@ -1,5 +1,7 @@
 package com.pos.flightpos;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.pt.printer.Printer;
 import android.support.v7.app.AppCompatActivity;
@@ -21,46 +23,49 @@ import java.util.Map;
 
 public class InventoryReportActivity extends AppCompatActivity {
 
+    String openCloseType;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inventory_report);
+        openCloseType = getIntent().getExtras().getString("reportType");
         registerLayoutClickEvents();
     }
 
     private void registerLayoutClickEvents(){
 
-        LinearLayout printBOBInventory = (LinearLayout) findViewById(R.id.buyOnBoardReports);
+        final LinearLayout printBOBInventory = (LinearLayout) findViewById(R.id.buyOnBoardReports);
         printBOBInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                printInventoryReports("BOB", "BUY ON BOARD INVENTORY");
+                printInventoryReports("BOB", "BUY ON BOARD INVENTORY",printBOBInventory);
             }
         });
-        LinearLayout printDTPInventory = (LinearLayout) findViewById(R.id.dutyPaidReports);
+        final LinearLayout printDTPInventory = (LinearLayout) findViewById(R.id.dutyPaidReports);
         printDTPInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                printInventoryReports("DTP", "DUTY PAID INVENTORY");
+                printInventoryReports("DTP", "DUTY PAID INVENTORY",printDTPInventory);
             }
         });
-        LinearLayout printDTFInventory = (LinearLayout) findViewById(R.id.dutyFreeReports);
+        final LinearLayout printDTFInventory = (LinearLayout) findViewById(R.id.dutyFreeReports);
         printDTFInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                printInventoryReports("DTF", "DUTY FREE INVENTORY");
+                printInventoryReports("DTF", "DUTY FREE INVENTORY",printDTFInventory);
             }
         });
-        LinearLayout printVRTInventory = (LinearLayout) findViewById(R.id.virtualInventoryReports);
+        final LinearLayout printVRTInventory = (LinearLayout) findViewById(R.id.virtualInventoryReports);
         printVRTInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                printInventoryReports("VRT", "VIRTUAL INVENTORY");
+                printInventoryReports("VRT", "VIRTUAL INVENTORY",printVRTInventory);
             }
         });
     }
 
-    private void printInventoryReports(String reportType,String inventoryDisplayName){
+    private void printInventoryReports(String reportType,String inventoryDisplayName,LinearLayout layout){
+        layout.setEnabled(false);
         Printer printer = new Printer();
         printer.open();
         int printerStatus = printer.queState();
@@ -76,14 +81,14 @@ public class InventoryReportActivity extends AppCompatActivity {
         }
         printer.init();
         printer.setAlignment(1);
-        printer.printPictureByRelativePath("/res/drawable/no_back.jpg", 150, 150);
+        printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 150, 150);
         printer.setBold(true);
         printer.printString("CMB123 CMB-KUL");
         Date date = new Date();
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         DateFormat dateTimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss aa");
         printer.printString(df.format(date));
-        printer.printString("OPENING INVENTORY");
+        printer.printString(openCloseType);
         printer.printString(" ");
         printer.printString(inventoryDisplayName);
         POSDBHandler handler = new POSDBHandler(this);
@@ -120,5 +125,22 @@ public class InventoryReportActivity extends AppCompatActivity {
         printer.printString(" ");
         printer.printString(" ");
         printer.close();
+        layout.setEnabled(true);
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        if("OPENING INVENTORY".equals(openCloseType)) {
+            Intent intent = new Intent(this, AttCheckInfo.class);
+            startActivity(intent);
+        }
+        else if("CLOSING INVENTORY".equals(openCloseType)){
+            Intent intent = new Intent(this, CloseFlightActivity.class);
+            startActivity(intent);
+        }
+        else{
+            super.onBackPressed();
+        }
     }
 }

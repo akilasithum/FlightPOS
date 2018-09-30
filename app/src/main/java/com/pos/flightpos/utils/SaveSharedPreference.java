@@ -26,4 +26,13 @@ public class SaveSharedPreference {
         editor.remove(key);
         editor.commit();
     }
+
+    public static void updateValue(Context ctx, String key,
+                                   String DataToSave){
+        SharedPreferences.Editor editor = getSharedPreferences(ctx).edit();
+        editor.remove(key);
+        editor.commit();
+        editor.putString(key, DataToSave);
+        editor.commit();
+    }
 }

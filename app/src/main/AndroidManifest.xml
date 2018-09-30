@@ -14,12 +14,13 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".LoginActivity"
-            android:label="@string/app_name">
+            android:label="@string/app_name"
+            android:theme="@style/AppTheme.Dark">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -29,30 +30,49 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.Dark"
+            />
         <activity
             android:name=".FlightAttendentLogin"
-            android:label="@string/title_activity_flight_attendent_login" />
-        <activity android:name=".AttendendMainActivity" />
-        <activity android:name=".SyncActivity" />
+            android:label="@string/title_activity_flight_attendent_login"
+            android:theme="@style/AppTheme.Dark"/>
+        <activity android:name=".AttendendMainActivity"
+            android:label="Select Flight Details"
+            android:theme="@style/AppTheme.Dark"/>
+        <activity android:name=".SyncActivity"
+            android:label="Sync Data From Server"
+            android:theme="@style/AppTheme.Dark"/>
 
         <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true" />
 
         <activity android:name=".PrintActivity" />
-        <activity android:name=".AttCheckInfo" />
+        <activity android:name=".AttCheckInfo" android:theme="@style/AppTheme.Dark"/>
         <activity android:name=".ICCardReader" />
         <activity android:name=".MSReader" />
-        <activity android:name=".AddSeal" />
-        <activity android:name=".SellarInfoActivity" />
-        <activity android:name=".SellItemsActivity" />
-        <activity android:name=".BuyItemsFromServiceTypeActivity" />
-        <activity android:name=".PaymentMethodsActivity" />
-        <activity android:name=".InventoryReportActivity" />
-        <activity android:name=".VerifyInventoryActivity" />
-        <activity android:name=".CheckInventoryActivity" />
-        <activity android:name=".VerifyDrawerActivity"></activity>
+        <activity android:name=".AddSeal" android:theme="@style/AppTheme.Dark"/>
+        <activity android:name=".SellarInfoActivity" android:theme="@style/AppTheme.Dark"/>
+        <activity android:name=".SellItemsActivity"
+            android:label="Sell Items"
+            android:theme="@style/AppTheme.Dark"/>
+        <activity android:name=".BuyItemsFromServiceTypeActivity" android:theme="@style/AppTheme.Dark" />
+        <activity android:name=".PaymentMethodsActivity"
+            android:label="Payments"
+            android:theme="@style/AppTheme.Dark"/>
+        <activity android:name=".InventoryReportActivity"
+            android:label="Print Inventory Reports"
+            android:theme="@style/AppTheme.Dark"/>
+        <activity android:name=".VerifyInventoryActivity"
+            android:label="Verify Inventory"
+            android:theme="@style/AppTheme.Dark"/>
+        <activity android:name=".CheckInventoryActivity" android:theme="@style/AppTheme.Dark"/>
+        <activity android:name=".VerifyDrawerActivity"
+            android:label="Verify Drawers"
+            android:theme="@style/AppTheme.Dark"/>
+        <activity android:name=".CloseFlightActivity"
+            android:label="Close Flight"
+            android:theme="@style/AppTheme.Dark"></activity>
     </application>
 
 </manifest>

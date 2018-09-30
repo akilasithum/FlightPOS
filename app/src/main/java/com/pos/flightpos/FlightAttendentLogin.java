@@ -24,12 +24,16 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.objects.XMLMapper.Equipment;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -43,7 +47,8 @@ import static android.Manifest.permission.READ_CONTACTS;
  */
 public class FlightAttendentLogin extends AppCompatActivity implements LoaderCallbacks<Cursor> {
     private static final int REQUEST_READ_CONTACTS = 0;
-
+    POSDBHandler handler;
+    Spinner equipmentSpinner;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -57,7 +62,9 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_flight_attendent_login);
+        handler = new POSDBHandler(this);
+        equipmentSpinner = (Spinner) findViewById(R.id.equipmentNumber);
 
         String storedValue = SaveSharedPreference.getStringValues(FlightAttendentLogin.this, Constants.SHARED_PREFERENCE_KEY);
         if(storedValue != null && storedValue.length() != 0)
@@ -65,7 +72,7 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
             reDirectToMainPage(SaveSharedPreference.getStringValues(FlightAttendentLogin.this,Constants.SHARED_PREFERENCE_KEY));
         }
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        mEmailView = (AutoCompleteTextView) findViewById(R.id.att_email);
         //populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -80,7 +87,7 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        Button mEmailSignInButton = (Button) findViewById(R.id.att_email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -88,8 +95,22 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
             }
         });
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+        mLoginFormView = findViewById(R.id.login_form_att);
+        mProgressView = findViewById(R.id.login_progress_att);
+        loadEquipmentNumbers();
+    }
+
+    private void loadEquipmentNumbers(){
+
+        List<Equipment> options=new ArrayList<>();
+        ArrayAdapter<Equipment> adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,options);
+        List<Equipment> equipmentList = handler.getEquipmentList();
+        Equipment item = new Equipment();
+        options.add(item);
+        options.addAll(equipmentList);
+        adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,options);
+        equipmentSpinner.setAdapter(adapter);
+
     }
 
     /**
@@ -116,6 +137,11 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
             cancel = true;
         }
 
+        if(equipmentSpinner.getSelectedItem() == null || equipmentSpinner.getSelectedItem().toString().equals("")){
+            Toast.makeText(getApplicationContext(), "Select Equipment type.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -124,7 +150,6 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             if(isLoggingSuccessful(email,password)){
-                SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_KEY,email);
                 reDirectToMainPage(email);
             }
             else{
@@ -136,13 +161,13 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
 
     private void reDirectToMainPage(String userName){
         Intent intent = new Intent(this, AttendendMainActivity.class);
-        intent.putExtra("userName",userName);
+        SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_KEY,userName);
+        Equipment equipment = (Equipment)equipmentSpinner.getSelectedItem();
+        SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_EQUIPMENT_NO,equipment.getEquipmentNo());
         startActivity(intent);
     }
 
     private boolean isLoggingSuccessful(String userName, String password){
-
-        POSDBHandler handler = new POSDBHandler(this);
         return handler.isLoginSuccess(userName,password);
     }
 

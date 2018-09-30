@@ -9,11 +9,13 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
     tools:context=".FlightAttendentLogin">
 
     <!-- Login progress -->
     <ProgressBar
-        android:id="@+id/login_progress"
+        android:id="@+id/login_progress_att"
         style="?android:attr/progressBarStyleLarge"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -21,9 +23,12 @@
         android:visibility="gone" />
 
     <ScrollView
-        android:id="@+id/login_form"
+        android:id="@+id/login_form_att"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:paddingLeft="50dp"
+        android:paddingRight="50dp"
+        android:paddingTop="80dp">
 
         <LinearLayout
             android:id="@+id/email_login_form"
@@ -31,18 +36,38 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingBottom="40dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="20dp"
+                android:text="select Equipment" />
+
+            <Spinner
+                android:id="@+id/equipmentNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="25dp"/>
+        </LinearLayout>
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <AutoCompleteTextView
-                    android:id="@+id/email"
+                    android:id="@+id/att_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/prompt_email"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:drawableLeft="@drawable/icon_user"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -60,12 +85,13 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
-                    android:singleLine="true" />
+                    android:singleLine="true"
+                    android:drawableLeft="@drawable/icon_passowrd"/>
 
             </android.support.design.widget.TextInputLayout>
 
             <Button
-                android:id="@+id/email_sign_in_button"
+                android:id="@+id/att_email_sign_in_button"
                 style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -1,11 +1,13 @@
 package com.pos.flightpos;
 
 import android.content.Intent;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.ToneGenerator;
 import android.os.Parcelable;
+import android.pt.minilcd.Minilcd;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -25,6 +27,7 @@ import android.widget.Toast;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.XMLMapper.Item;
 import com.pos.flightpos.utils.POSDBHandler;
+import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -45,6 +48,7 @@ public class BuyItemsFromServiceTypeActivity extends AppCompatActivity {
     EditText seatNumber;
     List<SoldItem> soldItemList;
     POSDBHandler handler;
+    String serviceType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +79,7 @@ public class BuyItemsFromServiceTypeActivity extends AppCompatActivity {
         soldItemList = new ArrayList<>();
         handler = new POSDBHandler(getApplicationContext());
         Intent intent = getIntent();
-        String serviceType = intent.getExtras().get("serviceType").toString();
+        serviceType = intent.getExtras().get("serviceType").toString();
         populateItemCatField(serviceType);
 
         itemCatSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -105,16 +109,28 @@ public class BuyItemsFromServiceTypeActivity extends AppCompatActivity {
         }
 
         Intent intent = new Intent(this, PaymentMethodsActivity.class);
+        String orderNumber = SaveSharedPreference.getStringValues(this,"orderNumber");
+        if(orderNumber != null){
+            int newVal = Integer.parseInt(orderNumber) + 1;
+            orderNumber = String.valueOf(newVal);
+            SaveSharedPreference.updateValue(this,"orderNumber",orderNumber);
+        }
+        else{
+            SaveSharedPreference.setStringValues(this,"orderNumber","1");
+            orderNumber = "1";
+        }
         intent.putExtra("subTotal", subtotal);
+        List<SoldItem> soldItems = getSellDataFromTable(orderNumber);
         Bundle args = new Bundle();
-        args.putSerializable("soldItemList",(Serializable)getSellDataFromTable());
+        args.putSerializable("soldItemList",(Serializable)soldItems);
         intent.putExtra("BUNDLE",args);
         intent.putExtra("SeatNumber",seatNumberVal);
+        intent.putExtra("orderNumber",orderNumber);
         startActivity(intent);
 
     }
 
-    private List<SoldItem> getSellDataFromTable(){
+    private List<SoldItem> getSellDataFromTable(String orderNumber){
 
         int rowCount = contentTable.getChildCount();
         List<SoldItem> soldList = new ArrayList<>();
@@ -124,6 +140,7 @@ public class BuyItemsFromServiceTypeActivity extends AppCompatActivity {
             TextView itemDesc = (TextView) tableRow.getChildAt(1);
             EditText qty = (EditText) tableRow.getChildAt(2);
             TextView price = (TextView) tableRow.getChildAt(3);
+            TextView total = (TextView) tableRow.getChildAt(4);
             itemDesc.getText();
             SoldItem soldItem = new SoldItem();
             soldItem.setItemId(itemID.getText().toString());
@@ -131,6 +148,9 @@ public class BuyItemsFromServiceTypeActivity extends AppCompatActivity {
             soldItem.setQuantity(Integer.parseInt(qty.getText().toString()));
             soldItem.setPrice(Float.parseFloat(price.getText().toString()));
             soldList.add(soldItem);
+            handler.insertDailySalesEntry(orderNumber,itemID.getText().toString(),serviceType,
+                    qty.getText().toString(),total.getText().toString(),"Passenger");
+            handler.updateItemQry(serviceType,itemID.getText().toString(),qty.getText().toString());
         }
         return soldList;
 

@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.pos.flightpos.utils.SaveSharedPreference;
+
 public class AttCheckInfo extends AppCompatActivity {
 
     @Override
@@ -40,6 +42,7 @@ public class AttCheckInfo extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AttCheckInfo.this, VerifyInventoryActivity.class);
+                intent.putExtra("parent","AttCheckInfo");
                 startActivity(intent);
             }
         });
@@ -48,6 +51,7 @@ public class AttCheckInfo extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AttCheckInfo.this, InventoryReportActivity.class);
+                intent.putExtra("reportType","OPENING INVENTORY");
                 startActivity(intent);
             }
         });
@@ -69,9 +73,18 @@ public class AttCheckInfo extends AppCompatActivity {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        SaveSharedPreference.setStringValues(AttCheckInfo.this,"isOpenFlight","yes");
                         Intent intent = new Intent(AttCheckInfo.this, SellItemsActivity.class);
                         startActivity(intent);
                     }})
                 .setNegativeButton(android.R.string.no, null).show();
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        Intent intent = new Intent(this, AttendendMainActivity.class);
+        startActivity(intent);
+
     }
 }

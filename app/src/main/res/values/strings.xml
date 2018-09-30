@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Flight POS</string>
+    <string name="app_name">AeroTech Sky</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">UserName</string>
@@ -13,6 +13,6 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="title_activity_flight_attendent_login">Sign in</string>
+    <string name="title_activity_main">Welcome Admin</string>
+    <string name="title_activity_flight_attendent_login">Flight User - Sign in</string>
 </resources>
