@@ -3,7 +3,6 @@ package com.pos.flightpos;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -24,7 +23,7 @@ public class SellItemsActivity extends AppCompatActivity {
         buyOnBoardLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SellItemsActivity.this, BuyItemsFromServiceTypeActivity.class);
+                Intent intent = new Intent(SellItemsActivity.this, BuyOnBoardItemsActivity.class);
                 intent.putExtra("serviceType","BOB");
                 startActivity(intent);
             }
@@ -33,7 +32,7 @@ public class SellItemsActivity extends AppCompatActivity {
         dutyPaidLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SellItemsActivity.this, BuyItemsFromServiceTypeActivity.class);
+                Intent intent = new Intent(SellItemsActivity.this, BuyItemFromCategoryActivity.class);
                 intent.putExtra("serviceType","DTP");
                 startActivity(intent);
             }
@@ -42,7 +41,7 @@ public class SellItemsActivity extends AppCompatActivity {
         dutyFreeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SellItemsActivity.this, BuyItemsFromServiceTypeActivity.class);
+                Intent intent = new Intent(SellItemsActivity.this, BuyItemFromCategoryActivity.class);
                 intent.putExtra("serviceType","DTF");
                 startActivity(intent);
             }
@@ -51,7 +50,7 @@ public class SellItemsActivity extends AppCompatActivity {
         virtualInventoryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SellItemsActivity.this, BuyItemsFromServiceTypeActivity.class);
+                Intent intent = new Intent(SellItemsActivity.this, BuyItemFromCategoryActivity.class);
                 intent.putExtra("serviceType","VRT");
                 startActivity(intent);
             }
@@ -60,7 +59,7 @@ public class SellItemsActivity extends AppCompatActivity {
         preOrderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SellItemsActivity.this, BuyItemsFromServiceTypeActivity.class);
+                Intent intent = new Intent(SellItemsActivity.this, BuyItemFromCategoryActivity.class);
                 intent.putExtra("serviceType","POD");
                 startActivity(intent);
             }

@@ -1,23 +1,23 @@
 package com.pos.flightpos;
 
+import android.content.Context;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.media.AudioManager;
-import android.media.MediaPlayer;
 import android.media.ToneGenerator;
-import android.os.Parcelable;
-import android.pt.minilcd.Minilcd;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -31,16 +31,12 @@ import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class BuyItemsFromServiceTypeActivity extends AppCompatActivity {
+public class BuyOnBoardItemsActivity extends AppCompatActivity {
 
-    Button submitBtn;
     Button purchaseItemsBtn;
     Spinner itemCatSpinner;
-    Spinner itemSpinner;
     TableLayout contentTable;
     private int itemCount = 0;
     private float subtotal = 0;
@@ -56,19 +52,11 @@ public class BuyItemsFromServiceTypeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_buy_on_board_items);
 
         itemCatSpinner = (Spinner) findViewById(R.id.itemCategorySpinner);
-        itemSpinner = (Spinner) findViewById(R.id.itemSpinner);
-        submitBtn = (Button) findViewById(R.id.addItemBtn);
         contentTable = (TableLayout) findViewById(R.id.contentTable);
         subTotalView = (TextView)  findViewById(R.id.subTotalTextView);
         seatNumber = (EditText) findViewById(R.id.seatNumber);
         purchaseItemsBtn = (Button) findViewById(R.id.purchaseItems);
 
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickSubmitBtn();
-            }
-        });
         purchaseItemsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -85,7 +73,7 @@ public class BuyItemsFromServiceTypeActivity extends AppCompatActivity {
         itemCatSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                populateItemsFromCat(itemCatSpinner.getSelectedItem().toString());
+                populateItemImages(itemCatSpinner.getSelectedItem().toString());
             }
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
@@ -156,18 +144,12 @@ public class BuyItemsFromServiceTypeActivity extends AppCompatActivity {
 
     }
 
-    private void clickSubmitBtn(){
-        //String item = itemSpinner.getSelectedItem() == null ? null : itemSpinner.getSelectedItem().toString();
-
-        Item item = (Item)itemSpinner.getSelectedItem();
+    private void clickSubmitBtn(Item item){
         if(item == null || item.equals("")){
             Toast.makeText(getApplicationContext(), "select item first.",
                     Toast.LENGTH_SHORT).show();
             return;
         }
-
-        itemCatSpinner.setSelection(0);
-        itemSpinner.setSelection(0);
         itemCount++;
         TableRow tr = new TableRow(this);
         tr.setId(itemCount);
@@ -240,7 +222,6 @@ public class BuyItemsFromServiceTypeActivity extends AppCompatActivity {
         soldItem.setQuantity(Integer.parseInt("1"));
         soldItem.setPrice(Float.parseFloat(item.getPrice()));
         soldItemList.add(soldItem);
-
         subTotalView.setText(String.valueOf(subtotal));
         contentTable.addView(tr,itemCount);
     }
@@ -251,16 +232,51 @@ public class BuyItemsFromServiceTypeActivity extends AppCompatActivity {
         subTotalView.setText(String.valueOf(subtotal));
     }
 
-    private void populateItemsFromCat(String selectedCat){
-        List<Item> options=new ArrayList<>();
-        ArrayAdapter<Item> adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,options);
-        itemSpinner.setAdapter(adapter);
+    private void populateItemImages(String selectedCat){
         List<Item> itemList = handler.getItemListFromItemCategory(selectedCat);
-        Item item = new Item();
-        options.add(item);
-        options.addAll(itemList);
-        adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,options);
-        itemSpinner.setAdapter(adapter);
+        LinearLayout innerLayout = (LinearLayout) findViewById(R.id.innerLay);
+        innerLayout.removeAllViews();
+        for(final Item item : itemList){
+            LinearLayout layout = new LinearLayout(this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(230,230);
+            layout.setLayoutParams(params1);
+            layout.setGravity(Gravity.CENTER);
+            layout.setOrientation(LinearLayout.VERTICAL);
+            layout.setBackground(ContextCompat.getDrawable(this, R.drawable.textinputborder));
+            layout.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    clickSubmitBtn(item);
+                }
+            });
+
+            ImageView imageView = new ImageView(this);
+            imageView.setLayoutParams(params);
+            imageView.setPadding(4,4,4,0);
+            imageView.setImageResource(getItemResource(this,item.getItemName()));
+
+            TextView textView = new TextView(this);
+            textView.setLayoutParams(params);
+            textView.setText(item.getItemName());
+
+            TextView priceText = new TextView(this);
+            priceText.setLayoutParams(params);
+            priceText.setText("$"+item.getPrice());
+
+            layout.addView(imageView);
+            layout.addView(textView);
+            layout.addView(priceText);
+            innerLayout.addView(layout);
+        }
+    }
+
+    public int getItemResource(Context context, String itemName) {
+        itemName = itemName.toLowerCase().replace("&","and").replace("’","")
+                .replace("(","").replace(")","").replace(" ","_");
+        int resId = context.getResources().getIdentifier(itemName, "drawable", "com.pos.flightpos");
+        return resId;
     }
 
     private void populateItemCatField(String serviceType){

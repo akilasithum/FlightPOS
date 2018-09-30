@@ -13,7 +13,7 @@ public class Item {
     private String staffDiscPrice;
     private String delist;
     private String dfsrOrder;
-    private String ServiceType;
+    private String serviceType;
     private String scPrice;
     private String baseCurrency;
     private String basePrice;
@@ -111,11 +111,11 @@ public class Item {
     }
 
     public String getServiceType() {
-        return ServiceType;
+        return serviceType;
     }
 
     public void setServiceType(String serviceType) {
-        ServiceType = serviceType;
+        serviceType = serviceType;
     }
 
     public String getScPrice() {

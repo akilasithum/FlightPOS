@@ -30,48 +30,69 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
-            android:theme="@style/AppTheme.Dark"
-            />
+            android:theme="@style/AppTheme.Dark" />
         <activity
             android:name=".FlightAttendentLogin"
             android:label="@string/title_activity_flight_attendent_login"
-            android:theme="@style/AppTheme.Dark"/>
-        <activity android:name=".AttendendMainActivity"
+            android:theme="@style/AppTheme.Dark" />
+        <activity
+            android:name=".AttendendMainActivity"
             android:label="Select Flight Details"
-            android:theme="@style/AppTheme.Dark"/>
-        <activity android:name=".SyncActivity"
+            android:theme="@style/AppTheme.Dark" />
+        <activity
+            android:name=".SyncActivity"
             android:label="Sync Data From Server"
-            android:theme="@style/AppTheme.Dark"/>
+            android:theme="@style/AppTheme.Dark" />
 
         <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true" />
 
         <activity android:name=".PrintActivity" />
-        <activity android:name=".AttCheckInfo" android:theme="@style/AppTheme.Dark"/>
+        <activity
+            android:name=".AttCheckInfo"
+            android:theme="@style/AppTheme.Dark" />
         <activity android:name=".ICCardReader" />
         <activity android:name=".MSReader" />
-        <activity android:name=".AddSeal" android:theme="@style/AppTheme.Dark"/>
-        <activity android:name=".SellarInfoActivity" android:theme="@style/AppTheme.Dark"/>
-        <activity android:name=".SellItemsActivity"
+        <activity
+            android:name=".AddSeal"
+            android:theme="@style/AppTheme.Dark" />
+        <activity
+            android:name=".SellarInfoActivity"
+            android:theme="@style/AppTheme.Dark" />
+        <activity
+            android:name=".SellItemsActivity"
             android:label="Sell Items"
-            android:theme="@style/AppTheme.Dark"/>
-        <activity android:name=".BuyItemsFromServiceTypeActivity" android:theme="@style/AppTheme.Dark" />
-        <activity android:name=".PaymentMethodsActivity"
+            android:theme="@style/AppTheme.Dark" />
+        <activity
+            android:name=".BuyOnBoardItemsActivity"
+            android:label="Sell Buy on Board Items"
+            android:theme="@style/AppTheme.Dark" />
+        <activity
+            android:name=".PaymentMethodsActivity"
             android:label="Payments"
-            android:theme="@style/AppTheme.Dark"/>
-        <activity android:name=".InventoryReportActivity"
+            android:theme="@style/AppTheme.Dark" />
+        <activity
+            android:name=".InventoryReportActivity"
             android:label="Print Inventory Reports"
-            android:theme="@style/AppTheme.Dark"/>
-        <activity android:name=".VerifyInventoryActivity"
+            android:theme="@style/AppTheme.Dark" />
+        <activity
+            android:name=".VerifyInventoryActivity"
             android:label="Verify Inventory"
-            android:theme="@style/AppTheme.Dark"/>
-        <activity android:name=".CheckInventoryActivity" android:theme="@style/AppTheme.Dark"/>
-        <activity android:name=".VerifyDrawerActivity"
+            android:theme="@style/AppTheme.Dark" />
+        <activity
+            android:name=".CheckInventoryActivity"
+            android:theme="@style/AppTheme.Dark" />
+        <activity
+            android:name=".VerifyDrawerActivity"
             android:label="Verify Drawers"
-            android:theme="@style/AppTheme.Dark"/>
-        <activity android:name=".CloseFlightActivity"
+            android:theme="@style/AppTheme.Dark" />
+        <activity
+            android:name=".CloseFlightActivity"
             android:label="Close Flight"
+            android:theme="@style/AppTheme.Dark" />
+        <activity android:name=".BuyItemFromCategoryActivity"
+            android:label="Sell ITems"
             android:theme="@style/AppTheme.Dark"></activity>
     </application>
 

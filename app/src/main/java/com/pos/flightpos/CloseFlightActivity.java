@@ -60,7 +60,7 @@ public class CloseFlightActivity extends AppCompatActivity {
         messageToBond.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Intent intent = new Intent(CloseFlightActivity.this, BuyItemsFromServiceTypeActivity.class);
+                /*Intent intent = new Intent(CloseFlightActivity.this, BuyOnBoardItemsActivity.class);
                 startActivity(intent);*/
             }
         });

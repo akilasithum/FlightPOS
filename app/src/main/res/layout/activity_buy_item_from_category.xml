@@ -5,53 +5,68 @@
     android:layout_height="fill_parent"
     android:orientation="vertical">
 
-<TableLayout
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-    android:paddingLeft="50dp"
-    android:paddingRight="75dp"
-    android:paddingTop="30dp"
-    android:focusable="true"
-    android:focusableInTouchMode="true">
-
-    <TableRow
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_margin="10dp"
-            android:text="Item Category"
-            android:textSize="25dp" />
-
-        <Spinner
-            android:id="@+id/itemCategorySpinner"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:paddingRight="30dp"
-            android:textSize="25dp"/>
-    </TableRow>
-</TableLayout>
-    <HorizontalScrollView
-        android:id="@+id/hsv"
+    <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:fillViewport="true"
-        android:measureAllChildren="false"
-        android:paddingTop="20dp"
-        android:scrollbars="horizontal" >
-        <LinearLayout
-            android:id="@+id/innerLay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:orientation="horizontal" >
+        android:paddingLeft="50dp"
+        android:paddingRight="75dp"
+        android:paddingTop="50dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
-        </LinearLayout>
-    </HorizontalScrollView>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:text="Item Category"
+                android:textSize="25dp" />
+
+            <Spinner
+                android:id="@+id/itemCategorySpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingRight="30dp"
+                android:textSize="25dp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingTop="10dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:text="Item"
+                android:textSize="25dp" />
+
+            <Spinner
+                android:id="@+id/itemSpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingRight="30dp"
+                android:textSize="25dp"/>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <Button
+                android:id="@+id/addItemBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Add Item" />
+        </TableRow>
+    </TableLayout>
 
     <TableLayout
         android:id="@+id/contentTable"
