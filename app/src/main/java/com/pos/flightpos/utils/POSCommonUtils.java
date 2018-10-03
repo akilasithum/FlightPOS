@@ -20,4 +20,14 @@ public class POSCommonUtils {
         df.setMaximumFractionDigits(2);
         return df.format(floatVal);
     }
+
+    public static String getServiceTypeDescFromServiceType(String serviceType){
+        switch (serviceType){
+            case "BOB" : return "BUY ON BOARD INVENTORY";
+            case "DTP" : return "DUTY PAID INVENTORY";
+            case "DTF" : return "DUTY FREE INVENTORY";
+            case "VRT" : return "VIRTUAL INVENTORY";
+            default: return "";
+        }
+    }
 }

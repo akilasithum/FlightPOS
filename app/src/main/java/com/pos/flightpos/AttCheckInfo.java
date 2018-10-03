@@ -8,6 +8,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
 
+import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.utils.POSCommonUtils;
+import com.pos.flightpos.utils.POSDBHandler;
+import com.pos.flightpos.utils.PrintJob;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
 public class AttCheckInfo extends AppCompatActivity {
@@ -41,7 +45,7 @@ public class AttCheckInfo extends AppCompatActivity {
         verifyInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AttCheckInfo.this, VerifyInventoryActivity.class);
+                Intent intent = new Intent(AttCheckInfo.this, CheckInventoryActivity.class);
                 intent.putExtra("parent","AttCheckInfo");
                 startActivity(intent);
             }
@@ -50,11 +54,10 @@ public class AttCheckInfo extends AppCompatActivity {
         inventoryReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AttCheckInfo.this, InventoryReportActivity.class);
-                intent.putExtra("reportType","OPENING INVENTORY");
-                startActivity(intent);
+                printInventoryReport();
             }
         });
+
         LinearLayout openFlight = (LinearLayout) findViewById(R.id.openFlight);
         openFlight.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,6 +65,15 @@ public class AttCheckInfo extends AppCompatActivity {
                 showConfirmation();
             }
         });
+    }
+
+    private void printInventoryReport(){
+        PrintJob job = new PrintJob();
+        String kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
+        POSDBHandler handler = new POSDBHandler(this);
+        String serviceType = handler.getServiceTypeFromKITCode(kitCode);
+        job.printInventoryReports(this,"OPENING INVENTORY",kitCode,
+                POSCommonUtils.getServiceTypeDescFromServiceType(serviceType));
     }
 
     private void showConfirmation(){
@@ -79,6 +91,8 @@ public class AttCheckInfo extends AppCompatActivity {
                     }})
                 .setNegativeButton(android.R.string.no, null).show();
     }
+
+
 
     @Override
     public void onBackPressed()

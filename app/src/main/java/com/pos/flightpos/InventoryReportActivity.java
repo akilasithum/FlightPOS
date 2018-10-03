@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 
 public class InventoryReportActivity extends AppCompatActivity {
 
@@ -70,12 +71,12 @@ public class InventoryReportActivity extends AppCompatActivity {
         printer.open();
         int printerStatus = printer.queState();
         if(printerStatus == 1){
-            Toast.makeText(getApplicationContext(), "Paper is not available. Please insert some papers.",
+            Toast.makeText(this, "Paper is not available. Please insert some papers.",
                     Toast.LENGTH_SHORT).show();
             return;
         }
         else if(printerStatus == 2){
-            Toast.makeText(getApplicationContext(), "Printer is too hot. Please wait.",
+            Toast.makeText(this, "Printer is too hot. Please wait.",
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -92,27 +93,32 @@ public class InventoryReportActivity extends AppCompatActivity {
         printer.printString(" ");
         printer.printString(inventoryDisplayName);
         POSDBHandler handler = new POSDBHandler(this);
-        Map<String,List<KITItem>> drawerKitItemMap = handler.getDrawerKitItemMapFromServiceType(reportType);
-        for (Map.Entry<String, List<KITItem>> entry : drawerKitItemMap.entrySet())
-        {
-            int total = 0;
-            printer.setAlignment(0);
-            printer.printString(entry.getKey());
-            printer.setBold(false);
-            for(KITItem item : entry.getValue()){
-                total += Integer.parseInt(item.getQuantity());
-                if(item.getQuantity().length()==1)item.setQuantity("0"+item.getQuantity());
-                int spaceLength = 29 - (item.getItemNo().length()+item.getItemDescription().length());
-                if(spaceLength < 0){
-                    item.setItemDescription(item.getItemDescription().substring(0,(27-item.getItemNo().length())) + "..");
-                    spaceLength = 0;
+        Map<String,Map<String,List<KITItem>>> drawerKitItemMap = handler.getDrawerKitItemMapFromServiceType(reportType);
+        for(Map.Entry<String,Map<String,List<KITItem>>> eqEntry : drawerKitItemMap.entrySet()) {
+
+            String equipmentName = eqEntry.getKey();
+            Map<String,List<KITItem>> treeMap = new TreeMap<>(eqEntry.getValue());
+            for (Map.Entry<String, List<KITItem>> entry : treeMap.entrySet()) {
+                int total = 0;
+                printer.setAlignment(0);
+                printer.printString(entry.getKey());
+                printer.setBold(false);
+                for (KITItem item : entry.getValue()) {
+                    total += Integer.parseInt(item.getQuantity());
+                    if (item.getQuantity().length() == 1)
+                        item.setQuantity("0" + item.getQuantity());
+                    int spaceLength = 29 - (item.getItemNo().length() + item.getItemDescription().length());
+                    if (spaceLength < 0) {
+                        item.setItemDescription(item.getItemDescription().substring(0, (27 - item.getItemNo().length())) + "..");
+                        spaceLength = 0;
+                    }
+                    printer.printString(item.getItemNo() + "-" + item.getItemDescription() +
+                            new String(new char[spaceLength]).replace("\0", " ") + item.getQuantity());
                 }
-                printer.printString(item.getItemNo()+"-"+item.getItemDescription() +
-                         new String(new char[spaceLength]).replace("\0", " ")+item.getQuantity());
+                printer.setAlignment(2);
+                printer.setBold(true);
+                printer.printString("Total " + total);
             }
-            printer.setAlignment(2);
-            printer.setBold(true);
-            printer.printString("Total " + total);
         }
         printer.setAlignment(0);
         printer.printString("CART NUMBERS");

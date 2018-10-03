@@ -11,7 +11,9 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
+import com.pos.flightpos.utils.PrintJob;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.text.DateFormat;
@@ -35,7 +37,7 @@ public class CloseFlightActivity extends AppCompatActivity {
         verifyCloseInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CloseFlightActivity.this, VerifyInventoryActivity.class);
+                Intent intent = new Intent(CloseFlightActivity.this, CheckInventoryActivity.class);
                 intent.putExtra("parent","CloseFlightActivity");
                 startActivity(intent);
             }
@@ -44,9 +46,7 @@ public class CloseFlightActivity extends AppCompatActivity {
         closingInventoryReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CloseFlightActivity.this, InventoryReportActivity.class);
-                intent.putExtra("reportType","CLOSING INVENTORY");
-                startActivity(intent);
+                printInventoryReport();
             }
         });
         LinearLayout closeFlightSalesReport = (LinearLayout) findViewById(R.id.closeFlightSalesReport);
@@ -81,6 +81,15 @@ public class CloseFlightActivity extends AppCompatActivity {
         });
     }
 
+    private void printInventoryReport(){
+        PrintJob job = new PrintJob();
+        String kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
+        POSDBHandler handler = new POSDBHandler(this);
+        String serviceType = handler.getServiceTypeFromKITCode(kitCode);
+        job.printInventoryReports(this,"CLOSING INVENTORY",kitCode,
+                POSCommonUtils.getServiceTypeDescFromServiceType(serviceType));
+    }
+
     private void showConfirmation(){
 
         new AlertDialog.Builder(this)
@@ -94,7 +103,7 @@ public class CloseFlightActivity extends AppCompatActivity {
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"paxCount");
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_KEY);
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"orderNumber");
-                        SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_EQUIPMENT_NO);
+                        SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_KIT_CODE);
                         Intent intent = new Intent(CloseFlightActivity.this, MainActivity.class);
                         startActivity(intent);
                     }})

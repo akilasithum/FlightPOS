@@ -16,7 +16,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
             <LinearLayout
-                android:id="@+id/configureFlightLayout"
+                android:id="@+id/userLoginLayout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -30,7 +30,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_flight"
+                    android:background="@drawable/icon_customer"
                     android:textSize="20dp" />
 
                 <TextView
@@ -38,7 +38,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:layout_gravity="center"
-                    android:text="Configure Flight"
+                    android:text="User Login"
                     android:textSize="25dp" />
             </LinearLayout>
         </TableRow>
@@ -46,7 +46,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
             <LinearLayout
-                android:id="@+id/syncLayout"
+                android:id="@+id/verifyInventoryByAdmin"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -59,14 +59,14 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_synchronize"
+                    android:background="@drawable/icon_verify"
                     android:textSize="20dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:layout_gravity="center"
-                    android:text="Sync"
+                    android:text="Verify Inventory"
                     android:textSize="25dp" />
             </LinearLayout>
         </TableRow>
@@ -74,7 +74,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
             <LinearLayout
-                android:id="@+id/adminLogutLayout"
+                android:id="@+id/printReportByAdmin"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -86,7 +86,7 @@
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:background="@drawable/icon_logout"
+                    android:background="@drawable/icon_printer"
                     android:layout_gravity="center"
                     android:textSize="20dp" />
                 <TextView
@@ -94,7 +94,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:layout_gravity="center"
-                    android:text="Admin Logout"
+                    android:text="Print Inventory Report"
                     android:textSize="25dp" />
             </LinearLayout>
         </TableRow>

@@ -65,4 +65,12 @@ public class KitNumber {
     public void setEquipment(String equipment) {
         this.equipment = equipment;
     }
+
+    @Override
+    public String toString() {
+        if(kitDesc == null){
+            return "";
+        }
+        return kitDesc;
+    }
 }

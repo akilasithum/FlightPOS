@@ -1,12 +1,6 @@
 package com.pos.flightpos;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -14,9 +8,7 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
@@ -33,14 +25,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
-import com.pos.flightpos.objects.XMLMapper.Equipment;
+import com.pos.flightpos.objects.XMLMapper.KitNumber;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.Manifest.permission.READ_CONTACTS;
 
 /**
  * A login screen that offers login via email/password.
@@ -48,7 +38,6 @@ import static android.Manifest.permission.READ_CONTACTS;
 public class FlightAttendentLogin extends AppCompatActivity implements LoaderCallbacks<Cursor> {
     private static final int REQUEST_READ_CONTACTS = 0;
     POSDBHandler handler;
-    Spinner equipmentSpinner;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -64,7 +53,6 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_flight_attendent_login);
         handler = new POSDBHandler(this);
-        equipmentSpinner = (Spinner) findViewById(R.id.equipmentNumber);
 
         String storedValue = SaveSharedPreference.getStringValues(FlightAttendentLogin.this, Constants.SHARED_PREFERENCE_KEY);
         if(storedValue != null && storedValue.length() != 0)
@@ -97,21 +85,9 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
 
         mLoginFormView = findViewById(R.id.login_form_att);
         mProgressView = findViewById(R.id.login_progress_att);
-        loadEquipmentNumbers();
     }
 
-    private void loadEquipmentNumbers(){
 
-        List<Equipment> options=new ArrayList<>();
-        ArrayAdapter<Equipment> adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,options);
-        List<Equipment> equipmentList = handler.getEquipmentList();
-        Equipment item = new Equipment();
-        options.add(item);
-        options.addAll(equipmentList);
-        adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,options);
-        equipmentSpinner.setAdapter(adapter);
-
-    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.
@@ -137,11 +113,6 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
             cancel = true;
         }
 
-        if(equipmentSpinner.getSelectedItem() == null || equipmentSpinner.getSelectedItem().toString().equals("")){
-            Toast.makeText(getApplicationContext(), "Select Equipment type.",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -162,8 +133,6 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
     private void reDirectToMainPage(String userName){
         Intent intent = new Intent(this, AttendendMainActivity.class);
         SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_KEY,userName);
-        Equipment equipment = (Equipment)equipmentSpinner.getSelectedItem();
-        SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_EQUIPMENT_NO,equipment.getEquipmentNo());
         startActivity(intent);
     }
 

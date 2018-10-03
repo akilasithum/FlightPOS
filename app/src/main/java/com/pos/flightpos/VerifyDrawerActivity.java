@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -29,8 +30,8 @@ public class VerifyDrawerActivity extends AppCompatActivity {
     boolean isValueUpdated = false;
     Map<String,String> updatedMap;
     String drawerName;
-    String serviceType;
     String equipmentNo = "";
+    String parent;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,16 +41,18 @@ public class VerifyDrawerActivity extends AppCompatActivity {
         Bundle args = intent.getBundleExtra("BUNDLE");
         drawerItems = (ArrayList<KITItem>) args.getSerializable("kitItems");
         drawerName = intent.getExtras().get("drawerName").toString();
-        serviceType = intent.getExtras().get("serviceType").toString();
+        parent = intent.getExtras().get("parent").toString();
         TextView drawerNameText = (TextView) findViewById(R.id.drawerNameText);
         drawerNameText.setText("Verify " +drawerName);
-        LinearLayout verifyDrawerBtn = (LinearLayout) findViewById(R.id.verifyDrawerBtn);
-        verifyDrawerBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                verifyDrawer();
-            }
-        });
+        if(parent.equals("VerifyFlightByAdminActivity")) {
+            LinearLayout verifyDrawerBtn = (LinearLayout) findViewById(R.id.verifyDrawerBtn);
+            verifyDrawerBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    verifyDrawer();
+                }
+            });
+        }
         updatedMap = new HashMap<>();
         equipmentNo = drawerItems.get(0).getEquipmentNo();
         showDataInTable(drawerItems);
@@ -70,7 +73,7 @@ public class VerifyDrawerActivity extends AppCompatActivity {
         }
         handler.updateDrawerValidation(equipmentNo,drawerName,"YES");
         Intent intent = new Intent(this,CheckInventoryActivity.class);
-        intent.putExtra("ServiceType",serviceType);
+        intent.putExtra("parent",parent);
         startActivity(intent);
     }
 
@@ -103,26 +106,38 @@ public class VerifyDrawerActivity extends AppCompatActivity {
             itemDesc.setLayoutParams(cellParams2);
             tr.addView(itemDesc);
 
-            EditText qtyTextBox = new EditText(this);
-            qtyTextBox.setText(item.getQuantity());
-            qtyTextBox.setTextSize(16);
-            qtyTextBox.setLayoutParams(cellParams3);
-            qtyTextBox.setPadding(20,0,20,0);
-            qtyTextBox.setInputType(InputType.TYPE_CLASS_NUMBER);
-            qtyTextBox.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                }
-                @Override
-                public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                    updatedMap.put(itemNoStr + "-" +equipmentNo,charSequence.toString());
-                    isValueUpdated = true;
-                }
-                @Override
-                public void afterTextChanged(Editable editable) {
-                }
-            });
-            tr.addView(qtyTextBox);
+            if(parent.equals("VerifyFlightByAdminActivity")){
+                TextView qtyTextView = new TextView(this);
+                qtyTextView.setText(item.getQuantity());
+                qtyTextView.setTextSize(16);
+                qtyTextView.setLayoutParams(cellParams3);
+                qtyTextView.setGravity(Gravity.CENTER);
+                tr.addView(qtyTextView);
+            }
+            else {
+                EditText qtyTextBox = new EditText(this);
+                qtyTextBox.setText(item.getQuantity());
+                qtyTextBox.setTextSize(16);
+                qtyTextBox.setLayoutParams(cellParams3);
+                qtyTextBox.setPadding(20, 0, 20, 0);
+                qtyTextBox.setInputType(InputType.TYPE_CLASS_NUMBER);
+                qtyTextBox.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                        updatedMap.put(itemNoStr + "-" + equipmentNo, charSequence.toString());
+                        isValueUpdated = true;
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                    }
+                });
+                tr.addView(qtyTextBox);
+            }
             verifyDrawerTable.addView(tr);
         }
     }

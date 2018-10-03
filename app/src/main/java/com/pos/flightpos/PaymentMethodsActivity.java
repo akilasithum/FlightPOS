@@ -382,9 +382,10 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             printer.printString("Seat Number : " + seatNumber);
             float total = 0;
             for(SoldItem item : soldItems){
-                total += item.getPrice()*item.getQuantity();
+                total += Float.parseFloat(item.getPrice())* Integer.parseInt(item.getQuantity());
                 int itemNameLength = item.getItemDesc().length();
-                String totalAmount = POSCommonUtils.getTwoDecimalFloatFromFloat(item.getPrice()*item.getQuantity());
+                String totalAmount = POSCommonUtils.getTwoDecimalFloatFromFloat(
+                        Float.parseFloat(item.getPrice())*Integer.parseInt(item.getQuantity()));
                 int totalAmountLength = totalAmount.length();
                 int spaceLength = 32 - (itemNameLength+totalAmountLength);
                 printer.printString(item.getItemDesc()

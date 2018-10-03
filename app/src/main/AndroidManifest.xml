@@ -91,9 +91,15 @@
             android:name=".CloseFlightActivity"
             android:label="Close Flight"
             android:theme="@style/AppTheme.Dark" />
-        <activity android:name=".BuyItemFromCategoryActivity"
-            android:label="Sell ITems"
-            android:theme="@style/AppTheme.Dark"></activity>
+        <activity
+            android:name=".BuyItemFromCategoryActivity"
+            android:label="Sell Items"
+            android:theme="@style/AppTheme.Dark" />
+        <activity
+            android:name=".ConfigureFlightActivity"
+            android:label="Configure Flight"
+            android:theme="@style/AppTheme.Dark" />
+        <activity android:name=".VerifyFlightByAdminActivity"></activity>
     </application>
 
 </manifest>

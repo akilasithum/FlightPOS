@@ -34,6 +34,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.text.ParseException;
@@ -91,10 +92,24 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             startActivity(intent);
             return;
         }
+        String flightUserName = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_KEY);
+        if(flightUserName != null && flightUserName.length() != 0){
+            Intent intent = new Intent(this, AttendendMainActivity.class);
+            startActivity(intent);
+            return;
+        }
         String userName = SaveSharedPreference.getStringValues(this,"userName");
+        String isAdminConfiguredFlight = SaveSharedPreference.getStringValues(this,
+                Constants.SHARED_ADMIN_CONFIGURE_FLIGHT);
         if(userName != null && userName.length() != 0)
         {
-            reDirectToMainPage(SaveSharedPreference.getStringValues(this,"userName"));
+            if(isAdminConfiguredFlight != null && isAdminConfiguredFlight.equals("yes")){
+                Intent intent = new Intent(this, VerifyFlightByAdminActivity.class);
+                startActivity(intent);
+            }
+            else {
+                reDirectToMainPage(SaveSharedPreference.getStringValues(this, "userName"));
+            }
         }
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);

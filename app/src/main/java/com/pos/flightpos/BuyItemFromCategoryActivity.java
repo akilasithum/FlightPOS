@@ -19,6 +19,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.XMLMapper.Item;
 import com.pos.flightpos.utils.POSDBHandler;
@@ -44,11 +45,12 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
     List<SoldItem> soldItemList;
     POSDBHandler handler;
     String serviceType;
+    String kitCode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy_item_from_category);
-
+        kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
         itemCatSpinner = (Spinner) findViewById(R.id.itemCategorySpinner);
         itemSpinner = (Spinner) findViewById(R.id.itemSpinner);
         submitBtn = (Button) findViewById(R.id.addItemBtn);
@@ -56,7 +58,6 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
         subTotalView = (TextView)  findViewById(R.id.subTotalTextView);
         seatNumber = (EditText) findViewById(R.id.seatNumber);
         purchaseItemsBtn = (Button) findViewById(R.id.purchaseItems);
-
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,7 +74,7 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
         handler = new POSDBHandler(getApplicationContext());
         Intent intent = getIntent();
         serviceType = intent.getExtras().get("serviceType").toString();
-        populateItemCatField(serviceType);
+        populateItemCatField();
 
         itemCatSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -133,25 +134,31 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
                 EditText qty = (EditText) tableRow.getChildAt(2);
                 TextView price = (TextView) tableRow.getChildAt(3);
                 TextView total = (TextView) tableRow.getChildAt(4);
+                TextView equipmentNo = (TextView) tableRow.getChildAt(5);
+                TextView drawer = (TextView) tableRow.getChildAt(6);
                 itemDesc.getText();
                 SoldItem soldItem = new SoldItem();
                 soldItem.setItemId(itemID.getText().toString());
                 soldItem.setItemDesc(itemDesc.getText().toString());
-                soldItem.setQuantity(Integer.parseInt(qty.getText().toString()));
-                soldItem.setPrice(Float.parseFloat(price.getText().toString()));
+                soldItem.setQuantity(qty.getText().toString());
+                soldItem.setPrice(price.getText().toString());
+                soldItem.setEquipmentNo(equipmentNo.getText().toString());
+                soldItem.setDrawer(drawer.getText().toString());
                 soldList.add(soldItem);
+                String userID = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_KEY);
                 handler.insertDailySalesEntry(orderNumber,itemID.getText().toString(),serviceType,
-                        qty.getText().toString(),total.getText().toString(),"Passenger");
-                handler.updateItemQry(serviceType,itemID.getText().toString(),qty.getText().toString());
+                        equipmentNo.getText().toString(),drawer.getText().toString(),qty.getText().toString(),
+                        total.getText().toString(),"Passenger",userID);
+                handler.updateSoldItemQty(itemID.getText().toString(),qty.getText().toString(),
+                        equipmentNo.getText().toString(),drawer.getText().toString());
             }
             return soldList;
 
         }
 
         private void clickSubmitBtn(){
-            //String item = itemSpinner.getSelectedItem() == null ? null : itemSpinner.getSelectedItem().toString();
 
-            Item item = (Item)itemSpinner.getSelectedItem();
+            SoldItem item = (SoldItem)itemSpinner.getSelectedItem();
             if(item == null || item.equals("")){
                 Toast.makeText(getApplicationContext(), "select item first.",
                         Toast.LENGTH_SHORT).show();
@@ -177,12 +184,14 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
             EditText qty = new EditText(this);
             final TextView price = new TextView(this);
             final TextView totalTextField = new TextView(this);
+            TextView equipmentNo = new TextView(this);
+            TextView drawer = new TextView(this);
 
-            itemIdHdn.setText(item.getItemNo());
+            itemIdHdn.setText(item.getItemId());
             itemIdHdn.setVisibility(View.GONE);
             tr.addView(itemIdHdn);
 
-            itemDesc.setText(item.getItemName());
+            itemDesc.setText(item.getItemDesc());
             itemDesc.setTextSize(20);
             itemDesc.setLayoutParams(cellParams1);
             tr.addView(itemDesc);
@@ -226,11 +235,19 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
             totalTextField.setLayoutParams(cellParams2);
             tr.addView(totalTextField);
 
+            equipmentNo.setText(item.getEquipmentNo());
+            equipmentNo.setVisibility(View.GONE);
+            tr.addView(equipmentNo);
+
+            drawer.setText(item.getDrawer());
+            drawer.setVisibility(View.GONE);
+            tr.addView(drawer);
+
             subtotal += total;
             SoldItem soldItem = new SoldItem();
-            soldItem.setItemDesc(item.getItemName());
-            soldItem.setQuantity(Integer.parseInt("1"));
-            soldItem.setPrice(Float.parseFloat(item.getPrice()));
+            soldItem.setItemDesc(item.getItemDesc());
+            soldItem.setQuantity("1");
+            soldItem.setPrice(item.getPrice());
             soldItemList.add(soldItem);
 
             subTotalView.setText(String.valueOf(subtotal));
@@ -244,22 +261,22 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
         }
 
         private void populateItemsFromCat(String selectedCat){
-            List<Item> options=new ArrayList<>();
-            ArrayAdapter<Item> adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,options);
+            List<SoldItem> options=new ArrayList<>();
+            ArrayAdapter<SoldItem> adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,options);
             itemSpinner.setAdapter(adapter);
-            List<Item> itemList = handler.getItemListFromItemCategory(selectedCat);
-            Item item = new Item();
+            List<SoldItem> itemList = handler.getItemListFromItemCategory(selectedCat,kitCode);
+            SoldItem item = new SoldItem();
             options.add(item);
             options.addAll(itemList);
             adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,options);
             itemSpinner.setAdapter(adapter);
         }
 
-        private void populateItemCatField(String serviceType){
+        private void populateItemCatField(){
 
             List<String> options=new ArrayList<String>();
             options.add("");
-            List<String> catList = handler.getItemCatFromItems(serviceType);
+            List<String> catList = handler.getItemCatFromItems(kitCode);
             if(catList.size() > 0) {
                 final ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_MUSIC , 100);
                 tg.startTone(ToneGenerator.TONE_PROP_BEEP);

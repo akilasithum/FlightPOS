@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.pos.flightpos.InventoryReportActivity;
 import com.pos.flightpos.objects.Flight;
+import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.User;
 import com.pos.flightpos.objects.XMLMapper.Equipment;
 import com.pos.flightpos.objects.XMLMapper.Item;
@@ -66,7 +67,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS drawerValidation (equipmentNo VARCHAR," +
                 "drawer VARCHAR,isValidated VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS dailySales (orderNumber VARCHAR,itemNo VARCHAR," +
-                "serviceType VARCHAR,quantity VARCHAR,totalPrice VARCHAR,buyerType VARCHAR);");
+                "equipmentNo VARCHAR,drawer VARCHAR,quantity VARCHAR,serviceType VARCHAR," +
+                "totalPrice VARCHAR,buyerType VARCHAR,sellarName VARCHAR);");
     }
 
     public void clearTable(){
@@ -92,11 +94,11 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void insertDailySalesEntry(String orderNumber,String itemNo,String serviceType,
-                                      String quantity,String total,String buyerType){
+    public void insertDailySalesEntry(String orderNumber,String itemNo,String serviceType,String equipmentNo,String drawer,
+                                      String quantity,String total,String buyerType,String sellerId){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("INSERT INTO dailySales VALUES('"+orderNumber+"','"+itemNo+"','"+serviceType+"','"
-                +quantity+"','"+total+"','"+buyerType+"');");
+        db.execSQL("INSERT INTO dailySales VALUES('"+orderNumber+"','"+itemNo+"','"+equipmentNo+"','"+drawer+"','"
+                +quantity+"','"+serviceType+"', '"+total+"','"+buyerType+"','"+sellerId+"');");
         db.close();
     }
 
@@ -284,7 +286,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
-    public void insertEquipmentTypeList(Context context){
+    public boolean insertEquipmentTypeList(Context context){
         try {
             File xml = new File(context.getFilesDir(), "equipment_type.xml");
             JSONObject jsonObj  = XML.toJSONObject(readStream(new FileInputStream(xml)));
@@ -299,9 +301,11 @@ public class POSDBHandler extends SQLiteOpenHelper {
                         "'"+item.getDrawerPrefix()+"','"+item.getNoOfDrawers()+"','"+item.getKitCode()+"');");
             }
             db.close();
+            return true;
         }
         catch (Exception e){
             e.printStackTrace();
+            return false;
         }
     }
 
@@ -365,53 +369,29 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
-    public void updateItemQry(String serviceType,String itemId,String soldQty){
+    public void updateSoldItemQty(String itemNo,String soldQty,String equipmentNo,String drawer){
         SQLiteDatabase db = this.getReadableDatabase();
-        List<String> kitCodeList = new ArrayList<>();
-        List<KITItem> items = new ArrayList<>();
-        Cursor cursor = db.rawQuery("select kitCode from  KITNumberList where serviceType ='"
-                +serviceType+"'  and kitCode in (" +
-                "select kitCode from equipmentType where equipmentNo in (" +
-                " select equipmentNo from KITList where itemNo = '"+itemId+"'))",null);
+        int currentQty = 0;
+        Cursor cursor = db.rawQuery("select quantity from KITList where equipmentNo = '"+equipmentNo +
+                "' and itemNo = '"+itemNo+"' and drawer = '"+drawer+"'",null);
         if (cursor.moveToFirst()){
             while(!cursor.isAfterLast()){
-                kitCodeList.add(cursor.getString(cursor.getColumnIndex("kitCode")));
+                currentQty = Integer.parseInt(cursor.getString(cursor.getColumnIndex("quantity")));
                 cursor.moveToNext();
             }
         }
-        cursor.close();
-        if(kitCodeList.size() == 1){
-            Cursor cursor1 = db.rawQuery("select * from KITList where itemNo = '"+itemId+"' and equipmentNo in (" +
-                    "select equipmentNo from equipmentType where " +
-                    "kitCode = '"+kitCodeList.get(0)+"')",null);
-
-            if (cursor1.moveToFirst()){
-                while(!cursor1.isAfterLast()){
-                    KITItem kitItem = new KITItem();
-                    kitItem.setEquipmentNo(cursor1.getString(cursor1.getColumnIndex("equipmentNo")));
-                    kitItem.setItemNo(cursor1.getString(cursor1.getColumnIndex("itemNo")));
-                    kitItem.setQuantity(cursor1.getString(cursor1.getColumnIndex("quantity")));
-                    items.add(kitItem);
-                    cursor1.moveToNext();
-                }
-            }
-            cursor1.close();
-        }
-        KITItem item = items.get(0);
-        int updateQty = Integer.parseInt(item.getQuantity()) - Integer.parseInt(soldQty);
-        db.execSQL("update KITList set quantity = '"+String.valueOf(updateQty)+"' where  equipmentNo = '"+item.getEquipmentNo()
-                +"' and itemNo = '"+item.getItemNo()+"';");
-        db.close();
+        int updateQty = currentQty - Integer.parseInt(soldQty);
+        db.execSQL("update KITList set quantity = '"+String.valueOf(updateQty)+"' where  equipmentNo = '"+equipmentNo
+                +"' and itemNo = '"+itemNo+"' and drawer = '"+drawer+"';");
     }
 
-    public List<String> getItemCatFromItems(String serviceType){
+    public List<String> getItemCatFromItems(String kitCode){
         SQLiteDatabase db = this.getReadableDatabase();
         List<String> categoryList = new ArrayList<>();
         try {
             Cursor cursor = db.rawQuery("select distinct category from items where itemNo in " +
                     "( select itemNo from  KITList where  equipmentNo in (  " +
-                    "select equipmentNo from equipmentType where kitCode in  " +
-                    "(select kitCode from KITNumberList where serviceType = '" + serviceType + "')))", null);
+                    "select equipmentNo from equipmentType where kitCode = '"+kitCode+"'  ))", null);
             if (cursor.moveToFirst()){
                 while(!cursor.isAfterLast()){
                     categoryList.add(cursor.getString(cursor.getColumnIndex("category")));
@@ -428,17 +408,24 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
-    public List<Item> getItemListFromItemCategory(String category){
+    public List<SoldItem> getItemListFromItemCategory(String category,String kitCode){
         SQLiteDatabase db = this.getReadableDatabase();
-        List<Item> itemList = new ArrayList<>();
+        List<SoldItem> itemList = new ArrayList<>();
         try {
-            Cursor cursor = db.rawQuery("select * from items where category = '" + category + "'", null);
+            Cursor cursor = db.rawQuery("SELECT items.itemNo as itemNo,items.itemName as itemName," +
+                    "items.price as price,KITList.equipmentNo as equipmentNo," +
+                    "KITList.drawer as drawer FROM (SELECT * FROM items where category = '"+category+"') as items INNER JOIN " +
+                    "(SELECT * FROM KITList WHERE equipmentNo in (select equipmentNo from equipmentType " +
+                    "where kitCode = '"+kitCode+"')) as KITList ON items.itemNo = KITList.itemNo", null);
+
             if (cursor.moveToFirst()){
                 while(!cursor.isAfterLast()){
-                    Item item = new Item();
-                    item.setItemNo(cursor.getString(cursor.getColumnIndex("itemNo")));
-                    item.setItemName(cursor.getString(cursor.getColumnIndex("itemName")));
+                    SoldItem item = new SoldItem();
+                    item.setItemId(cursor.getString(cursor.getColumnIndex("itemNo")));
+                    item.setItemDesc(cursor.getString(cursor.getColumnIndex("itemName")));
                     item.setPrice(cursor.getString(cursor.getColumnIndex("price")));
+                    item.setEquipmentNo(cursor.getString(cursor.getColumnIndex("equipmentNo")));
+                    item.setDrawer(cursor.getString(cursor.getColumnIndex("drawer")));
                     itemList.add(item);
                     cursor.moveToNext();
                 }
@@ -466,13 +453,25 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return itemName;
     }
 
-    public Map<String,List<KITItem>> getDrawerKitItemMapFromServiceType(String serviceType){
+    public String getServiceTypeFromKITCode(String kitCode){
         SQLiteDatabase db = this.getReadableDatabase();
-        Map<String,List<KITItem>> drawerKitItemMap = new HashMap<>();
+        Cursor cursor = db.rawQuery("select serviceType from KITNumberList where kitCode = '" +kitCode+"'",null);
+        String serviceType = "";
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                serviceType = cursor.getString(cursor.getColumnIndex("serviceType"));
+                cursor.moveToNext();
+            }
+        }
+        return serviceType;
+    }
+
+    public Map<String,Map<String,List<KITItem>>> getDrawerKitItemMapFromServiceType(String kitCode){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Map<String,Map<String,List<KITItem>>> drawerKitItemMap = new HashMap<>();
         try {
             Cursor cursor = db.rawQuery("select * from  KITList where  equipmentNo in (  " +
-                    "select equipmentNo from equipmentType where kitCode in  " +
-                    "(select kitCode from KITNumberList where serviceType = '" + serviceType + "'))", null);
+                    "select equipmentNo from equipmentType where kitCode =  '"+kitCode+"')", null);
             if (cursor.moveToFirst()){
                 while(!cursor.isAfterLast()){
                     KITItem kitItem = new KITItem();
@@ -484,13 +483,22 @@ public class POSDBHandler extends SQLiteOpenHelper {
                     kitItem.setDrawer(drawer);
                     String equipmentNo = cursor.getString(cursor.getColumnIndex("equipmentNo"));
                     kitItem.setEquipmentNo(equipmentNo);
-                    if(drawerKitItemMap.containsKey(drawer)){
-                        drawerKitItemMap.get(drawer).add(kitItem);
+                    if(drawerKitItemMap.containsKey(equipmentNo)){
+                        if(drawerKitItemMap.get(equipmentNo).containsKey(drawer)){
+                            drawerKitItemMap.get(equipmentNo).get(drawer).add(kitItem);
+                        }
+                        else{
+                            List<KITItem> kitItems = new ArrayList<>();
+                            kitItems.add(kitItem);
+                            drawerKitItemMap.get(equipmentNo).put(drawer,kitItems);
+                        }
                     }
-                    else{
+                    else {
+                        Map<String,List<KITItem>> listMap = new HashMap<>();
                         List<KITItem> kitItems = new ArrayList<>();
                         kitItems.add(kitItem);
-                        drawerKitItemMap.put(drawer,kitItems);
+                        listMap.put(drawer,kitItems);
+                        drawerKitItemMap.put(equipmentNo,listMap);
                     }
                     cursor.moveToNext();
                 }
@@ -532,6 +540,27 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.close();
         cursor.close();
         return equipments;
+    }
+
+    public List<KitNumber> getKITCodeList(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<KitNumber> kitCodes= new ArrayList<>();
+        Cursor cursor = db.rawQuery("select * from KITNumberList", null);
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                KitNumber kitNumber = new KitNumber();
+                kitNumber.setKitCode(cursor.getString(cursor.getColumnIndex("kitCode")));
+                kitNumber.setKitDesc(cursor.getString(cursor.getColumnIndex("kitDesc")));
+                kitNumber.setServiceType(cursor.getString(cursor.getColumnIndex("serviceType")));
+                kitNumber.setNoOfEq(cursor.getString(cursor.getColumnIndex("noOfEq")));
+                kitNumber.setNoOfSeals(cursor.getString(cursor.getColumnIndex("noOfSeals")));
+                kitCodes.add(kitNumber);
+                cursor.moveToNext();
+            }
+        }
+        db.close();
+        cursor.close();
+        return kitCodes;
     }
 
     private List<String> getEquipmentsFromKITCodes(String serviceType){

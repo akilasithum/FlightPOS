@@ -1,5 +1,7 @@
 package com.pos.flightpos;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -7,14 +9,28 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.utils.POSCommonUtils;
+import com.pos.flightpos.utils.POSDBHandler;
+import com.pos.flightpos.utils.SaveSharedPreference;
+
 public class SellItemsActivity extends AppCompatActivity {
 
     long mExitTime = 0;
+    POSDBHandler handler;
+    String serviceType;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sell_items);
+        handler = new POSDBHandler(this);
+        availableServiceType();
         registerLayoutClickEvents();
+    }
+
+    private void availableServiceType(){
+        String kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
+        serviceType = handler.getServiceTypeFromKITCode(kitCode);
     }
 
     private void registerLayoutClickEvents(){
@@ -23,36 +39,44 @@ public class SellItemsActivity extends AppCompatActivity {
         buyOnBoardLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SellItemsActivity.this, BuyOnBoardItemsActivity.class);
-                intent.putExtra("serviceType","BOB");
-                startActivity(intent);
+                if(isItemsAvailableToSell("BOB")) {
+                    Intent intent = new Intent(SellItemsActivity.this, BuyOnBoardItemsActivity.class);
+                    intent.putExtra("serviceType", "BOB");
+                    startActivity(intent);
+                }
             }
         });
         LinearLayout dutyPaidLayout = (LinearLayout) findViewById(R.id.dutyPaidItems);
         dutyPaidLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SellItemsActivity.this, BuyItemFromCategoryActivity.class);
-                intent.putExtra("serviceType","DTP");
-                startActivity(intent);
+                if(isItemsAvailableToSell("DTP")) {
+                    Intent intent = new Intent(SellItemsActivity.this, BuyItemFromCategoryActivity.class);
+                    intent.putExtra("serviceType", "DTP");
+                    startActivity(intent);
+                }
             }
         });
         LinearLayout dutyFreeLayout = (LinearLayout) findViewById(R.id.dutyFreeItems);
         dutyFreeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SellItemsActivity.this, BuyItemFromCategoryActivity.class);
-                intent.putExtra("serviceType","DTF");
-                startActivity(intent);
+                if(isItemsAvailableToSell("DTF")) {
+                    Intent intent = new Intent(SellItemsActivity.this, BuyItemFromCategoryActivity.class);
+                    intent.putExtra("serviceType", "DTF");
+                    startActivity(intent);
+                }
             }
         });
         LinearLayout virtualInventoryLayout = (LinearLayout) findViewById(R.id.virtualInventory);
         virtualInventoryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SellItemsActivity.this, BuyItemFromCategoryActivity.class);
-                intent.putExtra("serviceType","VRT");
-                startActivity(intent);
+                if(isItemsAvailableToSell("VRT")) {
+                    Intent intent = new Intent(SellItemsActivity.this, BuyItemFromCategoryActivity.class);
+                    intent.putExtra("serviceType", "VRT");
+                    startActivity(intent);
+                }
             }
         });
         LinearLayout preOrderLayout = (LinearLayout) findViewById(R.id.preOrderDelivery);
@@ -91,6 +115,27 @@ public class SellItemsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+    }
+
+    private boolean isItemsAvailableToSell(String service){
+        if(!serviceType.equals(service)){
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+            builder1.setTitle("Invalid Selection");
+            builder1.setMessage("No items available to sell.");
+            builder1.setPositiveButton(
+                    "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert11 = builder1.create();
+            alert11.show();
+            return false;
+        }
+        else {
+            return true;
+        }
     }
 
     @Override

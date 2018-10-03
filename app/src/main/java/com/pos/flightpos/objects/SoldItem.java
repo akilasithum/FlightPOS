@@ -5,8 +5,10 @@ import java.io.Serializable;
 public class SoldItem implements Serializable{
     private String itemId;
     private String itemDesc;
-    private int quantity;
-    private float price;
+    private String quantity;
+    private String price;
+    private String equipmentNo;
+    private String drawer;
 
     public String getItemId() {
         return itemId;
@@ -24,19 +26,35 @@ public class SoldItem implements Serializable{
         this.itemDesc = itemDesc;
     }
 
-    public int getQuantity() {
+    public String getQuantity() {
         return quantity;
     }
 
-    public void setQuantity(int quantity) {
+    public void setQuantity(String quantity) {
         this.quantity = quantity;
     }
 
-    public float getPrice() {
+    public String getPrice() {
         return price;
     }
 
-    public void setPrice(float price) {
+    public void setPrice(String price) {
         this.price = price;
+    }
+
+    public String getEquipmentNo() {
+        return equipmentNo;
+    }
+
+    public void setEquipmentNo(String equipmentNo) {
+        this.equipmentNo = equipmentNo;
+    }
+
+    public String getDrawer() {
+        return drawer;
+    }
+
+    public void setDrawer(String drawer) {
+        this.drawer = drawer;
     }
 }

@@ -10,6 +10,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.amazonaws.mobile.client.AWSMobileClient;
+import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
 
@@ -24,12 +25,12 @@ public class MainActivity extends AppCompatActivity {
         //setSupportActionBar(toolbar);
         AWSMobileClient.getInstance().initialize(this).execute();
 
-        final LinearLayout userLoginLayout = (LinearLayout) findViewById(R.id.userLoginLayout);
-        userLoginLayout.setOnClickListener(new View.OnClickListener() {
+        final LinearLayout configureFlightLayout = (LinearLayout) findViewById(R.id.configureFlightLayout);
+        configureFlightLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(isSyncClicked()){
-                    Intent intent = new Intent(MainActivity.this, FlightAttendentLogin.class);
+                    Intent intent = new Intent(MainActivity.this, ConfigureFlightActivity.class);
                     startActivity(intent);
                 }
                 else{
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Button goToICCardBrn = (Button) findViewById(R.id.goToICCardBrn);
+        /*Button goToICCardBrn = (Button) findViewById(R.id.goToICCardBrn);
         goToICCardBrn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,7 +65,7 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent = new Intent(MainActivity.this,ICCardReader.class);
                 startActivity(intent);
             }
-        });
+        });*/
 
     }
 
@@ -74,6 +75,8 @@ public class MainActivity extends AppCompatActivity {
 
     private void logoutAdmin(){
         SaveSharedPreference.removeValue(this,"userName");
+        SaveSharedPreference.removeValue(this, Constants.SHARED_PREFERENCE_FLIGHT_NAME);
+        SaveSharedPreference.removeValue(this, Constants.SHARED_PREFERENCE_FLIGHT_DATE);
         Intent intent = new Intent(this,LoginActivity.class);
         startActivity(intent);
     }
