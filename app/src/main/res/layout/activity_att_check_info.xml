@@ -34,7 +34,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:layout_gravity="center"
-                    android:text="seal Info" android:textSize="25dp" />
+                    android:text="Verify seals" android:textSize="25dp" />
 
             </LinearLayout>
             <LinearLayout

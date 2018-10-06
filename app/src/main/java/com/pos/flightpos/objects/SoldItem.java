@@ -57,4 +57,9 @@ public class SoldItem implements Serializable{
     public void setDrawer(String drawer) {
         this.drawer = drawer;
     }
+
+    @Override
+    public String toString() {
+        return itemDesc;
+    }
 }

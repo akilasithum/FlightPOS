@@ -30,7 +30,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_flight"
+                    android:background="@drawable/icon_open_flight"
                     android:textSize="20dp" />
 
                 <TextView

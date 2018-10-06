@@ -41,8 +41,6 @@ import java.util.Map;
 
 public class PaymentMethodsActivity extends AppCompatActivity {
 
-    //Button addPaymentMethodBtn;
-    //Spinner paymentMethodSpinner;
     private float dueBalance = 0;
     private ArrayList<SoldItem> soldItems;
     TableLayout paymentTable;
@@ -65,25 +63,15 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_methods);
 
-        //paymentMethodSpinner = (Spinner) findViewById(R.id.paymentMethodSpinner);
-        //addPaymentMethodBtn = (Button) findViewById(R.id.addPaymentMethodBtn);
         paymentTable = (TableLayout) findViewById(R.id.paymentMethodTable);
         printReceiptBtn = (Button) findViewById(R.id.printReceipt);
         balanceDueTextView = (TextView)  findViewById(R.id.balanceDueTextView);
-
-        /*addPaymentMethodBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addPurchaseItem();
-            }
-        });*/
         printReceiptBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 printReceipt();
             }
         });
-        //populatePaymentMethodField();
         Intent intent = getIntent();
         Bundle args = intent.getBundleExtra("BUNDLE");
         soldItems = (ArrayList<SoldItem>) args.getSerializable("soldItemList");
@@ -115,23 +103,6 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         });
     }
 
-    /*private void addPurchaseItem() {
-
-        String paymentMethod = paymentMethodSpinner.getSelectedItem() == null ? null : paymentMethodSpinner.getSelectedItem().toString();
-
-        if (paymentMethod == null || paymentMethod.equals("")) {
-            showToastMsg("Please choose a payment method.");
-            return;
-        }
-        if(paymentMethod.equals("Cash")){
-            addCashSettlement();
-        }
-        else if(paymentMethod.equals("Credit Card")){
-            addCreditCardSettlementDetails();
-        }
-        paymentMethodSpinner.setSelection(0);
-    }*/
-
     private void showToastMsg(String msg){
         Toast.makeText(getApplicationContext(), msg,
                 Toast.LENGTH_SHORT).show();
@@ -160,7 +131,11 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                 if(amount.getText() == null || amount.getText().toString().isEmpty()){
                     showToastMsg("Enter paid amount.");
                 }
-                else {
+                else if(cardHolderName.getText() == null || cardHolderName.getText().toString().isEmpty() ||
+                        cardNumber.getText() == null || cardNumber.getText().toString().isEmpty()){
+                    showToastMsg("Please swipe a valid card.");
+                }
+                else{
                     CreditCard creditCard = new CreditCard();
                     creditCard.setCardHolderName(cardHolderName.getText().toString());
                     creditCard.setCreditCardNumber(cardNumber.getText().toString());
@@ -192,14 +167,48 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         {
             String track1Str = new String(out_data);
             String[] track1Details = track1Str.split("\\^");
-            cardNumber = (EditText) dialog.findViewById(R.id.cardNumber);
-            cardHolderName = (EditText) dialog.findViewById(R.id.cardHolderNameText);
-            expiryDate = (EditText) dialog.findViewById(R.id.expireDateField);
-            cardNumber.setText(track1Details[0]);
-            cardHolderName.setText(track1Details[1]);
             String expireDateStr =track1Details[2].substring(2,4) + "/" +  track1Details[2].substring(0,2);
-            expiryDate.setText(expireDateStr);
-            cardType.setText(POSCommonUtils.getCreditCardTypeFromFirstDigit(track1Details[0].substring(0,1)));
+            if(!isExpired(expireDateStr)) {
+                cardNumber = (EditText) dialog.findViewById(R.id.cardNumber);
+                cardHolderName = (EditText) dialog.findViewById(R.id.cardHolderNameText);
+                expiryDate = (EditText) dialog.findViewById(R.id.expireDateField);
+                cardNumber.setText(track1Details[0]);
+                cardHolderName.setText(track1Details[1]);
+                expiryDate.setText(expireDateStr);
+                cardType.setText(POSCommonUtils.getCreditCardTypeFromFirstDigit(track1Details[0].substring(0, 1)));
+            }
+            else{
+                showToastMsg("Given credit card is expired.");
+                closeMSR();
+                readMSR();
+            }
+        }
+    }
+
+    private boolean isExpired(String expireStr){
+
+        String[] str = expireStr.split("/");
+        int month = Integer.parseInt(str[0]);
+        int year = Integer.parseInt(str[1]);
+        Date date = new Date();
+        DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+        String currentDateStr = df.format(date);
+        String[] currentStr = currentDateStr.split("/");
+        int currentMonth = Integer.parseInt(currentStr[1]);
+        int currentYear = Integer.parseInt(currentStr[2].substring(2));
+        if(currentYear < year){
+            return false;
+        }
+        else if(currentYear == year){
+            if(currentMonth <= month){
+                return false;
+            }
+            else{
+                return true;
+            }
+        }
+        else {
+            return false;
         }
     }
 
@@ -290,14 +299,12 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                 }
             }
         });
-
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 cashSettleDialog.dismiss();
             }
         });
-
         cashSettleDialog.show();
     }
 
@@ -347,18 +354,6 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         paymentMethodsMap.put(type,amount);
         paymentTable.addView(tr,paymentMethodsCount);
     }
-
-    /*private void populatePaymentMethodField(){
-
-        ArrayList<String> options=new ArrayList<String>();
-        options.add("");
-        options.add("Cash");
-        options.add("Credit Card");
-        options.add("Voucher");
-        options.add("Loyalty");
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,options);
-        paymentMethodSpinner.setAdapter(adapter);
-    }*/
 
     private void printReceipt(){
         if(dueBalance <= 0){

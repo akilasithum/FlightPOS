@@ -453,13 +453,13 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return itemName;
     }
 
-    public String getServiceTypeFromKITCode(String kitCode){
+    public String getKitNumberListFieldValueFromKitCode(String kitCode,String fieldVal){
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("select serviceType from KITNumberList where kitCode = '" +kitCode+"'",null);
+        Cursor cursor = db.rawQuery("select "+fieldVal+" from KITNumberList where kitCode = '" +kitCode+"'",null);
         String serviceType = "";
         if (cursor.moveToFirst()){
             while(!cursor.isAfterLast()){
-                serviceType = cursor.getString(cursor.getColumnIndex("serviceType"));
+                serviceType = cursor.getString(cursor.getColumnIndex(fieldVal));
                 cursor.moveToNext();
             }
         }

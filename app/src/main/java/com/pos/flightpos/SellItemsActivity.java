@@ -10,7 +10,6 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
-import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -30,7 +29,7 @@ public class SellItemsActivity extends AppCompatActivity {
 
     private void availableServiceType(){
         String kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
-        serviceType = handler.getServiceTypeFromKITCode(kitCode);
+        serviceType = handler.getKitNumberListFieldValueFromKitCode(kitCode,Constants.FILED_NAME_SERVICE_TYPE);
     }
 
     private void registerLayoutClickEvents(){

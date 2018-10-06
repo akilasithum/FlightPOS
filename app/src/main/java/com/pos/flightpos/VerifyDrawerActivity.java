@@ -44,14 +44,17 @@ public class VerifyDrawerActivity extends AppCompatActivity {
         parent = intent.getExtras().get("parent").toString();
         TextView drawerNameText = (TextView) findViewById(R.id.drawerNameText);
         drawerNameText.setText("Verify " +drawerName);
-        if(parent.equals("VerifyFlightByAdminActivity")) {
-            LinearLayout verifyDrawerBtn = (LinearLayout) findViewById(R.id.verifyDrawerBtn);
+        LinearLayout verifyDrawerBtn = (LinearLayout) findViewById(R.id.verifyDrawerBtn);
+        if(!parent.equals("VerifyFlightByAdminActivity")) {
             verifyDrawerBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     verifyDrawer();
                 }
             });
+        }
+        else{
+            verifyDrawerBtn.setVisibility(View.INVISIBLE);
         }
         updatedMap = new HashMap<>();
         equipmentNo = drawerItems.get(0).getEquipmentNo();

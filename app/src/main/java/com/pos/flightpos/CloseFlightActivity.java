@@ -60,8 +60,8 @@ public class CloseFlightActivity extends AppCompatActivity {
         messageToBond.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Intent intent = new Intent(CloseFlightActivity.this, BuyOnBoardItemsActivity.class);
-                startActivity(intent);*/
+                Intent intent = new Intent(CloseFlightActivity.this, MessageToBondActivity.class);
+                startActivity(intent);
             }
         });
         LinearLayout closingSeals = (LinearLayout) findViewById(R.id.closingSeals);
@@ -69,6 +69,7 @@ public class CloseFlightActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(CloseFlightActivity.this, AddSeal.class);
+                intent.putExtra("parent","CloseFlightActivity");
                 startActivity(intent);
             }
         });
@@ -85,7 +86,7 @@ public class CloseFlightActivity extends AppCompatActivity {
         PrintJob job = new PrintJob();
         String kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
         POSDBHandler handler = new POSDBHandler(this);
-        String serviceType = handler.getServiceTypeFromKITCode(kitCode);
+        String serviceType = handler.getKitNumberListFieldValueFromKitCode(kitCode,Constants.FILED_NAME_SERVICE_TYPE);
         job.printInventoryReports(this,"CLOSING INVENTORY",kitCode,
                 POSCommonUtils.getServiceTypeDescFromServiceType(serviceType));
     }
@@ -104,6 +105,8 @@ public class CloseFlightActivity extends AppCompatActivity {
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_KEY);
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"orderNumber");
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_KIT_CODE);
+                        SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_NO_OF_SEAL);
+                        SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_IS_SEAL_VERIFIED);
                         Intent intent = new Intent(CloseFlightActivity.this, MainActivity.class);
                         startActivity(intent);
                     }})

@@ -1,6 +1,9 @@
 package com.pos.flightpos;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.LinearLayout;
@@ -69,6 +72,19 @@ public class SyncActivity extends AppCompatActivity {
                 if (TransferState.COMPLETED == state) {
                     insertDataIntoSQLIteDB(fileName);
                     showCompletedFiles(fileName);
+                    if(fileName.equals("equipment_type")){
+                        new AlertDialog.Builder(SyncActivity.this)
+                                .setTitle("Sync Completed")
+                                .setMessage("Sync completed. Click ok to go to main window")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                                    public void onClick(DialogInterface dialog, int whichButton) {
+                                        Intent intent = new Intent(SyncActivity.this, MainActivity.class);
+                                        startActivity(intent);
+                                    }})
+                                .setNegativeButton(android.R.string.cancel, null).show();
+                    }
                 }
             }
 

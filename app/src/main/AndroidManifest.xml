@@ -99,7 +99,12 @@
             android:name=".ConfigureFlightActivity"
             android:label="Configure Flight"
             android:theme="@style/AppTheme.Dark" />
-        <activity android:name=".VerifyFlightByAdminActivity"></activity>
+        <activity android:name=".VerifyFlightByAdminActivity"
+            android:label="POS Admin verifications"
+            android:theme="@style/AppTheme.Dark"/>
+        <activity android:name=".MessageToBondActivity"
+            android:label="Send a Message to Bond"
+            android:theme="@style/AppTheme.Dark"></activity>
     </application>
 
 </manifest>

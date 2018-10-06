@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.utils.POSCommonUtils;
@@ -30,6 +31,7 @@ public class AttCheckInfo extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(AttCheckInfo.this, AddSeal.class);
+                intent.putExtra("parent","AttCheckInfo");
                 startActivity(intent);
             }
         });
@@ -71,12 +73,18 @@ public class AttCheckInfo extends AppCompatActivity {
         PrintJob job = new PrintJob();
         String kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
         POSDBHandler handler = new POSDBHandler(this);
-        String serviceType = handler.getServiceTypeFromKITCode(kitCode);
+        String serviceType = handler.getKitNumberListFieldValueFromKitCode(kitCode,Constants.FILED_NAME_SERVICE_TYPE);
         job.printInventoryReports(this,"OPENING INVENTORY",kitCode,
                 POSCommonUtils.getServiceTypeDescFromServiceType(serviceType));
     }
 
     private void showConfirmation(){
+        String isSealsVerified = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_IS_SEAL_VERIFIED);
+        if(isSealsVerified == null || isSealsVerified.length() == 0){
+            Toast.makeText(getApplicationContext(), "Verify Seals before open the flight.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         new AlertDialog.Builder(this)
                 .setTitle("Open Flight")
