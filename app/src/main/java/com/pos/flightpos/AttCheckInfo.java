@@ -100,8 +100,6 @@ public class AttCheckInfo extends AppCompatActivity {
                 .setNegativeButton(android.R.string.no, null).show();
     }
 
-
-
     @Override
     public void onBackPressed()
     {

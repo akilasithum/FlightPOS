@@ -11,9 +11,13 @@ import android.pt.msr.Msr;
 import android.pt.printer.Printer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.InputType;
+import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -27,10 +31,11 @@ import android.widget.Toast;
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.CreditCard;
 import com.pos.flightpos.objects.SoldItem;
+import com.pos.flightpos.objects.XMLMapper.Currency;
 import com.pos.flightpos.utils.POSCommonUtils;
+import com.pos.flightpos.utils.POSDBHandler;
 
 import java.text.DateFormat;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -274,10 +279,23 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         cashSettleDialog.setTitle("Settle by Cash");
 
         final EditText amount = (EditText) cashSettleDialog.findViewById(R.id.cashSettleAmountTextField);
-        final EditText currency = (EditText) cashSettleDialog.findViewById(R.id.currencyText);
+        final Spinner currency = (Spinner) cashSettleDialog.findViewById(R.id.currencyText);
         final TextView errorMsgText = (TextView)  cashSettleDialog.findViewById(R.id.errorMsgText);
+        final TextView initialAmount = (TextView)  cashSettleDialog.findViewById(R.id.initialAmount);
+        currency.setAdapter(loadCurrencies());
+        currency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                amount.setText(updateAmountBasedOnCurrency((Currency)currency.getSelectedItem(),
+                        initialAmount.getText().toString()));
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+        });
 
         amount.setText(String.valueOf(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance)));
+        initialAmount.setText(String.valueOf(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance)));
 
         Button okBtn = (Button) cashSettleDialog.findViewById(R.id.cardSubmitBtn);
         Button cancelBtn = (Button) cashSettleDialog.findViewById(R.id.cancelBtn);
@@ -289,12 +307,14 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                 if(amount.getText() == null || amount.getText().toString().isEmpty()){
                     errorMsgText.setText("Please Enter amount.");
                 }
-                else if(currency.getText() == null || currency.getText().toString().isEmpty()){
+                else if(currency.getSelectedItem() == null || currency.getSelectedItem().toString().isEmpty()){
                     errorMsgText.setText("Please Enter currency.");
                 }
                 else {
-                    addPaymentMethodToTable("Cash",currency.getText().toString(),"1"
-                            ,amount.getText().toString(),amount.getText().toString());
+                    Currency selectedCurrency = (Currency)currency.getSelectedItem();
+                    addPaymentMethodToTable("Cash",currency.getSelectedItem().toString(),
+                            selectedCurrency.getCurrencyRate()
+                            ,amount.getText().toString(), getAmountInUSD(selectedCurrency,amount.getText().toString()));
                     cashSettleDialog.dismiss();
                 }
             }
@@ -308,6 +328,25 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         cashSettleDialog.show();
     }
 
+    private String getAmountInUSD(Currency currency, String amount){
+        amount.replace(",","");
+        return POSCommonUtils.getTwoDecimalFloatFromFloat(Float.parseFloat(amount) /
+                Float.parseFloat(currency.getCurrencyRate()));
+    }
+
+    private String updateAmountBasedOnCurrency(Currency currency,String currentAmount){
+        currentAmount.replace(",","");
+        return POSCommonUtils.getTwoDecimalFloatFromFloat(Float.parseFloat(currentAmount) *
+                Float.parseFloat(currency.getCurrencyRate()));
+    }
+    private ArrayAdapter<Currency> loadCurrencies(){
+        POSDBHandler handler = new POSDBHandler(this);
+        List<Currency> options=new ArrayList<>();
+        List<Currency> equipmentList = handler.getCurrencyList();
+        options.addAll(equipmentList);
+        return new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,options);
+    }
+
     private void addPaymentMethodToTable(String type, String currency, String rate, String amount, String USD){
 
         TableRow tr = new TableRow(this);
@@ -318,47 +357,66 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         TableRow.LayoutParams cellParams = new TableRow.LayoutParams(0,
                 TableRow.LayoutParams.WRAP_CONTENT, 1f);
 
-        TextView itemDesc = new TextView(this);
-        itemDesc.setText(type);
-        itemDesc.setTextSize(20);
-        itemDesc.setLayoutParams(cellParams);
-        tr.addView(itemDesc);
+        TextView typeText = new TextView(this);
+        typeText.setText(type);
+        typeText.setTextSize(20);
+        typeText.setGravity(Gravity.CENTER);
+        typeText.setLayoutParams(cellParams);
+        tr.addView(typeText);
 
         TextView currencyTextView = new TextView(this);
         currencyTextView.setText(currency);
         currencyTextView.setTextSize(20);
+        currencyTextView.setGravity(Gravity.CENTER);
         currencyTextView.setLayoutParams(cellParams);
         tr.addView(currencyTextView);
 
         TextView exchangeRate = new TextView(this);
         exchangeRate.setText(rate);
         exchangeRate.setTextSize(20);
+        exchangeRate.setGravity(Gravity.CENTER);
         exchangeRate.setLayoutParams(cellParams);
         tr.addView(exchangeRate);
 
         TextView value = new TextView(this);
-        value.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(Float.valueOf(amount)));
+        value.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(Float.valueOf(amount.replace(",",""))));
         value.setTextSize(20);
+        value.setGravity(Gravity.CENTER);
         value.setLayoutParams(cellParams);
         tr.addView(value);
 
         TextView usdVal = new TextView(this);
         usdVal.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(Float.valueOf(USD)));
         usdVal.setTextSize(20);
+        usdVal.setGravity(Gravity.CENTER);
         usdVal.setLayoutParams(cellParams);
         tr.addView(usdVal);
 
-        dueBalance -= Float.parseFloat(amount);
-        balanceDueTextView.setText(String.valueOf(dueBalance));
+        dueBalance -= Float.parseFloat(USD);
+        balanceDueTextView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
         paymentMethodsCount++;
         paymentMethodsMap.put(type,amount);
         paymentTable.addView(tr,paymentMethodsCount);
     }
 
     private void printReceipt(){
-        if(dueBalance <= 0){
+        Float dispDueBalance = Float.parseFloat(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
+        if(dispDueBalance <= 0){
             Printer printer = new Printer();
             printer.open();
+            int printerStatus = printer.queState();
+            if(printerStatus == 1){
+                Toast.makeText(this, "Paper is not available. Please insert some papers.",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            else if(printerStatus == 2){
+                Toast.makeText(this, "Printer is too hot. Please wait.",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+            Toast.makeText(this, "Printing started. Please wait.",
+                    Toast.LENGTH_SHORT).show();
             printer.init();
             printer.setAlignment(1);
             printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 150, 150);

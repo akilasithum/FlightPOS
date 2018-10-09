@@ -88,6 +88,7 @@ public class CheckInventoryActivity extends AppCompatActivity {
             header.setText("Equipment No : " + equipmentName);
             header.setTextSize(24);
             header.setLayoutParams(cellParams2);
+            header.setPadding(0,0,0,20);
             headerRow.addView(header);
             checkInventoryTable.addView(headerRow);
 

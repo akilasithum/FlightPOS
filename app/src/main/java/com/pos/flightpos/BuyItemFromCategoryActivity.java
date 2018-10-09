@@ -168,16 +168,18 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
             itemCatSpinner.setSelection(0);
             itemSpinner.setSelection(0);
             itemCount++;
-            TableRow tr = new TableRow(this);
+            final TableRow tr = new TableRow(this);
             tr.setId(itemCount);
             tr.setLayoutParams(new TableRow.LayoutParams(
                     TableRow.LayoutParams.MATCH_PARENT,
                     TableRow.LayoutParams.WRAP_CONTENT));
 
             TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
-                    TableRow.LayoutParams.WRAP_CONTENT, 2f);
+                    TableRow.LayoutParams.WRAP_CONTENT, 6f);
             TableRow.LayoutParams cellParams2 = new TableRow.LayoutParams(0,
-                    TableRow.LayoutParams.WRAP_CONTENT, 1f);
+                    TableRow.LayoutParams.WRAP_CONTENT, 3f);
+            TableRow.LayoutParams cellParams3 = new TableRow.LayoutParams(0,
+                    35, 1f);
 
             TextView itemIdHdn = new TextView(this);
             TextView itemDesc = new TextView(this);
@@ -186,6 +188,18 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
             final TextView totalTextField = new TextView(this);
             TextView equipmentNo = new TextView(this);
             TextView drawer = new TextView(this);
+            Button removeItemBtn = new Button(this);
+            removeItemBtn.setLayoutParams(cellParams3);
+            removeItemBtn.setBackground(getResources().getDrawable(R.drawable.icon_cancel));
+            removeItemBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    subtotal -= Float.parseFloat(totalTextField.getText().toString());
+                    subTotalView.setText(String.valueOf(subtotal));
+                    itemCount--;
+                    contentTable.removeView(tr);
+                }
+            });
 
             itemIdHdn.setText(item.getItemId());
             itemIdHdn.setVisibility(View.GONE);
@@ -242,6 +256,8 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
             drawer.setText(item.getDrawer());
             drawer.setVisibility(View.GONE);
             tr.addView(drawer);
+
+            tr.addView(removeItemBtn);
 
             subtotal += total;
             SoldItem soldItem = new SoldItem();

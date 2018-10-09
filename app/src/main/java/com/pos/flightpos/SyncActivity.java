@@ -37,6 +37,7 @@ public class SyncActivity extends AppCompatActivity {
         downloadData("item_list");
         downloadData("kit_number_list");
         downloadData("kit_list");
+        downloadData("currency");
         downloadData("equipment_type");
 
     }
@@ -93,9 +94,9 @@ public class SyncActivity extends AppCompatActivity {
                 float percentDonef = ((float)bytesCurrent/(float)bytesTotal) * 100;
                 int percentDone = (int)percentDonef;
 
-                Toast.makeText(getApplicationContext(),
+                /*Toast.makeText(getApplicationContext(),
                         "File Name: "+fileName+"   ID:" + id + "   bytesCurrent: " + bytesCurrent + "   bytesTotal: " + bytesTotal + " " + percentDone + "%",
-                        Toast.LENGTH_SHORT).show();
+                        Toast.LENGTH_SHORT).show();*/
             }
 
             @Override
@@ -136,6 +137,7 @@ public class SyncActivity extends AppCompatActivity {
         if(fileName.equals("item_list"))handler.insertItemData(getApplicationContext());
         if(fileName.equals("kit_number_list"))handler.insertKITNumbersList(getApplicationContext());
         if(fileName.equals("kit_list"))handler.insertKITList(getApplicationContext());
+        if(fileName.equals("currency")) handler.insertCurrencyData(getApplicationContext());
         if(fileName.equals("equipment_type"))handler.insertEquipmentTypeList(getApplicationContext());
     }
 }

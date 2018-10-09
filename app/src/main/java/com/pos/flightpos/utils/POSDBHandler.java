@@ -12,6 +12,7 @@ import com.pos.flightpos.InventoryReportActivity;
 import com.pos.flightpos.objects.Flight;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.User;
+import com.pos.flightpos.objects.XMLMapper.Currency;
 import com.pos.flightpos.objects.XMLMapper.Equipment;
 import com.pos.flightpos.objects.XMLMapper.Item;
 import com.pos.flightpos.objects.XMLMapper.Items;
@@ -69,6 +70,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS dailySales (orderNumber VARCHAR,itemNo VARCHAR," +
                 "equipmentNo VARCHAR,drawer VARCHAR,quantity VARCHAR,serviceType VARCHAR," +
                 "totalPrice VARCHAR,buyerType VARCHAR,sellarName VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS currency (currencyCode VARCHAR,currencyDesc VARCHAR," +
+                "currencyRate VARCHAR, currencyType VARCHAR,priorityOrder VARCHAR,effectiveDate VARCHAR);");
     }
 
     public void clearTable(){
@@ -306,6 +309,57 @@ public class POSDBHandler extends SQLiteOpenHelper {
         catch (Exception e){
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public boolean insertCurrencyData(Context context){
+
+        try {
+            File xml = new File(context.getFilesDir(), "currency.xml");
+            JSONObject jsonObj  = XML.toJSONObject(readStream(new FileInputStream(xml)));
+            Gson gson = new Gson();
+            JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("currencies");
+            JSONArray itemsArr = data.getJSONArray("currency");
+            List<Currency> equipmentList = gson.fromJson(itemsArr.toString(), new TypeToken<List<Currency>>(){}.getType());
+            SQLiteDatabase db = this.getWritableDatabase();
+            for(Currency item : equipmentList){
+                db.execSQL("INSERT INTO currency VALUES" +
+                        "('"+item.getCurrencyCode()+"','"+item.getCurrencyDesc()+"','"+item.getCurrencyRate()+"'," +
+                        "'"+item.getCurrencyType()+"','"+item.getPriorityOrder()+"','"+item.getEffectiveDate()+"');");
+            }
+            db.close();
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public List<Currency> getCurrencyList(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<Currency> currencyList = new ArrayList<>();
+        try {
+            Cursor cursor = db.rawQuery("select * from currency", null);
+            if (cursor.moveToFirst()){
+                while(!cursor.isAfterLast()){
+                    Currency currency = new Currency();
+                    currency.setCurrencyCode(cursor.getString(cursor.getColumnIndex("currencyCode")));
+                    currency.setCurrencyDesc(cursor.getString(cursor.getColumnIndex("currencyDesc")));
+                    currency.setCurrencyRate(cursor.getString(cursor.getColumnIndex("currencyRate")));
+                    currency.setCurrencyType(cursor.getString(cursor.getColumnIndex("currencyType")));
+                    currency.setPriorityOrder(cursor.getString(cursor.getColumnIndex("priorityOrder")));
+                    currency.setEffectiveDate(cursor.getString(cursor.getColumnIndex("effectiveDate")));
+                    currencyList.add(currency);
+                    cursor.moveToNext();
+                }
+            }
+            db.close();
+            cursor.close();
+            return currencyList;
+        }
+        catch (Exception e){
+            return null;
         }
     }
 

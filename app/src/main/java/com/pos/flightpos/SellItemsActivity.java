@@ -1,8 +1,12 @@
 package com.pos.flightpos;
 
 import android.app.AlertDialog;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +29,24 @@ public class SellItemsActivity extends AppCompatActivity {
         handler = new POSDBHandler(this);
         availableServiceType();
         registerLayoutClickEvents();
+        //showBOBNotification();
+
+    }
+
+    private void showBOBNotification(){
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setSmallIcon(R.drawable.icon_buy_onboard)
+                        .setContentTitle("Buy on Board items")
+                        .setContentText("You have 2 Buy on Board items to proceed.");
+        Intent intent = new Intent(this,BuyItemFromCategoryActivity.class);
+        intent.putExtra("serviceType","BOB");
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        mBuilder.setContentIntent(pendingIntent);
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+
+                mNotificationManager.notify(001, mBuilder.build());
     }
 
     private void availableServiceType(){
@@ -92,8 +114,8 @@ public class SellItemsActivity extends AppCompatActivity {
         exchangeRatesLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Intent intent = new Intent(SellItemsActivity.this, PrintActivity.class);
-                startActivity(intent);*/
+                Intent intent = new Intent(SellItemsActivity.this, ExchangeRateActivity.class);
+                startActivity(intent);
             }
         });
 
