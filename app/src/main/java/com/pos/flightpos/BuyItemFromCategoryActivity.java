@@ -1,5 +1,8 @@
 package com.pos.flightpos;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
@@ -9,6 +12,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -165,6 +169,7 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
                 return;
             }
 
+            showDrawerAndEquipment(item);
             itemCatSpinner.setSelection(0);
             itemSpinner.setSelection(0);
             itemCount++;
@@ -268,6 +273,21 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
 
             subTotalView.setText(String.valueOf(subtotal));
             contentTable.addView(tr,itemCount);
+        }
+
+        private void showDrawerAndEquipment(SoldItem item){
+            AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+            builder1.setTitle("Item Location");
+            builder1.setMessage("Equipment No  : "+item.getEquipmentNo() +" \n Drawer         : " + item.getDrawer());
+            builder1.setPositiveButton(
+                    "OK",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert11 = builder1.create();
+            alert11.show();
         }
 
         private void updateTotalWhenChangeItemQty(Float diff){

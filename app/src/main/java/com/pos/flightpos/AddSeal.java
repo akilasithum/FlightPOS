@@ -1,5 +1,6 @@
 package com.pos.flightpos;
 
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -70,7 +71,7 @@ public class AddSeal extends AppCompatActivity {
             String[] storedSealsArray = storedSeals.split(",");
             for(int i = 0; i<storedSealsArray.length ; i++){
                 if(!sealList.contains(storedSealsArray[i])){
-                    Toast.makeText(getApplicationContext(), "Seal numbers are not matched. Enter correct seal numbers",
+                    Toast.makeText(getApplicationContext(), "Seal numbers did not match. Enter correct seal numbers",
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -78,13 +79,24 @@ public class AddSeal extends AppCompatActivity {
             SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_IS_SEAL_VERIFIED,"yes");
             Toast.makeText(getApplicationContext(), "Seal numbers are matched. You can continue.",
                     Toast.LENGTH_SHORT).show();
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    onBackPressed();
+                }
+            }, 1500);
         }
         else {
-
             String storedName = parent.equals("VerifyFlightByAdminActivity") ? "openSealList" : "closeSealList";
             SaveSharedPreference.setStringValues(this, storedName, TextUtils.join(",", sealList));
             Toast.makeText(getApplicationContext(), "Successfully added " + noOfSeals + " seals.",
                     Toast.LENGTH_SHORT).show();
+            Handler handler = new Handler();
+            handler.postDelayed(new Runnable() {
+                public void run() {
+                    onBackPressed();
+                }
+            }, 1500);
         }
     }
 }

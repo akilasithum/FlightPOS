@@ -14,8 +14,12 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.objects.XMLMapper.PreOrder;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
+
+import java.io.Serializable;
+import java.util.List;
 
 public class SellItemsActivity extends AppCompatActivity {
 
@@ -40,7 +44,7 @@ public class SellItemsActivity extends AppCompatActivity {
                         .setContentTitle("Buy on Board items")
                         .setContentText("You have 2 Buy on Board items to proceed.");
         Intent intent = new Intent(this,BuyItemFromCategoryActivity.class);
-        intent.putExtra("serviceType","BOB");
+        intent.putExtra("serviceType","POD");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
         mBuilder.setContentIntent(pendingIntent);
         NotificationManager mNotificationManager =
@@ -100,13 +104,21 @@ public class SellItemsActivity extends AppCompatActivity {
                 }
             }
         });
-        LinearLayout preOrderLayout = (LinearLayout) findViewById(R.id.preOrderDelivery);
+        final LinearLayout preOrderLayout = (LinearLayout) findViewById(R.id.preOrderDelivery);
         preOrderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SellItemsActivity.this, BuyItemFromCategoryActivity.class);
-                intent.putExtra("serviceType","POD");
-                startActivity(intent);
+                List<PreOrder> preOrders = getPreOrderList();
+                if(preOrders != null && !preOrders.isEmpty()) {
+                    Intent intent = new Intent(SellItemsActivity.this, PreOrderDeliveryActivity.class);
+                    Bundle args = new Bundle();
+                    args.putSerializable("preOrders",(Serializable)preOrders);
+                    intent.putExtra("BUNDLE",args);
+                    startActivity(intent);
+                }
+                else{
+                    showAlertDialog("No Items","No pre order items available for this flight");
+                }
             }
         });
 
@@ -140,23 +152,33 @@ public class SellItemsActivity extends AppCompatActivity {
 
     private boolean isItemsAvailableToSell(String service){
         if(!serviceType.equals(service)){
-            AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-            builder1.setTitle("Invalid Selection");
-            builder1.setMessage("No items available to sell.");
-            builder1.setPositiveButton(
-                    "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    });
-            AlertDialog alert11 = builder1.create();
-            alert11.show();
+            showAlertDialog("Invalid Selection","No items available to sell.");
             return false;
         }
         else {
             return true;
         }
+    }
+
+    private void showAlertDialog(String title,String body){
+        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
+        builder1.setTitle(title);
+        builder1.setMessage(body);
+        builder1.setPositiveButton(
+                "OK",
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert11 = builder1.create();
+        alert11.show();
+    }
+
+    private List<PreOrder> getPreOrderList(){
+        String kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
+        String serviceType = handler.getKitNumberListFieldValueFromKitCode(kitCode,Constants.FILED_NAME_SERVICE_TYPE);
+        return handler.getAvailablePreOrders(serviceType);
     }
 
     @Override

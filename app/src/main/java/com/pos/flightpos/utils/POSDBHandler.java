@@ -18,6 +18,7 @@ import com.pos.flightpos.objects.XMLMapper.Item;
 import com.pos.flightpos.objects.XMLMapper.Items;
 import com.pos.flightpos.objects.XMLMapper.KITItem;
 import com.pos.flightpos.objects.XMLMapper.KitNumber;
+import com.pos.flightpos.objects.XMLMapper.PreOrder;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -72,6 +73,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 "totalPrice VARCHAR,buyerType VARCHAR,sellarName VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS currency (currencyCode VARCHAR,currencyDesc VARCHAR," +
                 "currencyRate VARCHAR, currencyType VARCHAR,priorityOrder VARCHAR,effectiveDate VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS preOrders (PNR VARCHAR,customerName VARCHAR," +
+                "serviceType VARCHAR, itemCategory VARCHAR,itemId VARCHAR,quantity VARCHAR,delivered VARCHAR);");
     }
 
     public void clearTable(){
@@ -320,12 +323,35 @@ public class POSDBHandler extends SQLiteOpenHelper {
             Gson gson = new Gson();
             JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("currencies");
             JSONArray itemsArr = data.getJSONArray("currency");
-            List<Currency> equipmentList = gson.fromJson(itemsArr.toString(), new TypeToken<List<Currency>>(){}.getType());
+            List<Currency> currencyList = gson.fromJson(itemsArr.toString(), new TypeToken<List<Currency>>(){}.getType());
             SQLiteDatabase db = this.getWritableDatabase();
-            for(Currency item : equipmentList){
+            for(Currency currency : currencyList){
                 db.execSQL("INSERT INTO currency VALUES" +
-                        "('"+item.getCurrencyCode()+"','"+item.getCurrencyDesc()+"','"+item.getCurrencyRate()+"'," +
-                        "'"+item.getCurrencyType()+"','"+item.getPriorityOrder()+"','"+item.getEffectiveDate()+"');");
+                        "('"+currency.getCurrencyCode()+"','"+currency.getCurrencyDesc()+"','"+currency.getCurrencyRate()+"'," +
+                        "'"+currency.getCurrencyType()+"','"+currency.getPriorityOrder()+"','"+currency.getEffectiveDate()+"');");
+            }
+            db.close();
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean insertPreOrders(Context context){
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            File xml = new File(context.getFilesDir(), "pre_orders.xml");
+            JSONObject jsonObj  = XML.toJSONObject(readStream(new FileInputStream(xml)));
+            Gson gson = new Gson();
+            JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("preOrders");
+            JSONArray itemsArr = data.getJSONArray("preOrder");
+            List<PreOrder> preOrders = gson.fromJson(itemsArr.toString(), new TypeToken<List<PreOrder>>(){}.getType());
+            for(PreOrder preOrder : preOrders){
+                db.execSQL("INSERT INTO preOrders VALUES" +
+                        "('"+preOrder.getPNR()+"','"+preOrder.getCustomerName()+"','"+preOrder.getServiceType()+"'," +
+                        "'"+preOrder.getItemCategory()+"','"+preOrder.getItemId()+"','"+preOrder.getQuantity()+"','No');");
             }
             db.close();
             return true;
@@ -462,6 +488,44 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
+    public List<PreOrder> getAvailablePreOrders(String serviceType){
+
+        List<PreOrder> preOrders = new ArrayList<>();
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        try {
+            Cursor cursor = db.rawQuery("select * from preOrders where serviceType = '"+serviceType+"'", null);
+            if (cursor.moveToFirst()){
+                while(!cursor.isAfterLast()){
+                    PreOrder preOrder = new PreOrder();
+                    preOrder.setPNR(cursor.getString(cursor.getColumnIndex("PNR")));
+                    preOrder.setCustomerName(cursor.getString(cursor.getColumnIndex("customerName")));
+                    preOrder.setItemCategory(cursor.getString(cursor.getColumnIndex("itemCategory")));
+                    preOrder.setItemId(cursor.getString(cursor.getColumnIndex("itemId")));
+                    preOrder.setQuantity(cursor.getString(cursor.getColumnIndex("quantity")));
+                    preOrder.setDelivered(cursor.getString(cursor.getColumnIndex("delivered")));
+                    preOrders.add(preOrder);
+                    cursor.moveToNext();
+                }
+            }
+            db.close();
+            cursor.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return preOrders;
+    }
+
+    public void updatePreOrderDeliveryStatus(String deliveryStatus,String PNR,String itemId){
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL("update preOrders set delivered = '"+deliveryStatus+"' where  PNR = '"+PNR+"' and " +
+                "itemId = '"+itemId+"';");
+        db.close();
+
+    }
+
     public List<SoldItem> getItemListFromItemCategory(String category,String kitCode){
         SQLiteDatabase db = this.getReadableDatabase();
         List<SoldItem> itemList = new ArrayList<>();
@@ -494,7 +558,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return itemList;
     }
 
-    private String getItemDescFromItemNo(String itemNo){
+    public String getItemDescFromItemNo(String itemNo){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("select itemName from items where itemNo = '" +itemNo+"'",null);
         String itemName = "";
@@ -570,7 +634,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
     public void updateItemCountOfKITItems(KITItem item){
         SQLiteDatabase db = this.getReadableDatabase();
         db.execSQL("update KITList set quantity = '"+item.getQuantity()+"' where  equipmentNo = '"+item.getEquipmentNo()
-        +"' and itemNo = '"+item.getItemNo()+"' and drawer = '"+item.getDrawer()+"';");
+                +"' and itemNo = '"+item.getItemNo()+"' and drawer = '"+item.getDrawer()+"';");
         db.close();
     }
 

@@ -7,9 +7,13 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.client.AWSStartupHandler;
+import com.amazonaws.mobile.client.AWSStartupResult;
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
+import com.pos.flightpos.utils.POSSyncUtils;
 import com.pos.flightpos.utils.PrintJob;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -18,6 +22,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     LinearLayout verifyInventoryLayout;
     LinearLayout printReport;
     LinearLayout addSealsLayout;
+    LinearLayout syncPreOrderLayout;
     POSDBHandler handler;
     String kitCode;
     @Override
@@ -28,6 +33,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         verifyInventoryLayout = (LinearLayout) findViewById(R.id.verifyInventoryByAdmin);
         printReport = (LinearLayout) findViewById(R.id.printReportByAdmin);
         addSealsLayout = (LinearLayout) findViewById(R.id.addAdminSeal);
+        syncPreOrderLayout = (LinearLayout) findViewById(R.id.syncPreOrderLayout);
         handler = new POSDBHandler(this);
         kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
         registerLayoutClickEvents();
@@ -47,6 +53,13 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), "Add opening seals before login.",
                             Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        syncPreOrderLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                syncPreOrders();
             }
         });
 
@@ -72,6 +85,13 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
                 addAdminSeals();
             }
         });
+    }
+
+    private void syncPreOrders(){
+        Toast.makeText(getApplicationContext(), "Pre orders sync started ",
+                Toast.LENGTH_SHORT).show();
+        POSSyncUtils syncActivity = new POSSyncUtils(this);
+        syncActivity.downloadData("pre_orders");
     }
 
     private void addAdminSeals(){

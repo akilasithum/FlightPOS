@@ -130,8 +130,6 @@ public class SyncActivity extends AppCompatActivity {
     }
 
     private void insertDataIntoSQLIteDB(String fileName){
-
-        handler = new POSDBHandler(this);
         if(fileName.equals("users"))handler.insertUserData(getApplicationContext());
         if(fileName.equals("flights"))handler.insertFlightData(getApplicationContext());
         if(fileName.equals("item_list"))handler.insertItemData(getApplicationContext());
@@ -139,5 +137,6 @@ public class SyncActivity extends AppCompatActivity {
         if(fileName.equals("kit_list"))handler.insertKITList(getApplicationContext());
         if(fileName.equals("currency")) handler.insertCurrencyData(getApplicationContext());
         if(fileName.equals("equipment_type"))handler.insertEquipmentTypeList(getApplicationContext());
+        if(fileName.equals("pre_orders"))handler.insertPreOrders(getApplicationContext());
     }
 }

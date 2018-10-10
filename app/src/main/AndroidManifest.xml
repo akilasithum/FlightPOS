@@ -111,8 +111,12 @@
             android:name=".MessageToBondActivity"
             android:label="Send a Message to Bond"
             android:theme="@style/AppTheme.Dark" />
-        <activity android:name=".ExchangeRateActivity"
+        <activity
+            android:name=".ExchangeRateActivity"
             android:label="Available Exchange Rates"
+            android:theme="@style/AppTheme.Dark" />
+        <activity android:name=".PreOrderDeliveryActivity"
+            android:label="Pre Order Delivery"
             android:theme="@style/AppTheme.Dark"></activity>
     </application>
 
