@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -16,6 +17,7 @@ import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -24,13 +26,25 @@ public class CheckInventoryActivity extends AppCompatActivity {
 
     TableLayout checkInventoryTable;
     String parent;
+    String equipmentName;
+    Map<String,List<KITItem>> cartItems;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_inventory);
         checkInventoryTable = (TableLayout) findViewById(R.id.checkInventoryTable);
         parent = getIntent().getExtras().getString("parent");
+        equipmentName = getIntent().getExtras().getString("cartName");
+        Bundle args = getIntent().getBundleExtra("BUNDLE");
+        cartItems  = (Map<String,List<KITItem>>) args.getSerializable("cartItems");
         showDataInTable();
+        ImageButton backButton = findViewById(R.id.backPressBtn);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     private void addTableHeader(TableRow.LayoutParams cellParams1,TableRow.LayoutParams cellParams2){
@@ -77,9 +91,9 @@ public class CheckInventoryActivity extends AppCompatActivity {
         TableRow.LayoutParams cellParams2 = new TableRow.LayoutParams(0,
                 TableRow.LayoutParams.WRAP_CONTENT, 2f);
 
-        for(Map.Entry<String,Map<String,List<KITItem>>> eqEntry : drawerKitItemMap.entrySet()) {
+        //for(Map.Entry<String,Map<String,List<KITItem>>> eqEntry : drawerKitItemMap.entrySet()) {
 
-            String equipmentName = eqEntry.getKey();
+            //String equipmentName = eqEntry.getKey();
             TableRow headerRow = new TableRow(this);
             headerRow.setLayoutParams(new TableRow.LayoutParams(
                     TableRow.LayoutParams.MATCH_PARENT,
@@ -94,7 +108,7 @@ public class CheckInventoryActivity extends AppCompatActivity {
 
             addTableHeader(cellParams1,cellParams2);
 
-            Map<String,List<KITItem>> treeMap = new TreeMap<>(eqEntry.getValue());
+            Map<String,List<KITItem>> treeMap = new TreeMap<>(cartItems);
             for (Map.Entry<String, List<KITItem>> entry : treeMap.entrySet()) {
                 final List<KITItem> kitItems = entry.getValue();
                 final String drawerName = entry.getKey();
@@ -147,10 +161,10 @@ public class CheckInventoryActivity extends AppCompatActivity {
                 }
                 checkInventoryTable.addView(tr);
             }
-        }
+       // }
     }
 
-    @Override
+    /*@Override
     public void onBackPressed()
     {
         if("AttCheckInfo".equals(parent)) {
@@ -164,5 +178,5 @@ public class CheckInventoryActivity extends AppCompatActivity {
         else{
             super.onBackPressed();
         }
-    }
+    }*/
 }

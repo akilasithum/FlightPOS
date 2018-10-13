@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme.Dark">
         <activity
             android:name=".SplashActivity"
             android:noHistory="true">
@@ -115,9 +115,15 @@
             android:name=".ExchangeRateActivity"
             android:label="Available Exchange Rates"
             android:theme="@style/AppTheme.Dark" />
-        <activity android:name=".PreOrderDeliveryActivity"
+        <activity
+            android:name=".PreOrderDeliveryActivity"
             android:label="Pre Order Delivery"
-            android:theme="@style/AppTheme.Dark"></activity>
+            android:theme="@style/AppTheme.Dark" />
+        <activity
+            android:name=".DefineCartNumbersActivity"
+            android:label="Define Cart Numbers"
+            android:theme="@style/AppTheme.Dark" />
+        <activity android:name=".VerifyCartsActivity"></activity>
     </application>
 
 </manifest>

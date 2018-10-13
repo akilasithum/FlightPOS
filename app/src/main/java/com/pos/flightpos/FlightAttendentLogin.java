@@ -38,6 +38,7 @@ import java.util.List;
 public class FlightAttendentLogin extends AppCompatActivity implements LoaderCallbacks<Cursor> {
     private static final int REQUEST_READ_CONTACTS = 0;
     POSDBHandler handler;
+    long mExitTime = 0;
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
@@ -179,6 +180,23 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        if((System.currentTimeMillis() - mExitTime) < 2000)
+        {
+            Intent intent = new Intent(Intent.ACTION_MAIN);
+            intent.addCategory(Intent.CATEGORY_HOME);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
+        else
+        {
+            Toast.makeText(this, "Press the back button once again to close the application.", Toast.LENGTH_SHORT).show();
+            mExitTime = System.currentTimeMillis();
+        }
     }
 }
 

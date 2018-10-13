@@ -149,29 +149,51 @@
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="20dp"
+                android:text=""/>
+        </TableRow>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="Seat Number : "
-                android:paddingTop="20dp"
-                android:textSize="20dp"/>
+                android:text="Seat Number :"
+                android:layout_marginLeft="30dp"
+                android:textSize="22dp"/>
 
             <EditText
                 android:id="@+id/seatNumber"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:inputType="number"
+                android:layout_marginTop="5dp"
                 android:background="@drawable/textbox_background"
-                android:textSize="20dp"/>
+                android:textSize="22dp"/>
 
+            <Button
+                android:id="@+id/scanBoardingPass"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:layout_marginRight="30dp"
+                android:text="Scan Boarding Pass" />
+        </TableRow>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
             <Button
                 android:id="@+id/purchaseItems"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="1"
+                android:layout_margin="30dp"
                 android:text="Purchase Items" />
         </TableRow>
     </TableLayout>

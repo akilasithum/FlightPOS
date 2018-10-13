@@ -1,159 +1,198 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            xmlns:tools="http://schemas.android.com/tools"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp"
-            android:paddingTop="30dp"
-            android:weightSum="1">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:paddingLeft="30dp"
+    android:paddingRight="30dp"
+    android:paddingTop="20dp"
+    android:weightSum="1">
 
-            <TableLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-                <TableRow
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
             <LinearLayout
-                android:id="@+id/userLoginLayout"
+                android:id="@+id/syncPreOrderLayout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/textinputborder"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:padding="10dp">
+                android:paddingTop="8dp">
 
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_customer"
+                    android:background="@drawable/icon_synchronize"
                     android:textSize="20dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:layout_gravity="center"
-                    android:text="User Login"
+                    android:layout_margin="10dp"
+                    android:text="Sync Pre Orders"
                     android:textSize="25dp" />
             </LinearLayout>
         </TableRow>
-                <TableRow
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
-                    <LinearLayout
-                        android:id="@+id/syncPreOrderLayout"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:layout_margin="10dp"
-                        android:clickable="true"
-                        android:orientation="vertical"
-                        android:background="@drawable/textinputborder"
-                        android:padding="10dp">
 
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:layout_gravity="center"
-                            android:background="@drawable/icon_synchronize"
-                            android:textSize="20dp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:layout_gravity="center"
-                            android:text="Sync Pre Orders"
-                            android:textSize="25dp" />
-                    </LinearLayout>
-                </TableRow>
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
+
             <LinearLayout
                 android:id="@+id/verifyInventoryByAdmin"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/textinputborder"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:padding="10dp">
+                android:paddingTop="8dp">
+
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_verify"
                     android:textSize="20dp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:layout_gravity="center"
+                    android:layout_margin="10dp"
                     android:text="Verify Inventory"
                     android:textSize="25dp" />
             </LinearLayout>
         </TableRow>
-                <TableRow
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
-                    <LinearLayout
-                        android:id="@+id/addAdminSeal"
-                        android:layout_width="0dp"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:layout_margin="15dp"
-                        android:clickable="true"
-                        android:orientation="vertical"
-                        android:background="@drawable/textinputborder"
-                        android:padding="10dp">
-                        <ImageView
-                            android:layout_width="50dp"
-                            android:layout_height="50dp"
-                            android:background="@drawable/icon_seal_info"
-                            android:layout_gravity="center"
-                            android:textSize="20dp" />
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:layout_gravity="center"
-                            android:text="Add Opening Seals" android:textSize="25dp" />
 
-                    </LinearLayout>
-                </TableRow>
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
+
+            <LinearLayout
+                android:id="@+id/defineCartNumbers"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/textinputborder"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:paddingTop="8dp">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/icon_cart"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:text="Define Cart Numbers"
+                    android:textSize="25dp" />
+
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <LinearLayout
+                android:id="@+id/addAdminSeal"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/textinputborder"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:paddingTop="8dp">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/icon_seal_info"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:text="Add Opening Seals"
+                    android:textSize="25dp" />
+
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
             <LinearLayout
                 android:id="@+id/printReportByAdmin"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
                 android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/textinputborder"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:padding="10dp">
+                android:paddingTop="8dp">
+
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:background="@drawable/icon_printer"
                     android:layout_gravity="center"
+                    android:background="@drawable/icon_printer"
                     android:textSize="20dp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:layout_gravity="center"
+                    android:layout_margin="10dp"
                     android:text="Print Inventory Report"
                     android:textSize="25dp" />
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:clickable="true"
+                android:orientation="vertical">
+
+                <ImageButton
+                    android:id="@+id/userLoginLayout"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="right"
+                    android:background="@drawable/icon_right_arrow"
+                    android:clickable="true" />
             </LinearLayout>
         </TableRow>
     </TableLayout>

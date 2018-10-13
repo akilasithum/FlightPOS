@@ -40,4 +40,5 @@ dependencies {
     implementation files('libs/msr7003.jar')
     implementation files('libs/gson-xml-0.1.4.jar')
     implementation files('libs/java-json.jar')
+    implementation files('libs/Scan7003.jar')
 }

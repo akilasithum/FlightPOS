@@ -75,6 +75,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 "currencyRate VARCHAR, currencyType VARCHAR,priorityOrder VARCHAR,effectiveDate VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS preOrders (PNR VARCHAR,customerName VARCHAR," +
                 "serviceType VARCHAR, itemCategory VARCHAR,itemId VARCHAR,quantity VARCHAR,delivered VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS sealDetails (sealType VARCHAR,numOfSeals VARCHAR," +
+                "seals VARCHAR, sealAddedTime VARCHAR, flightName VARCHAR, flightDate VARCHAR);");
     }
 
     public void clearTable(){
@@ -97,6 +99,13 @@ public class POSDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("delete from dailySales");
         db.execSQL("VACUUM");
+        db.close();
+    }
+
+    public void insertSealData(String sealType,String numOfSeals,String seals,String date,String flightName,String flightDate){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("INSERT INTO sealDetails VALUES ('"+sealType+"','"+numOfSeals+"','"+seals+"'," +
+                "'"+date+"','"+flightName+"','"+flightDate+"' )");
         db.close();
     }
 
@@ -351,7 +360,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
             for(PreOrder preOrder : preOrders){
                 db.execSQL("INSERT INTO preOrders VALUES" +
                         "('"+preOrder.getPNR()+"','"+preOrder.getCustomerName()+"','"+preOrder.getServiceType()+"'," +
-                        "'"+preOrder.getItemCategory()+"','"+preOrder.getItemId()+"','"+preOrder.getQuantity()+"','No');");
+                        "'"+preOrder.getItemCategory()+"','"+preOrder.getItemId()+"','"+preOrder.getQuantity()+"','Not Delivered');");
             }
             db.close();
             return true;
@@ -488,13 +497,13 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
-    public List<PreOrder> getAvailablePreOrders(String serviceType){
+    public Map<String,List<PreOrder>> getAvailablePreOrders(String selectedServiceType){
 
-        List<PreOrder> preOrders = new ArrayList<>();
+        Map<String,List<PreOrder>> serviceTypePreOrderMap = new HashMap<>();
 
         SQLiteDatabase db = this.getReadableDatabase();
         try {
-            Cursor cursor = db.rawQuery("select * from preOrders where serviceType = '"+serviceType+"'", null);
+            Cursor cursor = db.rawQuery("select * from preOrders", null);
             if (cursor.moveToFirst()){
                 while(!cursor.isAfterLast()){
                     PreOrder preOrder = new PreOrder();
@@ -503,8 +512,19 @@ public class POSDBHandler extends SQLiteOpenHelper {
                     preOrder.setItemCategory(cursor.getString(cursor.getColumnIndex("itemCategory")));
                     preOrder.setItemId(cursor.getString(cursor.getColumnIndex("itemId")));
                     preOrder.setQuantity(cursor.getString(cursor.getColumnIndex("quantity")));
+                    String serviceType = cursor.getString(cursor.getColumnIndex("serviceType"));
+                    preOrder.setServiceType(cursor.getString(cursor.getColumnIndex("serviceType")));
                     preOrder.setDelivered(cursor.getString(cursor.getColumnIndex("delivered")));
-                    preOrders.add(preOrder);
+
+                    if(serviceTypePreOrderMap.containsKey(serviceType)){
+                        serviceTypePreOrderMap.get(serviceType).add(preOrder);
+                    }
+                    else{
+                        List<PreOrder> preOrders = new ArrayList<>();
+                        preOrders.add(preOrder);
+                        serviceTypePreOrderMap.put(serviceType,preOrders);
+                    }
+
                     cursor.moveToNext();
                 }
             }
@@ -514,8 +534,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         catch (Exception e){
             e.printStackTrace();
         }
-
-        return preOrders;
+        return serviceTypePreOrderMap;
     }
 
     public void updatePreOrderDeliveryStatus(String deliveryStatus,String PNR,String itemId){

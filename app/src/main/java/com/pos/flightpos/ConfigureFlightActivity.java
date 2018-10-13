@@ -65,6 +65,7 @@ public class ConfigureFlightActivity extends AppCompatActivity {
         options.add(item);
         options.addAll(equipmentList);
         ArrayAdapter<KitNumber> adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,options);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
         equipmentSpinner.setAdapter(adapter);
 
     }
@@ -79,6 +80,7 @@ public class ConfigureFlightActivity extends AppCompatActivity {
         options.add(getDateWithoutTimeUsingFormat(3));
         options.add(getDateWithoutTimeUsingFormat(4));
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,options);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
         flightDateSpinner.setAdapter(adapter);
     }
 

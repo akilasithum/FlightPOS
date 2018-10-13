@@ -35,6 +35,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.objects.Flight;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.text.ParseException;
@@ -98,7 +99,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             startActivity(intent);
             return;
         }
-        String userName = SaveSharedPreference.getStringValues(this,"userName");
+        String canAttLogin = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_CAN_ATT_LOGIN);
+        if(canAttLogin != null && canAttLogin.equals("yes")){
+            Intent intent = new Intent(this, FlightAttendentLogin.class);
+            startActivity(intent);
+            return;
+        }
+        String userName = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_ADMIN_USER);
         String isAdminConfiguredFlight = SaveSharedPreference.getStringValues(this,
                 Constants.SHARED_ADMIN_CONFIGURE_FLIGHT);
         if(userName != null && userName.length() != 0)

@@ -9,6 +9,7 @@ import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -59,6 +60,13 @@ public class VerifyDrawerActivity extends AppCompatActivity {
         updatedMap = new HashMap<>();
         equipmentNo = drawerItems.get(0).getEquipmentNo();
         showDataInTable(drawerItems);
+        ImageButton backButton = findViewById(R.id.backPressBtn);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     private void verifyDrawer(){
@@ -75,7 +83,7 @@ public class VerifyDrawerActivity extends AppCompatActivity {
             }
         }
         handler.updateDrawerValidation(equipmentNo,drawerName,"YES");
-        Intent intent = new Intent(this,CheckInventoryActivity.class);
+        Intent intent = new Intent(this,VerifyCartsActivity.class);
         intent.putExtra("parent",parent);
         startActivity(intent);
     }

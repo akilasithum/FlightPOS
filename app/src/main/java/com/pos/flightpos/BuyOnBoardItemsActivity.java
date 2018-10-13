@@ -27,6 +27,7 @@ import android.widget.Toast;
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.XMLMapper.Item;
+import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -37,6 +38,7 @@ import java.util.List;
 public class BuyOnBoardItemsActivity extends AppCompatActivity {
 
     Button purchaseItemsBtn;
+    Button scanBoardingPassBtn;
     Spinner itemCatSpinner;
     TableLayout contentTable;
     private int itemCount = 0;
@@ -62,6 +64,13 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 purchaseItems();
+            }
+        });
+        scanBoardingPassBtn = (Button) findViewById(R.id.scanBoardingPass);
+        scanBoardingPassBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                populateSeatNumberFromBoardingPass();
             }
         });
 
@@ -123,7 +132,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
 
         int rowCount = contentTable.getChildCount();
         List<SoldItem> soldList = new ArrayList<>();
-        for(int i=1;i<rowCount-2;i++) {
+        for(int i=1;i<rowCount-4;i++) {
             TableRow tableRow = (TableRow) contentTable.getChildAt(i);
             TextView itemID = (TextView) tableRow.getChildAt(0);
             TextView itemDesc = (TextView) tableRow.getChildAt(1);
@@ -158,17 +167,20 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
+        POSCommonUtils.showDrawerAndEquipment(item,this);
         itemCount++;
-        TableRow tr = new TableRow(this);
+        final TableRow tr = new TableRow(this);
         tr.setId(itemCount);
         tr.setLayoutParams(new TableRow.LayoutParams(
                 TableRow.LayoutParams.MATCH_PARENT,
                 TableRow.LayoutParams.WRAP_CONTENT));
 
         TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
-                TableRow.LayoutParams.WRAP_CONTENT, 2f);
+                TableRow.LayoutParams.WRAP_CONTENT, 6f);
         TableRow.LayoutParams cellParams2 = new TableRow.LayoutParams(0,
-                TableRow.LayoutParams.WRAP_CONTENT, 1f);
+                TableRow.LayoutParams.WRAP_CONTENT, 3f);
+        TableRow.LayoutParams cellParams3 = new TableRow.LayoutParams(0,
+                35, 1f);
 
         TextView itemIdHdn = new TextView(this);
         TextView itemDesc = new TextView(this);
@@ -177,6 +189,18 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         final TextView totalTextField = new TextView(this);
         TextView equipmentNo = new TextView(this);
         TextView drawer = new TextView(this);
+        Button removeItemBtn = new Button(this);
+        removeItemBtn.setLayoutParams(cellParams3);
+        removeItemBtn.setBackground(getResources().getDrawable(R.drawable.icon_cancel));
+        removeItemBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                subtotal -= Float.parseFloat(totalTextField.getText().toString());
+                subTotalView.setText(String.valueOf(subtotal));
+                itemCount--;
+                contentTable.removeView(tr);
+            }
+        });
 
         itemIdHdn.setText(item.getItemId());
         itemIdHdn.setVisibility(View.GONE);
@@ -234,13 +258,15 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         drawer.setVisibility(View.GONE);
         tr.addView(drawer);
 
+        tr.addView(removeItemBtn);
+
         subtotal += total;
         SoldItem soldItem = new SoldItem();
         soldItem.setItemDesc(item.getItemDesc());
         soldItem.setQuantity("1");
         soldItem.setPrice(item.getPrice());
         soldItemList.add(soldItem);
-        subTotalView.setText(String.valueOf(subtotal));
+        subTotalView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(subtotal));
         contentTable.addView(tr,itemCount);
     }
 
@@ -308,6 +334,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
             tg.release();
             options.addAll(catList);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, options);
+            adapter.setDropDownViewResource(R.layout.spinner_item);
             itemCatSpinner.setAdapter(adapter);
         }
         else{
@@ -317,5 +344,10 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
             tg.startTone(ToneGenerator.TONE_CDMA_PIP, 1000);
             tg.release();
         }
+    }
+
+    private void populateSeatNumberFromBoardingPass(){
+        String qrCodeDetails = POSCommonUtils.scanQRCode(this);
+        seatNumber.setText(qrCodeDetails);
     }
 }

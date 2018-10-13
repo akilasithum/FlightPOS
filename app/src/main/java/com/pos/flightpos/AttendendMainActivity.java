@@ -21,7 +21,8 @@ public class AttendendMainActivity extends AppCompatActivity {
     Button submitBtn;
     EditText flightDate;
     EditText flightTextView;
-    TextView paxCount;
+    TextView eClassPaxCount;
+    TextView bClassPaxCount;
     long mExitTime = 0;
 
     @Override
@@ -32,7 +33,8 @@ public class AttendendMainActivity extends AppCompatActivity {
         flightTo = (TextView) findViewById(R.id.toTextField);
         flightDate = (EditText) findViewById(R.id.flightDateSpinner);
         flightTextView = (EditText) findViewById(R.id.flightList);
-        paxCount = (EditText) findViewById(R.id.paxContField);
+        eClassPaxCount = (EditText) findViewById(R.id.eClassPaxContField);
+        bClassPaxCount = (EditText) findViewById(R.id.bClassPaxContField);
         submitBtn = (Button) findViewById(R.id.submitBtn);
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,13 +59,28 @@ public class AttendendMainActivity extends AppCompatActivity {
         flightTo.setText(flight.getFlightTo());
         flightFrom.setEnabled(false);
         flightTo.setEnabled(false);
+        showPaxCount();
+    }
+
+    private void showPaxCount(){
+        String eClassPaxCountStr = SaveSharedPreference.getStringValues(this,"eClassPaxCount");
+        String paxCountStr = SaveSharedPreference.getStringValues(this,"bClassPaxCount");
+        if(eClassPaxCountStr != null && !eClassPaxCountStr.equals("")){
+            eClassPaxCount.setText(eClassPaxCountStr);
+        }
+        if(paxCountStr != null && !paxCountStr.equals("")){
+            bClassPaxCount.setText(paxCountStr);
+        }
     }
 
     private void clickSubmitBtn(){
 
-        if(paxCount.getText() != null &&! paxCount.getText().toString().equals("")) {
+        if(eClassPaxCount.getText() != null &&! eClassPaxCount.getText().toString().equals("")) {
+            if(bClassPaxCount.getText() != null &&! bClassPaxCount.getText().toString().equals("")){
+                SaveSharedPreference.setStringValues(this,"bClassPaxCount", bClassPaxCount.getText().toString());
+            }
             Intent intent = new Intent(this, AttCheckInfo.class);
-            SaveSharedPreference.setStringValues(this,"paxCount",paxCount.getText().toString());
+            SaveSharedPreference.setStringValues(this,"eClassPaxCount", eClassPaxCount.getText().toString());
             startActivity(intent);
         }
         else{

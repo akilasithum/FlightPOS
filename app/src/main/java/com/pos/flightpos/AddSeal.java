@@ -14,9 +14,13 @@ import android.widget.Toast;
 
 import com.amazonaws.util.StringUtils;
 import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class AddSeal extends AppCompatActivity {
@@ -25,6 +29,7 @@ public class AddSeal extends AppCompatActivity {
     String noOfSeals;
     LinearLayout mRlayout;
     Button addSealBtn;
+    POSDBHandler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,13 +38,20 @@ public class AddSeal extends AppCompatActivity {
         noOfSeals = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_NO_OF_SEAL);
         mRlayout = (LinearLayout) findViewById(R.id.layout_addSeal);
         addSealBtn = (Button) findViewById(R.id.bt_addSeal);
+        handler = new POSDBHandler(this);
+        addSealTextBoxes();
         if(parent.equals("AttCheckInfo")){
             addSealBtn.setText("Verify Seals");
+            String storedSeals = SaveSharedPreference.getStringValues(this,"openSealList");
+            String[] storedSealsArray = storedSeals.split(",");
+            for(int i = 0; i<storedSealsArray.length ; i++){
+                EditText editText = (EditText) mRlayout.getChildAt(i);
+                editText.setText(storedSealsArray[i]);
+            }
         }
         else{
             addSealBtn.setText("Add Seals");
         }
-        addSealTextBoxes();
     }
 
     private void addSealTextBoxes(){
@@ -59,44 +71,41 @@ public class AddSeal extends AppCompatActivity {
         for (int i = 0; i < childCount - 1; i++) {
             EditText editText = (EditText) mRlayout.getChildAt(i);
             String textVal = editText.getText() == null ? null : editText.getText().toString();
-            if (textVal == null) {
-                Toast.makeText(getApplicationContext(), "Add " + noOfSeals + " seals.",
-                        Toast.LENGTH_SHORT).show();
-                return;
+            if (textVal != null && !textVal.isEmpty()) {
+                sealList.add(textVal);
             }
-            sealList.add(textVal);
+
         }
         if(parent.equals("AttCheckInfo")){
-            String storedSeals = SaveSharedPreference.getStringValues(this,"openSealList");
-            String[] storedSealsArray = storedSeals.split(",");
-            for(int i = 0; i<storedSealsArray.length ; i++){
-                if(!sealList.contains(storedSealsArray[i])){
-                    Toast.makeText(getApplicationContext(), "Seal numbers did not match. Enter correct seal numbers",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
-            }
             SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_IS_SEAL_VERIFIED,"yes");
-            Toast.makeText(getApplicationContext(), "Seal numbers are matched. You can continue.",
+            Toast.makeText(getApplicationContext(), "Seal numbers are verified.",
                     Toast.LENGTH_SHORT).show();
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
                     onBackPressed();
                 }
-            }, 1500);
+            }, 1000);
         }
         else {
-            String storedName = parent.equals("VerifyFlightByAdminActivity") ? "openSealList" : "closeSealList";
-            SaveSharedPreference.setStringValues(this, storedName, TextUtils.join(",", sealList));
-            Toast.makeText(getApplicationContext(), "Successfully added " + noOfSeals + " seals.",
+            String sealType = parent.equals("VerifyFlightByAdminActivity") ? "open" : "close";
+            String storedName = sealType+"SealList";
+            String seals = TextUtils.join(",", sealList);
+            SaveSharedPreference.setStringValues(this, storedName, seals);
+            Toast.makeText(getApplicationContext(), "Successfully added " + sealList.size() + " seals.",
                     Toast.LENGTH_SHORT).show();
+            Date date = new Date();
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String currentDateStr = df.format(date);
+            String flightName = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME);
+            String flightDate = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_DATE);
+            handler.insertSealData(sealType,String.valueOf(sealList.size()),seals,currentDateStr,flightName,flightDate);
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
                     onBackPressed();
                 }
-            }, 1500);
+            }, 1000);
         }
     }
 }

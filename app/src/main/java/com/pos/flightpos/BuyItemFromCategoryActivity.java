@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.XMLMapper.Item;
+import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -39,6 +40,7 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
 
     Button submitBtn;
     Button purchaseItemsBtn;
+    Button scanBoardingPassBtn;
     Spinner itemCatSpinner;
     Spinner itemSpinner;
     TableLayout contentTable;
@@ -62,6 +64,7 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
         subTotalView = (TextView)  findViewById(R.id.subTotalTextView);
         seatNumber = (EditText) findViewById(R.id.seatNumber);
         purchaseItemsBtn = (Button) findViewById(R.id.purchaseItems);
+        scanBoardingPassBtn = (Button) findViewById(R.id.scanBoardingPass);
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -71,6 +74,12 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 purchaseItems();
+            }
+        });
+        scanBoardingPassBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                populateSeatNumberFromBoardingPass();
             }
         });
 
@@ -131,7 +140,7 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
 
             int rowCount = contentTable.getChildCount();
             List<SoldItem> soldList = new ArrayList<>();
-            for(int i=1;i<rowCount-2;i++) {
+            for(int i=1;i<rowCount-4;i++) {
                 TableRow tableRow = (TableRow) contentTable.getChildAt(i);
                 TextView itemID = (TextView) tableRow.getChildAt(0);
                 TextView itemDesc = (TextView) tableRow.getChildAt(1);
@@ -169,7 +178,7 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
                 return;
             }
 
-            showDrawerAndEquipment(item);
+            POSCommonUtils.showDrawerAndEquipment(item,this);
             itemCatSpinner.setSelection(0);
             itemSpinner.setSelection(0);
             itemCount++;
@@ -271,23 +280,8 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
             soldItem.setPrice(item.getPrice());
             soldItemList.add(soldItem);
 
-            subTotalView.setText(String.valueOf(subtotal));
+            subTotalView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(subtotal));
             contentTable.addView(tr,itemCount);
-        }
-
-        private void showDrawerAndEquipment(SoldItem item){
-            AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-            builder1.setTitle("Item Location");
-            builder1.setMessage("Equipment No  : "+item.getEquipmentNo() +" \n Drawer         : " + item.getDrawer());
-            builder1.setPositiveButton(
-                    "OK",
-                    new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    });
-            AlertDialog alert11 = builder1.create();
-            alert11.show();
         }
 
         private void updateTotalWhenChangeItemQty(Float diff){
@@ -305,6 +299,7 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
             options.add(item);
             options.addAll(itemList);
             adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,options);
+            adapter.setDropDownViewResource(R.layout.spinner_item);
             itemSpinner.setAdapter(adapter);
         }
 
@@ -319,6 +314,7 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
                 tg.release();
                 options.addAll(catList);
                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, options);
+                adapter.setDropDownViewResource(R.layout.spinner_item);
                 itemCatSpinner.setAdapter(adapter);
             }
             else{
@@ -328,5 +324,10 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
                 tg.startTone(ToneGenerator.TONE_CDMA_PIP, 1000);
                 tg.release();
             }
+        }
+
+        private void populateSeatNumberFromBoardingPass(){
+            String qrCodeDetails = POSCommonUtils.scanQRCode(this);
+            seatNumber.setText(qrCodeDetails);
         }
     }

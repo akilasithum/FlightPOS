@@ -11,17 +11,19 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:textSize="20dp"
+            android:layout_weight="1"
             android:text="Flight date" />
 
         <EditText
             android:id="@+id/flightDateSpinner"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textSize="25dp"
-            android:paddingRight="30dp" />
+            android:layout_weight="1"
+            android:textSize="20dp" />
     </TableRow>
 
     <TableRow
@@ -30,15 +32,16 @@
         android:paddingTop="10dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:text="Flight Number"
-            android:textSize="25dp" />
+            android:layout_weight="1"
+            android:textSize="20dp" />
 
         <EditText
             android:id="@+id/flightList"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:paddingRight="50dp" />
@@ -50,15 +53,16 @@
         android:paddingTop="10dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:layout_weight="1"
             android:text="From"
-            android:textSize="25dp" />
+            android:textSize="20dp" />
 
         <EditText
             android:id="@+id/fromTextField"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
@@ -71,15 +75,16 @@
         android:paddingTop="10dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:layout_weight="1"
             android:text="To"
-            android:textSize="25dp" />
+            android:textSize="20dp" />
 
         <EditText
             android:id="@+id/toTextField"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"
@@ -92,15 +97,38 @@
         android:paddingTop="10dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="Pax Count"
-            android:textSize="25dp" />
+            android:layout_weight="1"
+            android:text="Economy Class Pax Count"
+            android:textSize="20dp" />
 
         <EditText
-            android:id="@+id/paxContField"
-            android:layout_width="wrap_content"
+            android:id="@+id/eClassPaxContField"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="number" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingTop="10dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="Bussiness Class Pax Count"
+            android:layout_weight="1"
+            android:textSize="20dp" />
+
+        <EditText
+            android:id="@+id/bClassPaxContField"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:ems="10"

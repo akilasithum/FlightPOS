@@ -37,7 +37,7 @@ public class CloseFlightActivity extends AppCompatActivity {
         verifyCloseInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CloseFlightActivity.this, CheckInventoryActivity.class);
+                Intent intent = new Intent(CloseFlightActivity.this, VerifyCartsActivity.class);
                 intent.putExtra("parent","CloseFlightActivity");
                 startActivity(intent);
             }
@@ -101,12 +101,15 @@ public class CloseFlightActivity extends AppCompatActivity {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"isOpenFlight");
-                        SaveSharedPreference.removeValue(CloseFlightActivity.this,"paxCount");
+                        SaveSharedPreference.removeValue(CloseFlightActivity.this,"eClassPaxCount");
+                        SaveSharedPreference.removeValue(CloseFlightActivity.this,"bClassPaxCount");
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_KEY);
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"orderNumber");
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_KIT_CODE);
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_NO_OF_SEAL);
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_IS_SEAL_VERIFIED);
+                        SaveSharedPreference.removeValue(CloseFlightActivity.this,"openSealList");
+                        SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_CAN_ATT_LOGIN);
                         Intent intent = new Intent(CloseFlightActivity.this, MainActivity.class);
                         startActivity(intent);
                     }})

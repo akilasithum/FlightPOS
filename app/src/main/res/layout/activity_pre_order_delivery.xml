@@ -20,7 +20,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="2"
-                android:text="Click on customer name to view pre order items. When you delivered the order, click on the check box"
+                android:text="Click on customer name to view pre order items."
                 android:textSize="17dp"
                 android:paddingBottom="20dp"
                 android:gravity="center"/>

@@ -47,7 +47,7 @@ public class AttCheckInfo extends AppCompatActivity {
         verifyInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AttCheckInfo.this, CheckInventoryActivity.class);
+                Intent intent = new Intent(AttCheckInfo.this, VerifyCartsActivity.class);
                 intent.putExtra("parent","AttCheckInfo");
                 startActivity(intent);
             }

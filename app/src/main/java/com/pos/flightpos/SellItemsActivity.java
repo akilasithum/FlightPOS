@@ -20,6 +20,7 @@ import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 public class SellItemsActivity extends AppCompatActivity {
 
@@ -61,6 +62,9 @@ public class SellItemsActivity extends AppCompatActivity {
     private void registerLayoutClickEvents(){
 
         LinearLayout buyOnBoardLayout = (LinearLayout) findViewById(R.id.buyOnBoardItems);
+        if(!"BOB".equals(serviceType)){
+            buyOnBoardLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+        }
         buyOnBoardLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -72,6 +76,9 @@ public class SellItemsActivity extends AppCompatActivity {
             }
         });
         LinearLayout dutyPaidLayout = (LinearLayout) findViewById(R.id.dutyPaidItems);
+        if(!"DTP".equals(serviceType)){
+            dutyPaidLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+        }
         dutyPaidLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -83,6 +90,9 @@ public class SellItemsActivity extends AppCompatActivity {
             }
         });
         LinearLayout dutyFreeLayout = (LinearLayout) findViewById(R.id.dutyFreeItems);
+        if(!"DTF".equals(serviceType)){
+            dutyFreeLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+        }
         dutyFreeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,6 +104,9 @@ public class SellItemsActivity extends AppCompatActivity {
             }
         });
         LinearLayout virtualInventoryLayout = (LinearLayout) findViewById(R.id.virtualInventory);
+        if(!"VTR".equals(serviceType)){
+            virtualInventoryLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+        }
         virtualInventoryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -105,15 +118,19 @@ public class SellItemsActivity extends AppCompatActivity {
             }
         });
         final LinearLayout preOrderLayout = (LinearLayout) findViewById(R.id.preOrderDelivery);
+        final Map<String,List<PreOrder>> preOrders = getPreOrderList();
+        if(preOrders == null || preOrders.isEmpty()) {
+            preOrderLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+        }
         preOrderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                List<PreOrder> preOrders = getPreOrderList();
                 if(preOrders != null && !preOrders.isEmpty()) {
                     Intent intent = new Intent(SellItemsActivity.this, PreOrderDeliveryActivity.class);
                     Bundle args = new Bundle();
                     args.putSerializable("preOrders",(Serializable)preOrders);
                     intent.putExtra("BUNDLE",args);
+                    intent.putExtra("serviceType",serviceType);
                     startActivity(intent);
                 }
                 else{
@@ -175,9 +192,7 @@ public class SellItemsActivity extends AppCompatActivity {
         alert11.show();
     }
 
-    private List<PreOrder> getPreOrderList(){
-        String kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
-        String serviceType = handler.getKitNumberListFieldValueFromKitCode(kitCode,Constants.FILED_NAME_SERVICE_TYPE);
+    private Map<String,List<PreOrder>> getPreOrderList(){
         return handler.getAvailablePreOrders(serviceType);
     }
 
