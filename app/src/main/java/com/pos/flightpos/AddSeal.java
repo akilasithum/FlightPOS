@@ -3,6 +3,7 @@ package com.pos.flightpos;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -61,6 +62,7 @@ public class AddSeal extends AppCompatActivity {
         for(int i=1 ; i< sealCount;i++){
             EditText myEditText = new EditText(this);
             myEditText.setLayoutParams(mRparams);
+            myEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
             mRlayout.addView(myEditText,0);
         }
     }

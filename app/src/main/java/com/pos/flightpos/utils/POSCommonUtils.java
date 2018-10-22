@@ -54,6 +54,7 @@ public class POSCommonUtils {
                 Toast.makeText(context, "QR code not found.", Toast.LENGTH_SHORT).show();
             }
         }
+        scan.close();
         return str;
     }
 

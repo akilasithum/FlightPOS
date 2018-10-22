@@ -12,6 +12,7 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,6 +27,7 @@ import android.widget.Toast;
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.XMLMapper.Item;
+import com.pos.flightpos.objects.XMLMapper.Promotion;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
@@ -52,6 +54,7 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
     POSDBHandler handler;
     String serviceType;
     String kitCode;
+    List<SoldItem> discountItemList;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -82,7 +85,7 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
                 populateSeatNumberFromBoardingPass();
             }
         });
-
+        discountItemList = new ArrayList<>();
         soldItemList = new ArrayList<>();
         handler = new POSDBHandler(getApplicationContext());
         Intent intent = getIntent();
@@ -114,7 +117,6 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
                 return;
             }
 
-            Intent intent = new Intent(this, PaymentMethodsActivity.class);
             String orderNumber = SaveSharedPreference.getStringValues(this,"orderNumber");
             if(orderNumber != null){
                 int newVal = Integer.parseInt(orderNumber) + 1;
@@ -125,20 +127,81 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
                 SaveSharedPreference.setStringValues(this,"orderNumber","1");
                 orderNumber = "1";
             }
-            intent.putExtra("subTotal", subtotal);
+
             List<SoldItem> soldItems = getSellDataFromTable(orderNumber);
+            if(discountItemList != null && !discountItemList.isEmpty()){
+                showDiscountData(soldItems,seatNumberVal,orderNumber);
+            }
+            else{
+                redirectToPaymentPage(soldItems,seatNumberVal,orderNumber);
+            }
+        }
+
+        private void showDiscountData(final List<SoldItem> soldItems,final String seatNumberVal,final String orderNumber){
+            final Dialog discountDialog = new Dialog(this);
+            discountDialog.setContentView(R.layout.discount_details_layout);
+            Window window = discountDialog.getWindow();
+            TableRow.LayoutParams params1 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
+                    TableRow.LayoutParams.WRAP_CONTENT);
+            window.setLayout(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+            discountDialog.setTitle("Discount");
+
+            TableLayout tableLayout = discountDialog.findViewById(R.id.discountTable);
+            TableRow.LayoutParams params = new TableRow.LayoutParams(0, TableRow.LayoutParams.WRAP_CONTENT,1);
+            int i = 0;
+            for(SoldItem soldItem : discountItemList){
+                i++;
+                TableRow tableRow = new TableRow(this);
+                tableRow.setLayoutParams(params1);
+
+                TextView itemName = new TextView(this);
+                itemName.setText(soldItem.getItemDesc());
+                itemName.setLayoutParams(params);
+                itemName.setTextSize(20);
+
+                TextView price = new TextView(this);
+                price.setText(soldItem.getPrice());
+                price.setLayoutParams(params);
+                price.setTextSize(20);
+
+                TextView discountPrice = new TextView(this);
+                discountPrice.setText(soldItem.getPrice());
+                discountPrice.setLayoutParams(params);
+                discountPrice.setTextSize(20);
+
+                tableRow.addView(itemName);
+                tableRow.addView(price);
+                tableRow.addView(discountPrice);
+
+                tableLayout.addView(tableRow,i);
+            }
+
+            Button okBtn = (Button) discountDialog.findViewById(R.id.cardSubmitBtn);
+            okBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    discountDialog.dismiss();
+                    redirectToPaymentPage(soldItems,seatNumberVal,orderNumber);
+                }
+            });
+            discountDialog.show();
+        }
+
+        private void redirectToPaymentPage(List<SoldItem> soldItems,String seatNumberVal,String orderNumber){
+            Intent intent = new Intent(this, PaymentMethodsActivity.class);
+            intent.putExtra("subTotal", subtotal);
             Bundle args = new Bundle();
             args.putSerializable("soldItemList",(Serializable)soldItems);
             intent.putExtra("BUNDLE",args);
             intent.putExtra("SeatNumber",seatNumberVal);
             intent.putExtra("orderNumber",orderNumber);
             startActivity(intent);
-
         }
 
         private List<SoldItem> getSellDataFromTable(String orderNumber){
 
             int rowCount = contentTable.getChildCount();
+            List<Promotion> promotions = handler.getPromotionsFromServiceType(serviceType);
             List<SoldItem> soldList = new ArrayList<>();
             for(int i=1;i<rowCount-4;i++) {
                 TableRow tableRow = (TableRow) contentTable.getChildAt(i);
@@ -154,9 +217,20 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
                 soldItem.setItemId(itemID.getText().toString());
                 soldItem.setItemDesc(itemDesc.getText().toString());
                 soldItem.setQuantity(qty.getText().toString());
-                soldItem.setPrice(price.getText().toString());
                 soldItem.setEquipmentNo(equipmentNo.getText().toString());
                 soldItem.setDrawer(drawer.getText().toString());
+                float discount = getDiscount(promotions,itemID.getText().toString());
+                if(discount != 0){
+                    float newPrice = Float.parseFloat(price.getText().toString()) * ((100-discount)/100);
+                    String newPriceStr = POSCommonUtils.getTwoDecimalFloatFromFloat(newPrice);
+                    soldItem.setPrice(newPriceStr);
+                    soldItem.setPriceBeforeDiscount(price.getText().toString());
+                    discountItemList.add(soldItem);
+                    subtotal -= (Float.parseFloat(price.getText().toString()) - Float.parseFloat(newPriceStr));
+                }
+                else{
+                    soldItem.setPrice(price.getText().toString());
+                }
                 soldList.add(soldItem);
                 String userID = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_KEY);
                 handler.insertDailySalesEntry(orderNumber,itemID.getText().toString(),serviceType,
@@ -167,6 +241,16 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
             }
             return soldList;
 
+        }
+
+        private float getDiscount(List<Promotion> promotions,String itemId){
+
+            for(Promotion promotion : promotions){
+                if(promotion.getItemId().equals(itemId)){
+                    return Float.parseFloat(promotion.getDiscount());
+                }
+            }
+            return 0;
         }
 
         private void clickSubmitBtn(){

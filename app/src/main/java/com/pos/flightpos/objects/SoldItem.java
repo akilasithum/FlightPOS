@@ -9,6 +9,8 @@ public class SoldItem implements Serializable{
     private String price;
     private String equipmentNo;
     private String drawer;
+    private String priceBeforeDiscount;
+    private String discount;
 
     public String getItemId() {
         return itemId;
@@ -56,6 +58,22 @@ public class SoldItem implements Serializable{
 
     public void setDrawer(String drawer) {
         this.drawer = drawer;
+    }
+
+    public String getPriceBeforeDiscount() {
+        return priceBeforeDiscount;
+    }
+
+    public String getDiscount() {
+        return discount;
+    }
+
+    public void setDiscount(String discount) {
+        this.discount = discount;
+    }
+
+    public void setPriceBeforeDiscount(String priceBeforeDiscount) {
+        this.priceBeforeDiscount = priceBeforeDiscount;
     }
 
     @Override

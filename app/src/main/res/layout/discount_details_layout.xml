@@ -1,10 +1,11 @@
 <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:paddingTop="20dp"
     android:paddingLeft="30dp"
     android:paddingRight="30dp"
     android:focusable="true"
+    android:id="@+id/discountTable"
     android:focusableInTouchMode="true">
 
     <TableRow
@@ -13,78 +14,44 @@
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Amount"
+            android:text="Item Name"
             android:layout_weight="1"
+            android:background="@color/ash"
             android:textSize="18dp" />
-
-        <EditText
-            android:id="@+id/cashSettleAmountTextField"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:inputType="number"
-            android:layout_weight="1" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Currency"
+            android:text="Price"
+            android:background="@color/tableDark"
             android:layout_weight="1"
             android:textSize="18dp" />
 
-        <Spinner
-            android:id="@+id/currencyText"
+        <TextView
             android:layout_width="0dp"
-            style="@style/Widget.AppCompat.Spinner.Underlined"
             android:layout_height="wrap_content"
-            android:textSize="15dp"
-            android:layout_weight="1" />
+            android:text="Discount price"
+            android:background="@color/ash"
+            android:layout_weight="1"
+            android:textSize="18dp" />
     </TableRow>
 
     <TableRow
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
         <TextView
-            android:id="@+id/errorMsgText"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:text=""
-            android:layout_weight="1"
+            android:layout_weight="3"
+            android:paddingTop="10dp"
             android:textSize="18dp" />
-    </TableRow>
-    <TableRow
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-        <TextView
-            android:id="@+id/initialAmount"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text=""
-            android:visibility="invisible"
-            android:layout_weight="1"
-            android:textSize="18dp" />
-    </TableRow>
-
-    <TableRow
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
         <Button
             android:id="@+id/cardSubmitBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Ok" />
-        <Button
-            android:id="@+id/cancelBtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Cancel" />
     </TableRow>
 
 </TableLayout>

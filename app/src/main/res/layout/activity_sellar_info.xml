@@ -31,7 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:onClick="addUser"
-            android:text="Add User" />
+            android:text="Add Seller" />
 
     </LinearLayout>
 

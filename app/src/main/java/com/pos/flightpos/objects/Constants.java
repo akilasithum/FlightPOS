@@ -1,5 +1,8 @@
 package com.pos.flightpos.objects;
 
+import android.widget.LinearLayout;
+import android.widget.TableRow;
+
 public class Constants {
 
     public static final String SHARED_PREFERENCE_KEY = "flightAttendedName";
@@ -15,5 +18,9 @@ public class Constants {
 
     public static final String PRINTER_LOGO_LOCATION = "/res/drawable/no_back.jpg";
     public static final String FILED_NAME_SERVICE_TYPE = "serviceType";
+
+    public static final LinearLayout.LayoutParams COMMON_LAYOUT_PARAMS = new LinearLayout.LayoutParams(
+            TableRow.LayoutParams.MATCH_PARENT,
+            TableRow.LayoutParams.WRAP_CONTENT);
 
 }

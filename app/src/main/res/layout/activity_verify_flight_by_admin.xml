@@ -136,7 +136,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
-                    android:text="Add Opening Seals"
+                    android:text="Add Seals"
                     android:textSize="25dp" />
 
             </LinearLayout>

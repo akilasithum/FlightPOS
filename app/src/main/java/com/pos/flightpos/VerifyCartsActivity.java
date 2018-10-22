@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -36,6 +37,13 @@ public class VerifyCartsActivity extends AppCompatActivity {
         cartsTable = (TableLayout) findViewById(R.id.cartsTable);
         parent = getIntent().getExtras().getString("parent");
         showAvailableCarts();
+        ImageButton backButton = findViewById(R.id.backPressBtn);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     private void showAvailableCarts() {

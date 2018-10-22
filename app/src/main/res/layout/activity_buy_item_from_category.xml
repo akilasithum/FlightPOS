@@ -29,6 +29,7 @@
                 android:id="@+id/itemCategorySpinner"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_weight="1"
                 android:paddingRight="30dp"
                 android:textSize="25dp"/>
@@ -50,6 +51,7 @@
             <Spinner
                 android:id="@+id/itemSpinner"
                 android:layout_width="0dp"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:paddingRight="30dp"

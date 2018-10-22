@@ -19,6 +19,7 @@ import com.pos.flightpos.objects.XMLMapper.Items;
 import com.pos.flightpos.objects.XMLMapper.KITItem;
 import com.pos.flightpos.objects.XMLMapper.KitNumber;
 import com.pos.flightpos.objects.XMLMapper.PreOrder;
+import com.pos.flightpos.objects.XMLMapper.Promotion;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -77,6 +78,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 "serviceType VARCHAR, itemCategory VARCHAR,itemId VARCHAR,quantity VARCHAR,delivered VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS sealDetails (sealType VARCHAR,numOfSeals VARCHAR," +
                 "seals VARCHAR, sealAddedTime VARCHAR, flightName VARCHAR, flightDate VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS promotions (promotionId VARCHAR,serviceType VARCHAR," +
+                "itemId VARCHAR, discount VARCHAR);");
     }
 
     public void clearTable(){
@@ -369,6 +372,48 @@ public class POSDBHandler extends SQLiteOpenHelper {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public boolean insertPromotions(Context context){
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            File xml = new File(context.getFilesDir(), "promotions.xml");
+            JSONObject jsonObj  = XML.toJSONObject(readStream(new FileInputStream(xml)));
+            Gson gson = new Gson();
+            JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("promotions");
+            JSONArray itemsArr = data.getJSONArray("promotion");
+            List<Promotion> promotions = gson.fromJson(itemsArr.toString(), new TypeToken<List<Promotion>>(){}.getType());
+            for(Promotion promotion : promotions){
+                db.execSQL("INSERT INTO promotions VALUES" +
+                        "('"+promotion.getPromotionId()+"','"+promotion.getServiceType()+"','"+promotion.getItemId()+"'," +
+                        "'"+promotion.getDiscount()+"');");
+            }
+            db.close();
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public List<Promotion> getPromotionsFromServiceType(String serviceType){
+        List<Promotion> promotions = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from promotions where serviceType = '"+serviceType+"'", null);
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+
+                Promotion promotion = new Promotion();
+                promotion.setPromotionId(cursor.getString(cursor.getColumnIndex("promotionId")));
+                promotion.setServiceType((cursor.getString(cursor.getColumnIndex("serviceType"))));
+                promotion.setItemId((cursor.getString(cursor.getColumnIndex("itemId"))));
+                promotion.setDiscount((cursor.getString(cursor.getColumnIndex("discount"))));
+                promotions.add(promotion);
+                cursor.moveToNext();
+            }
+        }
+        return promotions;
     }
 
     public List<Currency> getCurrencyList(){

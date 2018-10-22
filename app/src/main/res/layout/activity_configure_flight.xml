@@ -20,6 +20,7 @@
         <Spinner
             android:id="@+id/flightDateSpinner"
             android:layout_width="wrap_content"
+            style="@style/Widget.AppCompat.Spinner.Underlined"
             android:layout_height="wrap_content"
             android:textSize="60dp"
             android:paddingRight="30dp" />
@@ -102,6 +103,7 @@
 
         <Spinner
             android:id="@+id/equipmentNumber"
+            style="@style/Widget.AppCompat.Spinner.Underlined"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"

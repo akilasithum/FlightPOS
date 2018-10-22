@@ -7,11 +7,14 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -23,6 +26,7 @@ public class DefineCartNumbersActivity extends AppCompatActivity {
     String noOfCarts;
     LinearLayout mainLayout;
     Button addCartNumBtn;
+    TextView cart1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,7 +42,15 @@ public class DefineCartNumbersActivity extends AppCompatActivity {
         POSDBHandler handler = new POSDBHandler(this);
         String kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
         noOfCarts = handler.getKitNumberListFieldValueFromKitCode(kitCode,"noOfEq");
-        addSealTextBoxes();
+        cart1 = findViewById(R.id.cart1Text);
+        ImageButton scanCart1 = findViewById(R.id.scanCart1);
+        scanCart1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                setBarcodeValue(cart1);
+            }
+        });
+        addCartTextBoxes();
     }
 
     public void defineCarts() {
@@ -68,14 +80,33 @@ public class DefineCartNumbersActivity extends AppCompatActivity {
         }, 1000);
     }
 
-    private void addSealTextBoxes(){
+    private void addCartTextBoxes(){
         int sealCount = Integer.parseInt(noOfCarts);
         LinearLayout.LayoutParams mRparams = new LinearLayout.LayoutParams
-                (RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                (40, 40);
         for(int i=1 ; i< sealCount;i++){
-            EditText myEditText = new EditText(this);
-            myEditText.setLayoutParams(mRparams);
-            mainLayout.addView(myEditText,0);
+            LinearLayout layout = new LinearLayout(this);
+            layout.setLayoutParams(Constants.COMMON_LAYOUT_PARAMS);
+            final EditText myEditText = new EditText(this);
+            myEditText.setLayoutParams(Constants.COMMON_LAYOUT_PARAMS);
+            ImageButton button = new ImageButton(this);
+            button.setLayoutParams(mRparams);
+            button.setPadding(30,0,0,0);
+            button.setBackground(getResources().getDrawable(R.drawable.icon_barcode_reader));
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    setBarcodeValue(myEditText);
+                }
+            });
+
+            layout.addView(myEditText);
+            layout.addView(button);
+            mainLayout.addView(layout,0);
         }
+    }
+
+    private void setBarcodeValue(TextView textView){
+        textView.setText(POSCommonUtils.scanQRCode(this));
     }
 }
