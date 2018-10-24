@@ -1,11 +1,15 @@
-<shape
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:shape="rectangle">
-
-    <corners android:radius="5dp" />
-    <solid android:color="@color/tableDark" />
-    <stroke
-        android:width="1dip"
-        android:color="@color/orange" />
-</shape>
-
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:color="@color/jumbo"
+    tools:targetApi="lollipop"> <!-- ripple effect color -->
+    <item android:id="@android:id/background">
+        <shape android:shape="rectangle">
+            <corners android:radius="5dp" />
+            <solid android:color="@color/trjumbo" />
+            <stroke
+                android:width="1dip"
+                android:color="@color/jumbo" /> <!-- background color -->
+        </shape>
+    </item>
+</ripple>
