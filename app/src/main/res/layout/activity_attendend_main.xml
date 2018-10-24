@@ -3,7 +3,10 @@
     android:layout_height="wrap_content"
     android:paddingLeft="50dp"
     android:paddingRight="75dp"
-    android:paddingTop="50dp"
+    android:paddingTop="15dp"
+    android:paddingBottom="15dp"
+    android:layout_marginTop="35dp"
+    android:background="@drawable/layoutbackgroundborderlowtr"
     android:focusable="true"
     android:focusableInTouchMode="true">
 
@@ -122,7 +125,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
-            android:text="Bussiness Class Pax Count"
+            android:text="Business Class Pax Count"
             android:layout_weight="1"
             android:textSize="20dp" />
 
@@ -134,7 +137,28 @@
             android:ems="10"
             android:inputType="number" />
     </TableRow>
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:id="@+id/taxPercentageRow"
+        android:paddingTop="10dp">
 
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:layout_weight="1"
+            android:text="Tax Percentage"
+            android:textSize="20dp" />
+
+        <EditText
+            android:id="@+id/taxPercentage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:ems="10"
+            android:inputType="number" />
+    </TableRow>
     <TableRow
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">

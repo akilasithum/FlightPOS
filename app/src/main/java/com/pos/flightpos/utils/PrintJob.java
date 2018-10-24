@@ -2,7 +2,6 @@ package com.pos.flightpos.utils;
 
 import android.content.Context;
 import android.pt.printer.Printer;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
@@ -80,7 +79,7 @@ public class PrintJob {
         printer.setAlignment(0);
         printer.printString(" ");
         printer.printString("Operated Staff");
-        printer.printString(SaveSharedPreference.getStringValues(context, Constants.SHARED_PREFERENCE_KEY));
+        printer.printString(SaveSharedPreference.getStringValues(context, Constants.SHARED_PREFERENCE_FA_NAME));
         printer.printString(dateTimeFormat.format(date));
         printer.printString(" ");
         printer.printString(" ");

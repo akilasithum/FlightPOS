@@ -1,7 +1,5 @@
 package com.pos.flightpos;
 
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.content.Intent;
 import android.pt.printer.Printer;
 import android.support.v7.app.AppCompatActivity;
@@ -125,7 +123,7 @@ public class InventoryReportActivity extends AppCompatActivity {
         printer.printString("100");
         printer.printString(" ");
         printer.printString("Operated Staff");
-        printer.printString(SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KEY));
+        printer.printString(SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FA_NAME));
         printer.printString(dateTimeFormat.format(date));
         printer.printString(" ");
         printer.printString(" ");

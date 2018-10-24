@@ -103,14 +103,17 @@ public class CloseFlightActivity extends AppCompatActivity {
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"isOpenFlight");
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"eClassPaxCount");
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"bClassPaxCount");
-                        SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_KEY);
+                        SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_FA_NAME);
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"orderNumber");
-                        SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_KIT_CODE);
-                        SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_NO_OF_SEAL);
+                        //SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_KIT_CODE);
+                        SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_FLIGHT_MODE);
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_IS_SEAL_VERIFIED);
-                        SaveSharedPreference.removeValue(CloseFlightActivity.this,"openSealList");
+                        //SaveSharedPreference.removeValue(CloseFlightActivity.this,"openSealList");
+                        SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_ADMIN_CONFIGURE_FLIGHT);
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_CAN_ATT_LOGIN);
-                        Intent intent = new Intent(CloseFlightActivity.this, MainActivity.class);
+                        SaveSharedPreference.setStringValues(CloseFlightActivity.this,
+                                Constants.SHARED_PREFERENCE_CLOSED_FLIGHT,"yes");
+                        Intent intent = new Intent(CloseFlightActivity.this, SelectModeActivity.class);
                         startActivity(intent);
                     }})
                 .setNegativeButton(android.R.string.no, null).show();
@@ -162,7 +165,7 @@ public class CloseFlightActivity extends AppCompatActivity {
         }
         printer.setAlignment(0);
         printer.printString("SELLERS INFORMATION");
-        printer.printString(SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_KEY)
+        printer.printString(SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FA_NAME)
                 + " System User");
         printer.printString(" ");
         printer.printString("Please handover to cashier");

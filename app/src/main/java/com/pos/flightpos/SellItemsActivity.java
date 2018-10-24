@@ -139,6 +139,15 @@ public class SellItemsActivity extends AppCompatActivity {
             }
         });
 
+        LinearLayout voidOrdersLayout = (LinearLayout) findViewById(R.id.voidOrder);
+        voidOrdersLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(SellItemsActivity.this, VoidOrderActivity.class);
+                startActivity(intent);
+            }
+        });
+
         LinearLayout exchangeRatesLayout = (LinearLayout) findViewById(R.id.exchangeRates);
         exchangeRatesLayout.setOnClickListener(new View.OnClickListener() {
             @Override

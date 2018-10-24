@@ -72,4 +72,11 @@ public class POSCommonUtils {
         AlertDialog alert11 = builder1.create();
         alert11.show();
     }
+
+    public static String getServiceType(Context context){
+        String kitCode = SaveSharedPreference.getStringValues(context, Constants.SHARED_PREFERENCE_KIT_CODE);
+        POSDBHandler handler = new POSDBHandler(context);
+       return handler.getKitNumberListFieldValueFromKitCode(kitCode,Constants.FILED_NAME_SERVICE_TYPE);
+
+    }
 }

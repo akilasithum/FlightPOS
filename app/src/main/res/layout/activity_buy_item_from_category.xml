@@ -1,204 +1,220 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".BuyOnBoardItemsActivity">
 
-    <TableLayout
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="50dp"
-        android:paddingRight="75dp"
-        android:paddingTop="50dp"
-        android:focusable="true"
-        android:focusableInTouchMode="true">
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
 
-        <TableRow
+        <TableLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:text="Item Category"
-                android:textSize="25dp" />
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:background="@drawable/layoutbackgroundborder"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:paddingLeft="50dp"
+            android:paddingRight="75dp">
 
-            <Spinner
-                android:id="@+id/itemCategorySpinner"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                style="@style/Widget.AppCompat.Spinner.Underlined"
-                android:layout_weight="1"
-                android:paddingRight="30dp"
-                android:textSize="25dp"/>
-        </TableRow>
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
 
-        <TableRow
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:text="Item Category"
+                    android:textSize="25dp" />
+
+                <Spinner
+                    android:id="@+id/itemCategorySpinner"
+                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingRight="30dp"
+                    android:textSize="25dp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:text="Item"
+                    android:textSize="25dp" />
+
+                <Spinner
+                    android:id="@+id/itemSpinner"
+                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingRight="30dp"
+                    android:textSize="25dp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <Button
+                    android:id="@+id/addItemBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Add Item" />
+            </TableRow>
+        </TableLayout>
+
+        <TableLayout
+            android:id="@+id/contentTable"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:paddingTop="10dp">
+            android:layout_height="wrap_content"
+            android:background="@drawable/layoutbackgroundborder"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:paddingTop="50dp">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:text="Item"
-                android:textSize="25dp" />
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
 
-            <Spinner
-                android:id="@+id/itemSpinner"
-                android:layout_width="0dp"
-                style="@style/Widget.AppCompat.Spinner.Underlined"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingRight="30dp"
-                android:textSize="25dp"/>
-        </TableRow>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:background="#D5D3D3"
+                    android:gravity="center"
+                    android:text="Item Desc"
+                    android:textSize="25dp" />
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <Button
-                android:id="@+id/addItemBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Add Item" />
-        </TableRow>
-    </TableLayout>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:background="#CAC7C7"
+                    android:gravity="center"
+                    android:text="Qty"
+                    android:textSize="25dp" />
 
-    <TableLayout
-        android:id="@+id/contentTable"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="50dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:background="#D5D3D3"
+                    android:gravity="center"
+                    android:text="Price"
+                    android:textSize="25dp" />
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="6"
-                android:background="#D5D3D3"
-                android:text="Item Desc"
-                android:textSize="25dp"
-                android:gravity="center"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:background="#CAC7C7"
+                    android:gravity="center"
+                    android:text="Total"
+                    android:textSize="25dp" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:background="#CAC7C7"
-                android:text="Qty"
-                android:textSize="25dp"
-                android:gravity="center"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="" />
+            </TableRow>
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:background="#D5D3D3"
-                android:text="Price"
-                android:textSize="25dp"
-                android:gravity="center"/>
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:background="#CAC7C7"
-                android:text="Total"
-                android:textSize="25dp"
-                android:gravity="center"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:paddingTop="20dp"
+                    android:text="" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text=""/>
-        </TableRow>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="sub Total : "
+                    android:textSize="20dp" />
 
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:paddingTop="20dp"
-                android:text=""/>
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="sub Total : "
-                android:textSize="20dp"/>
+                <TextView
+                    android:id="@+id/subTotalTextView"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="0"
+                    android:textSize="20dp" />
+            </TableRow>
 
-            <TextView
-                android:id="@+id/subTotalTextView"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="0"
-                android:textSize="20dp"/>
-        </TableRow>
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingTop="20dp"
-                android:text=""/>
-        </TableRow>
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:text="Seat Number :"
-                android:layout_marginLeft="30dp"
-                android:textSize="22dp"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingTop="20dp"
+                    android:text="" />
+            </TableRow>
 
-            <EditText
-                android:id="@+id/seatNumber"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginTop="5dp"
-                android:background="@drawable/textbox_background"
-                android:textSize="22dp"/>
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
 
-            <Button
-                android:id="@+id/scanBoardingPass"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:layout_marginRight="30dp"
-                android:text="Scan Boarding Pass" />
-        </TableRow>
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <Button
-                android:id="@+id/purchaseItems"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_margin="30dp"
-                android:text="Purchase Items" />
-        </TableRow>
-    </TableLayout>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:layout_weight="2"
+                    android:text="Seat Number :"
+                    android:textSize="22dp" />
 
+                <EditText
+                    android:id="@+id/seatNumber"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/textbox_background"
+                    android:textSize="22dp" />
 
-</LinearLayout>
+                <Button
+                    android:id="@+id/scanBoardingPass"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="30dp"
+                    android:layout_weight="3"
+                    android:text="Scan Boarding Pass" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <Button
+                    android:id="@+id/purchaseItems"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="30dp"
+                    android:layout_weight="1"
+                    android:text="Purchase Items" />
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+</ScrollView>

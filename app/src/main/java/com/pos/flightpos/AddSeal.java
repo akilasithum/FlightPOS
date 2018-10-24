@@ -10,10 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.amazonaws.util.StringUtils;
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
@@ -28,30 +26,45 @@ public class AddSeal extends AppCompatActivity {
 
     String parent;
     String noOfSeals;
-    LinearLayout mRlayout;
+    LinearLayout outbonundLayout;
+    LinearLayout inboundLayout;
     Button addSealBtn;
     POSDBHandler handler;
+    String flightMode;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_seal);
         parent = getIntent().getExtras().getString("parent");
         noOfSeals = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_NO_OF_SEAL);
-        mRlayout = (LinearLayout) findViewById(R.id.layout_addSeal);
+        outbonundLayout = (LinearLayout) findViewById(R.id.layout_addSeal);
+        inboundLayout = findViewById(R.id.layout_addInboundSeal);
         addSealBtn = (Button) findViewById(R.id.bt_addSeal);
         handler = new POSDBHandler(this);
+        flightMode = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_MODE);
+        if("faUser".equals(flightMode)){
+            inboundLayout.setVisibility(View.GONE);
+        }
+        else{
+            findViewById(R.id.layout_addRemark).setVisibility(View.GONE);
+        }
         addSealTextBoxes();
-        if(parent.equals("AttCheckInfo")){
+        if(flightMode.equals("faUser")){
             addSealBtn.setText("Verify Seals");
-            String storedSeals = SaveSharedPreference.getStringValues(this,"openSealList");
+            String flightType = SaveSharedPreference.getStringValues(this,
+                    Constants.SHARED_PREFERENCE_FLIGHT_TYPE);
+            if("CloseFlightActivity".equals(parent)){
+                flightType = "inBound";
+            }
+            String storedSeals = SaveSharedPreference.getStringValues(this,flightType+"SealList");
             String[] storedSealsArray = storedSeals.split(",");
             for(int i = 0; i<storedSealsArray.length ; i++){
-                EditText editText = (EditText) mRlayout.getChildAt(i);
+                EditText editText = (EditText) outbonundLayout.getChildAt(i);
                 editText.setText(storedSealsArray[i]);
             }
         }
         else{
-            addSealBtn.setText("Add Seals");
+            addSealBtn.setText("Add Outbound seals");
         }
     }
 
@@ -63,22 +76,32 @@ public class AddSeal extends AppCompatActivity {
             EditText myEditText = new EditText(this);
             myEditText.setLayoutParams(mRparams);
             myEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
-            mRlayout.addView(myEditText,0);
+            outbonundLayout.addView(myEditText,0);
+            if(flightMode != null && flightMode.equals("admin")) {
+                EditText inboundSealText = new EditText(this);
+                inboundSealText.setLayoutParams(mRparams);
+                inboundSealText.setInputType(InputType.TYPE_CLASS_NUMBER);
+                inboundLayout.addView(inboundSealText, 0);
+            }
         }
     }
 
-    public void addSeal(View view) {
-        int childCount = mRlayout.getChildCount();
+    private List<String> getSealListFromLayout(LinearLayout layout){
+        int childCount = outbonundLayout.getChildCount();
         List<String> sealList = new ArrayList<>();
         for (int i = 0; i < childCount - 1; i++) {
-            EditText editText = (EditText) mRlayout.getChildAt(i);
+            EditText editText = (EditText) layout.getChildAt(i);
             String textVal = editText.getText() == null ? null : editText.getText().toString();
             if (textVal != null && !textVal.isEmpty()) {
                 sealList.add(textVal);
             }
 
         }
-        if(parent.equals("AttCheckInfo")){
+        return sealList;
+    }
+    public void addSeal(View view) {
+        List<String> sealList = getSealListFromLayout(outbonundLayout);
+        if(flightMode.equals("faUser")){
             SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_IS_SEAL_VERIFIED,"yes");
             Toast.makeText(getApplicationContext(), "Seal numbers are verified.",
                     Toast.LENGTH_SHORT).show();
@@ -90,24 +113,32 @@ public class AddSeal extends AppCompatActivity {
             }, 1000);
         }
         else {
-            String sealType = parent.equals("VerifyFlightByAdminActivity") ? "open" : "close";
-            String storedName = sealType+"SealList";
-            String seals = TextUtils.join(",", sealList);
-            SaveSharedPreference.setStringValues(this, storedName, seals);
-            Toast.makeText(getApplicationContext(), "Successfully added " + sealList.size() + " seals.",
-                    Toast.LENGTH_SHORT).show();
-            Date date = new Date();
-            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            String currentDateStr = df.format(date);
-            String flightName = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME);
-            String flightDate = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_DATE);
-            handler.insertSealData(sealType,String.valueOf(sealList.size()),seals,currentDateStr,flightName,flightDate);
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                public void run() {
-                    onBackPressed();
-                }
-            }, 1000);
+            saveSealDetails("outBoundSealList",sealList);
+
         }
+    }
+
+    public void addInboundSeal(View view) {
+        List<String> sealList = getSealListFromLayout(inboundLayout);
+        saveSealDetails("inBoundSealList",sealList);
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                onBackPressed();
+            }
+        }, 1000);
+    }
+
+    private void saveSealDetails(String storedName,List<String> sealList){
+        String seals = TextUtils.join(",", sealList);
+        SaveSharedPreference.setStringValues(this, storedName, seals);
+        Toast.makeText(getApplicationContext(), "Successfully added " + sealList.size() + " seals.",
+                Toast.LENGTH_SHORT).show();
+        Date date = new Date();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentDateStr = df.format(date);
+        String flightName = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME);
+        String flightDate = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_DATE);
+        handler.insertSealData("outbound",String.valueOf(sealList.size()),seals,currentDateStr,flightName,flightDate);
     }
 }

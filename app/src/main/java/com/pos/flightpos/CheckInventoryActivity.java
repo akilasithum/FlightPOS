@@ -68,7 +68,7 @@ public class CheckInventoryActivity extends AppCompatActivity {
         quantity.setGravity(Gravity.CENTER);
         tr.addView(quantity);
 
-        if(!parent.equals("VerifyFlightByAdminActivity")) {
+        //if(!parent.equals("VerifyFlightByAdminActivity")) {
             TextView isValidated = new TextView(this);
             isValidated.setText("Is Validated");
             isValidated.setBackgroundColor(ContextCompat.getColor(this, R.color.lightAsh));
@@ -76,7 +76,7 @@ public class CheckInventoryActivity extends AppCompatActivity {
             isValidated.setLayoutParams(cellParams2);
             isValidated.setGravity(Gravity.CENTER);
             tr.addView(isValidated);
-        }
+        //}
         checkInventoryTable.addView(tr);
 
     }
@@ -150,7 +150,7 @@ public class CheckInventoryActivity extends AppCompatActivity {
                 qtyView.setGravity(Gravity.CENTER);
                 tr.addView(qtyView);
 
-                if(!parent.equals("VerifyFlightByAdminActivity")) {
+                //if(!parent.equals("VerifyFlightByAdminActivity")) {
                     TextView isValidated = new TextView(this);
                     String validatedText = handler.isDrawerValidated(cartNo, drawerName) ? "OK" : "NV";
                     isValidated.setText(validatedText);
@@ -158,7 +158,7 @@ public class CheckInventoryActivity extends AppCompatActivity {
                     isValidated.setLayoutParams(cellParams2);
                     isValidated.setGravity(Gravity.CENTER);
                     tr.addView(isValidated);
-                }
+                //}
                 checkInventoryTable.addView(tr);
             }
        // }

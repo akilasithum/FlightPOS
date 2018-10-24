@@ -1,8 +1,6 @@
 package com.pos.flightpos;
 
-import android.app.AlertDialog;
 import android.app.Dialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
@@ -12,7 +10,6 @@ import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -26,7 +23,6 @@ import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.SoldItem;
-import com.pos.flightpos.objects.XMLMapper.Item;
 import com.pos.flightpos.objects.XMLMapper.Promotion;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
@@ -34,9 +30,7 @@ import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class BuyItemFromCategoryActivity extends AppCompatActivity {
 
@@ -232,7 +226,7 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
                     soldItem.setPrice(price.getText().toString());
                 }
                 soldList.add(soldItem);
-                String userID = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_KEY);
+                String userID = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FA_NAME);
                 handler.insertDailySalesEntry(orderNumber,itemID.getText().toString(),serviceType,
                         equipmentNo.getText().toString(),drawer.getText().toString(),qty.getText().toString(),
                         total.getText().toString(),"Passenger",userID);

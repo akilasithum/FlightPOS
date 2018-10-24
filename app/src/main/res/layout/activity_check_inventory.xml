@@ -9,9 +9,11 @@
         android:id="@+id/checkInventoryTable"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/layoutbackgroundborder"
         android:paddingLeft="25dp"
         android:paddingRight="25dp"
-        android:paddingTop="20dp">
+        android:paddingBottom="15dp"
+        android:layout_marginTop="20dp">
 
     <!--<TableRow
         android:layout_width="fill_parent"

@@ -105,6 +105,12 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void clearDailySalesItem(String orderId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from dailySales where orderNumber ='"+orderId+"'");
+        db.close();
+    }
+
     public void insertSealData(String sealType,String numOfSeals,String seals,String date,String flightName,String flightDate){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("INSERT INTO sealDetails VALUES ('"+sealType+"','"+numOfSeals+"','"+seals+"'," +
@@ -118,6 +124,30 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO dailySales VALUES('"+orderNumber+"','"+itemNo+"','"+equipmentNo+"','"+drawer+"','"
                 +quantity+"','"+serviceType+"', '"+total+"','"+buyerType+"','"+sellerId+"');");
         db.close();
+    }
+
+    public List<SoldItem> getSoldItemsFromOrderId(String orderId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<SoldItem> items = new ArrayList<>();
+        Cursor cursor = db.rawQuery("select * from dailySales where orderNumber = '"+orderId+"'"
+                , null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                SoldItem item = new SoldItem();
+
+                item.setItemDesc(getItemDescFromItemNo(cursor.getString(cursor.getColumnIndex("itemNo"))));
+                item.setItemId(cursor.getString(cursor.getColumnIndex("itemNo")));
+                item.setPrice(cursor.getString(cursor.getColumnIndex("totalPrice")));
+                item.setQuantity(cursor.getString(cursor.getColumnIndex("quantity")));
+                item.setEquipmentNo(cursor.getString(cursor.getColumnIndex("equipmentNo")));
+                item.setDrawer(cursor.getString(cursor.getColumnIndex("drawer")));
+                items.add(item);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return items;
     }
 
     public String getTotalSaleFromServiceType(String serviceType,String buyerType){

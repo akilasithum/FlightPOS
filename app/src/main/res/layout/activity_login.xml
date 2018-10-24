@@ -26,6 +26,7 @@
         android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/layoutbackgroundborder"
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
         android:paddingTop="80dp">

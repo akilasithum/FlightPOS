@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.pt.msr.Msr;
 import android.pt.printer.Printer;
+import android.support.design.widget.TabLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -34,6 +35,7 @@ import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.XMLMapper.Currency;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
+import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -83,8 +85,25 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         String subTotal = intent.getExtras().get("subTotal").toString();
         seatNumber = intent.getExtras().get("SeatNumber").toString();
         orderNumber = intent.getExtras().get("orderNumber").toString();
-        dueBalance = Float.parseFloat(subTotal);
-        balanceDueTextView.setText(String.valueOf(dueBalance));
+        String serviceType = POSCommonUtils.getServiceType(this);
+        TableRow totalTextRow = findViewById(R.id.totalTextRow);
+        TableRow taxTextRow = findViewById(R.id.serviceTaxRow);
+        if(serviceType != null && serviceType.equals("DTP")){
+            String taxPercentage = SaveSharedPreference.getStringValues(this,
+                    Constants.SHARED_PREFERENCE_TAX_PERCENTAGE);
+            dueBalance = Float.parseFloat(subTotal) * ((100+Float.parseFloat(taxPercentage))/100);
+            balanceDueTextView.setText(String.valueOf(dueBalance));
+            TextView tax = findViewById(R.id.serviceTaxTextView);
+            tax.setText(taxPercentage + "%");
+            TextView total = findViewById(R.id.totalTextView);
+            total.setText(subTotal);
+        }
+        else {
+            totalTextRow.setVisibility(View.GONE);
+            taxTextRow.setVisibility(View.GONE);
+            dueBalance = Float.parseFloat(subTotal);
+            balanceDueTextView.setText(String.valueOf(dueBalance));
+        }
         creditCardList = new ArrayList<>();
         paymentMethodsMap = new HashMap<>();
         registerLayoutClickEvents();

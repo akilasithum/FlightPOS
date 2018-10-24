@@ -10,8 +10,9 @@
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:paddingTop="10dp"
+        android:layout_marginTop="10dp"
         android:focusable="true"
+        android:background="@drawable/layoutbackgroundborder"
         android:focusableInTouchMode="true">
 
         <TableRow
@@ -152,6 +153,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
+        android:background="@drawable/layoutbackgroundborder"
         android:paddingRight="10dp"
         android:paddingTop="50dp">
 
@@ -202,8 +204,8 @@
                 android:textSize="25dp"
                 android:gravity="center"/>
         </TableRow>
-
         <TableRow
+            android:id="@+id/totalTextRow"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
             <TextView
@@ -211,6 +213,43 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:paddingTop="20dp"
+                android:text="Total : "
+                android:textSize="20dp"/>
+
+            <TextView
+                android:id="@+id/totalTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0"
+                android:textSize="20dp"/>
+        </TableRow>
+        <TableRow
+            android:id="@+id/serviceTaxRow"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Service Tax : "
+                android:textSize="20dp"/>
+
+            <TextView
+                android:id="@+id/serviceTaxTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0"
+                android:textSize="20dp"/>
+        </TableRow>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:text="Balance Due : "
                 android:textSize="20dp"/>
 

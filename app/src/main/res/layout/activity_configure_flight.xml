@@ -3,8 +3,11 @@
     android:layout_height="wrap_content"
     android:paddingLeft="50dp"
     android:paddingRight="75dp"
-    android:paddingTop="50dp"
+    android:layout_marginTop="35dp"
+    android:paddingBottom="15dp"
+    android:paddingTop="15dp"
     android:focusable="true"
+    android:background="@drawable/layoutbackgroundborderlowtr"
     android:focusableInTouchMode="true">
 
     <TableRow

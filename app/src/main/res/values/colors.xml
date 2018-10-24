@@ -3,7 +3,7 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
-    <color name="primary">#FCFFBA</color>
+    <color name="primary">#BABFF5</color>
     <color name="primary_dark">#4E55E5</color>
     <color name="primary_darker">#0A0E64</color>
     <color name="accent">#1821E7</color>
@@ -15,8 +15,11 @@
     <color name="jumbo">#888888</color>
     <color name="aluminum">#999999</color>
     <color name="base">#AAAAAA</color>
+    <color name="trbase">#CCAAAAAA</color>
     <color name="iron">#2C2C2E</color>
     <color name="white">#FFFFFF</color>
+    <color name="trwhite">#99FFFFFF</color>
+    <color name="lowtrwhite">#CCFFFFFF</color>
     <color name="orange">#FF5733</color>
     <color name="lightAsh">#D5D3D3</color>
     <color name="ash">#CAC7C7</color>

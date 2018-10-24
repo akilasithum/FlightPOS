@@ -12,7 +12,7 @@
         android:orientation="vertical"
         android:paddingLeft="80dp"
         android:paddingRight="50dp"
-        android:paddingTop="20dp">
+        android:layout_marginTop="20dp">
 
         <TableLayout
             android:id="@+id/cartsTable"
@@ -26,7 +26,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:layout_margin="10dp"
+                    android:padding="10dp"
+                    android:background="@drawable/layoutbackgroundborder"
                     android:text="Available carts for selected KIT."
                     android:textSize="25dp" />
             </TableRow>

@@ -16,7 +16,7 @@ public class SellarInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sellar_info);
         EditText currentUser = (EditText) findViewById(R.id.currentUser);
-        currentUser.setText(SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KEY)
+        currentUser.setText(SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FA_NAME)
         + " - Logged User");
         currentUser.setEnabled(false);
     }

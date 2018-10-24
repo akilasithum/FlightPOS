@@ -86,12 +86,13 @@ public class DefineCartNumbersActivity extends AppCompatActivity {
                 (40, 40);
         for(int i=1 ; i< sealCount;i++){
             LinearLayout layout = new LinearLayout(this);
+            layout.setOrientation(LinearLayout.HORIZONTAL);
             layout.setLayoutParams(Constants.COMMON_LAYOUT_PARAMS);
             final EditText myEditText = new EditText(this);
             myEditText.setLayoutParams(Constants.COMMON_LAYOUT_PARAMS);
-            ImageButton button = new ImageButton(this);
+            Button button = new Button(this);
             button.setLayoutParams(mRparams);
-            button.setPadding(30,0,0,0);
+            //button.setPadding(30,0,0,0);
             button.setBackground(getResources().getDrawable(R.drawable.icon_barcode_reader));
             button.setOnClickListener(new View.OnClickListener() {
                 @Override

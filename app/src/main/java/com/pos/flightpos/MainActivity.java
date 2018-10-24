@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        /*Button goToICCardBrn = (Button) findViewById(R.id.goToICCardBrn);
+       /* Button goToICCardBrn = (Button) findViewById(R.id.goToICCardBrn);
         goToICCardBrn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

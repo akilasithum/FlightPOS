@@ -28,7 +28,6 @@ import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.SoldItem;
-import com.pos.flightpos.objects.XMLMapper.Item;
 import com.pos.flightpos.objects.XMLMapper.Promotion;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
@@ -173,7 +172,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
                 soldItem.setPrice(price.getText().toString());
             }
             soldList.add(soldItem);
-            String userID = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_KEY);
+            String userID = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FA_NAME);
             handler.insertDailySalesEntry(orderNumber,itemID.getText().toString(),serviceType,
                     equipmentNo.getText().toString(),drawer.getText().toString(),qty.getText().toString(),
                     total.getText().toString(),"Passenger",userID);

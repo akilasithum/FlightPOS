@@ -6,11 +6,13 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.Flight;
+import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -23,7 +25,9 @@ public class AttendendMainActivity extends AppCompatActivity {
     EditText flightTextView;
     TextView eClassPaxCount;
     TextView bClassPaxCount;
+    EditText taxPercentage;
     long mExitTime = 0;
+    String serviceType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,7 +39,9 @@ public class AttendendMainActivity extends AppCompatActivity {
         flightTextView = (EditText) findViewById(R.id.flightList);
         eClassPaxCount = (EditText) findViewById(R.id.eClassPaxContField);
         bClassPaxCount = (EditText) findViewById(R.id.bClassPaxContField);
+        taxPercentage = findViewById(R.id.taxPercentage);
         submitBtn = (Button) findViewById(R.id.submitBtn);
+        serviceType = POSCommonUtils.getServiceType(this);
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -43,6 +49,14 @@ public class AttendendMainActivity extends AppCompatActivity {
             }
         });
         setFlightDetails();
+        showHideTaxPercentage();
+    }
+
+    private void showHideTaxPercentage(){
+        TableRow tableRow = findViewById(R.id.taxPercentageRow);
+        if(serviceType == null || !serviceType.equals("DTP")){
+            tableRow.setVisibility(View.GONE);
+        }
     }
 
     private void setFlightDetails(){
@@ -79,12 +93,23 @@ public class AttendendMainActivity extends AppCompatActivity {
             if(bClassPaxCount.getText() != null &&! bClassPaxCount.getText().toString().equals("")){
                 SaveSharedPreference.setStringValues(this,"bClassPaxCount", bClassPaxCount.getText().toString());
             }
+            if(serviceType != null && serviceType.equals("DTP")){
+                if(taxPercentage.getText() != null && !taxPercentage.getText().toString().equals("")){
+                    SaveSharedPreference.setStringValues(this,
+                            Constants.SHARED_PREFERENCE_TAX_PERCENTAGE,taxPercentage.getText().toString());
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Please specify tax percentage",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
             Intent intent = new Intent(this, AttCheckInfo.class);
             SaveSharedPreference.setStringValues(this,"eClassPaxCount", eClassPaxCount.getText().toString());
             startActivity(intent);
         }
         else{
-            Toast.makeText(getApplicationContext(), "Please fill required details.",
+            Toast.makeText(getApplicationContext(), "Please specify pax count.",
                     Toast.LENGTH_SHORT).show();
         }
     }

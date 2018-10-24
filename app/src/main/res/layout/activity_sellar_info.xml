@@ -9,11 +9,13 @@
         android:id="@+id/layout_user"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="70dp"
-        android:layout_marginRight="70dp"
-        android:layout_marginTop="70dp"
+        android:layout_marginLeft="55dp"
+        android:layout_marginRight="55dp"
+        android:layout_marginTop="55dp"
+        android:padding="15dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
+        android:background="@drawable/layoutbackgroundborder"
         android:gravity="center_horizontal"
         android:orientation="vertical">
 

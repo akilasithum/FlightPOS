@@ -84,7 +84,6 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
                 printInventoryReport();
             }
         });
-
         addSealsLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -94,7 +93,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     }
 
     private void showConfirmation() {
-        String openSeals = SaveSharedPreference.getStringValues(VerifyFlightByAdminActivity.this, "openSealList");
+        String openSeals = SaveSharedPreference.getStringValues(VerifyFlightByAdminActivity.this, "outBoundSealList");
         if (openSeals == null || openSeals.length() == 0) {
             Toast.makeText(getApplicationContext(), "Add opening seals before login.",
                     Toast.LENGTH_SHORT).show();

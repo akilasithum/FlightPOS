@@ -3,18 +3,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/sealMainLayout"
-    tools:context=".AddSeal" >
+    tools:context=".DefineCartNumbersActivity" >
 
     <LinearLayout
         android:id="@+id/layoutDefineCars"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="60dp"
-        android:layout_marginRight="60dp"
-        android:layout_marginTop="60dp"
+        android:paddingRight="60dp"
+        android:paddingLeft="60dp"
+        android:layout_marginTop="45dp"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:gravity="center_horizontal"
+        android:background="@drawable/layoutbackgroundborder"
         android:orientation="vertical">
 
         <LinearLayout

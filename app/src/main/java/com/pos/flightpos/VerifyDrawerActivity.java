@@ -14,6 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pos.flightpos.objects.XMLMapper.KITItem;
 import com.pos.flightpos.utils.POSDBHandler;
@@ -46,17 +47,17 @@ public class VerifyDrawerActivity extends AppCompatActivity {
         TextView drawerNameText = (TextView) findViewById(R.id.drawerNameText);
         drawerNameText.setText("Verify " +drawerName);
         LinearLayout verifyDrawerBtn = (LinearLayout) findViewById(R.id.verifyDrawerBtn);
-        if(!parent.equals("VerifyFlightByAdminActivity")) {
+        //if(!parent.equals("VerifyFlightByAdminActivity")) {
             verifyDrawerBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     verifyDrawer();
                 }
             });
-        }
+        /*}
         else{
             verifyDrawerBtn.setVisibility(View.INVISIBLE);
-        }
+        }*/
         updatedMap = new HashMap<>();
         equipmentNo = drawerItems.get(0).getEquipmentNo();
         showDataInTable(drawerItems);
@@ -75,7 +76,7 @@ public class VerifyDrawerActivity extends AppCompatActivity {
             for(Map.Entry<String,String> entry : updatedMap.entrySet()) {
                 KITItem kitItem = new KITItem();
                 kitItem.setQuantity(entry.getValue());
-                String[] strings = entry.getKey().split("-");
+                String[] strings = entry.getKey().split("-#");
                 kitItem.setItemNo(strings[0]);
                 kitItem.setEquipmentNo(strings[1]);
                 kitItem.setDrawer(drawerName);
@@ -83,9 +84,11 @@ public class VerifyDrawerActivity extends AppCompatActivity {
             }
         }
         handler.updateDrawerValidation(equipmentNo,drawerName,"YES");
-        Intent intent = new Intent(this,VerifyCartsActivity.class);
+        Toast.makeText(getApplicationContext(), "Validated successful",
+                Toast.LENGTH_SHORT).show();
+        /*Intent intent = new Intent(this,VerifyCartsActivity.class);
         intent.putExtra("parent",parent);
-        startActivity(intent);
+        startActivity(intent);*/
     }
 
     private void showDataInTable(List<KITItem> kitItems){
@@ -117,7 +120,7 @@ public class VerifyDrawerActivity extends AppCompatActivity {
             itemDesc.setLayoutParams(cellParams2);
             tr.addView(itemDesc);
 
-            if(parent.equals("VerifyFlightByAdminActivity")){
+            /*if(parent.equals("VerifyFlightByAdminActivity")){
                 TextView qtyTextView = new TextView(this);
                 qtyTextView.setText(item.getQuantity());
                 qtyTextView.setTextSize(16);
@@ -125,7 +128,7 @@ public class VerifyDrawerActivity extends AppCompatActivity {
                 qtyTextView.setGravity(Gravity.CENTER);
                 tr.addView(qtyTextView);
             }
-            else {
+            else {*/
                 EditText qtyTextBox = new EditText(this);
                 qtyTextBox.setText(item.getQuantity());
                 qtyTextBox.setTextSize(16);
@@ -139,7 +142,7 @@ public class VerifyDrawerActivity extends AppCompatActivity {
 
                     @Override
                     public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                        updatedMap.put(itemNoStr + "-" + equipmentNo, charSequence.toString());
+                        updatedMap.put(itemNoStr + "-#" + equipmentNo, charSequence.toString());
                         isValueUpdated = true;
                     }
 
@@ -148,7 +151,7 @@ public class VerifyDrawerActivity extends AppCompatActivity {
                     }
                 });
                 tr.addView(qtyTextBox);
-            }
+            //}
             verifyDrawerTable.addView(tr);
         }
     }

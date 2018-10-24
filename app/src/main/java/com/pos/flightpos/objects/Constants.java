@@ -5,7 +5,7 @@ import android.widget.TableRow;
 
 public class Constants {
 
-    public static final String SHARED_PREFERENCE_KEY = "flightAttendedName";
+    public static final String SHARED_PREFERENCE_FA_NAME = "flightAttendedName";
     public static final String SHARED_PREFERENCE_KIT_CODE = "kitCode";
     public static final String SHARED_PREFERENCE_FLIGHT_NAME = "flightName";
     public static final String SHARED_PREFERENCE_FLIGHT_DATE = "flightDate";
@@ -15,6 +15,10 @@ public class Constants {
     public static final String SHARED_PREFERENCE_CART_NUM_LIST = "cartNumbersList";
     public static final String SHARED_PREFERENCE_ADMIN_USER = "userName";
     public static final String SHARED_PREFERENCE_CAN_ATT_LOGIN = "canAttLogin";
+    public static final String SHARED_PREFERENCE_CLOSED_FLIGHT = "isFlightClosed";
+    public static final String SHARED_PREFERENCE_FLIGHT_MODE = "flightMode";
+    public static final String SHARED_PREFERENCE_FLIGHT_TYPE = "flightType";
+    public static final String SHARED_PREFERENCE_TAX_PERCENTAGE = "taxPercentage";
 
     public static final String PRINTER_LOGO_LOCATION = "/res/drawable/no_back.jpg";
     public static final String FILED_NAME_SERVICE_TYPE = "serviceType";

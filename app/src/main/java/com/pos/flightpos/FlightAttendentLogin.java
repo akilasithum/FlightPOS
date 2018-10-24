@@ -16,16 +16,13 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
-import com.pos.flightpos.objects.XMLMapper.KitNumber;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -55,10 +52,10 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
         setContentView(R.layout.activity_flight_attendent_login);
         handler = new POSDBHandler(this);
 
-        String storedValue = SaveSharedPreference.getStringValues(FlightAttendentLogin.this, Constants.SHARED_PREFERENCE_KEY);
+        String storedValue = SaveSharedPreference.getStringValues(FlightAttendentLogin.this, Constants.SHARED_PREFERENCE_FA_NAME);
         if(storedValue != null && storedValue.length() != 0)
         {
-            reDirectToMainPage(SaveSharedPreference.getStringValues(FlightAttendentLogin.this,Constants.SHARED_PREFERENCE_KEY));
+            reDirectToMainPage(SaveSharedPreference.getStringValues(FlightAttendentLogin.this,Constants.SHARED_PREFERENCE_FA_NAME));
         }
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.att_email);
@@ -133,7 +130,18 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
 
     private void reDirectToMainPage(String userName){
         Intent intent = new Intent(this, AttendendMainActivity.class);
-        SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_KEY,userName);
+        SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_FA_NAME,userName);
+        SaveSharedPreference.setStringValues(this,
+                Constants.SHARED_PREFERENCE_FLIGHT_MODE,"faUser");
+        String flightType = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_TYPE);
+        if(flightType == null || flightType.isEmpty()){
+            SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_TYPE,
+                    "outBound");
+        }
+        else{
+            SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_TYPE,
+                    "inBound");
+        }
         startActivity(intent);
     }
 
