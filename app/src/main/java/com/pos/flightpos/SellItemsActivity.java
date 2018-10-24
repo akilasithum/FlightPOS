@@ -34,16 +34,14 @@ public class SellItemsActivity extends AppCompatActivity {
         handler = new POSDBHandler(this);
         availableServiceType();
         registerLayoutClickEvents();
-        //showBOBNotification();
-
     }
 
     private void showBOBNotification(){
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setSmallIcon(R.drawable.icon_buy_onboard)
-                        .setContentTitle("Buy on Board items")
-                        .setContentText("You have 2 Buy on Board items to proceed.");
+                        .setContentTitle("Pre order items")
+                        .setContentText("You have 2 pre order items to proceed.");
         Intent intent = new Intent(this,BuyItemFromCategoryActivity.class);
         intent.putExtra("serviceType","POD");
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);

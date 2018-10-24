@@ -2,10 +2,12 @@ package com.pos.flightpos;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -36,6 +38,7 @@ import com.pos.flightpos.utils.SaveSharedPreference;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class BuyOnBoardItemsActivity extends AppCompatActivity {
 
@@ -426,7 +429,22 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
     }
 
     private void populateSeatNumberFromBoardingPass(){
-        String qrCodeDetails = POSCommonUtils.scanQRCode(this);
-        seatNumber.setText(qrCodeDetails);
+        final Map<String,String> qrCodeDetails = POSCommonUtils.scanQRCode(this);
+        if(qrCodeDetails != null) {
+            String fileNames = "";
+            for(Map.Entry entry : qrCodeDetails.entrySet()){
+                fileNames += entry.getKey() + " - " + entry.getValue() + "\n";
+            }
+            new AlertDialog.Builder(BuyOnBoardItemsActivity.this)
+                    .setTitle("QR Code details")
+                    .setMessage(fileNames)
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            seatNumber.setText(qrCodeDetails.get("seatNo"));
+                        }})
+                    .setNegativeButton(android.R.string.cancel, null).show();
+        }
     }
 }

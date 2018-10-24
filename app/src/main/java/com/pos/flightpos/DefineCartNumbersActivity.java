@@ -108,6 +108,6 @@ public class DefineCartNumbersActivity extends AppCompatActivity {
     }
 
     private void setBarcodeValue(TextView textView){
-        textView.setText(POSCommonUtils.scanQRCode(this));
+        textView.setText(POSCommonUtils.scanBarCode(this));
     }
 }
