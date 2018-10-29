@@ -107,6 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="20dp"
                 android:clickable="true"
+                android:background="@drawable/textinputborderlight"
                 android:orientation="horizontal">
 
                 <ImageView

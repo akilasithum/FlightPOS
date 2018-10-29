@@ -1,8 +1,9 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:id="@+id/userMainLayout"
+    android:orientation="vertical"
     tools:context=".SellarInfoActivity" >
 
     <LinearLayout
@@ -36,5 +37,21 @@
             android:text="Add Seller" />
 
     </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:gravity="left|bottom"
+        android:layout_marginLeft="55dp"
+        android:layout_marginBottom="55dp"
+        android:orientation="vertical" >
 
-</RelativeLayout>
+        <ImageButton
+            android:id="@+id/backPressBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/icon_left_arrow"
+            android:layout_gravity="center_horizontal|left"
+            android:clickable="true" />
+    </LinearLayout>
+</LinearLayout>

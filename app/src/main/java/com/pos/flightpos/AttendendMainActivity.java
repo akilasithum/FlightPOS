@@ -54,7 +54,7 @@ public class AttendendMainActivity extends AppCompatActivity {
 
     private void showHideTaxPercentage(){
         TableRow tableRow = findViewById(R.id.taxPercentageRow);
-        if(serviceType == null || !serviceType.equals("DTP")){
+        if(serviceType == null || (!serviceType.equals("DTP") && !serviceType.equals("BOB"))){
             tableRow.setVisibility(View.GONE);
         }
     }
@@ -93,7 +93,7 @@ public class AttendendMainActivity extends AppCompatActivity {
             if(bClassPaxCount.getText() != null &&! bClassPaxCount.getText().toString().equals("")){
                 SaveSharedPreference.setStringValues(this,"bClassPaxCount", bClassPaxCount.getText().toString());
             }
-            if(serviceType != null && serviceType.equals("DTP")){
+            if(serviceType != null && (serviceType.equals("DTP") || serviceType.equals("BOB"))){
                 if(taxPercentage.getText() != null && !taxPercentage.getText().toString().equals("")){
                     SaveSharedPreference.setStringValues(this,
                             Constants.SHARED_PREFERENCE_TAX_PERCENTAGE,taxPercentage.getText().toString());

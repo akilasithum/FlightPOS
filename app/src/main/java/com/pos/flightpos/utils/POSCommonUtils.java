@@ -9,9 +9,13 @@ import android.widget.Toast;
 import com.pos.flightpos.ExchangeRateActivity;
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.SoldItem;
+import com.pos.flightpos.objects.XMLMapper.ComboDiscount;
 
 import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class POSCommonUtils {
@@ -30,7 +34,21 @@ public class POSCommonUtils {
     public static String getTwoDecimalFloatFromFloat(float floatVal){
         DecimalFormat df = new DecimalFormat();
         df.setMaximumFractionDigits(2);
-        return df.format(floatVal);
+        String formatStr = df.format(floatVal);
+        return getTwoDecimalFloatFromString(formatStr);
+    }
+
+    public static String getTwoDecimalFloatFromString(String floatStr){
+        String[] dividedStr = floatStr.split("\\.");
+        if(dividedStr.length == 1){
+            return floatStr + ".00";
+        }
+        else{
+            if(dividedStr[1].length() == 1){
+                return dividedStr[0] + "." + dividedStr[1]+"0";
+            }
+        }
+        return floatStr;
     }
 
     public static String getServiceTypeDescFromServiceType(String serviceType){
@@ -142,5 +160,53 @@ public class POSCommonUtils {
         POSDBHandler handler = new POSDBHandler(context);
        return handler.getKitNumberListFieldValueFromKitCode(kitCode,Constants.FILED_NAME_SERVICE_TYPE);
 
+    }
+
+    public static String getIfDiscountsAvailable(List<String> itemIds,POSDBHandler handler) {
+
+        if (itemIds != null) {
+            List<ComboDiscount> discounts = handler.getComboDiscounts();
+            List<Integer> discountList = new ArrayList<>();
+            for (ComboDiscount comboDiscount : discounts) {
+                String items = comboDiscount.getItems();
+                List<String> andList = new ArrayList<>();
+                Map<Integer, List<String>> orList = new HashMap<>();
+                String[] andItems = items.split("and");
+                int orCount = 0;
+                for (int i = 0; i < andItems.length; i++) {
+                    if (andItems[i].contains("or")) {
+                        String[] orItems = andItems[i].split("or");
+                        orList.put(orCount, new ArrayList<String>());
+                        for (int j = 0; j < orItems.length; j++) {
+                            orList.get(orCount).add(orItems[j].trim().replace("(","").replace(")",""));
+                        }
+                        orCount++;
+                    } else {
+                        andList.add(andItems[i].trim());
+                    }
+                }
+                if (itemIds.size() >= andList.size() + orList.size()) {
+                    for (String itemId : itemIds) {
+                        if (andList.contains(itemId)) {
+                            andList.remove(itemId);
+                        } else {
+                            for (Map.Entry<Integer, List<String>> entry : orList.entrySet()) {
+                                if (entry.getValue().contains(itemId)) {
+                                    orList.remove(entry.getKey());
+                                }
+                            }
+                        }
+                    }
+                }
+                if (andList.size() == 0 && orList.size() == 0) {
+                    discountList.add(Integer.valueOf(comboDiscount.getDiscount()));
+                }
+            }
+            if (discountList.size() != 0) {
+                Collections.sort(discountList);
+                return String.valueOf(discountList.get(discountList.size() - 1));
+            }
+        }
+        return null;
     }
 }

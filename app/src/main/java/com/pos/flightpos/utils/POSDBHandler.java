@@ -12,6 +12,7 @@ import com.pos.flightpos.InventoryReportActivity;
 import com.pos.flightpos.objects.Flight;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.User;
+import com.pos.flightpos.objects.XMLMapper.ComboDiscount;
 import com.pos.flightpos.objects.XMLMapper.Currency;
 import com.pos.flightpos.objects.XMLMapper.Equipment;
 import com.pos.flightpos.objects.XMLMapper.Item;
@@ -68,7 +69,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS equipmentType (equipmentNo VARCHAR,equipmentDesc VARCHAR," +
                 "equipmentType VARCHAR,drawerPrefix VARCHAR,noOfDrawers VARCHAR,kitCode VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS drawerValidation (equipmentNo VARCHAR," +
-                "drawer VARCHAR,isValidated VARCHAR);");
+                "drawer VARCHAR,isValidated VARCHAR,userMode VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS dailySales (orderNumber VARCHAR,itemNo VARCHAR," +
                 "equipmentNo VARCHAR,drawer VARCHAR,quantity VARCHAR,serviceType VARCHAR," +
                 "totalPrice VARCHAR,buyerType VARCHAR,sellarName VARCHAR);");
@@ -80,6 +81,10 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 "seals VARCHAR, sealAddedTime VARCHAR, flightName VARCHAR, flightDate VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS promotions (promotionId VARCHAR,serviceType VARCHAR," +
                 "itemId VARCHAR, discount VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS comboDiscounts (comboId VARCHAR,discount VARCHAR," +
+                "items VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS userComments (userId VARCHAR,area VARCHAR," +
+                "comment VARCHAR);");
     }
 
     public void clearTable(){
@@ -102,6 +107,12 @@ public class POSDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("delete from dailySales");
         db.execSQL("VACUUM");
+        db.close();
+    }
+
+    public void insertUserComments(String userId,String area,String comment){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("INSERT INTO userComments VALUES('"+userId+"','"+area+"','"+comment+"');");
         db.close();
     }
 
@@ -281,17 +292,17 @@ public class POSDBHandler extends SQLiteOpenHelper {
             for(Map.Entry<String,List<String>> entry : cartDrawerMap.entrySet()){
                 for(String drawer : entry.getValue()) {
                     db1.execSQL("INSERT INTO drawerValidation VALUES" +
-                            "('" + entry.getKey() + "','" + drawer + "','NO');");
+                            "('" + entry.getKey() + "','" + drawer + "','NO','');");
                 }
             }
         }
         db1.close();
     }
 
-    public boolean isDrawerValidated(String cartNo,String drawer){
+    public boolean isDrawerValidated(String cartNo,String drawer,String userMode){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("select isValidated from drawerValidation where equipmentNo = '"+cartNo+"' " +
-                        "and drawer = '"+drawer+"'"
+                        "and drawer = '"+drawer+"' and userMode = '"+userMode+"'"
                 , null);
         if (cursor.moveToFirst()){
             while(!cursor.isAfterLast()){
@@ -306,9 +317,10 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return false;
     }
 
-    public void updateDrawerValidation(String cartNo, String drawer,String validation){
+    public void updateDrawerValidation(String cartNo, String drawer,String validation,String userMode){
         SQLiteDatabase db = this.getReadableDatabase();
-        db.execSQL("update drawerValidation set isValidated = '"+validation+"' where  equipmentNo = '"+cartNo
+        db.execSQL("update drawerValidation set isValidated = '"+validation+"',userMode = '"+userMode+"' " +
+                "where  equipmentNo = '"+cartNo
                 +"' and drawer = '"+drawer+"';");
         db.close();
     }
@@ -427,6 +439,28 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
+    public boolean insertComboDiscount(Context context){
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            File xml = new File(context.getFilesDir(), "combo_discount.xml");
+            JSONObject jsonObj  = XML.toJSONObject(readStream(new FileInputStream(xml)));
+            Gson gson = new Gson();
+            JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("comboDiscounts");
+            JSONArray itemsArr = data.getJSONArray("comboDiscount");
+            List<ComboDiscount> comboDiscounts = gson.fromJson(itemsArr.toString(), new TypeToken<List<ComboDiscount>>(){}.getType());
+            for(ComboDiscount comboDiscount : comboDiscounts){
+                db.execSQL("INSERT INTO comboDiscounts VALUES" +
+                        "('"+comboDiscount.getComboId()+"','"+comboDiscount.getDiscount()+"','"+comboDiscount.getItems()+"');");
+            }
+            db.close();
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public List<Promotion> getPromotionsFromServiceType(String serviceType){
         List<Promotion> promotions = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -444,6 +478,24 @@ public class POSDBHandler extends SQLiteOpenHelper {
             }
         }
         return promotions;
+    }
+
+    public List<ComboDiscount> getComboDiscounts(){
+        List<ComboDiscount> comboDiscounts = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from comboDiscounts", null);
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+
+                ComboDiscount comboDiscount = new ComboDiscount();
+                comboDiscount.setComboId((cursor.getString(cursor.getColumnIndex("comboId"))));
+                comboDiscount.setItems((cursor.getString(cursor.getColumnIndex("items"))));
+                comboDiscount.setDiscount((cursor.getString(cursor.getColumnIndex("discount"))));
+                comboDiscounts.add(comboDiscount);
+                cursor.moveToNext();
+            }
+        }
+        return comboDiscounts;
     }
 
     public List<Currency> getCurrencyList(){
@@ -515,7 +567,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         Flight flight = new Flight();
         SQLiteDatabase db = this.getReadableDatabase();
         try {
-            Cursor cursor = db.rawQuery("select * from flights where flightName = '"+flightName+"'", null);
+            Cursor cursor = db.rawQuery("select * from flights where flightName like '%"+flightName+"'", null);
             if (cursor.moveToFirst()){
                 while(!cursor.isAfterLast()){
                     flight.setFlightName(cursor.getString(cursor.getColumnIndex("flightName")));
@@ -523,6 +575,9 @@ public class POSDBHandler extends SQLiteOpenHelper {
                     flight.setFlightTo(cursor.getString(cursor.getColumnIndex("flightTo")));
                     cursor.moveToNext();
                 }
+            }
+            else{
+                return null;
             }
             db.close();
             cursor.close();

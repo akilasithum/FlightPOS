@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -54,6 +55,21 @@ public class VoidOrderActivity extends AppCompatActivity {
                                 cancelOrder();
                             }})
                         .setNegativeButton(android.R.string.no, null).show();
+            }
+        });
+        Button receiptRePrintBtn = findViewById(R.id.receiptRePrintBtn);
+        receiptRePrintBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+        ImageButton backButton = findViewById(R.id.backPressBtn);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
             }
         });
     }

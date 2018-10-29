@@ -3,11 +3,14 @@ package com.pos.flightpos;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,7 +34,7 @@ public class ConfigureFlightActivity extends AppCompatActivity {
     TextView flightTo;
     Button submitBtn;
     Spinner flightDateSpinner;
-    AutoCompleteTextView flightListTextView;
+    EditText flightListTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +45,7 @@ public class ConfigureFlightActivity extends AppCompatActivity {
         flightFrom = (TextView) findViewById(R.id.fromTextField);
         flightTo = (TextView) findViewById(R.id.toTextField);
         flightDateSpinner = (Spinner) findViewById(R.id.flightDateSpinner);
-        flightListTextView = (AutoCompleteTextView) findViewById(R.id.flightList);
+        flightListTextView =  findViewById(R.id.flightList);
         flightFrom.setEnabled(false);
         flightTo.setEnabled(false);
         submitBtn = (Button) findViewById(R.id.submitBtn);
@@ -53,8 +56,28 @@ public class ConfigureFlightActivity extends AppCompatActivity {
             }
         });
         populateDateField();
-        populateFlightList();
         loadEquipmentNumbers();
+        flightListTextView.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if(s.length() == 3) {
+                    populateFlightList(flightListTextView.getText().toString());
+                }
+                else{
+                    clearFlightFromToDetails();
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
     private void loadEquipmentNumbers(){
@@ -84,21 +107,24 @@ public class ConfigureFlightActivity extends AppCompatActivity {
         flightDateSpinner.setAdapter(adapter);
     }
 
-    private void populateFlightList(){
+    private void populateFlightList(String flightNumber){
 
-        final String[] flights = handler.getFlightNames();
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_dropdown_item_1line, flights);
-        flightListTextView.setAdapter(adapter);
-        flightListTextView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+        Flight flight = handler.getFlightFromFlightName(flightNumber);
+        if(flight != null) {
+            flightListTextView.setText(flight.getFlightName());
+            flightFrom.setText(flight.getFlightFrom());
+            flightTo.setText(flight.getFlightTo());
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "Invalid flight number",
+                    Toast.LENGTH_SHORT).show();
+        }
 
-                Flight flight = handler.getFlightFromFlightName(flights[i]);
-                flightFrom.setText(flight.getFlightFrom());
-                flightTo.setText(flight.getFlightTo());
-            }
-        });
+    }
+
+    private void clearFlightFromToDetails(){
+        flightFrom.setText("");
+        flightTo.setText("");
     }
 
     private void clickSubmitBtn(){

@@ -68,7 +68,7 @@ public class CloseFlightActivity extends AppCompatActivity {
         closingSeals.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CloseFlightActivity.this, AddSeal.class);
+                Intent intent = new Intent(CloseFlightActivity.this, ClosingSealsActivity.class);
                 intent.putExtra("parent","CloseFlightActivity");
                 startActivity(intent);
             }

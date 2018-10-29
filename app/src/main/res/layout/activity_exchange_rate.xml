@@ -1,24 +1,11 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:focusable="true"
     android:focusableInTouchMode="true">
-    <ScrollView
-        android:id="@+id/hsv"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:fillViewport="true"
-        android:measureAllChildren="false"
-        android:paddingTop="10dp"
-        android:scrollbars="vertical" >
-        <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:orientation="vertical">
 
             <TableLayout
                 android:id="@+id/showAvaiableCurrency"
@@ -59,6 +46,22 @@
                         android:textSize="20dp"/>
                 </TableRow>
             </TableLayout>
-        </LinearLayout>
-    </ScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:gravity="left|bottom"
+        android:layout_marginLeft="55dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginBottom="55dp"
+        android:orientation="vertical" >
+
+        <ImageButton
+            android:id="@+id/backPressBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/icon_left_arrow"
+            android:layout_gravity="center_horizontal|left"
+            android:clickable="true" />
+    </LinearLayout>
 </LinearLayout>

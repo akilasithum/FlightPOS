@@ -1,5 +1,6 @@
 package com.pos.flightpos;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -8,6 +9,7 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -16,8 +18,10 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.XMLMapper.KITItem;
 import com.pos.flightpos.utils.POSDBHandler;
+import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
@@ -34,16 +38,20 @@ public class VerifyDrawerActivity extends AppCompatActivity {
     String drawerName;
     String equipmentNo = "";
     String parent;
+    String rowIndex;
+    POSDBHandler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_drawer);
         verifyDrawerTable = (TableLayout) findViewById(R.id.verifyDrawerTable);
+        handler = new POSDBHandler(this);
         Intent intent = getIntent();
         Bundle args = intent.getBundleExtra("BUNDLE");
         drawerItems = (ArrayList<KITItem>) args.getSerializable("kitItems");
         drawerName = intent.getExtras().get("drawerName").toString();
         parent = intent.getExtras().get("parent").toString();
+        rowIndex = intent.getExtras().get("rowIndex").toString();
         TextView drawerNameText = (TextView) findViewById(R.id.drawerNameText);
         drawerNameText.setText("Verify " +drawerName);
         LinearLayout verifyDrawerBtn = (LinearLayout) findViewById(R.id.verifyDrawerBtn);
@@ -68,10 +76,32 @@ public class VerifyDrawerActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        Button addRemarkBtn = findViewById(R.id.addInventoryRemark);
+        addRemarkBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addRemark();
+            }
+        });
+    }
+
+    private void addRemark(){
+        EditText remarkText = findViewById(R.id.verifyDrawerRemark);
+        if(remarkText.getText() == null || remarkText.getText().toString().isEmpty()){
+            Toast.makeText(getApplicationContext(), "Please add a remark",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        String userName = (parent.equals("AttCheckInfo") || parent.equals("CloseFlightActivity")) ?
+                SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FA_NAME) :
+                SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_ADMIN_USER);
+        String comment = remarkText.getText().toString();
+        handler.insertUserComments(userName,"Verify drawer",comment);
+        Toast.makeText(getApplicationContext(), "Remark added successfully",
+                Toast.LENGTH_SHORT).show();
     }
 
     private void verifyDrawer(){
-        POSDBHandler handler = new POSDBHandler(this);
         if(isValueUpdated && updatedMap != null && !updatedMap.isEmpty()){
             for(Map.Entry<String,String> entry : updatedMap.entrySet()) {
                 KITItem kitItem = new KITItem();
@@ -83,12 +113,10 @@ public class VerifyDrawerActivity extends AppCompatActivity {
                 handler.updateItemCountOfKITItems(kitItem);
             }
         }
-        handler.updateDrawerValidation(equipmentNo,drawerName,"YES");
+        String userMode  = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_MODE);
+        handler.updateDrawerValidation(equipmentNo,drawerName,"YES",userMode);
         Toast.makeText(getApplicationContext(), "Validated successful",
                 Toast.LENGTH_SHORT).show();
-        /*Intent intent = new Intent(this,VerifyCartsActivity.class);
-        intent.putExtra("parent",parent);
-        startActivity(intent);*/
     }
 
     private void showDataInTable(List<KITItem> kitItems){
@@ -154,5 +182,37 @@ public class VerifyDrawerActivity extends AppCompatActivity {
             //}
             verifyDrawerTable.addView(tr);
         }
+    }
+
+    private String getTotalCount(){
+        int childCount = verifyDrawerTable.getChildCount();
+        int total = 0;
+        for(int i=2;i<childCount;i++){
+            TableRow row = (TableRow)verifyDrawerTable.getChildAt(i);
+            EditText text = (EditText)row.getChildAt(2);
+            if(text.getText() != null && !text.getText().toString().equals("")){
+                total += Integer.parseInt(text.getText().toString());
+            }
+        }
+        return total+"";
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(isValueUpdated) {
+            String retStr = "";
+            for(Map.Entry<String,String> entry : updatedMap.entrySet()){
+                retStr += entry.getKey()+"-#" + entry.getValue()+",";
+            }
+            retStr.substring(0,retStr.length()-2);
+            Intent resultIntent = new Intent();
+            resultIntent.putExtra("drawerId", drawerName);
+            resultIntent.putExtra("returnStr", retStr);
+            resultIntent.putExtra("rowIndex",rowIndex);
+            resultIntent.putExtra("itemTotal",getTotalCount());
+            setResult(Activity.RESULT_OK, resultIntent);
+            finish();
+        }
+        super.onBackPressed();
     }
 }

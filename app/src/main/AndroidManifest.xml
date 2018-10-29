@@ -28,13 +28,15 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="@string/app_name" />
+            android:label="@string/app_name"
+            android:theme="@style/Background" />
         <activity
             android:name=".MainActivity"
             android:label="@string/title_activity_main" />
         <activity
             android:name=".FlightAttendentLogin"
-            android:label="@string/title_activity_flight_attendent_login" />
+            android:label="@string/title_activity_flight_attendent_login"
+            android:theme="@style/Background" />
         <activity
             android:name=".AttendendMainActivity"
             android:label="Select Flight Details" />
@@ -105,7 +107,16 @@
             android:name=".VerifyCartsActivity"
             android:label="Verify Carts" />
         <activity android:name=".SelectModeActivity" />
-        <activity android:name=".VoidOrderActivity"></activity>
+        <activity
+            android:name=".VoidOrderActivity"
+            android:label="Review Order" />
+        <activity
+            android:name=".ClosingSealsActivity"
+            android:label="Closing Seals" />
+        <activity
+            android:name=".AnnouncementActivity"
+            android:label="Announcements" />
+        <activity android:name=".NFCReader"></activity>
     </application>
 
 </manifest>

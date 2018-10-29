@@ -27,4 +27,6 @@ public class Constants {
             TableRow.LayoutParams.MATCH_PARENT,
             TableRow.LayoutParams.WRAP_CONTENT);
 
+    public static final String PUBLIC_STATIC_STRING_IDENTIFIER = "intentIdentifier";
+
 }

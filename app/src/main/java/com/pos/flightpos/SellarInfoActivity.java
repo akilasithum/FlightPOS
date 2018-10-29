@@ -4,6 +4,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.pos.flightpos.objects.Constants;
@@ -19,6 +20,13 @@ public class SellarInfoActivity extends AppCompatActivity {
         currentUser.setText(SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FA_NAME)
         + " - Logged User");
         currentUser.setEnabled(false);
+        ImageButton backButton = findViewById(R.id.backPressBtn);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     public void addUser(View view) {

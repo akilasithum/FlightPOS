@@ -159,8 +159,8 @@ public class SellItemsActivity extends AppCompatActivity {
         announcementLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                /*Intent intent = new Intent(SellItemsActivity.this, PrintActivity.class);
-                startActivity(intent);*/
+                Intent intent = new Intent(SellItemsActivity.this, AnnouncementActivity.class);
+                startActivity(intent);
             }
         });
 

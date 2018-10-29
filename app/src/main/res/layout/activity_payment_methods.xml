@@ -37,7 +37,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborder"
+                android:background="@drawable/textinputborderlight"
                 android:padding="3dp">
                 <ImageView
                     android:layout_width="100dp"
@@ -58,7 +58,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborder"
+                android:background="@drawable/textinputborderlight"
                 android:padding="3dp">
                 <ImageView
                     android:layout_width="100dp"
@@ -79,7 +79,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborder"
+                android:background="@drawable/textinputborderlight"
                 android:padding="3dp">
                 <ImageView
                     android:layout_width="100dp"
@@ -100,7 +100,7 @@
                 android:layout_weight="1"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborder"
+                android:background="@drawable/textinputborderlight"
                 android:padding="3dp">
                 <ImageView
                     android:layout_width="100dp"
@@ -255,6 +255,24 @@
 
             <TextView
                 android:id="@+id/balanceDueTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="0"
+                android:textSize="20dp"/>
+        </TableRow>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Discount : "
+                android:textSize="20dp"/>
+
+            <TextView
+                android:id="@+id/discountTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

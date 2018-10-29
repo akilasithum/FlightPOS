@@ -119,7 +119,8 @@ public class ICCardReader extends AppCompatActivity {
             {
                 out_temp +=Integer.toHexString(out_dat[i]&0xff)+" ";
             }
-            ed_ResponseData.setText(out_temp);
+            String track1Str = new String(out_dat);
+            ed_ResponseData.setText(track1Str);
             show(ICCardReader.this,"read length:"+ret);
         }else
         {

@@ -55,6 +55,8 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
     String serviceType;
     String kitCode;
     List<SoldItem> discountItemList;
+    LinearLayout currentSelection;
+    List<String> itemIds;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,9 +86,10 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         handler = new POSDBHandler(getApplicationContext());
         Intent intent = getIntent();
         serviceType = intent.getExtras().get("serviceType").toString();
-        populateItemCatField();
+        setItemCatClickListeners();
+        //populateItemCatField();
 
-        itemCatSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        /*itemCatSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 populateItemImages(itemCatSpinner.getSelectedItem().toString());
@@ -96,6 +99,50 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
                 // your code here
             }
 
+        });*/
+    }
+
+    private void setItemCatClickListeners(){
+
+        final LinearLayout mainMealLayout = findViewById(R.id.mainBOBItemsLayout);
+        mainMealLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                populateItemImages("Main");
+                if(currentSelection != null)currentSelection.setBackground(getResources().getDrawable(R.drawable.textinputborderlight));
+                currentSelection = mainMealLayout;
+                mainMealLayout.setBackground(getResources().getDrawable(R.drawable.textinputborder));
+            }
+        });
+        final LinearLayout otherMealLayout = findViewById(R.id.otherBOBLayout);
+        otherMealLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                populateItemImages("Other");
+                if(currentSelection != null)currentSelection.setBackground(getResources().getDrawable(R.drawable.textinputborderlight));
+                currentSelection = otherMealLayout;
+                otherMealLayout.setBackground(getResources().getDrawable(R.drawable.textinputborder));
+            }
+        });
+        final LinearLayout snackLayout = findViewById(R.id.snackBOBLayour);
+        snackLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                populateItemImages("Snack");
+                if(currentSelection != null)currentSelection.setBackground(getResources().getDrawable(R.drawable.textinputborderlight));
+                currentSelection = snackLayout;
+                snackLayout.setBackground(getResources().getDrawable(R.drawable.textinputborder));
+            }
+        });
+        final LinearLayout beverageLayout = findViewById(R.id.beverageBOBLayout);
+        beverageLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                populateItemImages("Beverages");
+                if(currentSelection != null)currentSelection.setBackground(getResources().getDrawable(R.drawable.textinputborderlight));
+                beverageLayout.setBackground(getResources().getDrawable(R.drawable.textinputborder));
+                currentSelection = beverageLayout;
+            }
         });
     }
 
@@ -122,16 +169,31 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
             orderNumber = "1";
         }
         List<SoldItem> soldItems = getSellDataFromTable(orderNumber);
-
-        if(discountItemList != null && !discountItemList.isEmpty()){
-            showDiscountData(soldItems,seatNumberVal,orderNumber);
+        String discount = POSCommonUtils.getIfDiscountsAvailable(itemIds,handler);
+        if(discount != null && !discount.isEmpty()){
+            subtotal -= Float.parseFloat(discount);
+            showComboDiscount(soldItems,seatNumberVal,orderNumber,discount);
         }
         else{
-            redirectToPaymentPage(soldItems,seatNumberVal,orderNumber);
+            redirectToPaymentPage(soldItems,seatNumberVal,orderNumber,"");
         }
     }
 
-    private void redirectToPaymentPage(List<SoldItem> soldItems,String seatNumberVal,String orderNumber){
+    private void showComboDiscount(final List<SoldItem> soldItems, final String seatNumberVal,
+                                   final String orderNumber,final String discount) {
+        new AlertDialog.Builder(BuyOnBoardItemsActivity.this)
+                .setTitle("Combo Discount")
+                .setMessage("You have saved $"+discount + " ")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        redirectToPaymentPage(soldItems, seatNumberVal, orderNumber,discount);
+                    }}).show();
+    }
+
+    private void redirectToPaymentPage(List<SoldItem> soldItems,String seatNumberVal,
+                                       String orderNumber,String discount){
         Intent intent = new Intent(this, PaymentMethodsActivity.class);
         intent.putExtra("subTotal", subtotal);
         Bundle args = new Bundle();
@@ -139,6 +201,8 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         intent.putExtra("BUNDLE",args);
         intent.putExtra("SeatNumber",seatNumberVal);
         intent.putExtra("orderNumber",orderNumber);
+        intent.putExtra("serviceType",serviceType);
+        intent.putExtra("discount",discount);
         startActivity(intent);
     }
 
@@ -146,6 +210,8 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         List<Promotion> promotions = handler.getPromotionsFromServiceType(serviceType);
         int rowCount = contentTable.getChildCount();
         List<SoldItem> soldList = new ArrayList<>();
+        itemIds = new ArrayList<>();
+        subtotal = 0;
         for(int i=1;i<rowCount-3;i++) {
             TableRow tableRow = (TableRow) contentTable.getChildAt(i);
             TextView itemID = (TextView) tableRow.getChildAt(0);
@@ -162,8 +228,9 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
             soldItem.setQuantity(qty.getText().toString());
             soldItem.setEquipmentNo(equipmentNo.getText().toString());
             soldItem.setDrawer(drawer.getText().toString());
+            soldItem.setTotal(total.getText().toString());
             float discount = getDiscount(promotions,itemID.getText().toString());
-            if(discount != 0){
+            /*if(discount != 0){
                 float newPrice = Float.parseFloat(price.getText().toString()) * ((100-discount)/100);
                 String newPriceStr = POSCommonUtils.getTwoDecimalFloatFromFloat(newPrice);
                 soldItem.setPrice(newPriceStr);
@@ -171,16 +238,18 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
                 discountItemList.add(soldItem);
                 subtotal -= (Float.parseFloat(price.getText().toString()) - Float.parseFloat(newPriceStr));
             }
-            else{
+            else{*/
+            subtotal += Float.parseFloat(total.getText().toString());
                 soldItem.setPrice(price.getText().toString());
-            }
+            //}
             soldList.add(soldItem);
-            String userID = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FA_NAME);
+            itemIds.add(itemID.getText().toString());
+            /*String userID = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FA_NAME);
             handler.insertDailySalesEntry(orderNumber,itemID.getText().toString(),serviceType,
                     equipmentNo.getText().toString(),drawer.getText().toString(),qty.getText().toString(),
                     total.getText().toString(),"Passenger",userID);
             handler.updateSoldItemQty(itemID.getText().toString(),qty.getText().toString(),
-                    equipmentNo.getText().toString(),drawer.getText().toString());
+                    equipmentNo.getText().toString(),drawer.getText().toString());*/
         }
         return soldList;
     }
@@ -237,19 +306,19 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 discountDialog.dismiss();
-                redirectToPaymentPage(soldItems,seatNumberVal,orderNumber);
+                redirectToPaymentPage(soldItems,seatNumberVal,orderNumber,"");
             }
         });
         discountDialog.show();
     }
 
-    private void clickSubmitBtn(SoldItem item){
+    private void clickSubmitBtn(final SoldItem item){
         if(item == null || item.equals("")){
             Toast.makeText(getApplicationContext(), "select item first.",
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        POSCommonUtils.showDrawerAndEquipment(item,this);
+        //POSCommonUtils.showDrawerAndEquipment(item,this);
         itemCount++;
         final TableRow tr = new TableRow(this);
         tr.setId(itemCount);
@@ -277,10 +346,29 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         removeItemBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                subtotal -= Float.parseFloat(totalTextField.getText().toString());
-                subTotalView.setText(String.valueOf(subtotal));
-                itemCount--;
-                contentTable.removeView(tr);
+                new AlertDialog.Builder(BuyOnBoardItemsActivity.this)
+                        .setTitle("Remove selection")
+                        .setMessage("Do you want to remove this item from selection?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                subtotal -= Float.parseFloat(totalTextField.getText().toString());
+                                subTotalView.setText(String.valueOf(subtotal));
+                                itemCount--;
+                                contentTable.removeView(tr);
+                            }})
+                        .setNegativeButton(android.R.string.no, null).show();
+            }
+        });
+
+        Button lookupBtn = new Button(this);
+        lookupBtn.setLayoutParams(cellParams3);
+        lookupBtn.setBackground(getResources().getDrawable(R.drawable.icon_llokup));
+        lookupBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                POSCommonUtils.showDrawerAndEquipment(item,BuyOnBoardItemsActivity.this);
             }
         });
 
@@ -321,13 +409,13 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         });
         tr.addView(qty);
 
-        price.setText(item.getPrice());
+        price.setText(POSCommonUtils.getTwoDecimalFloatFromString(item.getPrice()));
         price.setTextSize(20);
         price.setLayoutParams(cellParams2);
         tr.addView(price);
 
         float total = Float.parseFloat(qty.getText().toString()) * Float.parseFloat(price.getText().toString());
-        totalTextField.setText(String.valueOf(total));
+        totalTextField.setText(POSCommonUtils.getTwoDecimalFloatFromString(String.valueOf(total)));
         totalTextField.setTextSize(20);
         totalTextField.setLayoutParams(cellParams2);
         tr.addView(totalTextField);
@@ -340,6 +428,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         drawer.setVisibility(View.GONE);
         tr.addView(drawer);
 
+        tr.addView(lookupBtn);
         tr.addView(removeItemBtn);
 
         subtotal += total;
@@ -366,7 +455,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
             LinearLayout layout = new LinearLayout(this);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
-            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(230,230);
+            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(200,200);
             layout.setLayoutParams(params1);
             layout.setGravity(Gravity.CENTER);
             layout.setOrientation(LinearLayout.VERTICAL);
@@ -389,7 +478,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
 
             TextView priceText = new TextView(this);
             priceText.setLayoutParams(params);
-            priceText.setText("$"+item.getPrice());
+            priceText.setText("$"+POSCommonUtils.getTwoDecimalFloatFromString(item.getPrice()));
 
             layout.addView(imageView);
             layout.addView(textView);

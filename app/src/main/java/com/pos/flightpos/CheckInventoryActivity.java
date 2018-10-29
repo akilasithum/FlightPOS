@@ -1,5 +1,6 @@
 package com.pos.flightpos;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -18,6 +19,7 @@ import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
@@ -28,6 +30,7 @@ public class CheckInventoryActivity extends AppCompatActivity {
     String parent;
     String equipmentName;
     Map<String,List<KITItem>> cartItems;
+    final int STATIC_INTEGER_VALUE = 100;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -109,7 +112,10 @@ public class CheckInventoryActivity extends AppCompatActivity {
             addTableHeader(cellParams1,cellParams2);
 
             Map<String,List<KITItem>> treeMap = new TreeMap<>(cartItems);
+            int i = 1;
             for (Map.Entry<String, List<KITItem>> entry : treeMap.entrySet()) {
+                i++;
+                final int rowIndex = i;
                 final List<KITItem> kitItems = entry.getValue();
                 final String drawerName = entry.getKey();
                 final String cartNo = kitItems.get(0).getEquipmentNo();
@@ -132,7 +138,9 @@ public class CheckInventoryActivity extends AppCompatActivity {
                         intent.putExtra("BUNDLE", args);
                         intent.putExtra("drawerName", drawerName);
                         intent.putExtra("parent", parent);
-                        startActivity(intent);
+                        intent.putExtra("rowIndex",rowIndex+"");
+                        //startActivity(intent);
+                        startActivityForResult(intent, STATIC_INTEGER_VALUE);
                     }
                 });
                 TextView drawer = new TextView(this);
@@ -151,8 +159,9 @@ public class CheckInventoryActivity extends AppCompatActivity {
                 tr.addView(qtyView);
 
                 //if(!parent.equals("VerifyFlightByAdminActivity")) {
+                String userMode  = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_MODE);
                     TextView isValidated = new TextView(this);
-                    String validatedText = handler.isDrawerValidated(cartNo, drawerName) ? "OK" : "NV";
+                    String validatedText = handler.isDrawerValidated(cartNo, drawerName,userMode) ? "OK" : "NV";
                     isValidated.setText(validatedText);
                     isValidated.setTextSize(20);
                     isValidated.setLayoutParams(cellParams2);
@@ -162,6 +171,46 @@ public class CheckInventoryActivity extends AppCompatActivity {
                 checkInventoryTable.addView(tr);
             }
        // }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case (STATIC_INTEGER_VALUE) : {
+                if (resultCode == Activity.RESULT_OK) {
+                    String drawerId = data.getStringExtra("drawerId");
+                    String resultStr = data.getStringExtra("returnStr");
+                    String rowIndex = data.getStringExtra("rowIndex");
+                    String total = data.getStringExtra("itemTotal");
+                    updateCartWithUpdatedDetails(rowIndex,total);
+                }
+                break;
+            }
+        }
+    }
+
+    private void updateCartWithUpdatedDetails(String rowIndex,String total){
+        TableRow row = (TableRow)checkInventoryTable.getChildAt(Integer.valueOf(rowIndex));
+        TextView textView = (TextView)row.getChildAt(1);
+        textView.setText(total);
+        TextView isValidatedText = (TextView)row.getChildAt(2);
+        isValidatedText.setText("OK");
+    }
+
+    private Map<String,KITItem> getKitCodeMap(String result){
+
+        String[] updateItems = result.split(",");
+        Map<String,KITItem> kitItemMap = new HashMap<>();
+        for(int i=0;i<updateItems.length;i++){
+            String[] kitItemArr = updateItems[i].split("-#");
+            KITItem kitItem = new KITItem();
+            kitItem.setItemNo(kitItemArr[0]);
+            kitItem.setEquipmentNo(kitItemArr[1]);
+            kitItem.setQuantity(kitItemArr[2]);
+            kitItemMap.put(kitItemArr[0],kitItem);
+        }
+        return kitItemMap;
     }
 
     /*@Override

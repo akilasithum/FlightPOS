@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -50,14 +51,24 @@ public class DefineCartNumbersActivity extends AppCompatActivity {
                 setBarcodeValue(cart1);
             }
         });
-        addCartTextBoxes();
+        if(!"1".equals(noOfCarts)) {
+            addCartTextBoxes();
+        }
+        ImageButton backButton = findViewById(R.id.backPressBtn);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     public void defineCarts() {
             int childCount = mainLayout.getChildCount();
             List<String> sealList = new ArrayList<>();
-            for (int i = 0; i < childCount - 1; i++) {
-                EditText editText = (EditText) mainLayout.getChildAt(i);
+            for (int i = 0; i < childCount - 2; i++) {
+                LinearLayout layout = (LinearLayout)mainLayout.getChildAt(i);
+                EditText editText = (EditText) layout.getChildAt(0);
                 String textVal = editText.getText() == null ? null : editText.getText().toString();
                 if (textVal != null && !textVal.isEmpty()) {
                     sealList.add(textVal);
@@ -83,17 +94,21 @@ public class DefineCartNumbersActivity extends AppCompatActivity {
     private void addCartTextBoxes(){
         int sealCount = Integer.parseInt(noOfCarts);
         LinearLayout.LayoutParams mRparams = new LinearLayout.LayoutParams
-                (40, 40);
+                (60, 60);
         for(int i=1 ; i< sealCount;i++){
             LinearLayout layout = new LinearLayout(this);
             layout.setOrientation(LinearLayout.HORIZONTAL);
             layout.setLayoutParams(Constants.COMMON_LAYOUT_PARAMS);
             final EditText myEditText = new EditText(this);
-            myEditText.setLayoutParams(Constants.COMMON_LAYOUT_PARAMS);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    TableRow.LayoutParams.MATCH_PARENT,
+                    TableRow.LayoutParams.WRAP_CONTENT,1);
+            myEditText.setLayoutParams(params);
             Button button = new Button(this);
             button.setLayoutParams(mRparams);
-            //button.setPadding(30,0,0,0);
+            button.setPadding(30,0,0,0);
             button.setBackground(getResources().getDrawable(R.drawable.icon_barcode_reader));
+            button.setClickable(true);
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

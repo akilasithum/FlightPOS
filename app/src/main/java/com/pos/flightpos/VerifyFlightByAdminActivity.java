@@ -29,6 +29,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     LinearLayout defineCartNumbersLayout;
     POSDBHandler handler;
     String kitCode;
+    long mExitTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -137,5 +138,12 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         String serviceType = handler.getKitNumberListFieldValueFromKitCode(kitCode, Constants.FILED_NAME_SERVICE_TYPE);
         job.printInventoryReports(this, "OPENING INVENTORY", kitCode,
                 POSCommonUtils.getServiceTypeDescFromServiceType(serviceType));
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        Intent intent = new Intent(this, ConfigureFlightActivity.class);
+        startActivity(intent);
     }
 }

@@ -9,7 +9,7 @@
             <solid android:color="@color/trjumbo" />
             <stroke
                 android:width="1dip"
-                android:color="@color/jumbo" /> <!-- background color -->
+                android:color="@color/black" /> <!-- background color -->
         </shape>
     </item>
 </ripple>

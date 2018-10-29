@@ -3,6 +3,8 @@ package com.pos.flightpos;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -21,6 +23,13 @@ public class ExchangeRateActivity extends AppCompatActivity {
         setContentView(R.layout.activity_exchange_rate);
         currencyTable = (TableLayout) findViewById(R.id.showAvaiableCurrency);
         showCurrencyInTable();
+        ImageButton backButton = findViewById(R.id.backPressBtn);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     private void showCurrencyInTable(){

@@ -9,10 +9,12 @@
         android:id="@+id/sealMainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
         android:orientation="vertical">
 
         <LinearLayout
-            android:id="@+id/layout_addSeal"
+            android:id="@+id/layout_addSeal1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="45dp"
@@ -28,22 +30,60 @@
             android:paddingRight="15dp"
             android:paddingTop="15dp">
 
-            <EditText
-                android:id="@+id/editText"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:ems="10"
-                android:inputType="number" />
-
-            <Button
-                android:id="@+id/bt_addSeal"
+            <LinearLayout
+                android:id="@+id/layout_addSeal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:onClick="addSeal"
-                android:text="Add Outbound seals" />
+                android:orientation="vertical">
+                <EditText
+                    android:id="@+id/editText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="number" />
 
+                <Button
+                    android:id="@+id/bt_addSeal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="addSeal"
+                    android:text="Add Outbound seals" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_verifySeals"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+                    <EditText
+                        android:id="@+id/editText1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        android:ems="10"
+                        android:inputType="number" />
+
+                    <CheckBox android:id="@+id/checkbox_meat"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="wrap_content"/>
+                </LinearLayout>
+
+                    <Button
+                        android:id="@+id/bt_addSeal1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:onClick="addSeal"
+                        android:text="Done" />
+
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -72,12 +112,20 @@
                 android:inputType="number" />
 
             <Button
+                android:id="@+id/bt_addAnotherSeal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:text="Add Another Seal" />
+            <Button
                 android:id="@+id/bt_addInboudSeal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:onClick="addInboundSeal"
-                android:text="Add Inbound seals" />
+                android:text="Save Inbound seals" />
         </LinearLayout>
     <LinearLayout
         android:id="@+id/layout_addRemark"
@@ -89,7 +137,7 @@
         android:paddingRight="60dp">
 
         <EditText
-            android:id="@+id/verifyDrawerRemark"
+            android:id="@+id/addSealRemarkText"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:minLines="3"
@@ -106,5 +154,23 @@
             android:layout_height="wrap_content"
             android:text="Add a Remark" />
     </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            android:gravity="left|bottom"
+            android:layout_marginLeft="55dp"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="55dp"
+            android:orientation="vertical" >
+
+            <ImageButton
+                android:id="@+id/backPressBtn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/icon_left_arrow"
+                android:layout_gravity="center_horizontal|left"
+                android:clickable="true" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

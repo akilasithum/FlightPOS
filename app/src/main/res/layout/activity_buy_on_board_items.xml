@@ -16,29 +16,96 @@
             android:background="@drawable/layoutbackgroundborder"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:paddingLeft="50dp"
-            android:paddingRight="75dp">
+            android:layout_marginLeft="40dp"
+            android:layout_marginRight="40dp">
 
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
-
-                <TextView
+                <LinearLayout
+                    android:id="@+id/mainBOBItemsLayout"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="Item Category"
-                    android:textSize="25dp" />
-
-                <Spinner
-                    android:id="@+id/itemCategorySpinner"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:background="@drawable/textinputborderlight"
+                    android:padding="3dp">
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_bob_main" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Main"
+                        android:textSize="13dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/snackBOBLayour"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:paddingRight="30dp"
-                    android:textSize="25dp" />
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:background="@drawable/textinputborderlight"
+                    android:padding="3dp">
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_bob_snack"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Snacks"
+                        android:textSize="13dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/beverageBOBLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:background="@drawable/textinputborderlight"
+                    android:padding="3dp">
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_bob_beverage"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Beverages"
+                        android:textSize="13dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/otherBOBLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:background="@drawable/textinputborderlight"
+                    android:padding="3dp">
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_bob_other" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Other"
+                        android:textSize="13dp" />
+                </LinearLayout>
             </TableRow>
         </TableLayout>
 
@@ -50,6 +117,7 @@
             android:fillViewport="true"
             android:measureAllChildren="false"
             android:paddingTop="20dp"
+            android:layout_marginLeft="40dp"
             android:scrollbars="horizontal">
 
             <LinearLayout
@@ -114,7 +182,7 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:text="" />
             </TableRow>
 

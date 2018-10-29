@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.text.ParseException;
@@ -86,12 +87,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             startActivity(intent);
             return;
         }
-        String isFlightClosed = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_CLOSED_FLIGHT);
-        if(isFlightClosed != null && isFlightClosed.equals("yes") && !"SelectModeActivity".equals(parent)){
-            Intent intent = new Intent(this, SelectModeActivity.class);
-            startActivity(intent);
-            return;
-        }
 
         String userName = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_ADMIN_USER);
         String isAdminConfiguredFlight = SaveSharedPreference.getStringValues(this,
@@ -105,6 +100,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             else {
                 reDirectToMainPage(SaveSharedPreference.getStringValues(this, "userName"));
             }
+            return;
+        }
+        String isFlightClosed = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_CLOSED_FLIGHT);
+        if(isFlightClosed != null && isFlightClosed.equals("yes") && !"SelectModeActivity".equals(parent)){
+            Intent intent = new Intent(this, SelectModeActivity.class);
+            startActivity(intent);
+            return;
         }
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -180,6 +182,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 SaveSharedPreference.setStringValues(this,
                         Constants.SHARED_PREFERENCE_FLIGHT_MODE,"admin");
                 SaveSharedPreference.removeValue(this,Constants.SHARED_PREFERENCE_FLIGHT_TYPE);
+                POSDBHandler handler = new POSDBHandler(this);
+                handler.clearDailySalesTable();
                 reDirectToMainPage(email);
             }
             else{

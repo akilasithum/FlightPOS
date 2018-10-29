@@ -1,28 +1,28 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/sealMainLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/sealMainLayout"
-    tools:context=".DefineCartNumbersActivity" >
+    tools:context=".DefineCartNumbersActivity">
 
     <LinearLayout
         android:id="@+id/layoutDefineCars"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingRight="60dp"
-        android:paddingLeft="60dp"
+        android:layout_height="match_parent"
         android:layout_marginTop="45dp"
-        android:paddingTop="15dp"
-        android:paddingBottom="15dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:gravity="center_horizontal"
-        android:background="@drawable/layoutbackgroundborder"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="15dp"
+        android:paddingLeft="60dp"
+        android:paddingRight="60dp"
+        android:paddingTop="15dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <EditText
                 android:id="@+id/cart1Text"
                 android:layout_width="match_parent"
@@ -30,22 +30,36 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:inputType="textPersonName" />
+
             <ImageButton
-            android:id="@+id/scanCart1"
-            android:paddingLeft="30dp"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/icon_barcode_reader"
-            android:clickable="true" />
-    </LinearLayout>
+                android:id="@+id/scanCart1"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="@drawable/icon_barcode_reader"
+                android:clickable="true"
+                android:paddingLeft="30dp" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/defineCartsBtn"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:text="Define Cart Numbers" />
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            android:gravity="left|bottom"
+            android:orientation="vertical" >
 
-</RelativeLayout>
+            <ImageButton
+                android:id="@+id/backPressBtn"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/icon_left_arrow"
+                android:layout_gravity="center_horizontal|left"
+                android:clickable="true" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

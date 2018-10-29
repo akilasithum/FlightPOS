@@ -31,10 +31,12 @@ import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.CreditCard;
+import com.pos.flightpos.objects.Flight;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.XMLMapper.Currency;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
+import com.pos.flightpos.utils.PrintJob;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.text.DateFormat;
@@ -64,12 +66,16 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     Map<String,String> paymentMethodsMap;
     String seatNumber;
     String orderNumber;
+    POSDBHandler handler;
+    String serviceType;
+    String discount;
+    String taxPercentage;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_methods);
-
+        handler = new POSDBHandler(this);
         paymentTable = (TableLayout) findViewById(R.id.paymentMethodTable);
         printReceiptBtn = (Button) findViewById(R.id.printReceipt);
         balanceDueTextView = (TextView)  findViewById(R.id.balanceDueTextView);
@@ -85,25 +91,36 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         String subTotal = intent.getExtras().get("subTotal").toString();
         seatNumber = intent.getExtras().get("SeatNumber").toString();
         orderNumber = intent.getExtras().get("orderNumber").toString();
+        serviceType = intent.getExtras().get("serviceType").toString();
+        discount = intent.getExtras().get("discount").toString();
         String serviceType = POSCommonUtils.getServiceType(this);
         TableRow totalTextRow = findViewById(R.id.totalTextRow);
         TableRow taxTextRow = findViewById(R.id.serviceTaxRow);
-        if(serviceType != null && serviceType.equals("DTP")){
-            String taxPercentage = SaveSharedPreference.getStringValues(this,
+        if(serviceType != null && (serviceType.equals("DTP")||serviceType.equals("BOB"))){
+            taxPercentage = SaveSharedPreference.getStringValues(this,
                     Constants.SHARED_PREFERENCE_TAX_PERCENTAGE);
-            dueBalance = Float.parseFloat(subTotal) * ((100+Float.parseFloat(taxPercentage))/100);
-            balanceDueTextView.setText(String.valueOf(dueBalance));
+            if(taxPercentage != null) {
+                dueBalance = Float.parseFloat(subTotal) * ((100 + Float.parseFloat(taxPercentage)) / 100);
+                balanceDueTextView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
+            }
+            else{
+                dueBalance = Float.parseFloat(subTotal);
+                balanceDueTextView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
+            }
             TextView tax = findViewById(R.id.serviceTaxTextView);
-            tax.setText(taxPercentage + "%");
+            tax.setText(taxPercentage == null ? "0":taxPercentage + "%");
             TextView total = findViewById(R.id.totalTextView);
-            total.setText(subTotal);
+            total.setText(POSCommonUtils.getTwoDecimalFloatFromString(subTotal));
         }
         else {
             totalTextRow.setVisibility(View.GONE);
             taxTextRow.setVisibility(View.GONE);
             dueBalance = Float.parseFloat(subTotal);
-            balanceDueTextView.setText(String.valueOf(dueBalance));
+            balanceDueTextView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
         }
+        TextView discountText = findViewById(R.id.discountTextView);
+        discountText.setText((discount == null || discount.isEmpty()) ? "0.00" :
+                POSCommonUtils.getTwoDecimalFloatFromString(discount));
         creditCardList = new ArrayList<>();
         paymentMethodsMap = new HashMap<>();
         registerLayoutClickEvents();
@@ -196,10 +213,10 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                 cardNumber = (EditText) dialog.findViewById(R.id.cardNumber);
                 cardHolderName = (EditText) dialog.findViewById(R.id.cardHolderNameText);
                 expiryDate = (EditText) dialog.findViewById(R.id.expireDateField);
-                cardNumber.setText(track1Details[0]);
+                cardNumber.setText(track1Details[0].substring(1));
                 cardHolderName.setText(track1Details[1]);
                 expiryDate.setText(expireDateStr);
-                cardType.setText(POSCommonUtils.getCreditCardTypeFromFirstDigit(track1Details[0].substring(0, 1)));
+                cardType.setText(POSCommonUtils.getCreditCardTypeFromFirstDigit(track1Details[0].substring(1, 2)));
             }
             else{
                 showToastMsg("Given credit card is expired.");
@@ -232,7 +249,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             }
         }
         else {
-            return false;
+            return true;
         }
     }
 
@@ -313,8 +330,8 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             }
         });
 
-        amount.setText(String.valueOf(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance)));
-        initialAmount.setText(String.valueOf(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance)));
+        amount.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
+        initialAmount.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
 
         Button okBtn = (Button) cashSettleDialog.findViewById(R.id.cardSubmitBtn);
         Button cancelBtn = (Button) cashSettleDialog.findViewById(R.id.cancelBtn);
@@ -359,7 +376,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                 Float.parseFloat(currency.getCurrencyRate()));
     }
     private ArrayAdapter<Currency> loadCurrencies(){
-        POSDBHandler handler = new POSDBHandler(this);
+        handler = new POSDBHandler(this);
         List<Currency> options=new ArrayList<>();
         List<Currency> equipmentList = handler.getCurrencyList();
         options.addAll(equipmentList);
@@ -398,7 +415,8 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         tr.addView(exchangeRate);
 
         TextView value = new TextView(this);
-        value.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(Float.valueOf(amount.replace(",",""))));
+        String amountText = POSCommonUtils.getTwoDecimalFloatFromFloat(Float.valueOf(amount.replace(",","")));
+        value.setText(amountText);
         value.setTextSize(20);
         value.setGravity(Gravity.CENTER);
         value.setLayoutParams(cellParams);
@@ -412,97 +430,49 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         tr.addView(usdVal);
 
         dueBalance -= Float.parseFloat(USD);
-        balanceDueTextView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
+        String dueBalanceStr = POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance);
+        if(dueBalanceStr.equals("-0.00")){
+            dueBalanceStr = "0.00";
+        }
+        balanceDueTextView.setText(dueBalanceStr);
         paymentMethodsCount++;
-        paymentMethodsMap.put(type,amount);
+        paymentMethodsMap.put(type+" "+currency,amountText);
         paymentTable.addView(tr,paymentMethodsCount);
+    }
+
+    private void updateSale(){
+        for(SoldItem soldItem : soldItems) {
+            String userID = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FA_NAME);
+            handler.insertDailySalesEntry(orderNumber, soldItem.getItemId(), serviceType,
+                    soldItem.getEquipmentNo(), soldItem.getDrawer(), soldItem.getQuantity(),
+                    soldItem.getTotal(), "Passenger", userID);
+            handler.updateSoldItemQty(soldItem.getItemId(), soldItem.getQuantity(),soldItem.getEquipmentNo(),
+                    soldItem.getDrawer());
+        }
     }
 
     private void printReceipt(){
         Float dispDueBalance = Float.parseFloat(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
         if(dispDueBalance <= 0){
-            Printer printer = new Printer();
-            printer.open();
-            int printerStatus = printer.queState();
-            if(printerStatus == 1){
-                Toast.makeText(this, "Paper is not available. Please insert some papers.",
-                        Toast.LENGTH_SHORT).show();
-                return;
+            if(printReceiptBtn.getText().equals("Print Card Holder copy")){
+                PrintJob.printOrderDetails(PaymentMethodsActivity.this,orderNumber,
+                        seatNumber,soldItems,paymentMethodsMap,
+                        creditCardList.isEmpty() ? null : creditCardList.get(0),true,discount);
+                Intent intent = new Intent(PaymentMethodsActivity.this, SellItemsActivity.class);
+                startActivity(intent);
             }
-            else if(printerStatus == 2){
-                Toast.makeText(this, "Printer is too hot. Please wait.",
-                        Toast.LENGTH_SHORT).show();
-                return;
+            else{
+                updateSale();
+                PrintJob.printOrderDetails(this,orderNumber,seatNumber,soldItems,paymentMethodsMap,
+                        creditCardList.isEmpty() ? null : creditCardList.get(0),false,discount);
+                if(!creditCardList.isEmpty()) {
+                    printReceiptBtn.setText("Print Card Holder copy");
+                }
+                else {
+                    Intent intent = new Intent(PaymentMethodsActivity.this, SellItemsActivity.class);
+                    startActivity(intent);
+                }
             }
-            Toast.makeText(this, "Printing started. Please wait.",
-                    Toast.LENGTH_SHORT).show();
-            printer.init();
-            printer.setAlignment(1);
-            printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 150, 150);
-            printer.printString("");
-            printer.setBold(true);
-            printer.printString("CMB123 CMB-KUL");
-            Date date = new Date();
-            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-            DateFormat dateTimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss aa");
-            printer.printString(df.format(date));
-            printer.printString(" ");
-            printer.printString(" ");
-            printer.printString("Sale transaction");
-            printer.setAlignment(0);
-            printer.printString("Order Number : " + orderNumber);
-            printer.printString("Seat Number : " + seatNumber);
-            float total = 0;
-            for(SoldItem item : soldItems){
-                total += Float.parseFloat(item.getPrice())* Integer.parseInt(item.getQuantity());
-                int itemNameLength = item.getItemDesc().length();
-                String totalAmount = POSCommonUtils.getTwoDecimalFloatFromFloat(
-                        Float.parseFloat(item.getPrice())*Integer.parseInt(item.getQuantity()));
-                int totalAmountLength = totalAmount.length();
-                int spaceLength = 32 - (itemNameLength+totalAmountLength);
-                printer.printString(item.getItemDesc()
-                        + new String(new char[spaceLength]).replace("\0", " ") + totalAmount);
-                printer.printString(item.getItemId() + " Each $" + item.getPrice() );
-            }
-            printer.printString(" ");
-            printer.setAlignment(2);
-            printer.printString("Total USD " + POSCommonUtils.getTwoDecimalFloatFromFloat(total));
-            printer.setBold(false);
-            printer.setAlignment(0);
-            Iterator it = paymentMethodsMap.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry pair = (Map.Entry)it.next();
-                printer.printString(pair.getKey() + " USD " + pair.getValue());
-            }
-            if(paymentMethodsMap.get("Credit Card") != null){
-                CreditCard card = creditCardList.get(0);
-                int numOfDigits = card.getCreditCardNumber().length();
-                printer.printString(new String(new char[numOfDigits-4]).replace("\0", "*")
-                        + card.getCreditCardNumber().substring(numOfDigits-4,numOfDigits));
-                printer.printString(card.getExpireDate());
-                printer.printString(card.getCardHolderName());
-                printer.printString(" ");
-                printer.printString(" ");
-                printer.printString(".......................");
-                printer.printString("Card Holder Signature");
-                printer.printString("I agree to pay above total");
-                printer.printString("amount according to card issuer");
-                printer.printString("agreement");
-                printer.printString(" ");
-                printer.printString("Merchant Copy");
-            }
-            printer.printString(" ");
-            printer.printString(" ");
-            printer.setBold(true);
-            printer.printString("Operated Staff");
-            printer.printString("User 1");
-            printer.printString(dateTimeFormat.format(date));
-            printer.printString(" ");
-            printer.printString(" ");
-            printer.close();
-
-            Intent intent = new Intent(this,SellItemsActivity.class);
-            startActivity(intent);
         }
         else{
             showToastMsg("Due balance should be zero");
