@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.XMLMapper.KITItem;
+import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -80,9 +81,10 @@ public class InventoryReportActivity extends AppCompatActivity {
         }
         printer.init();
         printer.setAlignment(1);
-        printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 150, 150);
+        printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 200, 70);
+        printer.printString(" ");
         printer.setBold(true);
-        printer.printString("CMB123 CMB-KUL");
+        printer.printString(POSCommonUtils.getFlightDetailsStr(this));
         Date date = new Date();
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         DateFormat dateTimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss aa");

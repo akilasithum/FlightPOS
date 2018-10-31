@@ -9,7 +9,9 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.pos.flightpos.InventoryReportActivity;
+import com.pos.flightpos.objects.CreditCard;
 import com.pos.flightpos.objects.Flight;
+import com.pos.flightpos.objects.OrderDetails;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.User;
 import com.pos.flightpos.objects.XMLMapper.ComboDiscount;
@@ -21,6 +23,7 @@ import com.pos.flightpos.objects.XMLMapper.KITItem;
 import com.pos.flightpos.objects.XMLMapper.KitNumber;
 import com.pos.flightpos.objects.XMLMapper.PreOrder;
 import com.pos.flightpos.objects.XMLMapper.Promotion;
+import com.pos.flightpos.objects.XMLMapper.Sector;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -57,7 +60,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS Users (Username VARCHAR,Password VARCHAR);");
-        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS flights (flightName VARCHAR,flightFrom VARCHAR,flightTo VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS flights (flightName VARCHAR,flightFrom VARCHAR," +
+                "flightTo VARCHAR,sectors VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS items (itemNo VARCHAR,itemName VARCHAR,itemHHC VARCHAR,category VARCHAR," +
                 "catCode VARCHAR,catlogNo VARCHAR,price VARCHAR," +
                 "paxDiscPrice VARCHAR,staffDiscPrice VARCHAR,delist VARCHAR,dfsrOrder VARCHAR,serviceType VARCHAR,scPrice VARCHAR," +
@@ -72,7 +76,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 "drawer VARCHAR,isValidated VARCHAR,userMode VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS dailySales (orderNumber VARCHAR,itemNo VARCHAR," +
                 "equipmentNo VARCHAR,drawer VARCHAR,quantity VARCHAR,serviceType VARCHAR," +
-                "totalPrice VARCHAR,buyerType VARCHAR,sellarName VARCHAR);");
+                "totalPrice VARCHAR,buyerType VARCHAR,sellarName VARCHAR,date VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS currency (currencyCode VARCHAR,currencyDesc VARCHAR," +
                 "currencyRate VARCHAR, currencyType VARCHAR,priorityOrder VARCHAR,effectiveDate VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS preOrders (PNR VARCHAR,customerName VARCHAR," +
@@ -85,6 +89,14 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 "items VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS userComments (userId VARCHAR,area VARCHAR," +
                 "comment VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS paymentMethods (orderNumber VARCHAR,paymentType VARCHAR," +
+                "amount VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS orderMainDetails (orderNumber VARCHAR,tax VARCHAR," +
+                "discount VARCHAR, seatNo VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS creditCardDetails (orderNumber VARCHAR,creditCardNumber VARCHAR," +
+                "cardHolderName VARCHAR, expireDate VARCHAR , amount VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS loyaltyCardDetails (orderNumber VARCHAR,loyaltyCardNumber VARCHAR," +
+                "cardHolderName VARCHAR, amount VARCHAR);");
     }
 
     public void clearTable(){
@@ -106,7 +118,10 @@ public class POSDBHandler extends SQLiteOpenHelper {
     public void clearDailySalesTable(){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("delete from dailySales");
-        db.execSQL("VACUUM");
+        db.execSQL("delete from paymentMethods");
+        db.execSQL("delete from creditCardDetails");
+        db.execSQL("delete from orderMainDetails");
+        db.execSQL("delete from preOrders");
         db.close();
     }
 
@@ -130,11 +145,95 @@ public class POSDBHandler extends SQLiteOpenHelper {
     }
 
     public void insertDailySalesEntry(String orderNumber,String itemNo,String serviceType,String equipmentNo,String drawer,
-                                      String quantity,String total,String buyerType,String sellerId){
+                                      String quantity,String total,String buyerType,String sellerId,String date){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("INSERT INTO dailySales VALUES('"+orderNumber+"','"+itemNo+"','"+equipmentNo+"','"+drawer+"','"
-                +quantity+"','"+serviceType+"', '"+total+"','"+buyerType+"','"+sellerId+"');");
+                +quantity+"','"+serviceType+"', '"+total+"','"+buyerType+"','"+sellerId+"','"+date+"');");
         db.close();
+    }
+
+    public void insertPaymentMethods(String orderNumber,String paymentType,String amount){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("INSERT INTO paymentMethods VALUES('"+orderNumber+"','"+paymentType+"','"+amount+"');");
+        db.close();
+    }
+
+    public Map<String,String> getPaymentMethodsMapFromOrderNumber(String orderId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Map<String,String> items = new HashMap<>();
+        Cursor cursor = db.rawQuery("select * from paymentMethods where orderNumber = '"+orderId+"'"
+                , null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                String type = cursor.getString(cursor.getColumnIndex("paymentType"));
+                String amount = cursor.getString(cursor.getColumnIndex("amount"));
+                items.put(type,amount);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return items;
+    }
+
+    public void insertOrderMainDetails(String orderNumber,String tax,String discount,String seatNo){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("INSERT INTO orderMainDetails VALUES('"+orderNumber+"','"+tax+"','"+discount+"','"+seatNo+"');");
+        db.close();
+    }
+
+    public OrderDetails getOrderDetailsFromOrderNumber(String orderId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        OrderDetails details = new OrderDetails();
+        Cursor cursor = db.rawQuery("select * from orderMainDetails where orderNumber = '"+orderId+"'"
+                , null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                details.setOrderNumber(cursor.getString(cursor.getColumnIndex("orderNumber")));
+                details.setTax(cursor.getString(cursor.getColumnIndex("tax")));
+                details.setDiscount(cursor.getString(cursor.getColumnIndex("discount")));
+                details.setSeatNo(cursor.getString(cursor.getColumnIndex("seatNo")));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return details;
+    }
+
+    public void insertCreditCardDetails(String orderNumber,String creditCardNumber,String cardHolderName,
+                                        String expireDate,String amount){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("INSERT INTO creditCardDetails VALUES('"+orderNumber+"','"+creditCardNumber+"'," +
+                "'"+cardHolderName+"','"+expireDate+"','"+amount+"');");
+        db.close();
+    }
+    public void insertLoyaltyCardDetails(String orderNumber,String loyaltyCardNumber,String cardHolderName,
+                                        String amount){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("INSERT INTO loyaltyCardDetails VALUES('"+orderNumber+"','"+loyaltyCardNumber+"'," +
+                "'"+cardHolderName+"','"+amount+"');");
+        db.close();
+    }
+
+    public CreditCard getCreditCardDetailsFromOrderNumber(String orderId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        CreditCard details = new CreditCard();
+        Cursor cursor = db.rawQuery("select * from creditCardDetails where orderNumber = '"+orderId+"'"
+                , null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                details.setCreditCardNumber(cursor.getString(cursor.getColumnIndex("creditCardNumber")));
+                details.setCardHolderName(cursor.getString(cursor.getColumnIndex("cardHolderName")));
+                details.setExpireDate(cursor.getString(cursor.getColumnIndex("expireDate")));
+                details.setPaidAmount(Float.parseFloat(cursor.getString
+                        (cursor.getColumnIndex("amount"))));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return details;
     }
 
     public List<SoldItem> getSoldItemsFromOrderId(String orderId){
@@ -197,8 +296,15 @@ public class POSDBHandler extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         for(Flight flight : readFlightsXML(context)) {
+            String sectors = "";
+            if(flight.getSectorList() != null && !flight.getSectorList().isEmpty()){
+                for(Sector sector : flight.getSectorList()){
+                    sectors += sector.getFrom() +"+"+sector.getTo() + ",";
+                }
+                sectors.substring(0,sectors.length()-2);
+            }
             db.execSQL("INSERT INTO flights VALUES" +
-                    "('"+flight.getFlightName()+"','"+flight.getFlightFrom()+"','"+flight.getFlightTo()+"');");
+                    "('"+flight.getFlightName()+"','"+flight.getFlightFrom()+"','"+flight.getFlightTo()+"','"+sectors+"');");
         }
         db.close();
     }
@@ -573,6 +679,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
                     flight.setFlightName(cursor.getString(cursor.getColumnIndex("flightName")));
                     flight.setFlightFrom(cursor.getString(cursor.getColumnIndex("flightFrom")));
                     flight.setFlightTo(cursor.getString(cursor.getColumnIndex("flightTo")));
+                    flight.setSectorStr(cursor.getString(cursor.getColumnIndex("sectors")));
                     cursor.moveToNext();
                 }
             }
@@ -876,7 +983,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
     }
 
     private List<Flight> readFlightsXML(Context context){
-        List<Flight> itemList = new ArrayList<>();
+        List<Flight> flights = new ArrayList<>();
         try {
             Document doc = getXMLDoc(context,"flights");
             if(doc != null) {
@@ -887,18 +994,19 @@ public class POSDBHandler extends SQLiteOpenHelper {
                     Node node = nList.item(i);
                     if (node.getNodeType() == Node.ELEMENT_NODE) {
                         Element element2 = (Element) node;
-                        Flight item = new Flight();
-                        item.setFlightName(((Element) node).getAttribute("flightName"));
-                        item.setFlightFrom(getValue("from", element2));
-                        item.setFlightTo(getValue("to", element2));
-                        itemList.add(item);
+                        Flight flight = new Flight();
+                        flight.setFlightName(((Element) node).getAttribute("flightName"));
+                        flight.setFlightFrom(getValue("from", element2));
+                        flight.setFlightTo(getValue("to", element2));
+                        flight.setSectorList(getSectors(element2));
+                        flights.add(flight);
                     }
                 }
             }
         }catch (Exception e){
             e.printStackTrace();
         }
-        return itemList;
+        return flights;
     }
 
     private List<User> readUserXML(Context context){
@@ -942,5 +1050,21 @@ public class POSDBHandler extends SQLiteOpenHelper {
         NodeList nodeList = element.getElementsByTagName(tag).item(0).getChildNodes();
         Node node = nodeList.item(0);
         return node.getNodeValue();
+    }
+
+    private static List<Sector> getSectors(Element element) {
+        List<Sector> sectors = new ArrayList<>();
+        NodeList nodeList = element.getElementsByTagName("sector");
+        for (int i = 0; i < nodeList.getLength(); i++) {
+            Node node = nodeList.item(i);
+            if (node.getNodeType() == Node.ELEMENT_NODE) {
+                Element element2 = (Element) node;
+                Sector flight = new Sector();
+                flight.setFrom(getValue("from", element2));
+                flight.setTo(getValue("to", element2));
+                sectors.add(flight);
+            }
+        }
+        return sectors;
     }
 }

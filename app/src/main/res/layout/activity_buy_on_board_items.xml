@@ -9,16 +9,42 @@
         android:layout_height="fill_parent"
         android:orientation="vertical">
 
+                <LinearLayout
+                    android:id="@+id/scanRFIDLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/textinputborderlight"
+                    android:orientation="horizontal"
+                    android:layout_marginLeft="43dp"
+                    android:layout_marginTop="20dp"
+                    android:clickable="true">
+                    <ImageView
+                        android:layout_width="64dp"
+                        android:layout_height="64dp"
+                        android:layout_gravity="center"
+                        android:layout_weight="1"
+                        android:background="@drawable/icon_rfid" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="Scan RFID"
+                        android:layout_weight="1"
+                        android:paddingRight="10dp"
+                        android:textStyle="bold"
+                        android:textSize="16dp"/>
+            </LinearLayout>
+
         <TableLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_marginTop="15dp"
             android:background="@drawable/layoutbackgroundborder"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:layout_marginLeft="40dp"
             android:layout_marginRight="40dp">
-
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">

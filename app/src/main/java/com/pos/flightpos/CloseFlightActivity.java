@@ -104,11 +104,11 @@ public class CloseFlightActivity extends AppCompatActivity {
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"eClassPaxCount");
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"bClassPaxCount");
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_FA_NAME);
-                        SaveSharedPreference.removeValue(CloseFlightActivity.this,"orderNumber");
+                        //SaveSharedPreference.removeValue(CloseFlightActivity.this,"orderNumber");
                         //SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_KIT_CODE);
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_FLIGHT_MODE);
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_IS_SEAL_VERIFIED);
-                        //SaveSharedPreference.removeValue(CloseFlightActivity.this,"openSealList");
+                        SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_FLIGHT_SECTOR);
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_ADMIN_CONFIGURE_FLIGHT);
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_CAN_ATT_LOGIN);
                         SaveSharedPreference.setStringValues(CloseFlightActivity.this,
@@ -136,9 +136,10 @@ public class CloseFlightActivity extends AppCompatActivity {
         }
         printer.init();
         printer.setAlignment(1);
-        printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 150, 150);
+        printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 200, 70);
+        printer.printString(" ");
         printer.setBold(true);
-        printer.printString("CMB123 CMB-KUL");
+        printer.printString(POSCommonUtils.getFlightDetailsStr(this));
         Date date = new Date();
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         DateFormat dateTimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss aa");
@@ -150,7 +151,8 @@ public class CloseFlightActivity extends AppCompatActivity {
             printer.printString(" ");
             printer.printString(details.getValue());
             printer.setAlignment(2);
-            printer.printString("Total USD "+handler.getTotalSaleFromServiceType(details.getKey(),"Passenger"));
+            printer.printString("Total USD "+POSCommonUtils.getTwoDecimalFloatFromString(
+                    handler.getTotalSaleFromServiceType(details.getKey(),"Passenger")));
             printer.setAlignment(1);
             printer.printString(" ");
         }

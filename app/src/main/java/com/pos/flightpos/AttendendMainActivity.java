@@ -4,8 +4,10 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +17,8 @@ import com.pos.flightpos.objects.Flight;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
+
+import java.util.ArrayList;
 
 public class AttendendMainActivity extends AppCompatActivity {
 
@@ -28,6 +32,7 @@ public class AttendendMainActivity extends AppCompatActivity {
     EditText taxPercentage;
     long mExitTime = 0;
     String serviceType;
+    Spinner sectorSelectionSpinner;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +53,7 @@ public class AttendendMainActivity extends AppCompatActivity {
                 clickSubmitBtn();
             }
         });
+        sectorSelectionSpinner = findViewById(R.id.sectorSelectionSpinner);
         setFlightDetails();
         showHideTaxPercentage();
     }
@@ -73,6 +79,13 @@ public class AttendendMainActivity extends AppCompatActivity {
         flightTo.setText(flight.getFlightTo());
         flightFrom.setEnabled(false);
         flightTo.setEnabled(false);
+        if(flight.getSectorStr() != null && !flight.getSectorStr().isEmpty()){
+            showSectorSelectionSpinner(flight.getSectorStr());
+        }
+        else{
+            TableRow tableRow = findViewById(R.id.sectorRow);
+            tableRow.setVisibility(View.GONE);
+        }
         showPaxCount();
     }
 
@@ -85,6 +98,20 @@ public class AttendendMainActivity extends AppCompatActivity {
         if(paxCountStr != null && !paxCountStr.equals("")){
             bClassPaxCount.setText(paxCountStr);
         }
+    }
+
+    private void showSectorSelectionSpinner(String sectors){
+        ArrayList<String> options=new ArrayList<String>();
+        options.add("");
+        String[] sectorArr = sectors.split(",");
+        for(int i=0;i<sectorArr.length;i++){
+            if(sectorArr[i] != null && !sectorArr[i].isEmpty())
+            options.add(sectorArr[i].replace("+","->"));
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,options);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+        sectorSelectionSpinner.setAdapter(adapter);
     }
 
     private void clickSubmitBtn(){
@@ -100,6 +127,20 @@ public class AttendendMainActivity extends AppCompatActivity {
                 }
                 else{
                     Toast.makeText(getApplicationContext(), "Please specify tax percentage",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+            TableRow tableRow = findViewById(R.id.sectorRow);
+            if(tableRow.getVisibility() != View.GONE){
+                if(sectorSelectionSpinner.getSelectedItem() != null &&
+                        !sectorSelectionSpinner.getSelectedItem().toString().isEmpty()) {
+                    String sector = sectorSelectionSpinner.getSelectedItem().toString();
+                    SaveSharedPreference.setStringValues(this,
+                            Constants.SHARED_PREFERENCE_FLIGHT_SECTOR,sector);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Please select the flight sector",
                             Toast.LENGTH_SHORT).show();
                     return;
                 }

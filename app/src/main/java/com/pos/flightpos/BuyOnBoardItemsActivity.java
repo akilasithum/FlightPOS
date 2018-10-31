@@ -87,19 +87,6 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         serviceType = intent.getExtras().get("serviceType").toString();
         setItemCatClickListeners();
-        //populateItemCatField();
-
-        /*itemCatSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                populateItemImages(itemCatSpinner.getSelectedItem().toString());
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
-
-        });*/
     }
 
     private void setItemCatClickListeners(){
@@ -158,29 +145,19 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        String orderNumber = SaveSharedPreference.getStringValues(this,"orderNumber");
-        if(orderNumber != null){
-            int newVal = Integer.parseInt(orderNumber) + 1;
-            orderNumber = String.valueOf(newVal);
-            SaveSharedPreference.updateValue(this,"orderNumber",orderNumber);
-        }
-        else{
-            SaveSharedPreference.setStringValues(this,"orderNumber","1");
-            orderNumber = "1";
-        }
-        List<SoldItem> soldItems = getSellDataFromTable(orderNumber);
+        List<SoldItem> soldItems = getSellDataFromTable();
         String discount = POSCommonUtils.getIfDiscountsAvailable(itemIds,handler);
         if(discount != null && !discount.isEmpty()){
             subtotal -= Float.parseFloat(discount);
-            showComboDiscount(soldItems,seatNumberVal,orderNumber,discount);
+            showComboDiscount(soldItems,seatNumberVal,discount);
         }
         else{
-            redirectToPaymentPage(soldItems,seatNumberVal,orderNumber,"");
+            redirectToPaymentPage(soldItems,seatNumberVal,"");
         }
     }
 
     private void showComboDiscount(final List<SoldItem> soldItems, final String seatNumberVal,
-                                   final String orderNumber,final String discount) {
+                                   final String discount) {
         new AlertDialog.Builder(BuyOnBoardItemsActivity.this)
                 .setTitle("Combo Discount")
                 .setMessage("You have saved $"+discount + " ")
@@ -188,25 +165,23 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        redirectToPaymentPage(soldItems, seatNumberVal, orderNumber,discount);
+                        redirectToPaymentPage(soldItems, seatNumberVal,discount);
                     }}).show();
     }
 
-    private void redirectToPaymentPage(List<SoldItem> soldItems,String seatNumberVal,
-                                       String orderNumber,String discount){
+    private void redirectToPaymentPage(List<SoldItem> soldItems,String seatNumberVal,String discount){
         Intent intent = new Intent(this, PaymentMethodsActivity.class);
         intent.putExtra("subTotal", subtotal);
         Bundle args = new Bundle();
         args.putSerializable("soldItemList",(Serializable)soldItems);
         intent.putExtra("BUNDLE",args);
         intent.putExtra("SeatNumber",seatNumberVal);
-        intent.putExtra("orderNumber",orderNumber);
         intent.putExtra("serviceType",serviceType);
         intent.putExtra("discount",discount);
         startActivity(intent);
     }
 
-    private List<SoldItem> getSellDataFromTable(String orderNumber){
+    private List<SoldItem> getSellDataFromTable(){
         List<Promotion> promotions = handler.getPromotionsFromServiceType(serviceType);
         int rowCount = contentTable.getChildCount();
         List<SoldItem> soldList = new ArrayList<>();
@@ -244,12 +219,6 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
             //}
             soldList.add(soldItem);
             itemIds.add(itemID.getText().toString());
-            /*String userID = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FA_NAME);
-            handler.insertDailySalesEntry(orderNumber,itemID.getText().toString(),serviceType,
-                    equipmentNo.getText().toString(),drawer.getText().toString(),qty.getText().toString(),
-                    total.getText().toString(),"Passenger",userID);
-            handler.updateSoldItemQty(itemID.getText().toString(),qty.getText().toString(),
-                    equipmentNo.getText().toString(),drawer.getText().toString());*/
         }
         return soldList;
     }
@@ -262,7 +231,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         }
         return 0;
     }
-    private void showDiscountData(final List<SoldItem> soldItems,final String seatNumberVal,final String orderNumber){
+    private void showDiscountData(final List<SoldItem> soldItems,final String seatNumberVal){
         final Dialog discountDialog = new Dialog(this);
         discountDialog.setContentView(R.layout.discount_details_layout);
         Window window = discountDialog.getWindow();
@@ -306,7 +275,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 discountDialog.dismiss();
-                redirectToPaymentPage(soldItems,seatNumberVal,orderNumber,"");
+                redirectToPaymentPage(soldItems,seatNumberVal,"");
             }
         });
         discountDialog.show();

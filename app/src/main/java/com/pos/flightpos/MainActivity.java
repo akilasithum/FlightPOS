@@ -56,15 +56,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-Button goToICCardBrn = (Button) findViewById(R.id.goToICCardBrn);
+/*Button goToICCardBrn = (Button) findViewById(R.id.goToICCardBrn);
         goToICCardBrn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 
-                Intent intent = new Intent(MainActivity.this,ICCardReader.class);
+                Intent intent = new Intent(MainActivity.this,IC.class);
                 startActivity(intent);
             }
-        });
+        });*/
     }
 
     private boolean isSyncClicked(){

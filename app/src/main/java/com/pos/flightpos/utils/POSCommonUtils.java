@@ -6,8 +6,8 @@ import android.content.DialogInterface;
 import android.pt.scan.Scan;
 import android.widget.Toast;
 
-import com.pos.flightpos.ExchangeRateActivity;
 import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.objects.Flight;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.XMLMapper.ComboDiscount;
 
@@ -77,7 +77,7 @@ public class POSCommonUtils {
             }
         }
         scan.close();
-        return getQRCodeDetailsFromStr(str,context);
+        return readBarcodeDetails(str,context);
     }
 
     public static String scanBarCode(Context context){
@@ -97,6 +97,38 @@ public class POSCommonUtils {
         }
         scan.close();
         return str;
+    }
+
+    private static Map<String,String> readBarcodeDetails(String code,Context context){
+        try {
+            String[] spaceArr = code.split(" ");
+            String name = "";
+            String PNR = "";
+            String seatNo = "";
+            if (spaceArr[0].length() <= 22) {
+                name = spaceArr[0].substring(2);
+                PNR = spaceArr[1].substring(2);
+                String seatStr = spaceArr[4];
+                seatNo = seatStr.substring(4, 8);
+            } else {
+                name = spaceArr[0].substring(2, 22);
+                PNR = spaceArr[0].substring(spaceArr[0].length() - 7, spaceArr[0].length() - 1);
+                String seatStr = spaceArr[3];
+                seatNo = seatStr.substring(4, 8);
+            }
+            if (seatNo.substring(0, 1).equals("0")) {
+                seatNo = seatNo.substring(1, 4);
+            }
+            Map<String, String> returnMap = new HashMap<>();
+            returnMap.put("name", name);
+            returnMap.put("PNR", PNR);
+            returnMap.put("seatNo", seatNo);
+            return returnMap;
+        }
+        catch (Exception e){
+                Toast.makeText(context, "Not a proper boarding pass.", Toast.LENGTH_SHORT).show();
+                return null;
+            }
     }
 
     private static Map<String,String> getQRCodeDetailsFromStr(String qrCode, Context context){
@@ -137,7 +169,6 @@ public class POSCommonUtils {
             Toast.makeText(context, "Not a proper boarding pass.", Toast.LENGTH_SHORT).show();
             return null;
         }
-
     }
 
     public static void showDrawerAndEquipment(SoldItem item,Context context){
@@ -208,5 +239,12 @@ public class POSCommonUtils {
             }
         }
         return null;
+    }
+
+    public static String getFlightDetailsStr(Context context){
+        POSDBHandler handler = new POSDBHandler(context);
+        String flightNo = SaveSharedPreference.getStringValues(context,Constants.SHARED_PREFERENCE_FLIGHT_NAME);
+        Flight flight = handler.getFlightFromFlightName(flightNo);
+        return flightNo + " " + flight.getFlightFrom() +"-"+flight.getFlightTo();
     }
 }

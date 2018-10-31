@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.LinearLayout;
 
 import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.utils.POSCommonUtils;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -35,9 +36,10 @@ public class PrintActivity extends AppCompatActivity {
        Printer printer = new Printer();
        printer.open();
        printer.setAlignment(1);
-        printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 200, 200);
+        printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 200, 70);
+        printer.printString(" ");
         printer.printBlankLines(4);
-        printer.printString("CMB123 CMB-KUL");
+        printer.printString(POSCommonUtils.getFlightDetailsStr(this));
         Date date = new Date();
         DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
         printer.printString(df.format(date));

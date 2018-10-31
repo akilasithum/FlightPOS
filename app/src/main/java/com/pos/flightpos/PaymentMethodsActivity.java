@@ -32,6 +32,7 @@ import android.widget.Toast;
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.CreditCard;
 import com.pos.flightpos.objects.Flight;
+import com.pos.flightpos.objects.LoyaltyCard;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.XMLMapper.Currency;
 import com.pos.flightpos.utils.POSCommonUtils;
@@ -63,6 +64,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     EditText expiryDate;
     EditText cardType;
     List<CreditCard> creditCardList;
+    LoyaltyCard loyaltyCard;
     Map<String,String> paymentMethodsMap;
     String seatNumber;
     String orderNumber;
@@ -70,6 +72,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     String serviceType;
     String discount;
     String taxPercentage;
+    String subTotalAfterTax;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +93,6 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         soldItems = (ArrayList<SoldItem>) args.getSerializable("soldItemList");
         String subTotal = intent.getExtras().get("subTotal").toString();
         seatNumber = intent.getExtras().get("SeatNumber").toString();
-        orderNumber = intent.getExtras().get("orderNumber").toString();
         serviceType = intent.getExtras().get("serviceType").toString();
         discount = intent.getExtras().get("discount").toString();
         String serviceType = POSCommonUtils.getServiceType(this);
@@ -118,6 +120,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             dueBalance = Float.parseFloat(subTotal);
             balanceDueTextView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
         }
+        subTotalAfterTax = String.valueOf(dueBalance);
         TextView discountText = findViewById(R.id.discountTextView);
         discountText.setText((discount == null || discount.isEmpty()) ? "0.00" :
                 POSCommonUtils.getTwoDecimalFloatFromString(discount));
@@ -142,11 +145,71 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                 addCreditCardSettlementDetails();
             }
         });
+        LinearLayout loyaltyLayout = (LinearLayout) findViewById(R.id.loyaltyPaymentLayout);
+        loyaltyLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addLoyaltyCardDetails();
+            }
+        });
     }
 
     private void showToastMsg(String msg){
         Toast.makeText(getApplicationContext(), msg,
                 Toast.LENGTH_SHORT).show();
+    }
+
+    private void addLoyaltyCardDetails(){
+
+        dialog = new Dialog(this);
+        dialog.setContentView(R.layout.loyalty_card_details_layout);
+        Window window = dialog.getWindow();
+        window.setLayout(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+        dialog.setTitle("Settle by Credit Card");
+
+        cardNumber = (EditText) dialog.findViewById(R.id.cardNumber);
+        cardHolderName = (EditText) dialog.findViewById(R.id.cardHolderNameText);
+        final EditText amount = (EditText) dialog.findViewById(R.id.amountText);
+        amount.setText(String.valueOf(POSCommonUtils.getTwoDecimalFloatFromString(subTotalAfterTax)));
+        amount.setEnabled(false);
+
+        Button okBtn = (Button) dialog.findViewById(R.id.cardSubmitBtn);
+        Button cancelBtn = (Button) dialog.findViewById(R.id.cancelBtn);
+        Button swipeCardBtn = (Button) dialog.findViewById(R.id.swipeCard);
+        okBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(cardHolderName.getText() == null || cardHolderName.getText().toString().isEmpty() ||
+                        cardNumber.getText() == null || cardNumber.getText().toString().isEmpty()){
+                    showToastMsg("Enter card details.");
+                }
+                else{
+                    loyaltyCard = new LoyaltyCard();
+                    loyaltyCard.setCardHolderName(cardHolderName.getText().toString());
+                    loyaltyCard.setLoyaltyCardNumber(cardNumber.getText().toString());
+                    loyaltyCard.setAmount(Float.parseFloat(amount.getText().toString()));
+                    closeMSR();
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                closeMSR();
+                dialog.dismiss();
+            }
+        });
+
+        swipeCardBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readMSR("loyalty");
+            }
+        });
+
+        dialog.show();
     }
 
     private void addCreditCardSettlementDetails(){
@@ -200,30 +263,40 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         });
 
         dialog.show();
-        readMSR();
+        readMSR("credit");
     }
 
-    public void setmsg(int i, byte[] out_data) {
+    public void setmsg(int i, byte[] out_data,boolean isCreditCard) {
         if(i == 1)
         {
             String track1Str = new String(out_data);
-            String[] track1Details = track1Str.split("\\^");
-            String expireDateStr =track1Details[2].substring(2,4) + "/" +  track1Details[2].substring(0,2);
-            if(!isExpired(expireDateStr)) {
-                cardNumber = (EditText) dialog.findViewById(R.id.cardNumber);
-                cardHolderName = (EditText) dialog.findViewById(R.id.cardHolderNameText);
-                expiryDate = (EditText) dialog.findViewById(R.id.expireDateField);
-                cardNumber.setText(track1Details[0].substring(1));
-                cardHolderName.setText(track1Details[1]);
-                expiryDate.setText(expireDateStr);
-                cardType.setText(POSCommonUtils.getCreditCardTypeFromFirstDigit(track1Details[0].substring(1, 2)));
+            if(isCreditCard) {
+                String[] track1Details = track1Str.split("\\^");
+                String expireDateStr = track1Details[2].substring(2, 4) + "/" + track1Details[2].substring(0, 2);
+                if (!isExpired(expireDateStr)) {
+                    cardNumber = (EditText) dialog.findViewById(R.id.cardNumber);
+                    cardHolderName = (EditText) dialog.findViewById(R.id.cardHolderNameText);
+                    expiryDate = (EditText) dialog.findViewById(R.id.expireDateField);
+                    cardNumber.setText(track1Details[0].substring(1));
+                    cardHolderName.setText(track1Details[1]);
+                    expiryDate.setText(expireDateStr);
+                    cardType.setText(POSCommonUtils.getCreditCardTypeFromFirstDigit(track1Details[0].substring(1, 2)));
+                } else {
+                    showToastMsg("Given credit card is expired.");
+                    closeMSR();
+                    readMSR("credit");
+                }
             }
             else{
-                showToastMsg("Given credit card is expired.");
-                closeMSR();
-                readMSR();
+                String[] track1Details = track1Str.split("\\^");
+                String expireDateStr = track1Details[2].substring(2, 4) + "/" + track1Details[2].substring(0, 2);
+                    cardNumber = (EditText) dialog.findViewById(R.id.cardNumber);
+                    cardHolderName = (EditText) dialog.findViewById(R.id.cardHolderNameText);
+                    cardNumber.setText(track1Details[0].substring(1));
+                    cardHolderName.setText(track1Details[1]);
+                    closeMSR();
+                }
             }
-        }
     }
 
     private boolean isExpired(String expireStr){
@@ -258,7 +331,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         msr.close();
     }
 
-    private void readMSR(){
+    private void readMSR(final String cardType){
         final Msr msr = new Msr();
         msr.open();
         final ProgressDialog dia = new ProgressDialog(this);
@@ -279,7 +352,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                             //Log.i("123", "i:"+i);
                             byte[] out_data = new byte[msr.getTrackDataLength(i)];
                             msr.getTrackData(i, out_data);
-                            setmsg(i,out_data);
+                            setmsg(i,out_data,cardType.equals("credit"));
                             return;
                         }
                     }
@@ -441,19 +514,36 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     }
 
     private void updateSale(){
+        Date date = new Date();
+        DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String currentDateStr = df.format(date);
         for(SoldItem soldItem : soldItems) {
             String userID = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FA_NAME);
             handler.insertDailySalesEntry(orderNumber, soldItem.getItemId(), serviceType,
                     soldItem.getEquipmentNo(), soldItem.getDrawer(), soldItem.getQuantity(),
-                    soldItem.getTotal(), "Passenger", userID);
+                    soldItem.getTotal(), "Passenger", userID,currentDateStr);
             handler.updateSoldItemQty(soldItem.getItemId(), soldItem.getQuantity(),soldItem.getEquipmentNo(),
                     soldItem.getDrawer());
+        }
+
+        for(Map.Entry<String,String> entry : paymentMethodsMap.entrySet()){
+            handler.insertPaymentMethods(orderNumber,entry.getKey(),entry.getValue());
+        }
+        handler.insertOrderMainDetails(orderNumber,taxPercentage,discount,seatNumber);
+        if(creditCardList != null && !creditCardList.isEmpty()){
+            CreditCard creditCard = creditCardList.get(0);
+            handler.insertCreditCardDetails(orderNumber,creditCard.getCreditCardNumber(),creditCard.getCardHolderName(),
+                    creditCard.getExpireDate(),paymentMethodsMap.get("Credit Card USD"));
+        }
+        if(loyaltyCard != null){
+            handler.insertLoyaltyCardDetails(orderNumber,loyaltyCard.getLoyaltyCardNumber(),
+                    loyaltyCard.getCardHolderName(),String.valueOf(loyaltyCard.getAmount()));
         }
     }
 
     private void printReceipt(){
         Float dispDueBalance = Float.parseFloat(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
-        if(dispDueBalance <= 0){
+        if(dispDueBalance <= 0.1){
             if(printReceiptBtn.getText().equals("Print Card Holder copy")){
                 PrintJob.printOrderDetails(PaymentMethodsActivity.this,orderNumber,
                         seatNumber,soldItems,paymentMethodsMap,
@@ -462,6 +552,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
             else{
+                generateOrderNumber();
                 updateSale();
                 PrintJob.printOrderDetails(this,orderNumber,seatNumber,soldItems,paymentMethodsMap,
                         creditCardList.isEmpty() ? null : creditCardList.get(0),false,discount);
@@ -476,6 +567,19 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         }
         else{
             showToastMsg("Due balance should be zero");
+        }
+    }
+
+    private void generateOrderNumber(){
+        orderNumber = SaveSharedPreference.getStringValues(this,"orderNumber");
+        if(orderNumber != null){
+            int newVal = Integer.parseInt(orderNumber) + 1;
+            orderNumber = String.valueOf(newVal);
+            SaveSharedPreference.updateValue(this,"orderNumber",orderNumber);
+        }
+        else{
+            SaveSharedPreference.setStringValues(this,"orderNumber","1");
+            orderNumber = "1";
         }
     }
 }

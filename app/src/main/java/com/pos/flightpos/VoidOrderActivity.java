@@ -15,8 +15,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.objects.OrderDetails;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.utils.POSDBHandler;
+import com.pos.flightpos.utils.PrintJob;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.util.List;
@@ -61,7 +63,7 @@ public class VoidOrderActivity extends AppCompatActivity {
         receiptRePrintBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                rePrintReceipt();
             }
         });
 
@@ -72,6 +74,14 @@ public class VoidOrderActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+    }
+
+    private void rePrintReceipt(){
+
+        OrderDetails details = handler.getOrderDetailsFromOrderNumber(orderIdStr);
+        PrintJob.printOrderDetails(this,orderIdStr,details.getSeatNo(),items,
+                handler.getPaymentMethodsMapFromOrderNumber(orderIdStr),handler.getCreditCardDetailsFromOrderNumber(orderIdStr),
+                true,details.getDiscount());
     }
 
     private void cancelOrder(){

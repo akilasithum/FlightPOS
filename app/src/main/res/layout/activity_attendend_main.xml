@@ -34,6 +34,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textColor="@color/black"
                 android:textSize="20dp" />
         </TableRow>
 
@@ -55,6 +56,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textColor="@color/black"
                 android:paddingRight="50dp" />
         </TableRow>
 
@@ -77,6 +79,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
+                android:textColor="@color/black"
                 android:inputType="textPersonName" />
         </TableRow>
 
@@ -99,6 +102,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
+                android:textColor="@color/black"
                 android:inputType="textPersonName" />
         </TableRow>
 
@@ -167,6 +171,28 @@
                 android:layout_weight="1"
                 android:ems="10"
                 android:inputType="number" />
+        </TableRow>
+
+        <TableRow
+            android:id="@+id/sectorRow"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingTop="10dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:text="Flight Sector"
+                android:textSize="20dp" />
+
+            <Spinner
+                android:id="@+id/sectorSelectionSpinner"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="60dp"
+                android:layout_weight="1" />
         </TableRow>
 
         <TableRow

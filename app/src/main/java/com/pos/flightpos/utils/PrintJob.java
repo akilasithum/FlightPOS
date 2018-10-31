@@ -39,7 +39,8 @@ public class PrintJob {
                 Toast.LENGTH_SHORT).show();
         printer.init();
         printer.setAlignment(1);
-        printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 150, 150);
+        printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 200, 70);
+        printer.printString(" ");
         printer.setBold(true);
         printer.printString(getFlightDetailsStr(context));
         Date date = new Date();
@@ -115,8 +116,8 @@ public class PrintJob {
                 Constants.SHARED_PREFERENCE_TAX_PERCENTAGE);
         printer.init();
         printer.setAlignment(1);
-        printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 150, 150);
-        printer.printString("");
+        printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 200, 70);
+        printer.printString(" ");
         printer.setBold(true);
         printer.printString(getFlightDetailsStr(context));
         Date date = new Date();
