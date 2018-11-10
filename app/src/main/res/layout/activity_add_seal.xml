@@ -49,7 +49,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="addSeal"
-                    android:text="Add Outbound seals" />
+                    android:text="Save Outbound seals" />
             </LinearLayout>
 
             <LinearLayout
@@ -81,7 +81,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="addSeal"
-                        android:text="Done" />
+                        android:text="Save" />
 
             </LinearLayout>
         </LinearLayout>

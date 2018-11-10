@@ -17,6 +17,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
 import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.pos.flightpos.objects.Constants;
 
 import java.io.File;
 
@@ -58,6 +59,7 @@ public class POSSyncUtils {
                 if (TransferState.COMPLETED == state) {
                     insertDataIntoSQLIteDB(fileName);
                     if(fileName.equals("pre_orders")){
+                        SaveSharedPreference.setStringValues(context, Constants.SHARED_PREFERENCE_SYNC_PRE_ORDERS,"yes");
                         new AlertDialog.Builder(context)
                                 .setTitle("Sync Completed")
                                 .setMessage("Pre Orders sync completed.")

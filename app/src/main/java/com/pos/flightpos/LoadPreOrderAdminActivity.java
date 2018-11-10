@@ -12,25 +12,21 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.pos.flightpos.objects.Constants;
-import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.XMLMapper.PreOrder;
 import com.pos.flightpos.utils.POSDBHandler;
-import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PreOrderDeliveryActivity extends AppCompatActivity {
+public class LoadPreOrderAdminActivity extends AppCompatActivity {
 
     POSDBHandler posdbHandler;
     Map<String,List<PreOrder>> preOrders;
@@ -40,11 +36,11 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_pre_order_delivery);
+        setContentView(R.layout.activity_load_pre_order_admin);
         posdbHandler = new POSDBHandler(this);
         serviceType = getIntent().getExtras().getString("serviceType");
         preOrderTable = (TableLayout) findViewById(R.id.preOrdersTable);
-        preOrders = posdbHandler.getAvailablePreOrders(serviceType,"faUser");
+        preOrders = posdbHandler.getAvailablePreOrders(serviceType,"admin");
         showPreOrdersByPriority();
         ImageButton backButton = findViewById(R.id.backPressBtn);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -92,12 +88,12 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
             customerDetails.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(PreOrderDeliveryActivity.this);
+                    AlertDialog.Builder builder1 = new AlertDialog.Builder(LoadPreOrderAdminActivity.this);
                     builder1.setTitle("Pre order items");
                     builder1.setMessage("Customer Name  : "+preOrder.getCustomerName() +"\n" +
                             "Item Desc          : " + posdbHandler.getItemDescFromItemNo(preOrder.getItemId()) +"\n" +
                             "Item Category      : " +preOrder.getItemCategory() + "\n"+
-                    "Quantity              : " + preOrder.getQuantity());
+                            "Quantity              : " + preOrder.getQuantity());
                     builder1.setPositiveButton(
                             "OK",
                             new DialogInterface.OnClickListener() {
@@ -118,18 +114,18 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
             tr.addView(serviceTypeText);
 
             Map<String,Integer> buttonMap = new HashMap<>();
-            buttonMap.put("Not Delivered",R.drawable.icon_not_delivered);
-            buttonMap.put("Delivered",R.drawable.icon_delivered);
+            buttonMap.put("Packed",R.drawable.icon_packed);
+            buttonMap.put("Loaded",R.drawable.icon_delivered);
+            buttonMap.put("Fulfilled",R.drawable.icon_bob_other);
             buttonMap.put("Rejected",R.drawable.icon_reject);
-            buttonMap.put("Pax not onboard",R.drawable.icon_passenger_not_available);
             tr.addView(getImageBtnLayout(buttonMap,preOrder.getPNR(),preOrder.getItemId(),preOrder.getDelivered()));
 
             Spinner flightDateSpinner = new Spinner(this);
             final ArrayList<String> options=new ArrayList<String>();
-            options.add("Not Delivered");
-            options.add("Delivered");
+            options.add("Packed");
+            options.add("Loaded");
+            options.add("Fulfilled");
             options.add("Rejected");
-            options.add("Pax not onboard");
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,options);
             flightDateSpinner.setAdapter(adapter);
             flightDateSpinner.setSelection(options.indexOf(preOrder.getDelivered()));
@@ -162,13 +158,12 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
                 }
             });
             //tr.addView(flightDateSpinner);
-
             preOrderTable.addView(tr);
             i++;
         }
     }
 
-    private LinearLayout getImageBtnLayout(Map<String,Integer> buttonList,final String PNR,
+    private LinearLayout getImageBtnLayout(Map<String,Integer> buttonList, final String PNR,
                                            final String itemId, final String deliveryStatus){
 
         TableRow.LayoutParams cellParams = new TableRow.LayoutParams(0,
@@ -199,8 +194,8 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    posdbHandler.updatePreOrderDeliveryStatus(btnMap.getKey(),PNR,itemId);
-                    Toast.makeText(getApplicationContext(), "Pre order items " + btnMap.getKey(),
+                    posdbHandler.updatePreOrderAdminStatus(btnMap.getKey(),PNR,itemId);
+                    Toast.makeText(getApplicationContext(), "Pre order item " + btnMap.getKey(),
                             Toast.LENGTH_SHORT).show();
                     setBackGroundColors(mainLayout);
                     clickLayout.setBackgroundColor(getResources().getColor(R.color.monsoon));

@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.Flight;
 import com.pos.flightpos.objects.XMLMapper.KitNumber;
+import com.pos.flightpos.utils.MultiSelectionSpinner;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -28,7 +29,7 @@ import java.util.List;
 
 public class ConfigureFlightActivity extends AppCompatActivity {
 
-    Spinner equipmentSpinner;
+    MultiSelectionSpinner equipmentSpinner;
     POSDBHandler handler;
     TextView flightFrom;
     TextView flightTo;
@@ -41,7 +42,7 @@ public class ConfigureFlightActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_configure_flight);
         handler = new POSDBHandler(this);
-        equipmentSpinner = (Spinner) findViewById(R.id.equipmentNumber);
+        equipmentSpinner =  findViewById(R.id.equipmentNumber);
         flightFrom = (TextView) findViewById(R.id.fromTextField);
         flightTo = (TextView) findViewById(R.id.toTextField);
         flightDateSpinner = (Spinner) findViewById(R.id.flightDateSpinner);
@@ -82,15 +83,21 @@ public class ConfigureFlightActivity extends AppCompatActivity {
 
     private void loadEquipmentNumbers(){
 
-        List<KitNumber> options=new ArrayList<>();
+        /*List<KitNumber> options=new ArrayList<>();
         List<KitNumber> equipmentList = handler.getKITCodeList();
         KitNumber item = new KitNumber();
         options.add(item);
         options.addAll(equipmentList);
         ArrayAdapter<KitNumber> adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,options);
         adapter.setDropDownViewResource(R.layout.spinner_item);
-        equipmentSpinner.setAdapter(adapter);
+        equipmentSpinner.setAdapter(adapter);*/
 
+        equipmentSpinner= findViewById(R.id.equipmentNumber);
+        List<KitNumber> equipmentList = handler.getKITCodeList();
+        List<String> list = new ArrayList<>();
+        //list.add("");
+        for(KitNumber kitNumber : equipmentList)list.add(kitNumber.getKitCode());
+        equipmentSpinner.setItems(list);
     }
 
     private void populateDateField(){
@@ -134,8 +141,8 @@ public class ConfigureFlightActivity extends AppCompatActivity {
                 !flightFrom.getText().toString().equals("") && equipmentSpinner.getSelectedItem() != null &&
                 ! equipmentSpinner.getSelectedItem().equals("")) {
             Intent intent = new Intent(this, VerifyFlightByAdminActivity.class);
-            KitNumber kitNumber = (KitNumber)equipmentSpinner.getSelectedItem();
-            SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE,kitNumber.getKitCode());
+            String kitNumber = String.valueOf(equipmentSpinner.getSelectedItem());
+            SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE,kitNumber);
             SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME,
                     flightListTextView.getText().toString());
             SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_DATE,

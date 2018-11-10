@@ -6,6 +6,7 @@ public class OrderDetails {
     private String discount;
     private String tax;
     private String seatNo;
+    private String subTotal;
 
     public String getOrderNumber() {
         return orderNumber;
@@ -37,5 +38,13 @@ public class OrderDetails {
 
     public void setSeatNo(String seatNo) {
         this.seatNo = seatNo;
+    }
+
+    public String getSubTotal() {
+        return subTotal;
+    }
+
+    public void setSubTotal(String subTotal) {
+        this.subTotal = subTotal;
     }
 }

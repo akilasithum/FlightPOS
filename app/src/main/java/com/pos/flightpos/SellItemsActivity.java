@@ -116,24 +116,24 @@ public class SellItemsActivity extends AppCompatActivity {
             }
         });
         final LinearLayout preOrderLayout = (LinearLayout) findViewById(R.id.preOrderDelivery);
-        final Map<String,List<PreOrder>> preOrders = getPreOrderList();
+        /*final Map<String,List<PreOrder>> preOrders = getPreOrderList();
         if(preOrders == null || preOrders.isEmpty()) {
             preOrderLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
-        }
+        }*/
         preOrderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(preOrders != null && !preOrders.isEmpty()) {
-                    Intent intent = new Intent(SellItemsActivity.this, PreOrderDeliveryActivity.class);
-                    Bundle args = new Bundle();
+                //if(preOrders != null && !preOrders.isEmpty()) {
+                    Intent intent = new Intent(SellItemsActivity.this, SelectPreOrderTypeActivity.class);
+                    /*Bundle args = new Bundle();
                     args.putSerializable("preOrders",(Serializable)preOrders);
-                    intent.putExtra("BUNDLE",args);
+                    intent.putExtra("BUNDLE",args);*/
                     intent.putExtra("serviceType",serviceType);
                     startActivity(intent);
-                }
-                else{
+                //}
+                /*else{
                     showAlertDialog("No Items","No pre order items available for this flight");
-                }
+                }*/
             }
         });
 
@@ -200,7 +200,7 @@ public class SellItemsActivity extends AppCompatActivity {
     }
 
     private Map<String,List<PreOrder>> getPreOrderList(){
-        return handler.getAvailablePreOrders(serviceType);
+        return handler.getAvailablePreOrders(serviceType,"faUser");
     }
 
     @Override

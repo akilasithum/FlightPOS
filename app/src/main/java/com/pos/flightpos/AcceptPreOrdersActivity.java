@@ -1,6 +1,8 @@
 package com.pos.flightpos;
 
+import android.app.DatePickerDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -13,10 +15,13 @@ import android.text.InputType;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -24,6 +29,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.objects.Flight;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.XMLMapper.ComboDiscount;
 import com.pos.flightpos.objects.XMLMapper.Promotion;
@@ -32,45 +38,49 @@ import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class BuyItemFromCategoryActivity extends AppCompatActivity {
+public class AcceptPreOrdersActivity extends AppCompatActivity {
 
     Button submitBtn;
     Button purchaseItemsBtn;
-    Button scanBoardingPassBtn;
+    Spinner serviceTypeSpinner;
     Spinner itemCatSpinner;
     Spinner itemSpinner;
     TableLayout contentTable;
     private int itemCount = 0;
     private float subtotal = 0;
     TextView subTotalView;
-    EditText seatNumber;
     List<SoldItem> soldItemList;
     POSDBHandler handler;
     String serviceType;
     String kitCode;
     List<SoldItem> discountItemList;
     List<String> itemIds;
-
+    EditText flightDateText;
+    EditText flightNumberText;
+    Calendar myCalendar;
+    Spinner flightSectorSpinner;
+    EditText paxName;
+    boolean hasSectors = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_buy_item_from_category);
+        setContentView(R.layout.activity_accept_pre_orders);
         kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
         itemCatSpinner = (Spinner) findViewById(R.id.itemCategorySpinner);
+        serviceTypeSpinner = findViewById(R.id.serviceTypeSpinner);
         itemSpinner = (Spinner) findViewById(R.id.itemSpinner);
         submitBtn = (Button) findViewById(R.id.addItemBtn);
         contentTable = (TableLayout) findViewById(R.id.contentTable);
         subTotalView = (TextView) findViewById(R.id.subTotalTextView);
-        seatNumber = (EditText) findViewById(R.id.seatNumber);
         purchaseItemsBtn = (Button) findViewById(R.id.purchaseItems);
-        scanBoardingPassBtn = (Button) findViewById(R.id.scanBoardingPass);
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,19 +93,29 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
                 purchaseItems();
             }
         });
-        scanBoardingPassBtn.setOnClickListener(new View.OnClickListener() {
+        ImageButton backButton = findViewById(R.id.backPressBtn);
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                populateSeatNumberFromBoardingPass();
+                onBackPressed();
             }
         });
         discountItemList = new ArrayList<>();
         soldItemList = new ArrayList<>();
         handler = new POSDBHandler(getApplicationContext());
-        Intent intent = getIntent();
-        serviceType = intent.getExtras().get("serviceType").toString();
-        populateItemCatField();
+        populateServiceTypes();
+        serviceTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                populateItemCatField(serviceTypeSpinner.getSelectedItem().toString());
+                serviceType = serviceTypeSpinner.getSelectedItem().toString();
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         itemCatSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -107,38 +127,155 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
                 // your code here
             }
         });
+        flightDateText = findViewById(R.id.flightDate);
+        flightNumberText = findViewById(R.id.flightNumber);
+        flightSectorSpinner = findViewById(R.id.flightSector);
+        paxName = findViewById(R.id.paxName);
+        setDatePicker();
+        configureFlightNumber();
+    }
+
+    private void configureFlightNumber(){
+        flightNumberText.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if(s.length() == 3) {
+                    populateFlightList(flightNumberText.getText().toString());
+                }
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+    }
+    private void showSectorSelectionSpinner(String sectors){
+        ArrayList<String> options=new ArrayList<String>();
+        options.add("");
+        String[] sectorArr = sectors.split(",");
+        for(int i=0;i<sectorArr.length;i++){
+            if(sectorArr[i] != null && !sectorArr[i].isEmpty())
+                options.add(sectorArr[i].replace("+","->"));
+        }
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,options);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+        flightSectorSpinner.setAdapter(adapter);
+    }
+    private void populateFlightList(String flightNumber){
+
+        Flight flight = handler.getFlightFromFlightName(flightNumber);
+        if(flight != null) {
+            flightNumberText.setText(flight.getFlightName());
+            View view = this.getCurrentFocus();
+            if (view != null) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+            if(flight.getSectorStr() != null && !flight.getSectorStr().isEmpty()){
+                hasSectors = true;
+                showSectorSelectionSpinner(flight.getSectorStr());
+            }
+            else{
+                hasSectors = false;
+                TableRow tableRow = findViewById(R.id.sectorRow);
+                tableRow.setVisibility(View.GONE);
+            }
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "Invalid flight number",
+                    Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void setDatePicker(){
+        myCalendar = Calendar.getInstance();
+        final DatePickerDialog.OnDateSetListener date = new DatePickerDialog.OnDateSetListener() {
+
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear,
+                                  int dayOfMonth) {
+                // TODO Auto-generated method stub
+                myCalendar.set(Calendar.YEAR, year);
+                myCalendar.set(Calendar.MONTH, monthOfYear);
+                myCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                updateLabel();
+            }
+        };
+        flightDateText.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                // TODO Auto-generated method stub
+                new DatePickerDialog(AcceptPreOrdersActivity.this, date, myCalendar
+                        .get(Calendar.YEAR), myCalendar.get(Calendar.MONTH),
+                        myCalendar.get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+    }
+
+    private void updateLabel() {
+        String myFormat = "dd/MM/yyyy"; //In which you need put here
+        SimpleDateFormat sdf = new SimpleDateFormat(myFormat);
+
+        flightDateText.setText(sdf.format(myCalendar.getTime()));
     }
 
     private void purchaseItems() {
-        String seatNumberVal = seatNumber.getText() == null ? null : seatNumber.getText().toString();
+        String paxNameStr = paxName.getText() == null ? null : paxName.getText().toString();
+        String flightNumberStr = flightNumberText.getText() == null ? null : flightNumberText.getText().toString();
+        String flightDateStr = flightDateText.getText() == null ? null : flightDateText.getText().toString();
+        String flightSectorStr = "";
+        if(hasSectors){
+            flightSectorStr = flightSectorSpinner.getSelectedItem() == null ? null : flightSectorSpinner.getSelectedItem().toString();
+        }
         if (itemCount == 0) {
             Toast.makeText(getApplicationContext(), "Add items before purchase items.",
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        if (seatNumberVal == null || seatNumberVal.equals("")) {
-            Toast.makeText(getApplicationContext(), "Enter seat number",
+        if (paxNameStr == null || paxNameStr.isEmpty() || flightNumberStr == null || flightNumberStr.isEmpty() ||
+                flightDateStr == null || flightDateStr.isEmpty() || flightSectorStr == null) {
+            Toast.makeText(getApplicationContext(), "Enter pax details",
                     Toast.LENGTH_SHORT).show();
             return;
+        }
+
+        String orderNumber = SaveSharedPreference.getStringValues(this, "orderNumber");
+        if (orderNumber != null) {
+            int newVal = Integer.parseInt(orderNumber) + 1;
+            orderNumber = String.valueOf(newVal);
+            SaveSharedPreference.updateValue(this, "orderNumber", orderNumber);
+        } else {
+            SaveSharedPreference.setStringValues(this, "orderNumber", "1");
+            orderNumber = "1";
         }
 
         List<SoldItem> soldItems = getSellDataFromTable();
         String discount = getIfDiscountsAvailable();
         if (discount != null && !discount.isEmpty()) {
-            showComboDiscount(soldItems, seatNumberVal,discount);
+            showComboDiscount(soldItems, orderNumber,discount);
         } else {
-            redirectToPaymentPage(soldItems, seatNumberVal);
+            redirectToPaymentPage(soldItems, orderNumber);
         }
     }
-    private void showComboDiscount(final List<SoldItem> soldItems, final String seatNumberVal,String discount) {
-        new AlertDialog.Builder(BuyItemFromCategoryActivity.this)
+    private void showComboDiscount(final List<SoldItem> soldItems,
+                                   final String orderNumber,String discount) {
+        new AlertDialog.Builder(AcceptPreOrdersActivity.this)
                 .setTitle("Combo Discount")
                 .setMessage("You have saved $"+discount + " ")
                 .setIcon(android.R.drawable.ic_dialog_alert)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
-                        redirectToPaymentPage(soldItems, seatNumberVal);
+                        redirectToPaymentPage(soldItems, orderNumber);
                     }}).show();
     }
 
@@ -186,19 +323,23 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 discountDialog.dismiss();
-                redirectToPaymentPage(soldItems, seatNumberVal);
+                redirectToPaymentPage(soldItems, orderNumber);
             }
         });
         discountDialog.show();
     }
 
-    private void redirectToPaymentPage(List<SoldItem> soldItems, String seatNumberVal) {
-        Intent intent = new Intent(this, PaymentMethodsActivity.class);
+    private void redirectToPaymentPage(List<SoldItem> soldItems, String orderNumber) {
+        Intent intent = new Intent(this, PreOrderPaymentsActivity.class);
         intent.putExtra("subTotal", subtotal);
         Bundle args = new Bundle();
         args.putSerializable("soldItemList", (Serializable) soldItems);
         intent.putExtra("BUNDLE", args);
-        intent.putExtra("SeatNumber", seatNumberVal);
+        intent.putExtra("paxName", paxName.getText().toString());
+        intent.putExtra("flightNumber", flightNumberText.getText().toString());
+        intent.putExtra("flightDate", flightDateText.getText().toString());
+        intent.putExtra("sector", hasSectors ? flightSectorSpinner.getSelectedItem().toString() : "");
+        intent.putExtra("orderNumber", orderNumber);
         intent.putExtra("serviceType", serviceType);
         intent.putExtra("discount", "");
         startActivity(intent);
@@ -210,23 +351,21 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
         List<Promotion> promotions = handler.getPromotionsFromServiceType(serviceType);
         List<SoldItem> soldList = new ArrayList<>();
         itemIds = new ArrayList<>();
-        for (int i = 1; i < rowCount - 4; i++) {
+        for (int i = 1; i < rowCount - 2; i++) {
             TableRow tableRow = (TableRow) contentTable.getChildAt(i);
             TextView itemID = (TextView) tableRow.getChildAt(0);
             TextView itemDesc = (TextView) tableRow.getChildAt(1);
             EditText qty = (EditText) tableRow.getChildAt(2);
             TextView price = (TextView) tableRow.getChildAt(3);
             TextView total = (TextView) tableRow.getChildAt(4);
-            TextView equipmentNo = (TextView) tableRow.getChildAt(5);
-            TextView drawer = (TextView) tableRow.getChildAt(6);
+            TextView category = (TextView) tableRow.getChildAt(5);
             itemDesc.getText();
             SoldItem soldItem = new SoldItem();
             soldItem.setItemId(itemID.getText().toString());
             soldItem.setItemDesc(itemDesc.getText().toString());
             soldItem.setQuantity(qty.getText().toString());
-            soldItem.setEquipmentNo(equipmentNo.getText().toString());
-            soldItem.setDrawer(drawer.getText().toString());
             soldItem.setTotal(total.getText().toString());
+            soldItem.setItemCategory(category.getText().toString());
             float discount = getDiscount(promotions, itemID.getText().toString());
             if (discount != 0) {
                 float newPrice = Float.parseFloat(price.getText().toString()) * ((100 - discount) / 100);
@@ -257,14 +396,12 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
 
     private void clickSubmitBtn() {
 
-        final SoldItem item = (SoldItem) itemSpinner.getSelectedItem();
+        SoldItem item = (SoldItem) itemSpinner.getSelectedItem();
         if (item == null || item.equals("")) {
             Toast.makeText(getApplicationContext(), "select item first.",
                     Toast.LENGTH_SHORT).show();
             return;
         }
-
-        //POSCommonUtils.showDrawerAndEquipment(item, this);
         itemCatSpinner.setSelection(0);
         itemSpinner.setSelection(0);
         itemCount++;
@@ -286,37 +423,17 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
         EditText qty = new EditText(this);
         final TextView price = new TextView(this);
         final TextView totalTextField = new TextView(this);
-        TextView equipmentNo = new TextView(this);
-        TextView drawer = new TextView(this);
+        TextView itemCategory = new TextView(this);
         Button removeItemBtn = new Button(this);
         removeItemBtn.setLayoutParams(cellParams3);
         removeItemBtn.setBackground(getResources().getDrawable(R.drawable.icon_cancel));
         removeItemBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new AlertDialog.Builder(BuyItemFromCategoryActivity.this)
-                        .setTitle("Remove selection")
-                        .setMessage("Do you want to remove this item from selection?")
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                subtotal -= Float.parseFloat(totalTextField.getText().toString());
-                                subTotalView.setText(String.valueOf(subtotal));
-                                itemCount--;
-                                contentTable.removeView(tr);
-                            }})
-                        .setNegativeButton(android.R.string.no, null).show();
-            }
-        });
-
-        Button lookupBtn = new Button(this);
-        lookupBtn.setLayoutParams(cellParams3);
-        lookupBtn.setBackground(getResources().getDrawable(R.drawable.icon_llokup));
-        lookupBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                POSCommonUtils.showDrawerAndEquipment(item,BuyItemFromCategoryActivity.this);
+                subtotal -= Float.parseFloat(totalTextField.getText().toString());
+                subTotalView.setText(String.valueOf(subtotal));
+                itemCount--;
+                contentTable.removeView(tr);
             }
         });
 
@@ -369,15 +486,10 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
         totalTextField.setLayoutParams(cellParams2);
         tr.addView(totalTextField);
 
-        equipmentNo.setText(item.getEquipmentNo());
-        equipmentNo.setVisibility(View.GONE);
-        tr.addView(equipmentNo);
+        itemCategory.setText(item.getItemCategory());
+        itemCategory.setVisibility(View.GONE);
+        tr.addView(itemCategory);
 
-        drawer.setText(item.getDrawer());
-        drawer.setVisibility(View.GONE);
-        tr.addView(drawer);
-
-        tr.addView(lookupBtn);
         tr.addView(removeItemBtn);
 
         subtotal += total;
@@ -401,7 +513,7 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
         List<SoldItem> options = new ArrayList<>();
         ArrayAdapter<SoldItem> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, options);
         itemSpinner.setAdapter(adapter);
-        List<SoldItem> itemList = handler.getItemListFromItemCategory(selectedCat, kitCode);
+        List<SoldItem> itemList = handler.getItemListFromItemCategoryForPreOrder(selectedCat, serviceType);
         SoldItem item = new SoldItem();
         options.add(item);
         options.addAll(itemList);
@@ -410,11 +522,22 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
         itemSpinner.setAdapter(adapter);
     }
 
-    private void populateItemCatField() {
+    private void populateServiceTypes(){
+        List<String> options = new ArrayList<String>();
+        options.add("");
+        options.add("BOB");
+        options.add("DTP");
+        options.add("DTF");
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, options);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+        serviceTypeSpinner.setAdapter(adapter);
+    }
+
+    private void populateItemCatField(String serviceType) {
 
         List<String> options = new ArrayList<String>();
         options.add("");
-        List<String> catList = handler.getItemCatFromItems(kitCode);
+        List<String> catList = handler.getItemCatFromServiceType(serviceType);
         if (catList.size() > 0) {
             final ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
             tg.startTone(ToneGenerator.TONE_PROP_BEEP);
@@ -423,36 +546,8 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, options);
             adapter.setDropDownViewResource(R.layout.spinner_item);
             itemCatSpinner.setAdapter(adapter);
-        } else {
-            Toast.makeText(getApplicationContext(), "No items available in this category.",
-                    Toast.LENGTH_SHORT).show();
-            ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_NOTIFICATION, 100);
-            tg.startTone(ToneGenerator.TONE_CDMA_PIP, 1000);
-            tg.release();
         }
     }
-
-    private void populateSeatNumberFromBoardingPass() {
-        final Map<String, String> qrCodeDetails = POSCommonUtils.scanQRCode(this);
-        if (qrCodeDetails != null) {
-            String fileNames = "";
-            for (Map.Entry entry : qrCodeDetails.entrySet()) {
-                fileNames += entry.getKey() + " - " + entry.getValue() + "\n";
-            }
-            new AlertDialog.Builder(BuyItemFromCategoryActivity.this)
-                    .setTitle("QR Code details")
-                    .setMessage(fileNames)
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            seatNumber.setText(qrCodeDetails.get("seatNo"));
-                        }
-                    })
-                    .setNegativeButton(android.R.string.cancel, null).show();
-        }
-    }
-
     private String getIfDiscountsAvailable() {
 
         if (itemIds != null) {

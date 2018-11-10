@@ -12,23 +12,20 @@ import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pos.flightpos.objects.AcceptPreOrder;
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.CreditCard;
 import com.pos.flightpos.objects.LoyaltyCard;
 import com.pos.flightpos.objects.SoldItem;
-import com.pos.flightpos.objects.XMLMapper.Currency;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.PrintJob;
@@ -42,13 +39,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PaymentMethodsActivity extends AppCompatActivity {
+public class PreOrderPaymentsActivity extends AppCompatActivity {
 
     private float dueBalance = 0;
     private ArrayList<SoldItem> soldItems;
     TableLayout paymentTable;
     TextView balanceDueTextView;
-    Button confirmPaymentBtn;
+    Button confirmOrderBtn;
+    Button cancelSaleBtn;
     int paymentMethodsCount = 0;
     private Msr msr = null;
     private Dialog dialog = null;
@@ -57,7 +55,6 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     EditText expiryDate;
     EditText cardType;
     List<CreditCard> creditCardList;
-    LoyaltyCard loyaltyCard;
     Map<String,String> paymentMethodsMap;
     String seatNumber;
     String orderNumber;
@@ -66,23 +63,27 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     String discount;
     String taxPercentage;
     String subTotalAfterTax;
+    String paxName;
+    String flightName;
+    String flightDate;
+    String flightSector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_payment_methods);
+        setContentView(R.layout.activity_pre_order_payments);
         handler = new POSDBHandler(this);
         paymentTable = (TableLayout) findViewById(R.id.paymentMethodTable);
-        confirmPaymentBtn = (Button) findViewById(R.id.printReceipt);
+        confirmOrderBtn = (Button) findViewById(R.id.printReceipt);
         balanceDueTextView = (TextView)  findViewById(R.id.balanceDueTextView);
-        confirmPaymentBtn.setOnClickListener(new View.OnClickListener() {
+        confirmOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if(confirmPaymentBtn.getText().equals("Confirm Payment")) {
+                if(confirmOrderBtn.getText().equals("Confirm Payment")) {
                     Float dispDueBalance = Float.parseFloat(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
                     if (dispDueBalance <= 0.1) {
-                        new android.support.v7.app.AlertDialog.Builder(PaymentMethodsActivity.this)
+                        new android.support.v7.app.AlertDialog.Builder(PreOrderPaymentsActivity.this)
                                 .setTitle("Confirm Payment")
                                 .setMessage("Are you sure you want to confirm the payment?")
                                 .setIcon(android.R.drawable.ic_dialog_alert)
@@ -106,8 +107,10 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         Bundle args = intent.getBundleExtra("BUNDLE");
         soldItems = (ArrayList<SoldItem>) args.getSerializable("soldItemList");
         String subTotal = intent.getExtras().get("subTotal").toString();
-        seatNumber = intent.getExtras().get("SeatNumber").toString();
-        serviceType = intent.getExtras().get("serviceType").toString();
+        paxName = intent.getExtras().get("paxName").toString();
+        flightDate = intent.getExtras().get("flightDate").toString();
+        flightName = intent.getExtras().get("flightNumber").toString();
+        flightSector = intent.getExtras().get("sector").toString();
         discount = intent.getExtras().get("discount").toString();
         String serviceType = POSCommonUtils.getServiceType(this);
         TableRow totalTextRow = findViewById(R.id.totalTextRow);
@@ -145,13 +148,6 @@ public class PaymentMethodsActivity extends AppCompatActivity {
 
     private void registerLayoutClickEvents() {
 
-        LinearLayout cashSettleLayout = (LinearLayout) findViewById(R.id.cashSettleLayout);
-        cashSettleLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addCashSettlement();
-            }
-        });
         LinearLayout creditCardLayout = (LinearLayout) findViewById(R.id.creditCardPaymentLayout);
         creditCardLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,13 +155,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                 addCreditCardSettlementDetails();
             }
         });
-        LinearLayout loyaltyLayout = (LinearLayout) findViewById(R.id.loyaltyPaymentLayout);
-        loyaltyLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addLoyaltyCardDetails();
-            }
-        });
+
         ImageButton backButton = findViewById(R.id.backPressBtn);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,18 +164,18 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             }
         });
 
-        Button cancelSaleBtn = (Button) findViewById(R.id.cancelSale);
+        cancelSaleBtn = (Button) findViewById(R.id.cancelSale);
         cancelSaleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                new android.support.v7.app.AlertDialog.Builder(PaymentMethodsActivity.this)
+                new android.support.v7.app.AlertDialog.Builder(PreOrderPaymentsActivity.this)
                         .setTitle("Cancel Sale")
                         .setMessage("Are you sure you want to cancel the sale?")
                         .setIcon(android.R.drawable.ic_dialog_alert)
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                Intent intent = new Intent(PaymentMethodsActivity.this, SellItemsActivity.class);
+                                Intent intent = new Intent(PreOrderPaymentsActivity.this, SellItemsActivity.class);
                                 startActivity(intent);
                             }
                         })
@@ -197,59 +187,6 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     private void showToastMsg(String msg){
         Toast.makeText(getApplicationContext(), msg,
                 Toast.LENGTH_SHORT).show();
-    }
-
-    private void addLoyaltyCardDetails(){
-
-        dialog = new Dialog(this);
-        dialog.setContentView(R.layout.loyalty_card_details_layout);
-        Window window = dialog.getWindow();
-        window.setLayout(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-        dialog.setTitle("Settle by Credit Card");
-
-        cardNumber = (EditText) dialog.findViewById(R.id.cardNumber);
-        cardHolderName = (EditText) dialog.findViewById(R.id.cardHolderNameText);
-        final EditText amount = (EditText) dialog.findViewById(R.id.amountText);
-        amount.setText(String.valueOf(POSCommonUtils.getTwoDecimalFloatFromString(subTotalAfterTax)));
-        amount.setEnabled(false);
-
-        Button okBtn = (Button) dialog.findViewById(R.id.cardSubmitBtn);
-        Button cancelBtn = (Button) dialog.findViewById(R.id.cancelBtn);
-        Button swipeCardBtn = (Button) dialog.findViewById(R.id.swipeCard);
-        okBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(cardHolderName.getText() == null || cardHolderName.getText().toString().isEmpty() ||
-                        cardNumber.getText() == null || cardNumber.getText().toString().isEmpty()){
-                    showToastMsg("Enter card details.");
-                }
-                else{
-                    loyaltyCard = new LoyaltyCard();
-                    loyaltyCard.setCardHolderName(cardHolderName.getText().toString());
-                    loyaltyCard.setLoyaltyCardNumber(cardNumber.getText().toString());
-                    loyaltyCard.setAmount(Float.parseFloat(amount.getText().toString()));
-                    closeMSR();
-                    dialog.dismiss();
-                }
-            }
-        });
-
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                closeMSR();
-                dialog.dismiss();
-            }
-        });
-
-        swipeCardBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                readMSR("loyalty");
-            }
-        });
-
-        dialog.show();
     }
 
     private void addCreditCardSettlementDetails(){
@@ -330,13 +267,13 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             else{
                 String[] track1Details = track1Str.split("\\^");
                 String expireDateStr = track1Details[2].substring(2, 4) + "/" + track1Details[2].substring(0, 2);
-                    cardNumber = (EditText) dialog.findViewById(R.id.cardNumber);
-                    cardHolderName = (EditText) dialog.findViewById(R.id.cardHolderNameText);
-                    cardNumber.setText(track1Details[0].substring(1));
-                    cardHolderName.setText(track1Details[1]);
-                    closeMSR();
-                }
+                cardNumber = (EditText) dialog.findViewById(R.id.cardNumber);
+                cardHolderName = (EditText) dialog.findViewById(R.id.cardHolderNameText);
+                cardNumber.setText(track1Details[0].substring(1));
+                cardHolderName.setText(track1Details[1]);
+                closeMSR();
             }
+        }
     }
 
     private boolean isExpired(String expireStr){
@@ -368,7 +305,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
 
     private void closeMSR(){
         if(msr != null)
-        msr.close();
+            msr.close();
     }
 
     private void readMSR(final String cardType){
@@ -417,83 +354,6 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                 }
             }
         }.start();
-    }
-
-    private void addCashSettlement(){
-
-        final Dialog cashSettleDialog = new Dialog(this);
-        cashSettleDialog.setContentView(R.layout.cash_settle_layout);
-        Window window = cashSettleDialog.getWindow();
-        window.setLayout(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-        cashSettleDialog.setTitle("Settle by Cash");
-
-        final EditText amount = (EditText) cashSettleDialog.findViewById(R.id.cashSettleAmountTextField);
-        final Spinner currency = (Spinner) cashSettleDialog.findViewById(R.id.currencyText);
-        final TextView errorMsgText = (TextView)  cashSettleDialog.findViewById(R.id.errorMsgText);
-        final TextView initialAmount = (TextView)  cashSettleDialog.findViewById(R.id.initialAmount);
-        currency.setAdapter(loadCurrencies());
-        currency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                amount.setText(updateAmountBasedOnCurrency((Currency)currency.getSelectedItem(),
-                        initialAmount.getText().toString()));
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-            }
-        });
-
-        amount.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
-        initialAmount.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
-
-        Button okBtn = (Button) cashSettleDialog.findViewById(R.id.cardSubmitBtn);
-        Button cancelBtn = (Button) cashSettleDialog.findViewById(R.id.cancelBtn);
-
-        okBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                errorMsgText.setText("");
-                if(amount.getText() == null || amount.getText().toString().isEmpty()){
-                    errorMsgText.setText("Please Enter amount.");
-                }
-                else if(currency.getSelectedItem() == null || currency.getSelectedItem().toString().isEmpty()){
-                    errorMsgText.setText("Please Enter currency.");
-                }
-                else {
-                    Currency selectedCurrency = (Currency)currency.getSelectedItem();
-                    addPaymentMethodToTable("Cash",currency.getSelectedItem().toString(),
-                            selectedCurrency.getCurrencyRate()
-                            ,amount.getText().toString(), getAmountInUSD(selectedCurrency,amount.getText().toString()));
-                    cashSettleDialog.dismiss();
-                }
-            }
-        });
-        cancelBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cashSettleDialog.dismiss();
-            }
-        });
-        cashSettleDialog.show();
-    }
-
-    private String getAmountInUSD(Currency currency, String amount){
-        amount.replace(",","");
-        return POSCommonUtils.getTwoDecimalFloatFromFloat(Float.parseFloat(amount) /
-                Float.parseFloat(currency.getCurrencyRate()));
-    }
-
-    private String updateAmountBasedOnCurrency(Currency currency,String currentAmount){
-        currentAmount.replace(",","");
-        return POSCommonUtils.getTwoDecimalFloatFromFloat(Float.parseFloat(currentAmount) *
-                Float.parseFloat(currency.getCurrencyRate()));
-    }
-    private ArrayAdapter<Currency> loadCurrencies(){
-        handler = new POSDBHandler(this);
-        List<Currency> options=new ArrayList<>();
-        List<Currency> equipmentList = handler.getCurrencyList();
-        options.addAll(equipmentList);
-        return new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,options);
     }
 
     private void addPaymentMethodToTable(String type, String currency, String rate, String amount, String USD){
@@ -557,52 +417,47 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         Date date = new Date();
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentDateStr = df.format(date);
-        for(SoldItem soldItem : soldItems) {
-            String userID = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FA_NAME);
-            handler.insertDailySalesEntry(orderNumber, soldItem.getItemId(), serviceType,
-                    soldItem.getEquipmentNo(), soldItem.getDrawer(), soldItem.getQuantity(),
-                    soldItem.getTotal(), "Passenger", userID,currentDateStr);
-            handler.updateSoldItemQty(soldItem.getItemId(), soldItem.getQuantity(),soldItem.getEquipmentNo(),
-                    soldItem.getDrawer());
-        }
-
+        AcceptPreOrder acceptPreOrder = new AcceptPreOrder();
+        acceptPreOrder.setOrderNumber(orderNumber);
+        acceptPreOrder.setPaxName(paxName);
+        acceptPreOrder.setFlightNumber(flightName);
+        acceptPreOrder.setFlightDate(flightDate);
+        acceptPreOrder.setFlightSector(flightSector);
+        handler.insertAcceptPreOrders(soldItems,acceptPreOrder);
         for(Map.Entry<String,String> entry : paymentMethodsMap.entrySet()){
             handler.insertPaymentMethods(orderNumber,entry.getKey(),entry.getValue());
         }
-        handler.insertOrderMainDetails(orderNumber,taxPercentage,discount,seatNumber,subTotalAfterTax+"");
         if(creditCardList != null && !creditCardList.isEmpty()){
             CreditCard creditCard = creditCardList.get(0);
             handler.insertCreditCardDetails(orderNumber,creditCard.getCreditCardNumber(),creditCard.getCardHolderName(),
                     creditCard.getExpireDate(),paymentMethodsMap.get("Credit Card USD"));
         }
-        if(loyaltyCard != null){
-            handler.insertLoyaltyCardDetails(orderNumber,loyaltyCard.getLoyaltyCardNumber(),
-                    loyaltyCard.getCardHolderName(),String.valueOf(loyaltyCard.getAmount()));
-        }
     }
 
     private void printReceipt(){
 
-            if(confirmPaymentBtn.getText().equals("Print Card Holder copy")){
-                PrintJob.printOrderDetails(PaymentMethodsActivity.this,orderNumber,
-                        seatNumber,soldItems,paymentMethodsMap,
-                        creditCardList.isEmpty() ? null : creditCardList.get(0),true,discount);
-                Intent intent = new Intent(PaymentMethodsActivity.this, SellItemsActivity.class);
+        if(confirmOrderBtn.getText().equals("Print Card Holder copy")){
+            PrintJob.printOrderDetails(PreOrderPaymentsActivity.this,orderNumber,
+                    paxName,soldItems,paymentMethodsMap,
+                    creditCardList.isEmpty() ? null : creditCardList.get(0),true,discount);
+            Intent intent = new Intent(PreOrderPaymentsActivity.this, SellItemsActivity.class);
+            startActivity(intent);
+        }
+        else{
+            generateOrderNumber();
+            updateSale();
+            PrintJob.printOrderDetails(this,orderNumber,paxName,soldItems,paymentMethodsMap,
+                    creditCardList.isEmpty() ? null : creditCardList.get(0),false,discount);
+            if(!creditCardList.isEmpty()) {
+                confirmOrderBtn.setText("Print Card Holder copy");
+                cancelSaleBtn.setClickable(false);
+
+            }
+            else {
+                Intent intent = new Intent(PreOrderPaymentsActivity.this, SellItemsActivity.class);
                 startActivity(intent);
             }
-            else{
-                generateOrderNumber();
-                updateSale();
-                PrintJob.printOrderDetails(this,orderNumber,seatNumber,soldItems,paymentMethodsMap,
-                        creditCardList.isEmpty() ? null : creditCardList.get(0),false,discount);
-                if(!creditCardList.isEmpty()) {
-                    confirmPaymentBtn.setText("Print Card Holder copy");
-                }
-                else {
-                    Intent intent = new Intent(PaymentMethodsActivity.this, SellItemsActivity.class);
-                    startActivity(intent);
-                }
-            }
+        }
     }
 
     private void generateOrderNumber(){

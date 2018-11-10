@@ -42,14 +42,14 @@
                     android:text="Sync Pre Orders"
                     android:textSize="25dp" />
             </LinearLayout>
-        </TableRow>
+        <!--</TableRow>
 
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
+            android:layout_height="fill_parent">-->
 
             <LinearLayout
-                android:id="@+id/verifyInventoryByAdmin"
+                android:id="@+id/packPreOrderLayout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_margin="10dp"
@@ -63,7 +63,7 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_verify"
+                    android:background="@drawable/icon_packed"
                     android:textSize="20dp" />
 
                 <TextView
@@ -71,7 +71,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:layout_margin="10dp"
-                    android:text="Verify Inventory"
+                    android:text="Pack Pre Orders"
                     android:textSize="25dp" />
             </LinearLayout>
         </TableRow>
@@ -106,6 +106,38 @@
                     android:text="Define Cart Numbers"
                     android:textSize="25dp" />
 
+            </LinearLayout>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <LinearLayout
+                android:id="@+id/verifyInventoryByAdmin"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:background="@drawable/textinputborder"
+                android:clickable="true"
+                android:orientation="vertical"
+                android:paddingTop="8dp">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/icon_verify"
+                    android:textSize="20dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="10dp"
+                    android:text="Verify Inventory"
+                    android:textSize="25dp" />
             </LinearLayout>
         </TableRow>
 

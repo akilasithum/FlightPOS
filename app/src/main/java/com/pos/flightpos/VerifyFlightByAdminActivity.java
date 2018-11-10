@@ -30,6 +30,8 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     POSDBHandler handler;
     String kitCode;
     long mExitTime = 0;
+    String serviceType;
+    LinearLayout preOrderPackLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,9 +43,23 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         addSealsLayout = (LinearLayout) findViewById(R.id.addAdminSeal);
         syncPreOrderLayout = (LinearLayout) findViewById(R.id.syncPreOrderLayout);
         defineCartNumbersLayout = (LinearLayout) findViewById(R.id.defineCartNumbers);
+        preOrderPackLayout = findViewById(R.id.packPreOrderLayout);
         handler = new POSDBHandler(this);
         kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
+        serviceType = handler.getKitNumberListFieldValueFromKitCode(kitCode,Constants.FILED_NAME_SERVICE_TYPE);
         registerLayoutClickEvents();
+        disablePackPreOrderLayout(false);
+
+    }
+
+    private void disablePackPreOrderLayout(boolean isEnable){
+        String isPreOrderSynced = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_SYNC_PRE_ORDERS);
+        if((isPreOrderSynced == null || !isPreOrderSynced.equals("yes")) && !isEnable) {
+            preOrderPackLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+        }
+        else{
+            preOrderPackLayout.setBackground(getResources().getDrawable(R.drawable.textinputborder));
+        }
     }
 
     private void registerLayoutClickEvents() {
@@ -91,6 +107,22 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
                 addAdminSeals();
             }
         });
+        preOrderPackLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String isPreOrderSynced = SaveSharedPreference.getStringValues(VerifyFlightByAdminActivity.this,
+                        Constants.SHARED_PREFERENCE_SYNC_PRE_ORDERS);
+                if(isPreOrderSynced != null && isPreOrderSynced.equals("yes")) {
+                    Intent intent = new Intent(VerifyFlightByAdminActivity.this, LoadPreOrderAdminActivity.class);
+                    intent.putExtra("serviceType", serviceType);
+                    startActivity(intent);
+                }
+                else{
+                    Toast.makeText(getApplicationContext(), "Please sync pre orders.",
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
     }
 
     private void showConfirmation() {
@@ -123,6 +155,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
         POSSyncUtils syncActivity = new POSSyncUtils(this);
         syncActivity.downloadData("pre_orders");
+        disablePackPreOrderLayout(true);
     }
 
     private void addAdminSeals() {

@@ -121,7 +121,7 @@ public class AddSeal extends AppCompatActivity {
             int childCount = outbonundLayout.getChildCount();
             for (int i = 1; i < childCount - 1; i++) {
                 EditText editText = (EditText) outbonundLayout.getChildAt(i);
-                editText.setText(firstSealNo + 1 + "");
+                editText.setText(firstSealNo + i + "");
             }
         }
     }

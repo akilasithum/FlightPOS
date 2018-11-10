@@ -11,6 +11,7 @@ public class PreOrder implements Serializable {
     private String itemId;
     private String quantity;
     private String delivered;
+    private String adminStatus;
 
     public String getPNR() {
         return PNR;
@@ -66,5 +67,13 @@ public class PreOrder implements Serializable {
 
     public void setDelivered(String delivered) {
         this.delivered = delivered;
+    }
+
+    public String getAdminStatus() {
+        return adminStatus;
+    }
+
+    public void setAdminStatus(String adminStatus) {
+        this.adminStatus = adminStatus;
     }
 }

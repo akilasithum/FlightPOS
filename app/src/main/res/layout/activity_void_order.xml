@@ -8,16 +8,20 @@
     android:weightSum="1">
 
     <TableLayout
+        android:id="@+id/mainOrderDetails"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:focusable="true"
         android:background="@drawable/layoutbackgroundborder"
-        android:focusableInTouchMode="true">
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:paddingBottom="20dp"
+        android:paddingLeft="12dp"
+        android:paddingRight="10dp">
 
-        <TableRow
+        <!--<TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
             <TextView
@@ -34,8 +38,51 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:textSize="20dp" />
-        </TableRow>
+        </TableRow>-->
         <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:background="@color/lightAsh"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="Order No"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:background="@color/tableDark"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="Seat No"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:background="@color/lightAsh"
+                android:gravity="center"
+                android:padding="5dp"
+                android:text="Total USD"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:padding="10dp"
+                android:text=""
+                android:textSize="20dp" />
+
+        </TableRow>
+        <!--<TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
             <Button
@@ -44,84 +91,124 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Submit" />
-        </TableRow>
+        </TableRow>-->
     </TableLayout>
+
 
     <TableLayout
         android:id="@+id/orderDetails"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
         android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:paddingBottom="20dp"
         android:background="@drawable/layoutbackgroundborder"
-        android:focusableInTouchMode="true">
+        android:paddingLeft="12dp"
+        android:paddingRight="10dp">
+
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:textSize="20dp"
-                android:layout_weight="1"
-                android:text="Item Desc" />
+                android:layout_weight="4"
+                android:background="@color/lightAsh"
+                android:padding="5dp"
+                android:gravity="center"
+                android:text="Item Desc"
+                android:textSize="20dp" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:textSize="20dp"
-                android:layout_weight="1"
-                android:text="Quantity" />
+                android:layout_weight="4"
+                android:background="@color/tableDark"
+                android:padding="5dp"
+                android:gravity="center"
+                android:text="Quantity"
+                android:textSize="20dp" />
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:textSize="20dp"
+                android:layout_weight="4"
+                android:background="@color/lightAsh"
+                android:padding="5dp"
+                android:gravity="center"
+                android:text="Price"
+                android:textSize="20dp" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Price" />
+                android:padding="5dp"
+                android:text=""
+                android:textSize="20dp" />
         </TableRow>
+    </TableLayout>
+
+    <TableLayout
+        android:id="@+id/voidItemsBtnTable"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="2dp"
+        android:paddingLeft="12dp"
+        android:background="@drawable/layoutbackgroundborder"
+        android:paddingRight="10dp">
+
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
+
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:textSize="20dp"
-                android:layout_weight="1"/>
-            <Button
-                android:id="@+id/receiptRePrintBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Re Print Receipt"
-                android:textStyle="bold" />
+                android:layout_weight="1"
+                android:textSize="20dp" />
+
             <Button
                 android:id="@+id/voidOrderBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Cancel Order"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="Void Selected Items"
                 android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:textSize="20dp" />
         </TableRow>
     </TableLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dip"
+        android:layout_marginBottom="55dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="30dp"
         android:layout_weight="1"
         android:gravity="left|bottom"
-        android:layout_marginLeft="55dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="55dp"
-        android:orientation="vertical" >
+        android:orientation="vertical">
 
         <ImageButton
             android:id="@+id/backPressBtn"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:background="@drawable/icon_left_arrow"
             android:layout_gravity="center_horizontal|left"
+            android:background="@drawable/icon_left_arrow"
             android:clickable="true" />
     </LinearLayout>
 

@@ -109,14 +109,20 @@
         <activity android:name=".SelectModeActivity" />
         <activity
             android:name=".VoidOrderActivity"
-            android:label="Review Order" />
+            android:label="Change Order" />
         <activity
             android:name=".ClosingSealsActivity"
             android:label="Closing Seals" />
         <activity
             android:name=".AnnouncementActivity"
             android:label="Announcements" />
-        <activity android:name=".NFCReader"></activity>
+        <activity android:name=".NFCReader" />
+        <activity
+            android:name=".LoadPreOrderAdminActivity"
+            android:label="Pack Pre Orders" />
+        <activity android:name=".SelectPreOrderTypeActivity" />
+        <activity android:name=".AcceptPreOrdersActivity" />
+        <activity android:name=".PreOrderPaymentsActivity"></activity>
     </application>
 
 </manifest>

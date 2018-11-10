@@ -113,7 +113,7 @@
                 android:text="select KIT code"
                 android:textSize="25dp" />
 
-            <Spinner
+            <com.pos.flightpos.utils.MultiSelectionSpinner
                 android:id="@+id/equipmentNumber"
                 style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="wrap_content"

@@ -20,6 +20,7 @@ public class Constants {
     public static final String SHARED_PREFERENCE_FLIGHT_TYPE = "flightType";
     public static final String SHARED_PREFERENCE_TAX_PERCENTAGE = "taxPercentage";
     public static final String SHARED_PREFERENCE_FLIGHT_SECTOR = "flightSector";
+    public static final String SHARED_PREFERENCE_SYNC_PRE_ORDERS = "isPreOrderSynced";
 
     public static final String PRINTER_LOGO_LOCATION = "/res/drawable/porter_print_bg.PNG";
     public static final String FILED_NAME_SERVICE_TYPE = "serviceType";

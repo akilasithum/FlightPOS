@@ -145,7 +145,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:layout_gravity="center"
-                    android:text="Pre Order Delivery"
+                    android:text="Manage Pre Order"
                     android:textSize="20dp" />
             </LinearLayout>
             <LinearLayout
@@ -171,7 +171,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:layout_gravity="center"
-                    android:text="Review Order"
+                    android:text="Change Order"
                     android:textSize="20dp" />
             </LinearLayout>
         </TableRow>

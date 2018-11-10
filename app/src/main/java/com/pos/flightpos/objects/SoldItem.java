@@ -12,6 +12,7 @@ public class SoldItem implements Serializable{
     private String priceBeforeDiscount;
     private String discount;
     private String total;
+    private String itemCategory;
 
     public String getItemId() {
         return itemId;
@@ -83,6 +84,14 @@ public class SoldItem implements Serializable{
 
     public void setTotal(String total) {
         this.total = total;
+    }
+
+    public String getItemCategory() {
+        return itemCategory;
+    }
+
+    public void setItemCategory(String itemCategory) {
+        this.itemCategory = itemCategory;
     }
 
     @Override
