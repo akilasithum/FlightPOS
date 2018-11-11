@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
+import android.view.ContextThemeWrapper;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -51,9 +52,9 @@ public class ClosingSealsActivity extends AppCompatActivity {
         LinearLayout.LayoutParams mRparams = new LinearLayout.LayoutParams
                 (RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         for(int i=1 ; i< sealCount;i++){
-            Spinner newSpinner = new Spinner(this);
+            Spinner newSpinner = new Spinner(new ContextThemeWrapper(this, R.style.Widget_AppCompat_Spinner_Underlined), null, 0);
             newSpinner.setLayoutParams(mRparams);
-            newSpinner.setPadding(0,0,30,40);
+            newSpinner.setPadding(0,0,30,0);
             closeSealLayout.addView(newSpinner,0);
             populateAvailableSeals(newSpinner);
         }

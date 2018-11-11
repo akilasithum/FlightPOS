@@ -15,12 +15,11 @@ import java.util.List;
 import java.util.Map;
 
 public class SelectPreOrderTypeActivity extends AppCompatActivity {
-    String serviceType;
+    //String serviceType;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_pre_order_type);
-         serviceType = getIntent().getExtras().getString("serviceType");
         LinearLayout deliverLayout = findViewById(R.id.deliverPreOrderLayout);
         LinearLayout acceptOrderLayout = findViewById(R.id.acceptPreOrderLayout);
 
@@ -34,7 +33,7 @@ public class SelectPreOrderTypeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 if(preOrders != null && !preOrders.isEmpty()) {
                     Intent intent = new Intent(SelectPreOrderTypeActivity.this, PreOrderDeliveryActivity.class);
-                    intent.putExtra("serviceType", serviceType);
+                    //intent.putExtra("serviceType", serviceType);
                     startActivity(intent);
                 }
                 else{
@@ -60,6 +59,6 @@ public class SelectPreOrderTypeActivity extends AppCompatActivity {
 
     private Map<String,List<PreOrder>> getPreOrderList(){
         POSDBHandler handler = new POSDBHandler(this);
-        return handler.getAvailablePreOrders(serviceType,"faUser");
+        return handler.getAvailablePreOrders("faUser");
     }
 }

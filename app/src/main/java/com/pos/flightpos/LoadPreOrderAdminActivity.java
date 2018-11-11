@@ -19,28 +19,30 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.XMLMapper.PreOrder;
+import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class LoadPreOrderAdminActivity extends AppCompatActivity {
 
     POSDBHandler posdbHandler;
     Map<String,List<PreOrder>> preOrders;
     TableLayout preOrderTable;
-    String serviceType;
+    //String serviceType;
     int i = 0;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load_pre_order_admin);
         posdbHandler = new POSDBHandler(this);
-        serviceType = getIntent().getExtras().getString("serviceType");
+        //serviceType = getIntent().getExtras().getString("serviceType");
         preOrderTable = (TableLayout) findViewById(R.id.preOrdersTable);
-        preOrders = posdbHandler.getAvailablePreOrders(serviceType,"admin");
+        preOrders = posdbHandler.getAvailablePreOrders("admin");
         showPreOrdersByPriority();
         ImageButton backButton = findViewById(R.id.backPressBtn);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -52,10 +54,13 @@ public class LoadPreOrderAdminActivity extends AppCompatActivity {
     }
 
     private void showPreOrdersByPriority(){
-        List<PreOrder> priorityPreOrders = preOrders.get(serviceType);
-        if(priorityPreOrders != null) {
-            showAvailablePreOrders(priorityPreOrders, serviceType);
-            preOrders.remove(serviceType);
+        Set<String> serviceTypesList = POSCommonUtils.getServiceTypeKitCodeMap(this).keySet();
+        for(String serviceType : serviceTypesList){
+            List<PreOrder> priorityPreOrders = preOrders.get(serviceType);
+            if(priorityPreOrders != null) {
+                showAvailablePreOrders(priorityPreOrders, serviceType);
+                preOrders.remove(serviceType);
+            }
         }
         for(Map.Entry<String,List<PreOrder>> orders : preOrders.entrySet()){
             showAvailablePreOrders(orders.getValue(),orders.getKey());

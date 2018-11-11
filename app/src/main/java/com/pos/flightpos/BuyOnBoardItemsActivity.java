@@ -20,6 +20,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -53,7 +54,6 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
     List<SoldItem> soldItemList;
     POSDBHandler handler;
     String serviceType;
-    String kitCode;
     List<SoldItem> discountItemList;
     LinearLayout currentSelection;
     List<String> itemIds;
@@ -62,7 +62,6 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy_on_board_items);
-        kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
         itemCatSpinner = (Spinner) findViewById(R.id.itemCategorySpinner);
         contentTable = (TableLayout) findViewById(R.id.contentTable);
         subTotalView = (TextView)  findViewById(R.id.subTotalTextView);
@@ -87,6 +86,13 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         serviceType = intent.getExtras().get("serviceType").toString();
         setItemCatClickListeners();
+        ImageButton backButton = findViewById(R.id.backPressBtn);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     private void setItemCatClickListeners(){
@@ -417,7 +423,9 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
     }
 
     private void populateItemImages(String selectedCat){
-        List<SoldItem> itemList = handler.getItemListFromItemCategory(selectedCat,kitCode);
+        List<String> kitCodes = POSCommonUtils.getServiceTypeKitCodeMap(this).get(serviceType);
+        String kitCodesStr = POSCommonUtils.getCommaSeparateStrFromList(kitCodes);
+        List<SoldItem> itemList = handler.getItemListFromItemCategory(selectedCat,kitCodesStr);
         LinearLayout innerLayout = (LinearLayout) findViewById(R.id.innerLay);
         innerLayout.removeAllViews();
         for(final SoldItem item : itemList){
@@ -467,7 +475,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
 
         List<String> options=new ArrayList<String>();
         options.add("");
-        List<String> catList = handler.getItemCatFromItems(kitCode);
+        List<String> catList = handler.getItemCatFromItems(serviceType);
         if(catList.size() > 0) {
             final ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_MUSIC , 100);
             tg.startTone(ToneGenerator.TONE_PROP_BEEP);

@@ -17,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -54,7 +55,6 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
     List<SoldItem> soldItemList;
     POSDBHandler handler;
     String serviceType;
-    String kitCode;
     List<SoldItem> discountItemList;
     List<String> itemIds;
 
@@ -62,7 +62,7 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy_item_from_category);
-        kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
+        //kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
         itemCatSpinner = (Spinner) findViewById(R.id.itemCategorySpinner);
         itemSpinner = (Spinner) findViewById(R.id.itemSpinner);
         submitBtn = (Button) findViewById(R.id.addItemBtn);
@@ -105,6 +105,13 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 // your code here
+            }
+        });
+        ImageButton backButton = findViewById(R.id.backPressBtn);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
             }
         });
     }
@@ -294,6 +301,10 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
         removeItemBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                subtotal -= Float.parseFloat(totalTextField.getText().toString());
+                subTotalView.setText(String.valueOf(subtotal));
+                itemCount--;
+                contentTable.removeView(tr);
                 new AlertDialog.Builder(BuyItemFromCategoryActivity.this)
                         .setTitle("Remove selection")
                         .setMessage("Do you want to remove this item from selection?")
@@ -401,7 +412,9 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
         List<SoldItem> options = new ArrayList<>();
         ArrayAdapter<SoldItem> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, options);
         itemSpinner.setAdapter(adapter);
-        List<SoldItem> itemList = handler.getItemListFromItemCategory(selectedCat, kitCode);
+        List<String> kitCodes = POSCommonUtils.getServiceTypeKitCodeMap(this).get(serviceType);
+        String kitCodesStr = POSCommonUtils.getCommaSeparateStrFromList(kitCodes);
+        List<SoldItem> itemList = handler.getItemListFromItemCategory(selectedCat, kitCodesStr);
         SoldItem item = new SoldItem();
         options.add(item);
         options.addAll(itemList);
@@ -414,7 +427,7 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
 
         List<String> options = new ArrayList<String>();
         options.add("");
-        List<String> catList = handler.getItemCatFromItems(kitCode);
+        List<String> catList = handler.getItemCatFromItems(serviceType);
         if (catList.size() > 0) {
             final ToneGenerator tg = new ToneGenerator(AudioManager.STREAM_MUSIC, 100);
             tg.startTone(ToneGenerator.TONE_PROP_BEEP);

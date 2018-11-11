@@ -6,8 +6,8 @@
     tools:context=".BuyOnBoardItemsActivity">
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:orientation="vertical">
 
         <TableLayout
@@ -216,5 +216,20 @@
                     android:text="Purchase Items" />
             </TableRow>
         </TableLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:orientation="vertical"
+            android:paddingLeft="30dp"
+            android:paddingTop="100dp">
+            <ImageButton
+                android:id="@+id/backPressBtn"
+                android:paddingTop="30dp"
+                android:paddingLeft="30dp"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:background="@drawable/icon_left_arrow"
+                android:clickable="true" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

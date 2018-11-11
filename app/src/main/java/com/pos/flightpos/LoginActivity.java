@@ -178,7 +178,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // perform the user login attempt.
             //showProgress(true);
             if(isLoggingSuccessful(email,password)){
-                SaveSharedPreference.setStringValues(this,"userName",email);
+                SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_ADMIN_USER_NAME,email);
                 SaveSharedPreference.setStringValues(this,
                         Constants.SHARED_PREFERENCE_FLIGHT_MODE,"admin");
                 SaveSharedPreference.removeValue(this,Constants.SHARED_PREFERENCE_FLIGHT_TYPE);

@@ -122,7 +122,8 @@
             android:label="Pack Pre Orders" />
         <activity android:name=".SelectPreOrderTypeActivity" />
         <activity android:name=".AcceptPreOrdersActivity" />
-        <activity android:name=".PreOrderPaymentsActivity"></activity>
+        <activity android:name=".PreOrderPaymentsActivity" />
+        <activity android:name=".PrintInventorActivity"></activity>
     </application>
 
 </manifest>

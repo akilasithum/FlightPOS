@@ -1,6 +1,5 @@
 package com.pos.flightpos;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -9,18 +8,22 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.utils.POSCommonUtils;
+import com.pos.flightpos.utils.PrintJob;
+import com.pos.flightpos.utils.SaveSharedPreference;
 
+import java.util.List;
 import java.util.Set;
 
-public class VerifyInventoryActivity extends AppCompatActivity {
+public class PrintInventorActivity extends AppCompatActivity {
 
     String parent;
     Set<String> serviceTypes;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_verify_inventory);
+        setContentView(R.layout.activity_print_inventor);
         parent = getIntent().getExtras().getString("parent");
         serviceTypes = POSCommonUtils.getServiceTypeKitCodeMap(this).keySet();
         registerLayoutClickEvents();
@@ -43,10 +46,7 @@ public class VerifyInventoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(isItemsAvailableToSell("BOB")) {
-                    Intent intent = new Intent(VerifyInventoryActivity.this, VerifyCartsActivity.class);
-                    intent.putExtra("serviceType", "BOB");
-                    intent.putExtra("parent", parent);
-                    startActivity(intent);
+                    print("BOB");
                 }
             }
         });
@@ -58,10 +58,7 @@ public class VerifyInventoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(isItemsAvailableToSell("DTP")) {
-                    Intent intent = new Intent(VerifyInventoryActivity.this, VerifyCartsActivity.class);
-                    intent.putExtra("serviceType", "DTP");
-                    intent.putExtra("parent", parent);
-                    startActivity(intent);
+                    print("DTP");
                 }
             }
         });
@@ -73,10 +70,7 @@ public class VerifyInventoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(isItemsAvailableToSell("DTF")) {
-                    Intent intent = new Intent(VerifyInventoryActivity.this, VerifyCartsActivity.class);
-                    intent.putExtra("serviceType", "DTF");
-                    intent.putExtra("parent", parent);
-                    startActivity(intent);
+                    print("DTF");
                 }
             }
         });
@@ -88,13 +82,31 @@ public class VerifyInventoryActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(isItemsAvailableToSell("VRT")) {
-                    Intent intent = new Intent(VerifyInventoryActivity.this, VerifyCartsActivity.class);
-                    intent.putExtra("serviceType", "VRT");
-                    intent.putExtra("parent", parent);
-                    startActivity(intent);
+                    print("VRT");
                 }
             }
         });
+    }
+
+    private void print(String serviceType){
+        PrintJob job = new PrintJob();
+        String openCloseType;
+        String userName;
+        if(parent.equals("VerifyFlightByAdminActivity") || parent.equals("AttCheckInfo")){
+            openCloseType = "OPENING INVENTORY";
+        }
+        else{
+            openCloseType = "CLOSING INVENTORY";
+        }
+
+        if(parent.equals("AttCheckInfo") || parent.equals("CloseFlightActivity") ){
+            userName = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FA_NAME);
+        }
+        else {
+            userName = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_ADMIN_USER_NAME);
+        }
+        job.printInventoryReports(this, openCloseType,
+                POSCommonUtils.getServiceTypeDescFromServiceType(serviceType),serviceType,userName);
     }
 
     private boolean isItemsAvailableToSell(String service){
@@ -120,10 +132,6 @@ public class VerifyInventoryActivity extends AppCompatActivity {
         }
         else if("CloseFlightActivity".equals(parent)) {
             Intent intent = new Intent(this, CloseFlightActivity.class);
-            startActivity(intent);
-        }
-        else if("AttCheckInfo".equals(parent)) {
-            Intent intent = new Intent(this, AttCheckInfo.class);
             startActivity(intent);
         }
         else{

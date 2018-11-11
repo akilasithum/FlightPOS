@@ -439,7 +439,7 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
         if(confirmOrderBtn.getText().equals("Print Card Holder copy")){
             PrintJob.printOrderDetails(PreOrderPaymentsActivity.this,orderNumber,
                     paxName,soldItems,paymentMethodsMap,
-                    creditCardList.isEmpty() ? null : creditCardList.get(0),true,discount);
+                    creditCardList.isEmpty() ? null : creditCardList.get(0),true,discount,taxPercentage);
             Intent intent = new Intent(PreOrderPaymentsActivity.this, SellItemsActivity.class);
             startActivity(intent);
         }
@@ -447,7 +447,7 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
             generateOrderNumber();
             updateSale();
             PrintJob.printOrderDetails(this,orderNumber,paxName,soldItems,paymentMethodsMap,
-                    creditCardList.isEmpty() ? null : creditCardList.get(0),false,discount);
+                    creditCardList.isEmpty() ? null : creditCardList.get(0),false,discount,taxPercentage);
             if(!creditCardList.isEmpty()) {
                 confirmOrderBtn.setText("Print Card Holder copy");
                 cancelSaleBtn.setClickable(false);

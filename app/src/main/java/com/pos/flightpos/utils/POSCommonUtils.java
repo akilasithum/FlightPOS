@@ -13,6 +13,7 @@ import com.pos.flightpos.objects.XMLMapper.ComboDiscount;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -191,6 +192,38 @@ public class POSCommonUtils {
         POSDBHandler handler = new POSDBHandler(context);
        return handler.getKitNumberListFieldValueFromKitCode(kitCode,Constants.FILED_NAME_SERVICE_TYPE);
 
+    }
+
+    public static List<String> availableKitCodes(Context context){
+        String kitCode = SaveSharedPreference.getStringValues(context, Constants.SHARED_PREFERENCE_KIT_CODE);
+        String[] kitCodes = kitCode.split(",");
+        return Arrays.asList(kitCodes);
+    }
+
+    public static Map<String,List<String>> getServiceTypeKitCodeMap(Context context){
+        POSDBHandler handler = new POSDBHandler(context);
+        return handler.getServiceTypeKitCodesMap(availableKitCodes(context));
+    }
+
+    public static String getCommaSeparateStrFromList(List<String> list){
+        String returnStr = "";
+        for(String str : list){
+            returnStr += "'"+str+"',";
+        }
+        return returnStr.substring(0,returnStr.length()-1);
+    }
+
+    public static String getDrawerValidationMode(String parent){
+
+        if(parent.equals("VerifyFlightByAdminActivity")){
+            return "admin";
+        }
+        else if(parent.equals("AttCheckInfo")){
+            return "faOpen";
+        }
+        else{
+            return "faClose";
+        }
     }
 
     public static String getIfDiscountsAvailable(List<String> itemIds,POSDBHandler handler) {

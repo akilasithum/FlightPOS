@@ -205,7 +205,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         dialog.setContentView(R.layout.loyalty_card_details_layout);
         Window window = dialog.getWindow();
         window.setLayout(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-        dialog.setTitle("Settle by Credit Card");
+        dialog.setTitle("Loyalty Card");
 
         cardNumber = (EditText) dialog.findViewById(R.id.cardNumber);
         cardHolderName = (EditText) dialog.findViewById(R.id.cardHolderNameText);
@@ -586,7 +586,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             if(confirmPaymentBtn.getText().equals("Print Card Holder copy")){
                 PrintJob.printOrderDetails(PaymentMethodsActivity.this,orderNumber,
                         seatNumber,soldItems,paymentMethodsMap,
-                        creditCardList.isEmpty() ? null : creditCardList.get(0),true,discount);
+                        creditCardList.isEmpty() ? null : creditCardList.get(0),true,discount,taxPercentage);
                 Intent intent = new Intent(PaymentMethodsActivity.this, SellItemsActivity.class);
                 startActivity(intent);
             }
@@ -594,7 +594,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                 generateOrderNumber();
                 updateSale();
                 PrintJob.printOrderDetails(this,orderNumber,seatNumber,soldItems,paymentMethodsMap,
-                        creditCardList.isEmpty() ? null : creditCardList.get(0),false,discount);
+                        creditCardList.isEmpty() ? null : creditCardList.get(0),false,discount,taxPercentage);
                 if(!creditCardList.isEmpty()) {
                     confirmPaymentBtn.setText("Print Card Holder copy");
                 }

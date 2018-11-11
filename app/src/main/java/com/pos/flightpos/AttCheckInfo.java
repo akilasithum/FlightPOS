@@ -47,8 +47,8 @@ public class AttCheckInfo extends AppCompatActivity {
         verifyInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AttCheckInfo.this, VerifyCartsActivity.class);
-                intent.putExtra("parent","AttCheckInfo");
+                Intent intent = new Intent(AttCheckInfo.this, VerifyInventoryActivity.class);
+                intent.putExtra("parent", "AttCheckInfo");
                 startActivity(intent);
             }
         });
@@ -56,7 +56,9 @@ public class AttCheckInfo extends AppCompatActivity {
         inventoryReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                printInventoryReport();
+                Intent intent = new Intent(AttCheckInfo.this, PrintInventorActivity.class);
+                intent.putExtra("parent","AttCheckInfo");
+                startActivity(intent);
             }
         });
 
@@ -67,13 +69,6 @@ public class AttCheckInfo extends AppCompatActivity {
                 showConfirmation();
             }
         });
-    }
-
-    private void printInventoryReport(){
-        PrintJob job = new PrintJob();
-        String serviceType = POSCommonUtils.getServiceType(this);
-        job.printInventoryReports(this,"OPENING INVENTORY",
-                POSCommonUtils.getServiceTypeDescFromServiceType(serviceType));
     }
 
     private void showConfirmation(){

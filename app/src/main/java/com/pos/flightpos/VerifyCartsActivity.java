@@ -16,6 +16,7 @@ import android.widget.TextView;
 
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.XMLMapper.KITItem;
+import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -28,6 +29,7 @@ public class VerifyCartsActivity extends AppCompatActivity {
     POSDBHandler posdbHandler;
     TableLayout cartsTable;
     String parent;
+    String serviceType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,7 @@ public class VerifyCartsActivity extends AppCompatActivity {
         posdbHandler = new POSDBHandler(this);
         cartsTable = (TableLayout) findViewById(R.id.cartsTable);
         parent = getIntent().getExtras().getString("parent");
+        serviceType = getIntent().getExtras().getString("serviceType");
         showAvailableCarts();
         ImageButton backButton = findViewById(R.id.backPressBtn);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -48,8 +51,9 @@ public class VerifyCartsActivity extends AppCompatActivity {
 
     private void showAvailableCarts() {
 
-        String kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
-        Map<String, Map<String, List<KITItem>>> drawerKitItemMap = posdbHandler.getDrawerKitItemMapFromServiceType(kitCode);
+        List<String> kitCodesList = POSCommonUtils.getServiceTypeKitCodeMap(this).get(serviceType);
+        Map<String, Map<String, List<KITItem>>> drawerKitItemMap = posdbHandler.
+                getDrawerKitItemMapFromServiceType(POSCommonUtils.getCommaSeparateStrFromList(kitCodesList));
 
         TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
                 TableRow.LayoutParams.WRAP_CONTENT);
@@ -115,7 +119,8 @@ public class VerifyCartsActivity extends AppCompatActivity {
             startActivity(intent);
         }
         else{
-            super.onBackPressed();
+            Intent intent = new Intent(this, VerifyFlightByAdminActivity.class);
+            startActivity(intent);
         }
     }
 }

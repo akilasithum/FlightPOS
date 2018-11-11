@@ -142,7 +142,13 @@ public class ConfigureFlightActivity extends AppCompatActivity {
                 ! equipmentSpinner.getSelectedItem().equals("")) {
             Intent intent = new Intent(this, VerifyFlightByAdminActivity.class);
             String kitNumber = String.valueOf(equipmentSpinner.getSelectedItem());
-            SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE,kitNumber);
+            String[] kitCodes = kitNumber.split(",");
+            String kitCode = "";
+            for(int i =0;i<kitCodes.length;i++){
+                kitCode += kitCodes[i].trim()+",";
+            }
+            SaveSharedPreference.setStringValues(this,
+                    Constants.SHARED_PREFERENCE_KIT_CODE,kitCode.substring(0,kitCode.length()-1));
             SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME,
                     flightListTextView.getText().toString());
             SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_DATE,

@@ -76,7 +76,6 @@
         android:layout_height="0dip"
         android:layout_weight="1"
         android:gravity="left|bottom"
-        android:layout_marginLeft="55dp"
         android:layout_marginBottom="55dp"
         android:orientation="vertical" >
 

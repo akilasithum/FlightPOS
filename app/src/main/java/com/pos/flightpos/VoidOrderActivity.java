@@ -148,7 +148,7 @@ public class VoidOrderActivity extends AppCompatActivity {
         OrderDetails details = handler.getOrderDetailsFromOrderNumber(orderId);
         PrintJob.printOrderDetails(this,orderId,details.getSeatNo(),items,
                 handler.getPaymentMethodsMapFromOrderNumber(orderId),handler.getCreditCardDetailsFromOrderNumber(orderId),
-                true,details.getDiscount());
+                true,details.getDiscount(),details.getTax());
     }
 
     private void cancelOrder(String orderId){

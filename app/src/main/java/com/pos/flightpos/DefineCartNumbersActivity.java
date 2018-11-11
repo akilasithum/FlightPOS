@@ -41,8 +41,8 @@ public class DefineCartNumbersActivity extends AppCompatActivity {
             }
         });
         POSDBHandler handler = new POSDBHandler(this);
-        String kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
-        noOfCarts = handler.getKitNumberListFieldValueFromKitCode(kitCode,"noOfEq");
+        List<String> kitCode = POSCommonUtils.availableKitCodes(this);
+        noOfCarts = handler.getKitNumberListCountValueFromKitCodes(kitCode,"noOfEq");
         cart1 = findViewById(R.id.cart1Text);
         ImageButton scanCart1 = findViewById(R.id.scanCart1);
         scanCart1.setOnClickListener(new View.OnClickListener() {

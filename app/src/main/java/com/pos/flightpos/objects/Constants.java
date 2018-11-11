@@ -5,6 +5,7 @@ import android.widget.TableRow;
 
 public class Constants {
 
+    public static final String SHARED_PREFERENCE_ADMIN_USER_NAME = "userName";
     public static final String SHARED_PREFERENCE_FA_NAME = "flightAttendedName";
     public static final String SHARED_PREFERENCE_KIT_CODE = "kitCode";
     public static final String SHARED_PREFERENCE_FLIGHT_NAME = "flightName";

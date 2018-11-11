@@ -22,12 +22,13 @@ import com.pos.flightpos.utils.SaveSharedPreference;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class SellItemsActivity extends AppCompatActivity {
 
     long mExitTime = 0;
     POSDBHandler handler;
-    String serviceType;
+    Set<String> serviceType;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,13 +55,13 @@ public class SellItemsActivity extends AppCompatActivity {
     }
 
     private void availableServiceType(){
-        serviceType = POSCommonUtils.getServiceType(this);
+        serviceType = POSCommonUtils.getServiceTypeKitCodeMap(this).keySet();
     }
 
     private void registerLayoutClickEvents(){
 
         LinearLayout buyOnBoardLayout = (LinearLayout) findViewById(R.id.buyOnBoardItems);
-        if(!"BOB".equals(serviceType)){
+        if(!serviceType.contains("BOB")){
             buyOnBoardLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
         }
         buyOnBoardLayout.setOnClickListener(new View.OnClickListener() {
@@ -74,7 +75,7 @@ public class SellItemsActivity extends AppCompatActivity {
             }
         });
         LinearLayout dutyPaidLayout = (LinearLayout) findViewById(R.id.dutyPaidItems);
-        if(!"DTP".equals(serviceType)){
+        if(!serviceType.contains("DTP")){
             dutyPaidLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
         }
         dutyPaidLayout.setOnClickListener(new View.OnClickListener() {
@@ -88,7 +89,7 @@ public class SellItemsActivity extends AppCompatActivity {
             }
         });
         LinearLayout dutyFreeLayout = (LinearLayout) findViewById(R.id.dutyFreeItems);
-        if(!"DTF".equals(serviceType)){
+        if(!serviceType.contains("DTF")){
             dutyFreeLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
         }
         dutyFreeLayout.setOnClickListener(new View.OnClickListener() {
@@ -102,7 +103,7 @@ public class SellItemsActivity extends AppCompatActivity {
             }
         });
         LinearLayout virtualInventoryLayout = (LinearLayout) findViewById(R.id.virtualInventory);
-        if(!"VTR".equals(serviceType)){
+        if(!serviceType.contains("VTR")){
             virtualInventoryLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
         }
         virtualInventoryLayout.setOnClickListener(new View.OnClickListener() {
@@ -128,7 +129,6 @@ public class SellItemsActivity extends AppCompatActivity {
                     /*Bundle args = new Bundle();
                     args.putSerializable("preOrders",(Serializable)preOrders);
                     intent.putExtra("BUNDLE",args);*/
-                    intent.putExtra("serviceType",serviceType);
                     startActivity(intent);
                 //}
                 /*else{
@@ -175,8 +175,8 @@ public class SellItemsActivity extends AppCompatActivity {
     }
 
     private boolean isItemsAvailableToSell(String service){
-        if(!serviceType.equals(service)){
-            showAlertDialog("Invalid Selection","No items available to sell.");
+        if(!serviceType.contains(service)){
+            showAlertDialog("No items available to sell.");
             return false;
         }
         else {
@@ -184,24 +184,13 @@ public class SellItemsActivity extends AppCompatActivity {
         }
     }
 
-    private void showAlertDialog(String title,String body){
-        AlertDialog.Builder builder1 = new AlertDialog.Builder(this);
-        builder1.setTitle(title);
-        builder1.setMessage(body);
-        builder1.setPositiveButton(
-                "OK",
-                new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-        AlertDialog alert11 = builder1.create();
-        alert11.show();
+    private void showAlertDialog(String body){
+        Toast.makeText(this,body , Toast.LENGTH_SHORT).show();
     }
 
-    private Map<String,List<PreOrder>> getPreOrderList(){
+    /*private Map<String,List<PreOrder>> getPreOrderList(){
         return handler.getAvailablePreOrders(serviceType,"faUser");
-    }
+    }*/
 
     @Override
     public void onBackPressed()

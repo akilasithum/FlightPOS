@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.XMLMapper.KITItem;
+import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -113,7 +114,7 @@ public class VerifyDrawerActivity extends AppCompatActivity {
                 handler.updateItemCountOfKITItems(kitItem);
             }
         }
-        String userMode  = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_MODE);
+        String userMode  = POSCommonUtils.getDrawerValidationMode(parent);
         handler.updateDrawerValidation(equipmentNo,drawerName,"YES",userMode);
         Toast.makeText(getApplicationContext(), "Validated successful",
                 Toast.LENGTH_SHORT).show();

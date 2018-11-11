@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.XMLMapper.KITItem;
+import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -87,7 +88,7 @@ public class CheckInventoryActivity extends AppCompatActivity {
     private void showDataInTable(){
         POSDBHandler handler = new POSDBHandler(this);
         String kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
-        Map<String,Map<String,List<KITItem>>> drawerKitItemMap = handler.getDrawerKitItemMapFromServiceType(kitCode);
+        //Map<String,Map<String,List<KITItem>>> drawerKitItemMap = handler.getDrawerKitItemMapFromServiceType(kitCode);
 
         TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
                 TableRow.LayoutParams.WRAP_CONTENT, 3f);
@@ -159,7 +160,7 @@ public class CheckInventoryActivity extends AppCompatActivity {
                 tr.addView(qtyView);
 
                 //if(!parent.equals("VerifyFlightByAdminActivity")) {
-                String userMode  = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_MODE);
+                String userMode  = POSCommonUtils.getDrawerValidationMode(parent);
                     TextView isValidated = new TextView(this);
                     String validatedText = handler.isDrawerValidated(cartNo, drawerName,userMode) ? "OK" : "NV";
                     isValidated.setText(validatedText);

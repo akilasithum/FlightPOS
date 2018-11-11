@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.amazonaws.util.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.pos.flightpos.InventoryReportActivity;
@@ -128,6 +129,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.execSQL("delete from orderMainDetails");
         db.execSQL("delete from preOrders");
         db.close();
+        resetDrawerValidation();
     }
 
     public void insertUserComments(String userId,String area,String comment){
@@ -327,16 +329,17 @@ public class POSDBHandler extends SQLiteOpenHelper {
     public void insertFlightData(Context context){
 
         SQLiteDatabase db = this.getWritableDatabase();
+        String sectorsStr = "";
         for(Flight flight : readFlightsXML(context)) {
             String sectors = "";
             if(flight.getSectorList() != null && !flight.getSectorList().isEmpty()){
                 for(Sector sector : flight.getSectorList()){
-                    sectors += sector.getFrom() +"+"+sector.getTo() + ",";
+                    sectors += sector.getFrom() +"+"+sector.getTo() + "*" +sector.getType()+ ",";
                 }
-                sectors.substring(0,sectors.length()-2);
+                sectorsStr = sectors.substring(0,sectors.length()-1);
             }
             db.execSQL("INSERT INTO flights VALUES" +
-                    "('"+flight.getFlightName()+"','"+flight.getFlightFrom()+"','"+flight.getFlightTo()+"','"+sectors+"');");
+                    "('"+flight.getFlightName()+"','"+flight.getFlightFrom()+"','"+flight.getFlightTo()+"','"+sectorsStr+"');");
         }
         db.close();
     }
@@ -460,6 +463,12 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.execSQL("update drawerValidation set isValidated = '"+validation+"',userMode = '"+userMode+"' " +
                 "where  equipmentNo = '"+cartNo
                 +"' and drawer = '"+drawer+"';");
+        db.close();
+    }
+
+    public void resetDrawerValidation(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL("update drawerValidation set isValidated = 'No'");
         db.close();
     }
 
@@ -757,13 +766,15 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<String> getItemCatFromItems(String kitCode){
+    public List<String> getItemCatFromItems(String serviceType){
         SQLiteDatabase db = this.getReadableDatabase();
         List<String> categoryList = new ArrayList<>();
         try {
             Cursor cursor = db.rawQuery("select distinct category from items where itemNo in " +
                     "( select itemNo from  KITList where  equipmentNo in (  " +
-                    "select equipmentNo from equipmentType where kitCode = '"+kitCode+"'  ))", null);
+                    "select equipmentNo from equipmentType where " +
+                    "kitCode in (select kitCode from KITNumberList where serviceType = '"+serviceType+"')))"
+                    , null);
             if (cursor.moveToFirst()){
                 while(!cursor.isAfterLast()){
                     categoryList.add(cursor.getString(cursor.getColumnIndex("category")));
@@ -802,7 +813,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
-    public Map<String,List<PreOrder>> getAvailablePreOrders(String selectedServiceType,String mode){
+    public Map<String,List<PreOrder>> getAvailablePreOrders(String mode){
 
         Map<String,List<PreOrder>> serviceTypePreOrderMap = new HashMap<>();
 
@@ -863,7 +874,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<SoldItem> getItemListFromItemCategory(String category,String kitCode){
+    public List<SoldItem> getItemListFromItemCategory(String category,String kitCodes){
         SQLiteDatabase db = this.getReadableDatabase();
         List<SoldItem> itemList = new ArrayList<>();
         try {
@@ -871,7 +882,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
                     "items.price as price,KITList.equipmentNo as equipmentNo," +
                     "KITList.drawer as drawer FROM (SELECT * FROM items where category = '"+category+"') as items INNER JOIN " +
                     "(SELECT * FROM KITList WHERE equipmentNo in (select equipmentNo from equipmentType " +
-                    "where kitCode = '"+kitCode+"')) as KITList ON items.itemNo = KITList.itemNo", null);
+                    "where kitCode in ("+kitCodes+"))) " +
+                    "as KITList ON items.itemNo = KITList.itemNo", null);
 
             if (cursor.moveToFirst()){
                 while(!cursor.isAfterLast()){
@@ -893,6 +905,32 @@ public class POSDBHandler extends SQLiteOpenHelper {
             return null;
         }
         return itemList;
+    }
+
+    public Map<String,List<String>> getServiceTypeKitCodesMap(List<String> kitCodes){
+
+        Map<String,List<String>> map = new HashMap<>();
+        for(String kitCode : kitCodes){
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery("SELECT serviceType from KITNumberList where kitCode = '"+kitCode+"'" ,
+                    null);
+            if (cursor.moveToFirst()){
+                while(!cursor.isAfterLast()) {
+                    String serviceType = cursor.getString(cursor.getColumnIndex("serviceType"));
+                    if(map.containsKey(serviceType)){
+                        map.get(serviceType).add(kitCode);
+                    }
+                    else{
+                        List<String> kitCodesList = new ArrayList<>();
+                        kitCodesList.add(kitCode);
+                        map.put(serviceType,kitCodesList);
+                    }
+                    cursor.moveToNext();
+                }
+            }
+
+        }
+        return map;
     }
 
     public List<SoldItem> getItemListFromItemCategoryForPreOrder(String category,String serviceType){
@@ -949,12 +987,36 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return serviceType;
     }
 
+    public String getKitNumberListCountValueFromKitCodes(List<String> kitCode,String fieldVal){
+        int count = 0;
+        String kitCodes = "";
+        for(String str : kitCode){
+            kitCodes += "'"+str+"',";
+        }
+
+        //for(String kitCodeStr : kitCode){
+            SQLiteDatabase db = this.getReadableDatabase();
+            Cursor cursor = db.rawQuery("select "+fieldVal+" from KITNumberList where kitCode " +
+                    "in ("+kitCodes.substring(0,kitCodes.length()-1)+")",null);
+            if (cursor.moveToFirst()){
+                while(!cursor.isAfterLast()){
+                    String countField = cursor.getString(cursor.getColumnIndex(fieldVal));
+                    count += Integer.parseInt(countField);
+                    cursor.moveToNext();
+                }
+            }
+            cursor.close();
+            db.close();
+        //}
+        return count+"";
+    }
+
     public Map<String,Map<String,List<KITItem>>> getDrawerKitItemMapFromServiceType(String kitCode){
         SQLiteDatabase db = this.getReadableDatabase();
         Map<String,Map<String,List<KITItem>>> drawerKitItemMap = new HashMap<>();
         try {
             Cursor cursor = db.rawQuery("select * from  KITList where  equipmentNo in (  " +
-                    "select equipmentNo from equipmentType where kitCode =  '"+kitCode+"')", null);
+                    "select equipmentNo from equipmentType where kitCode in  ("+kitCode+"))", null);
             if (cursor.moveToFirst()){
                 while(!cursor.isAfterLast()){
                     KITItem kitItem = new KITItem();
@@ -1180,10 +1242,11 @@ public class POSDBHandler extends SQLiteOpenHelper {
             Node node = nodeList.item(i);
             if (node.getNodeType() == Node.ELEMENT_NODE) {
                 Element element2 = (Element) node;
-                Sector flight = new Sector();
-                flight.setFrom(getValue("from", element2));
-                flight.setTo(getValue("to", element2));
-                sectors.add(flight);
+                Sector sector = new Sector();
+                sector.setFrom(getValue("from", element2));
+                sector.setTo(getValue("to", element2));
+                sector.setType(getValue("type", element2));
+                sectors.add(sector);
             }
         }
         return sectors;

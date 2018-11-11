@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.Flight;
+import com.pos.flightpos.objects.XMLMapper.Sector;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
@@ -33,6 +35,7 @@ public class AttendendMainActivity extends AppCompatActivity {
     long mExitTime = 0;
     String serviceType;
     Spinner sectorSelectionSpinner;
+    TableRow taxPercentageRow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,14 +57,31 @@ public class AttendendMainActivity extends AppCompatActivity {
             }
         });
         sectorSelectionSpinner = findViewById(R.id.sectorSelectionSpinner);
+        taxPercentageRow = findViewById(R.id.taxPercentageRow);
+        sectorSelectionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(sectorSelectionSpinner.getSelectedItem() != null && !sectorSelectionSpinner.
+                        getSelectedItem().toString().isEmpty()){
+                    showHideTaxPercentage(((Sector)sectorSelectionSpinner.getSelectedItem()).getType().equals("international"));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
         setFlightDetails();
-        showHideTaxPercentage();
+        showHideTaxPercentage(true);
     }
 
-    private void showHideTaxPercentage(){
-        TableRow tableRow = findViewById(R.id.taxPercentageRow);
-        if(serviceType == null || (!serviceType.equals("DTP") && !serviceType.equals("BOB"))){
-            tableRow.setVisibility(View.GONE);
+    private void showHideTaxPercentage(boolean isNotVisible){
+        if(isNotVisible) {
+            taxPercentageRow.setVisibility(View.GONE);
+        }
+        else{
+            taxPercentageRow.setVisibility(View.VISIBLE);
         }
     }
 
@@ -101,15 +121,23 @@ public class AttendendMainActivity extends AppCompatActivity {
     }
 
     private void showSectorSelectionSpinner(String sectors){
-        ArrayList<String> options=new ArrayList<String>();
-        options.add("");
+        ArrayList<Sector> options=new ArrayList<>();
+        Sector sector = new Sector();
+        options.add(sector);
         String[] sectorArr = sectors.split(",");
         for(int i=0;i<sectorArr.length;i++){
-            if(sectorArr[i] != null && !sectorArr[i].isEmpty())
-            options.add(sectorArr[i].replace("+","->"));
+            if(sectorArr[i] != null && !sectorArr[i].isEmpty()) {
+                Sector sector1 = new Sector();
+                String[] fromTo = sectorArr[i].split("\\+");
+                String[] toType = fromTo[1].split("\\*");
+                sector1.setFrom(fromTo[0]);
+                sector1.setTo(toType[0]);
+                sector1.setType(toType[1]);
+                options.add(sector1);
+            }
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,options);
+        ArrayAdapter<Sector> adapter = new ArrayAdapter<Sector>(this,android.R.layout.simple_spinner_item,options);
         adapter.setDropDownViewResource(R.layout.spinner_item);
         sectorSelectionSpinner.setAdapter(adapter);
     }
@@ -120,7 +148,7 @@ public class AttendendMainActivity extends AppCompatActivity {
             if(bClassPaxCount.getText() != null &&! bClassPaxCount.getText().toString().equals("")){
                 SaveSharedPreference.setStringValues(this,"bClassPaxCount", bClassPaxCount.getText().toString());
             }
-            if(serviceType != null && (serviceType.equals("DTP") || serviceType.equals("BOB"))){
+            if(taxPercentageRow.getVisibility() != View.GONE){
                 if(taxPercentage.getText() != null && !taxPercentage.getText().toString().equals("")){
                     SaveSharedPreference.setStringValues(this,
                             Constants.SHARED_PREFERENCE_TAX_PERCENTAGE,taxPercentage.getText().toString());

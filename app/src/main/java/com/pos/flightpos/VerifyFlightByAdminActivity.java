@@ -20,6 +20,10 @@ import com.pos.flightpos.utils.POSSyncUtils;
 import com.pos.flightpos.utils.PrintJob;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Set;
+
 public class VerifyFlightByAdminActivity extends AppCompatActivity {
     ImageButton flightUserLoginLayout;
     LinearLayout verifyInventoryLayout;
@@ -28,9 +32,9 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     LinearLayout syncPreOrderLayout;
     LinearLayout defineCartNumbersLayout;
     POSDBHandler handler;
-    String kitCode;
+    List<String> kitCode;
     long mExitTime = 0;
-    String serviceType;
+    Set<String> serviceType;
     LinearLayout preOrderPackLayout;
 
     @Override
@@ -45,8 +49,8 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         defineCartNumbersLayout = (LinearLayout) findViewById(R.id.defineCartNumbers);
         preOrderPackLayout = findViewById(R.id.packPreOrderLayout);
         handler = new POSDBHandler(this);
-        kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
-        serviceType = handler.getKitNumberListFieldValueFromKitCode(kitCode,Constants.FILED_NAME_SERVICE_TYPE);
+        kitCode = POSCommonUtils.availableKitCodes(this);
+        serviceType = POSCommonUtils.getServiceTypeKitCodeMap(this).keySet();
         registerLayoutClickEvents();
         disablePackPreOrderLayout(false);
 
@@ -81,7 +85,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         verifyInventoryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(VerifyFlightByAdminActivity.this, VerifyCartsActivity.class);
+                Intent intent = new Intent(VerifyFlightByAdminActivity.this, VerifyInventoryActivity.class);
                 intent.putExtra("parent", "VerifyFlightByAdminActivity");
                 startActivity(intent);
             }
@@ -114,7 +118,9 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
                         Constants.SHARED_PREFERENCE_SYNC_PRE_ORDERS);
                 if(isPreOrderSynced != null && isPreOrderSynced.equals("yes")) {
                     Intent intent = new Intent(VerifyFlightByAdminActivity.this, LoadPreOrderAdminActivity.class);
-                    intent.putExtra("serviceType", serviceType);
+                    /*Bundle args = new Bundle();
+                    args.putSerializable("cartItems", (Serializable) serviceType);
+                    intent.putExtra("serviceType", args)*/;
                     startActivity(intent);
                 }
                 else{
@@ -159,7 +165,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     }
 
     private void addAdminSeals() {
-        String noOfSealsStr = handler.getKitNumberListFieldValueFromKitCode(kitCode, "noOfSeals");
+        String noOfSealsStr = handler.getKitNumberListCountValueFromKitCodes(kitCode, "noOfSeals");
         SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_NO_OF_SEAL, noOfSealsStr);
         Intent intent = new Intent(this, AddSeal.class);
         intent.putExtra("parent", "VerifyFlightByAdminActivity");
@@ -167,9 +173,10 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     }
 
     private void printInventoryReport() {
-        PrintJob job = new PrintJob();
-        job.printInventoryReports(this, "OPENING INVENTORY",
-                POSCommonUtils.getServiceTypeDescFromServiceType(serviceType));
+        Intent intent = new Intent(this, PrintInventorActivity.class);
+        intent.putExtra("parent", "VerifyFlightByAdminActivity");
+        startActivity(intent);
+
     }
 
     @Override

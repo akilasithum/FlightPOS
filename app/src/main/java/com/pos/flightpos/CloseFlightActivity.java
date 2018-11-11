@@ -37,8 +37,8 @@ public class CloseFlightActivity extends AppCompatActivity {
         verifyCloseInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CloseFlightActivity.this, VerifyCartsActivity.class);
-                intent.putExtra("parent","CloseFlightActivity");
+                Intent intent = new Intent(CloseFlightActivity.this, VerifyInventoryActivity.class);
+                intent.putExtra("parent", "CloseFlightActivity");
                 startActivity(intent);
             }
         });
@@ -46,7 +46,9 @@ public class CloseFlightActivity extends AppCompatActivity {
         closingInventoryReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                printInventoryReport();
+                Intent intent = new Intent(CloseFlightActivity.this, PrintInventorActivity.class);
+                intent.putExtra("parent","CloseFlightActivity");
+                startActivity(intent);
             }
         });
         LinearLayout closeFlightSalesReport = (LinearLayout) findViewById(R.id.closeFlightSalesReport);
@@ -82,13 +84,6 @@ public class CloseFlightActivity extends AppCompatActivity {
         });
     }
 
-    private void printInventoryReport(){
-        PrintJob job = new PrintJob();
-        String serviceType = POSCommonUtils.getServiceType(this);
-        job.printInventoryReports(this,"CLOSING INVENTORY",
-                POSCommonUtils.getServiceTypeDescFromServiceType(serviceType));
-    }
-
     private void showConfirmation(){
 
         new AlertDialog.Builder(this)
@@ -102,7 +97,7 @@ public class CloseFlightActivity extends AppCompatActivity {
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"eClassPaxCount");
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"bClassPaxCount");
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_FA_NAME);
-                        //SaveSharedPreference.removeValue(CloseFlightActivity.this,"orderNumber");
+                        SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_TAX_PERCENTAGE);
                         //SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_KIT_CODE);
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_FLIGHT_MODE);
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_IS_SEAL_VERIFIED);
@@ -165,8 +160,7 @@ public class CloseFlightActivity extends AppCompatActivity {
         }
         printer.setAlignment(0);
         printer.printString("SELLERS INFORMATION");
-        printer.printString(SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FA_NAME)
-                + " System User");
+        printer.printString(SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FA_NAME));
         printer.printString(" ");
         printer.printString("Please handover to cashier");
         printer.printString(" ");

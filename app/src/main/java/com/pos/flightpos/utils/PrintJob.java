@@ -20,11 +20,11 @@ import java.util.TreeMap;
 
 public class PrintJob {
 
-    public void printInventoryReports(Context context,String openCloseType, String inventoryDisplayName){
+    public void printInventoryReports(Context context,String openCloseType, String inventoryDisplayName,
+                                      String serviceType,String userName){
         Printer printer = new Printer();
         printer.open();
         int printerStatus = printer.queState();
-        String kitCode = SaveSharedPreference.getStringValues(context,Constants.SHARED_PREFERENCE_KIT_CODE);
         if(printerStatus == 1){
             Toast.makeText(context, "Paper is not available. Please insert some papers.",
                     Toast.LENGTH_SHORT).show();
@@ -51,7 +51,9 @@ public class PrintJob {
         printer.printString(" ");
         printer.printString(inventoryDisplayName);
         POSDBHandler handler = new POSDBHandler(context);
-        Map<String,Map<String,List<KITItem>>> drawerKitItemMap = handler.getDrawerKitItemMapFromServiceType(kitCode);
+        List<String> kitCodesList = POSCommonUtils.getServiceTypeKitCodeMap(context).get(serviceType);
+        Map<String, Map<String, List<KITItem>>> drawerKitItemMap = handler.
+                getDrawerKitItemMapFromServiceType(POSCommonUtils.getCommaSeparateStrFromList(kitCodesList));
         for(Map.Entry<String,Map<String,List<KITItem>>> eqEntry : drawerKitItemMap.entrySet()) {
             String equipmentName = eqEntry.getKey();
             printer.setAlignment(0);
@@ -84,7 +86,7 @@ public class PrintJob {
         printer.setAlignment(0);
         printer.printString(" ");
         printer.printString("Operated Staff");
-        printer.printString(SaveSharedPreference.getStringValues(context, Constants.SHARED_PREFERENCE_FA_NAME));
+        printer.printString(userName);
         printer.printString(dateTimeFormat.format(date));
         printer.printString(" ");
         printer.printString(" ");
@@ -95,7 +97,8 @@ public class PrintJob {
     }
 
     public static boolean printOrderDetails(Context context,String orderNumber,String seatNumber, List<SoldItem> soldItems
-                       ,Map<String,String> paymentMethodsMap,CreditCard card,boolean isCustomerCopy,String discount){
+                       ,Map<String,String> paymentMethodsMap,CreditCard card,boolean isCustomerCopy,
+                                            String discount,String taxPercentage){
 
         Printer printer = new Printer();
         printer.open();
@@ -112,8 +115,6 @@ public class PrintJob {
         }
         Toast.makeText(context, "Printing started. Please wait.",
                 Toast.LENGTH_SHORT).show();
-        String taxPercentage = SaveSharedPreference.getStringValues(context,
-                Constants.SHARED_PREFERENCE_TAX_PERCENTAGE);
         printer.init();
         printer.setAlignment(1);
         printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 200, 70);
@@ -149,7 +150,7 @@ public class PrintJob {
             total -= Float.parseFloat(discount);
             printer.printString("Discount USD " + POSCommonUtils.getTwoDecimalFloatFromString(discount));
         }
-        if(taxPercentage != null && !taxPercentage.isEmpty()){
+        if(taxPercentage != null && !"null".equals(taxPercentage) && !taxPercentage.isEmpty()){
             printer.printString("Service Tax " + taxPercentage + "%");
             Float dueBalance = total * ((100 + Float.parseFloat(taxPercentage)) / 100);
             printer.printString("Sub Total USD " + POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
