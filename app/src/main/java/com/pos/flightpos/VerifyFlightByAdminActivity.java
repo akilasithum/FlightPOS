@@ -168,8 +168,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
 
     private void printInventoryReport() {
         PrintJob job = new PrintJob();
-        String serviceType = handler.getKitNumberListFieldValueFromKitCode(kitCode, Constants.FILED_NAME_SERVICE_TYPE);
-        job.printInventoryReports(this, "OPENING INVENTORY", kitCode,
+        job.printInventoryReports(this, "OPENING INVENTORY",
                 POSCommonUtils.getServiceTypeDescFromServiceType(serviceType));
     }
 

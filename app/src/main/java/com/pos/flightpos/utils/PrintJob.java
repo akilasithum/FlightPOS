@@ -20,11 +20,11 @@ import java.util.TreeMap;
 
 public class PrintJob {
 
-    public void printInventoryReports(Context context,String openCloseType,String kitCode,
-                                       String inventoryDisplayName){
+    public void printInventoryReports(Context context,String openCloseType, String inventoryDisplayName){
         Printer printer = new Printer();
         printer.open();
         int printerStatus = printer.queState();
+        String kitCode = SaveSharedPreference.getStringValues(context,Constants.SHARED_PREFERENCE_KIT_CODE);
         if(printerStatus == 1){
             Toast.makeText(context, "Paper is not available. Please insert some papers.",
                     Toast.LENGTH_SHORT).show();

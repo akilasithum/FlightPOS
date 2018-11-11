@@ -60,7 +60,6 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
     List<SoldItem> soldItemList;
     POSDBHandler handler;
     String serviceType;
-    String kitCode;
     List<SoldItem> discountItemList;
     List<String> itemIds;
     EditText flightDateText;
@@ -73,7 +72,6 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accept_pre_orders);
-        kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
         itemCatSpinner = (Spinner) findViewById(R.id.itemCategorySpinner);
         serviceTypeSpinner = findViewById(R.id.serviceTypeSpinner);
         itemSpinner = (Spinner) findViewById(R.id.itemSpinner);

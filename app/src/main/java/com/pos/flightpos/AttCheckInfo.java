@@ -71,10 +71,8 @@ public class AttCheckInfo extends AppCompatActivity {
 
     private void printInventoryReport(){
         PrintJob job = new PrintJob();
-        String kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
-        POSDBHandler handler = new POSDBHandler(this);
-        String serviceType = handler.getKitNumberListFieldValueFromKitCode(kitCode,Constants.FILED_NAME_SERVICE_TYPE);
-        job.printInventoryReports(this,"OPENING INVENTORY",kitCode,
+        String serviceType = POSCommonUtils.getServiceType(this);
+        job.printInventoryReports(this,"OPENING INVENTORY",
                 POSCommonUtils.getServiceTypeDescFromServiceType(serviceType));
     }
 

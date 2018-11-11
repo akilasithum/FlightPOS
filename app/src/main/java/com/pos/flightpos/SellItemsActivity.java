@@ -15,6 +15,7 @@ import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.XMLMapper.PreOrder;
+import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -53,8 +54,7 @@ public class SellItemsActivity extends AppCompatActivity {
     }
 
     private void availableServiceType(){
-        String kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
-        serviceType = handler.getKitNumberListFieldValueFromKitCode(kitCode,Constants.FILED_NAME_SERVICE_TYPE);
+        serviceType = POSCommonUtils.getServiceType(this);
     }
 
     private void registerLayoutClickEvents(){
