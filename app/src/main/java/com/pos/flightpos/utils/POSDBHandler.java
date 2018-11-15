@@ -5,11 +5,8 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import com.amazonaws.util.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.pos.flightpos.InventoryReportActivity;
 import com.pos.flightpos.objects.AcceptPreOrder;
 import com.pos.flightpos.objects.CreditCard;
 import com.pos.flightpos.objects.Flight;
@@ -24,6 +21,7 @@ import com.pos.flightpos.objects.XMLMapper.Items;
 import com.pos.flightpos.objects.XMLMapper.KITItem;
 import com.pos.flightpos.objects.XMLMapper.KitNumber;
 import com.pos.flightpos.objects.XMLMapper.PreOrder;
+import com.pos.flightpos.objects.XMLMapper.PreOrderItem;
 import com.pos.flightpos.objects.XMLMapper.Promotion;
 import com.pos.flightpos.objects.XMLMapper.Sector;
 
@@ -81,8 +79,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 "totalPrice VARCHAR,buyerType VARCHAR,sellarName VARCHAR,date VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS currency (currencyCode VARCHAR,currencyDesc VARCHAR," +
                 "currencyRate VARCHAR, currencyType VARCHAR,priorityOrder VARCHAR,effectiveDate VARCHAR);");
-        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS preOrders (PNR VARCHAR,customerName VARCHAR," +
-                "serviceType VARCHAR, itemCategory VARCHAR,itemId VARCHAR,quantity VARCHAR,delivered VARCHAR,adminStatus VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS preOrders (preOrderId VARCHAR,PNR VARCHAR,customerName VARCHAR," +
+                "serviceType VARCHAR,delivered VARCHAR,adminStatus VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS sealDetails (sealType VARCHAR,numOfSeals VARCHAR," +
                 "seals VARCHAR, sealAddedTime VARCHAR, flightName VARCHAR, flightDate VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS promotions (promotionId VARCHAR,serviceType VARCHAR," +
@@ -103,6 +101,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 "flightNumber VARCHAR, flightDate VARCHAR,flightSector VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS acceptPreOrderItems (orderNumber VARCHAR,itemNo VARCHAR," +
                 "itemCategory VARCHAR, quantity VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS preOrderItems (preOrderId VARCHAR,itemNo VARCHAR,category VARCHAR," +
+                "quantity VARCHAR,delivered VARCHAR,adminStatus VARCHAR);");
     }
 
     public void clearTable(){
@@ -128,6 +128,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.execSQL("delete from creditCardDetails");
         db.execSQL("delete from orderMainDetails");
         db.execSQL("delete from preOrders");
+        db.execSQL("delete from preOrderItems");
         db.close();
         resetDrawerValidation();
     }
@@ -551,9 +552,21 @@ public class POSDBHandler extends SQLiteOpenHelper {
             List<PreOrder> preOrders = gson.fromJson(itemsArr.toString(), new TypeToken<List<PreOrder>>(){}.getType());
             for(PreOrder preOrder : preOrders){
                 db.execSQL("INSERT INTO preOrders VALUES" +
-                        "('"+preOrder.getPNR()+"','"+preOrder.getCustomerName()+"','"+preOrder.getServiceType()+"'," +
-                        "'"+preOrder.getItemCategory()+"','"+preOrder.getItemId()+"','"+preOrder.getQuantity()+"','Not Delivered','');");
+                        "('"+preOrder.getPreOrderId()+"','"+preOrder.getPNR()+"','"+preOrder.getCustomerName()+"'," +
+                        "'"+preOrder.getServiceType()+"','Not Delivered','');");
             }
+            //insert pre order items
+            File orderItems = new File(context.getFilesDir(), "pre_order_items.xml");
+            JSONObject orderItemsJOBj  = XML.toJSONObject(readStream(new FileInputStream(orderItems)));
+            JSONObject mainTag = new JSONObject(orderItemsJOBj.toString()).getJSONObject("items");
+            JSONArray itemList = mainTag.getJSONArray("item");
+            List<PreOrderItem> itemList1 = gson.fromJson(itemList.toString(), new TypeToken<List<PreOrderItem>>(){}.getType());
+            for(PreOrderItem item : itemList1){
+                db.execSQL("INSERT INTO preOrderItems VALUES" +
+                        "('"+item.getPreOrderId()+"','"+item.getItemNo()+"','"+item.getCategory()+"'," +
+                        "'"+item.getQuantity()+"','Not Delivered','');");
+            }
+
             db.close();
             return true;
         }
@@ -813,6 +826,42 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
+    public List<PreOrderItem> getPreOrderItemsFromPreOrderId(String preOrderId,String userMode){
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<PreOrderItem> itemList = new ArrayList<>();
+        try {
+            Cursor cursor;
+            if(userMode.equals("admin")) {
+                cursor = db.rawQuery("select * from preOrderItems where " +
+                        "preOrderId = '" + preOrderId + "'", null);
+            }
+            else{
+                cursor = db.rawQuery("select * from preOrderItems where " +
+                        "preOrderId = '" + preOrderId + "' and adminStatus = 'Loaded'", null);
+            }
+            if (cursor.moveToFirst()){
+                while(!cursor.isAfterLast()){
+                    PreOrderItem item = new PreOrderItem();
+                    item.setPreOrderId(cursor.getString(cursor.getColumnIndex("preOrderId")));
+                    item.setItemNo(cursor.getString(cursor.getColumnIndex("itemNo")));
+                    item.setCategory(cursor.getString(cursor.getColumnIndex("category")));
+                    item.setQuantity(cursor.getString(cursor.getColumnIndex("quantity")));
+                    item.setAdminStatus(cursor.getString(cursor.getColumnIndex("adminStatus")));
+                    item.setDelivered(cursor.getString(cursor.getColumnIndex("delivered")));
+                    itemList.add(item);
+                    cursor.moveToNext();
+                }
+            }
+            db.close();
+            cursor.close();
+            return itemList;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+    }
+
     public Map<String,List<PreOrder>> getAvailablePreOrders(String mode){
 
         Map<String,List<PreOrder>> serviceTypePreOrderMap = new HashMap<>();
@@ -824,16 +873,15 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 cursor = db.rawQuery("select * from preOrders", null);
             }
             else{
-                cursor = db.rawQuery("select * from preOrders where adminStatus in ('Packed','Loaded','Fulfilled')", null);
+                cursor = db.rawQuery("select * from preOrders where preOrderId in " +
+                        "(select distinct preOrderId from preOrderItems where adminStatus = 'Loaded')", null);
             }
             if (cursor.moveToFirst()){
                 while(!cursor.isAfterLast()){
                     PreOrder preOrder = new PreOrder();
                     preOrder.setPNR(cursor.getString(cursor.getColumnIndex("PNR")));
                     preOrder.setCustomerName(cursor.getString(cursor.getColumnIndex("customerName")));
-                    preOrder.setItemCategory(cursor.getString(cursor.getColumnIndex("itemCategory")));
-                    preOrder.setItemId(cursor.getString(cursor.getColumnIndex("itemId")));
-                    preOrder.setQuantity(cursor.getString(cursor.getColumnIndex("quantity")));
+                    preOrder.setPreOrderId(cursor.getString(cursor.getColumnIndex("preOrderId")));
                     String serviceType = cursor.getString(cursor.getColumnIndex("serviceType"));
                     preOrder.setServiceType(cursor.getString(cursor.getColumnIndex("serviceType")));
                     preOrder.setDelivered(cursor.getString(cursor.getColumnIndex("delivered")));
@@ -860,17 +908,16 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return serviceTypePreOrderMap;
     }
 
-    public void updatePreOrderDeliveryStatus(String deliveryStatus,String PNR,String itemId){
+    public void updatePreOrderDeliveryStatus(String deliveryStatus,String itemId){
         SQLiteDatabase db = this.getReadableDatabase();
-        db.execSQL("update preOrders set delivered = '"+deliveryStatus+"' where  PNR = '"+PNR+"' and " +
-                "itemId = '"+itemId+"';");
+        db.execSQL("update preOrders set delivered = '"+deliveryStatus+"' where preOrderId = '"+itemId+"';");
         db.close();
     }
 
-    public void updatePreOrderAdminStatus(String adminStatus,String PNR,String itemId){
+    public void updatePreOrderAdminStatus(String adminStatus,String preOrderId,String itemId){
         SQLiteDatabase db = this.getReadableDatabase();
-        db.execSQL("update preOrders set adminStatus = '"+adminStatus+"' where  PNR = '"+PNR+"' and " +
-                "itemId = '"+itemId+"';");
+        db.execSQL("update preOrderItems set adminStatus = '"+adminStatus+"' where  preOrderId = '"+preOrderId+"' and " +
+                "itemNo = '"+itemId+"';");
         db.close();
     }
 

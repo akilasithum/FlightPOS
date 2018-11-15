@@ -209,6 +209,22 @@
 
         </TableRow>
     </TableLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_marginBottom="55dp"
+        android:layout_weight="1"
+        android:layout_marginRight="20dp"
+        android:gravity="left|bottom"
+        android:orientation="vertical">
 
+        <ImageButton
+            android:id="@+id/backPressBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal|left"
+            android:background="@drawable/icon_left_arrow"
+            android:clickable="true" />
+    </LinearLayout>
 
 </LinearLayout>

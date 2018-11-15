@@ -26,6 +26,7 @@ import com.pos.flightpos.utils.SaveSharedPreference;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -74,7 +75,7 @@ public class AddSeal extends AppCompatActivity {
             addAnotherSeal.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    addAdditionalSealsByAdmin();
+                    addAdditionalSealsByAdmin(null);
                 }
             });
             addSealTextBoxes();
@@ -140,15 +141,20 @@ public class AddSeal extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
     }
 
-    private void addAdditionalSealsByAdmin(){
+    private void addAdditionalSealsByAdmin(String text){
         LinearLayout.LayoutParams mRparams = new LinearLayout.LayoutParams
                 (RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         EditText inboundSealText = new EditText(this);
         inboundSealText.setLayoutParams(mRparams);
         inboundSealText.setInputType(InputType.TYPE_CLASS_NUMBER);
         EditText previousText = (EditText)inboundLayout.getChildAt(inboundSealCount-1);
-        if(previousText.getText() != null && !previousText.getText().toString().isEmpty()){
-            inboundSealText.setText(Integer.parseInt(previousText.getText().toString())+1+"");
+        if(text != null){
+            inboundSealText.setText(text);
+        }
+        else {
+            if (previousText.getText() != null && !previousText.getText().toString().isEmpty()) {
+                inboundSealText.setText(Integer.parseInt(previousText.getText().toString()) + 1 + "");
+            }
         }
         inboundLayout.addView(inboundSealText, inboundSealCount);
         inboundSealCount++;
@@ -156,14 +162,45 @@ public class AddSeal extends AppCompatActivity {
 
     private void addSealTextBoxes(){
         int sealCount = Integer.parseInt(noOfSeals);
+        List<String> sealList =  getAdminSealList(Constants.SHARED_PREFERENCE_OUT_BOUND_SEAL_LIST);
         LinearLayout.LayoutParams mRparams = new LinearLayout.LayoutParams
                 (RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        if(sealList != null){
+            EditText editText = (EditText) outbonundLayout.getChildAt(0);
+            editText.setText(sealList.get(0));
+        }
         for(int i=1 ; i< sealCount;i++){
             EditText myEditText = new EditText(this);
             myEditText.setLayoutParams(mRparams);
             myEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+            if(sealList != null){
+                myEditText.setText(sealList.get(i));
+            }
             outbonundLayout.addView(myEditText,i);
         }
+        addInBoundSealsIfExist();
+    }
+
+    private void addInBoundSealsIfExist(){
+        List<String> sealList = getAdminSealList(Constants.SHARED_PREFERENCE_IN_BOUND_SEAL_LIST);
+        if(sealList != null){
+            EditText editText = (EditText) inboundLayout.getChildAt(0);
+            editText.setText(sealList.get(0));
+        }
+        if(sealList != null && !sealList.isEmpty()){
+            for(String seal : sealList){
+                addAdditionalSealsByAdmin(seal);
+            }
+        }
+    }
+
+    private List<String> getAdminSealList(String storedName){
+        String seals = SaveSharedPreference.getStringValues(this,storedName);
+        if(seals != null && !seals.isEmpty()){
+            String[] sealsArr = seals.split(",");
+            return Arrays.asList(sealsArr);
+        }
+        return null;
     }
 
     private void addVerifySealTextBoxes(){
@@ -218,14 +255,14 @@ public class AddSeal extends AppCompatActivity {
             }, 1000);
         }
         else {
-            saveSealDetails("outBoundSealList",sealList);
+            saveSealDetails(Constants.SHARED_PREFERENCE_OUT_BOUND_SEAL_LIST,sealList);
 
         }
     }
 
     public void addInboundSeal(View view) {
         List<String> sealList = getSealListFromLayout(inboundLayout,2);
-        saveSealDetails("adminAdditionalSealList",sealList);
+        saveSealDetails(Constants.SHARED_PREFERENCE_IN_BOUND_SEAL_LIST,sealList);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             public void run() {
@@ -246,7 +283,7 @@ public class AddSeal extends AppCompatActivity {
             String flightName = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FLIGHT_NAME);
             String flightDate = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FLIGHT_DATE);
             handler.insertSealData("outbound", String.valueOf(sealList.size()), seals, currentDateStr, flightName, flightDate);
-            if(storedName.equals("outBoundSealList")) outBoundSealsAdded = true;
+            if(storedName.equals(Constants.SHARED_PREFERENCE_OUT_BOUND_SEAL_LIST)) outBoundSealsAdded = true;
             else inBoundSealsAdded = true;
         }
         else{
@@ -257,7 +294,10 @@ public class AddSeal extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-
+        String inboundSeals = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_IN_BOUND_SEAL_LIST);
+        inBoundSealsAdded = inboundSeals != null && !inboundSeals.isEmpty();
+        String outboundSeals = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_OUT_BOUND_SEAL_LIST);
+        outBoundSealsAdded = outboundSeals != null && !outboundSeals.isEmpty();
         if((!inBoundSealsAdded || !outBoundSealsAdded) && !"faUser".equals(flightMode)){
             new AlertDialog.Builder(this)
                     .setTitle("Seals missing")

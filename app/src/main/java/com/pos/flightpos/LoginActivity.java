@@ -184,6 +184,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 SaveSharedPreference.removeValue(this,Constants.SHARED_PREFERENCE_FLIGHT_TYPE);
                 SaveSharedPreference.removeValue(this,"adminAdditionalSealList");
                 SaveSharedPreference.removeValue(this,Constants.SHARED_PREFERENCE_SYNC_PRE_ORDERS);
+                SaveSharedPreference.removeValue(this,Constants.SHARED_PREFERENCE_OUT_BOUND_SEAL_LIST);
                 POSDBHandler handler = new POSDBHandler(this);
                 handler.clearDailySalesTable();
                 SaveSharedPreference.removeValue(this,"orderNumber");

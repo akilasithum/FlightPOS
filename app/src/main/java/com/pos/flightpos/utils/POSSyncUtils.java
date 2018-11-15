@@ -28,6 +28,11 @@ public class POSSyncUtils {
         this.context = context;
     }
 
+    public void downloadData(String file1,String file2){
+        downloadData(file1);
+        downloadData(file2);
+    }
+
     public void downloadData(final String fileName) {
         AWSMobileClient.getInstance().initialize(context, new AWSStartupHandler() {
             @Override
@@ -58,7 +63,7 @@ public class POSSyncUtils {
             public void onStateChanged(int id, TransferState state) {
                 if (TransferState.COMPLETED == state) {
                     insertDataIntoSQLIteDB(fileName);
-                    if(fileName.equals("pre_orders")){
+                    if(fileName.equals("pre_order_items")){
                         SaveSharedPreference.setStringValues(context, Constants.SHARED_PREFERENCE_SYNC_PRE_ORDERS,"yes");
                         new AlertDialog.Builder(context)
                                 .setTitle("Sync Completed")
@@ -103,6 +108,6 @@ public class POSSyncUtils {
     private void insertDataIntoSQLIteDB(String fileName) {
 
         POSDBHandler handler = new POSDBHandler(context);
-        if(fileName.equals("pre_orders"))handler.insertPreOrders(context);
+        if(fileName.equals("pre_order_items"))handler.insertPreOrders(context);
     }
 }

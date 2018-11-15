@@ -159,7 +159,7 @@
             android:layout_height="0dip"
             android:layout_weight="1"
             android:gravity="left|bottom"
-            android:layout_marginLeft="55dp"
+            android:layout_marginRight="45dp"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="55dp"
             android:orientation="vertical" >
@@ -168,8 +168,8 @@
                 android:id="@+id/backPressBtn"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
-                android:background="@drawable/icon_left_arrow"
-                android:layout_gravity="center_horizontal|left"
+                android:background="@drawable/icon_right_arrow"
+                android:layout_gravity="center_horizontal|right"
                 android:clickable="true" />
         </LinearLayout>
     </LinearLayout>

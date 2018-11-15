@@ -132,7 +132,8 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     }
 
     private void showConfirmation() {
-        String openSeals = SaveSharedPreference.getStringValues(VerifyFlightByAdminActivity.this, "outBoundSealList");
+        String openSeals = SaveSharedPreference.getStringValues(VerifyFlightByAdminActivity.this,
+                Constants.SHARED_PREFERENCE_OUT_BOUND_SEAL_LIST);
         if (openSeals == null || openSeals.length() == 0) {
             Toast.makeText(getApplicationContext(), "Add opening seals before login.",
                     Toast.LENGTH_SHORT).show();
@@ -160,7 +161,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), "Pre orders sync started ",
                 Toast.LENGTH_SHORT).show();
         POSSyncUtils syncActivity = new POSSyncUtils(this);
-        syncActivity.downloadData("pre_orders");
+        syncActivity.downloadData("pre_orders","pre_order_items");
         disablePackPreOrderLayout(true);
     }
 

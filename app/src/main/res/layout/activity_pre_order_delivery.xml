@@ -1,6 +1,10 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".LoadPreOrderAdminActivity">
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -31,6 +35,22 @@
                 android:textSize="17dp"
                 android:textStyle="bold" />
         </TableRow>
+    </TableLayout>
+
+    <TableLayout
+        android:id="@+id/preOrderDetails"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:paddingBottom="20dp"
+        android:background="@drawable/layoutbackgroundborder"
+        android:paddingLeft="12dp"
+        android:paddingRight="10dp">
+
     </TableLayout>
 
     <TableLayout
@@ -125,8 +145,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_marginBottom="55dp"
-        android:layout_marginLeft="55dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginLeft="20dp"
         android:layout_weight="1"
         android:gravity="left|bottom"
         android:orientation="vertical">
@@ -140,3 +160,4 @@
             android:clickable="true" />
     </LinearLayout>
 </LinearLayout>
+</ScrollView>

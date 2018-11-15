@@ -1,5 +1,7 @@
 package com.pos.flightpos.objects.XMLMapper;
 
+import java.io.Serializable;
+
 public class Item {
 
     private String itemNo;
@@ -21,6 +23,7 @@ public class Item {
     private String secondPrice;
     private String activeDate;
     private String Weight;
+    private String quantity;
 
     public String getItemNo() {
         return itemNo;
@@ -172,6 +175,14 @@ public class Item {
 
     public void setWeight(String weight) {
         Weight = weight;
+    }
+
+    public String getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(String quantity) {
+        this.quantity = quantity;
     }
 
     @Override

@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.XMLMapper.PreOrder;
+import com.pos.flightpos.objects.XMLMapper.PreOrderItem;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
@@ -37,6 +38,7 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
     POSDBHandler posdbHandler;
     Map<String,List<PreOrder>> preOrders;
     TableLayout preOrderTable;
+    TableLayout preOrderItemsTable;
     //String serviceType;
     int i = 0;
     @Override
@@ -47,6 +49,8 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
         //serviceType = getIntent().getExtras().getString("serviceType");
         preOrderTable = (TableLayout) findViewById(R.id.preOrdersTable);
         preOrders = posdbHandler.getAvailablePreOrders("faUser");
+        preOrderItemsTable = findViewById(R.id.preOrderDetails);
+        preOrderItemsTable.setVisibility(View.INVISIBLE);
         showPreOrdersByPriority();
         ImageButton backButton = findViewById(R.id.backPressBtn);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -97,21 +101,7 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
             customerDetails.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    AlertDialog.Builder builder1 = new AlertDialog.Builder(PreOrderDeliveryActivity.this);
-                    builder1.setTitle("Pre order items");
-                    builder1.setMessage("Customer Name  : "+preOrder.getCustomerName() +"\n" +
-                            "Item Desc          : " + posdbHandler.getItemDescFromItemNo(preOrder.getItemId()) +"\n" +
-                            "Item Category      : " +preOrder.getItemCategory() + "\n"+
-                    "Quantity              : " + preOrder.getQuantity());
-                    builder1.setPositiveButton(
-                            "OK",
-                            new DialogInterface.OnClickListener() {
-                                public void onClick(DialogInterface dialog, int id) {
-                                    dialog.cancel();
-                                }
-                            });
-                    AlertDialog alert11 = builder1.create();
-                    alert11.show();
+                    showOrder(preOrder.getPreOrderId());
                 }
             });
             tr.addView(customerDetails);
@@ -127,7 +117,7 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
             buttonMap.put("Delivered",R.drawable.icon_delivered);
             buttonMap.put("Rejected",R.drawable.icon_reject);
             buttonMap.put("Pax not onboard",R.drawable.icon_passenger_not_available);
-            tr.addView(getImageBtnLayout(buttonMap,preOrder.getPNR(),preOrder.getItemId(),preOrder.getDelivered()));
+            tr.addView(getImageBtnLayout(buttonMap,preOrder.getPreOrderId(),preOrder.getDelivered()));
 
             Spinner flightDateSpinner = new Spinner(this);
             final ArrayList<String> options=new ArrayList<String>();
@@ -141,7 +131,7 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
             flightDateSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 @Override
                 public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                    posdbHandler.updatePreOrderDeliveryStatus(options.get(i),preOrder.getPNR(),preOrder.getItemId());
+                    posdbHandler.updatePreOrderDeliveryStatus(options.get(i),preOrder.getItemId());
                 }
 
                 @Override
@@ -159,10 +149,10 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
                 public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
 
                     if(isChecked){
-                        posdbHandler.updatePreOrderDeliveryStatus("Yes",preOrder.getPNR(),preOrder.getItemId());
+                        posdbHandler.updatePreOrderDeliveryStatus("Yes",preOrder.getItemId());
                     }
                     else{
-                        posdbHandler.updatePreOrderDeliveryStatus("No",preOrder.getPNR(),preOrder.getItemId());
+                        posdbHandler.updatePreOrderDeliveryStatus("No",preOrder.getItemId());
                     }
                 }
             });
@@ -173,7 +163,7 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
         }
     }
 
-    private LinearLayout getImageBtnLayout(Map<String,Integer> buttonList,final String PNR,
+    private LinearLayout getImageBtnLayout(Map<String,Integer> buttonList,
                                            final String itemId, final String deliveryStatus){
 
         TableRow.LayoutParams cellParams = new TableRow.LayoutParams(0,
@@ -204,7 +194,7 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    posdbHandler.updatePreOrderDeliveryStatus(btnMap.getKey(),PNR,itemId);
+                    posdbHandler.updatePreOrderDeliveryStatus(btnMap.getKey(),itemId);
                     Toast.makeText(getApplicationContext(), "Pre order items " + btnMap.getKey(),
                             Toast.LENGTH_SHORT).show();
                     setBackGroundColors(mainLayout);
@@ -215,6 +205,107 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
             mainLayout.addView(clickLayout);
         }
         return mainLayout;
+    }
+
+    private void showOrder(String orderId){
+        List<PreOrderItem> items = posdbHandler.getPreOrderItemsFromPreOrderId(orderId,"faUser");
+
+        if(preOrderItemsTable.getChildCount() > 0) {
+            preOrderItemsTable.removeAllViews();
+        }
+        TableRow headerRow = new TableRow(this);
+        headerRow.setLayoutParams(new TableRow.LayoutParams(
+                TableRow.LayoutParams.MATCH_PARENT,
+                TableRow.LayoutParams.WRAP_CONTENT));
+
+        TableRow.LayoutParams cellParams = new TableRow.LayoutParams(0,
+                TableRow.LayoutParams.WRAP_CONTENT, 5f);
+        TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
+                50, 2f);
+        TextView headerText = new TextView(this);
+        headerText.setText("Order No : " + orderId);
+        headerText.setTextSize(16);
+        headerText.setLayoutParams(cellParams);
+        headerText.setPadding(0,10,0,15);
+        headerRow.addView(headerText);
+        preOrderItemsTable.addView(headerRow);
+        addHeaderAndButton();
+        int j = 2;
+        preOrderItemsTable.setVisibility(View.VISIBLE);
+        for(final PreOrderItem item : items){
+            final TableRow tr = new TableRow(this);
+            tr.setLayoutParams(new TableRow.LayoutParams(
+                    TableRow.LayoutParams.MATCH_PARENT,
+                    TableRow.LayoutParams.WRAP_CONTENT));
+
+            TextView itemDesc = new TextView(this);
+            String itemName = posdbHandler.getItemDescFromItemNo(item.getItemNo());
+            itemDesc.setText(itemName);
+            itemDesc.setTextSize(16);
+            itemDesc.setLayoutParams(cellParams);
+            itemDesc.setPadding(0,10,0,0);
+            itemDesc.setGravity(Gravity.CENTER);
+            tr.addView(itemDesc);
+
+            TextView category = new TextView(this);
+            category.setText(item.getCategory());
+            category.setTextSize(16);
+            category.setGravity(Gravity.CENTER);
+            category.setLayoutParams(cellParams);
+            category.setPadding(0,10,0,0);
+            tr.addView(category);
+
+            TextView quantity = new TextView(this);
+            quantity.setText(item.getQuantity());
+            quantity.setTextSize(16);
+            quantity.setLayoutParams(cellParams);
+            quantity.setGravity(Gravity.CENTER);
+            quantity.setPadding(0,10,0,0);
+            tr.addView(quantity);
+            preOrderItemsTable.addView(tr,j);
+            j++;
+        }
+    }
+
+    private void addHeaderAndButton(){
+        TableRow tr = new TableRow(this);
+        tr.setLayoutParams(new TableRow.LayoutParams(
+                TableRow.LayoutParams.MATCH_PARENT,
+                TableRow.LayoutParams.WRAP_CONTENT));
+        TableRow.LayoutParams cellParams = new TableRow.LayoutParams(0,
+                TableRow.LayoutParams.WRAP_CONTENT, 5f);
+        TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
+                50, 2f);
+        LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
+                TableRow.LayoutParams.MATCH_PARENT,
+                TableRow.LayoutParams.WRAP_CONTENT,4f);
+        TextView itemDesc = new TextView(this);
+        itemDesc.setText("Item Desc");
+        itemDesc.setTextSize(20);
+        itemDesc.setGravity(Gravity.CENTER);
+        itemDesc.setLayoutParams(cellParams);
+        itemDesc.setPadding(5,5,5,5);
+        itemDesc.setBackgroundColor(getResources().getColor(R.color.lightAsh));
+        tr.addView(itemDesc);
+
+        TextView totalPrice = new TextView(this);
+        totalPrice.setText("Category");
+        totalPrice.setTextSize(20);
+        totalPrice.setGravity(Gravity.CENTER);
+        totalPrice.setLayoutParams(cellParams);
+        totalPrice.setPadding(5,5,5,5);
+        totalPrice.setBackgroundColor(getResources().getColor(R.color.tableDark));
+        tr.addView(totalPrice);
+
+        TextView quantity = new TextView(this);
+        quantity.setText("Quantity");
+        quantity.setTextSize(20);
+        quantity.setGravity(Gravity.CENTER);
+        quantity.setLayoutParams(cellParams);
+        quantity.setPadding(5,5,5,5);
+        quantity.setBackgroundColor(getResources().getColor(R.color.lightAsh));
+        tr.addView(quantity);
+        preOrderItemsTable.addView(tr);
     }
 
     private void setBackGroundColors(LinearLayout layout){

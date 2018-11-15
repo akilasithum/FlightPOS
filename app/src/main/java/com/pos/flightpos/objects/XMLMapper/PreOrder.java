@@ -1,9 +1,13 @@
 package com.pos.flightpos.objects.XMLMapper;
 
+import com.pos.flightpos.objects.SoldItem;
+
 import java.io.Serializable;
+import java.util.List;
 
 public class PreOrder implements Serializable {
 
+    private String preOrderId;
     private String PNR;
     private String customerName;
     private String serviceType;
@@ -12,6 +16,15 @@ public class PreOrder implements Serializable {
     private String quantity;
     private String delivered;
     private String adminStatus;
+    private List<Item> items;
+
+    public String getPreOrderId() {
+        return preOrderId;
+    }
+
+    public void setPreOrderId(String preOrderId) {
+        this.preOrderId = preOrderId;
+    }
 
     public String getPNR() {
         return PNR;
@@ -75,5 +88,13 @@ public class PreOrder implements Serializable {
 
     public void setAdminStatus(String adminStatus) {
         this.adminStatus = adminStatus;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void setItems(List<Item> items) {
+        this.items = items;
     }
 }

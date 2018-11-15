@@ -102,7 +102,7 @@
             android:label="Pre Order Delivery" />
         <activity
             android:name=".DefineCartNumbersActivity"
-            android:label="Define Cart Numbers" />
+            android:label="Save Cart Numbers" />
         <activity
             android:name=".VerifyCartsActivity"
             android:label="Verify Carts" />
