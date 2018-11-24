@@ -280,4 +280,34 @@ public class POSCommonUtils {
         Flight flight = handler.getFlightFromFlightName(flightNo);
         return flightNo + " " + flight.getFlightFrom() +"-"+flight.getFlightTo();
     }
+
+    public static Map<String,String> getBOBItemCategories(){
+
+        Map<String,String> catList = new HashMap<>();
+        catList.put("Main","icon_bob_main");
+        catList.put("Snack","icon_bob_snack");
+        catList.put("Beverages","icon_bob_beverage");
+        catList.put("Other","icon_bob_other");
+        return catList;
+    }
+
+    public static Map<String,String> getDTFItemCategories(){
+
+        Map<String,String> catList = new HashMap<>();
+        catList.put("Liquor and Tobacco","icon_liquor_tobacco");
+        catList.put("Perfumes and Cosmetics","icon_perfume_cosmetics");
+        catList.put("Watches and Jewellery","icon_watch_jewellery");
+        catList.put("Gifts and Souvenir","icon_gifts_souvnior");
+        catList.put("Other","icon_bob_other");
+        return catList;
+    }
+    public static Map<String,String> getVRTItemCategories(){
+
+        Map<String,String> catList = new HashMap<>();
+        catList.put("Upgrade","icon_upgrade");
+        catList.put("Travel","icon_travel");
+        catList.put("Executions","icon_executions");
+        catList.put("Gift Cards","icon_gifts_souvnior");
+        return catList;
+    }
 }

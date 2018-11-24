@@ -53,6 +53,7 @@ public class SyncActivity extends AppCompatActivity {
         downloadData("currency");
         downloadData("promotions");
         downloadData("combo_discount");
+        downloadData("voucher");
         downloadData("equipment_type");
 
     }
@@ -162,5 +163,6 @@ public class SyncActivity extends AppCompatActivity {
         if(fileName.equals("pre_orders"))handler.insertPreOrders(getApplicationContext());
         if(fileName.equals("promotions"))handler.insertPromotions(getApplicationContext());
         if(fileName.equals("combo_discount"))handler.insertComboDiscount(getApplicationContext());
+        if(fileName.equals("voucher"))handler.insertVoucherDetails(getApplicationContext());
     }
 }

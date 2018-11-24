@@ -29,11 +29,14 @@ public class SellItemsActivity extends AppCompatActivity {
     long mExitTime = 0;
     POSDBHandler handler;
     Set<String> serviceType;
+    String taxPercentage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sell_items);
         handler = new POSDBHandler(this);
+        taxPercentage = SaveSharedPreference.getStringValues(this,
+                Constants.SHARED_PREFERENCE_TAX_PERCENTAGE);
         availableServiceType();
         registerLayoutClickEvents();
     }
@@ -75,13 +78,13 @@ public class SellItemsActivity extends AppCompatActivity {
             }
         });
         LinearLayout dutyPaidLayout = (LinearLayout) findViewById(R.id.dutyPaidItems);
-        if(!serviceType.contains("DTP")){
+        if(!serviceType.contains("DTP") || taxPercentage == null){
             dutyPaidLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
         }
         dutyPaidLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isItemsAvailableToSell("DTP")) {
+                if(isItemsAvailableToSell("DTP") && taxPercentage != null) {
                     Intent intent = new Intent(SellItemsActivity.this, BuyItemFromCategoryActivity.class);
                     intent.putExtra("serviceType", "DTP");
                     startActivity(intent);
@@ -89,28 +92,28 @@ public class SellItemsActivity extends AppCompatActivity {
             }
         });
         LinearLayout dutyFreeLayout = (LinearLayout) findViewById(R.id.dutyFreeItems);
-        if(!serviceType.contains("DTF")){
+        if(!serviceType.contains("DTF") || taxPercentage != null){
             dutyFreeLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
         }
         dutyFreeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(isItemsAvailableToSell("DTF")) {
-                    Intent intent = new Intent(SellItemsActivity.this, BuyItemFromCategoryActivity.class);
+                if(isItemsAvailableToSell("DTF") && taxPercentage == null) {
+                    Intent intent = new Intent(SellItemsActivity.this, BuyOnBoardItemsActivity.class);
                     intent.putExtra("serviceType", "DTF");
                     startActivity(intent);
                 }
             }
         });
         LinearLayout virtualInventoryLayout = (LinearLayout) findViewById(R.id.virtualInventory);
-        if(!serviceType.contains("VTR")){
+        if(!serviceType.contains("VRT")){
             virtualInventoryLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
         }
         virtualInventoryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(isItemsAvailableToSell("VRT")) {
-                    Intent intent = new Intent(SellItemsActivity.this, BuyItemFromCategoryActivity.class);
+                    Intent intent = new Intent(SellItemsActivity.this, BuyOnBoardItemsActivity.class);
                     intent.putExtra("serviceType", "VRT");
                     startActivity(intent);
                 }

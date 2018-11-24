@@ -29,6 +29,8 @@ import com.pos.flightpos.objects.CreditCard;
 import com.pos.flightpos.objects.LoyaltyCard;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.XMLMapper.Currency;
+import com.pos.flightpos.objects.XMLMapper.Sector;
+import com.pos.flightpos.objects.XMLMapper.Voucher;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.PrintJob;
@@ -66,6 +68,8 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     String discount;
     String taxPercentage;
     String subTotalAfterTax;
+    Float totalBeforeTax;
+    TextView discountText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -112,6 +116,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         String serviceType = POSCommonUtils.getServiceType(this);
         TableRow totalTextRow = findViewById(R.id.totalTextRow);
         TableRow taxTextRow = findViewById(R.id.serviceTaxRow);
+        totalBeforeTax = Float.parseFloat(subTotal);
         if(serviceType != null && (serviceType.equals("DTP")||serviceType.equals("BOB"))){
             taxPercentage = SaveSharedPreference.getStringValues(this,
                     Constants.SHARED_PREFERENCE_TAX_PERCENTAGE);
@@ -135,7 +140,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             balanceDueTextView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
         }
         subTotalAfterTax = String.valueOf(dueBalance);
-        TextView discountText = findViewById(R.id.discountTextView);
+        discountText = findViewById(R.id.discountTextView);
         discountText.setText((discount == null || discount.isEmpty()) ? "0.00" :
                 POSCommonUtils.getTwoDecimalFloatFromString(discount));
         creditCardList = new ArrayList<>();
@@ -164,6 +169,13 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 addLoyaltyCardDetails();
+            }
+        });
+        LinearLayout voucherLayout = (LinearLayout) findViewById(R.id.voucherPaymentLayout);
+        voucherLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showVoucherDetails();
             }
         });
         ImageButton backButton = findViewById(R.id.backPressBtn);
@@ -197,6 +209,98 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     private void showToastMsg(String msg){
         Toast.makeText(getApplicationContext(), msg,
                 Toast.LENGTH_SHORT).show();
+    }
+
+    private void showVoucherDetails(){
+        dialog = new Dialog(this);
+        dialog.setContentView(R.layout.voucher_layout);
+        Window window = dialog.getWindow();
+        window.setLayout(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
+        dialog.setTitle("Vouchers");
+        final EditText voucherDiscountText = dialog.findViewById(R.id.discountText);
+        final Spinner sectorSelectionSpinner = dialog.findViewById(R.id.voucherTypeSpinner);
+        sectorSelectionSpinner.setAdapter(getVoucherTypes());
+        sectorSelectionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                voucherDiscountText.setEnabled(true);
+                voucherDiscountText.setText(getDiscountFromVoucher((Voucher) sectorSelectionSpinner.getSelectedItem()));
+                voucherDiscountText.setEnabled(false);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+        Button okBtn = (Button) dialog.findViewById(R.id.voucherOkBtn);
+        Button cancelBtn = (Button) dialog.findViewById(R.id.cancelBtn);
+        okBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (voucherDiscountText.getText() != null && voucherDiscountText.getText().toString() != null &&
+                        !voucherDiscountText.getText().toString().equals("0.0")) {
+                    if (dueBalance == totalBeforeTax) {
+                        dueBalance -= Float.parseFloat(voucherDiscountText.getText().toString());
+                        balanceDueTextView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
+                        discountText.setText(voucherDiscountText.getText().toString());
+                        discount = voucherDiscountText.getText().toString();
+                        dialog.dismiss();
+                    }
+                }
+                else{
+                    TextView errText = dialog.findViewById(R.id.voucherErrorText);
+                    errText.setText("Discount is zero or not applied.");
+                }
+            }
+        });
+
+        cancelBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+        dialog.show();
+    }
+
+    private String getDiscountFromVoucher(Voucher voucher){
+        if(voucher.toString() != null) {
+            if (voucher.getVoucherType().equals("precentage")) {
+                return String.valueOf(dueBalance * (Float.parseFloat(voucher.getDiscount())) / 100);
+            } else {
+                String discountStr = voucher.getDiscount();
+                Map<Float, Float> ratioMap = new HashMap<>();
+                if (discountStr.contains(",")) {
+                    String[] rationStr = discountStr.split(",");
+                    for (int i = 0; i < rationStr.length; i++) {
+                        String[] ratioArr = rationStr[i].split(">");
+                        ratioMap.put(Float.parseFloat(ratioArr[0]), Float.parseFloat(ratioArr[1]));
+                    }
+                } else {
+                    String[] ratioArr = discountStr.split(">");
+                    ratioMap.put(Float.parseFloat(ratioArr[0]), Float.parseFloat(ratioArr[1]));
+                }
+                float discountVal = 0;
+                for (Map.Entry<Float, Float> discountMap : ratioMap.entrySet()) {
+                    if (discountMap.getKey() < totalBeforeTax) {
+                        discountVal = totalBeforeTax - discountMap.getValue();
+                    }
+                }
+                return String.valueOf(discountVal);
+            }
+        }
+        return "";
+    }
+
+    private ArrayAdapter<Voucher> getVoucherTypes(){
+        List<Voucher> options = new ArrayList<>();
+        Voucher voucher = new Voucher();
+        options.add(voucher);
+        options.addAll(handler.getVouchers());
+        ArrayAdapter<Voucher> adapter = new ArrayAdapter<Voucher>(this,android.R.layout.simple_spinner_item,options);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+        return adapter;
     }
 
     private void addLoyaltyCardDetails(){

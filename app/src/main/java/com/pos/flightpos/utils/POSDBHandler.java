@@ -24,6 +24,7 @@ import com.pos.flightpos.objects.XMLMapper.PreOrder;
 import com.pos.flightpos.objects.XMLMapper.PreOrderItem;
 import com.pos.flightpos.objects.XMLMapper.Promotion;
 import com.pos.flightpos.objects.XMLMapper.Sector;
+import com.pos.flightpos.objects.XMLMapper.Voucher;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -103,6 +104,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 "itemCategory VARCHAR, quantity VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS preOrderItems (preOrderId VARCHAR,itemNo VARCHAR,category VARCHAR," +
                 "quantity VARCHAR,delivered VARCHAR,adminStatus VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS vouchers (voucherId VARCHAR,voucherName VARCHAR,voucherType VARCHAR," +
+                "discount VARCHAR);");
     }
 
     public void clearTable(){
@@ -619,6 +622,46 @@ public class POSDBHandler extends SQLiteOpenHelper {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public boolean insertVoucherDetails(Context context){
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            File xml = new File(context.getFilesDir(), "voucher.xml");
+            JSONObject jsonObj  = XML.toJSONObject(readStream(new FileInputStream(xml)));
+            Gson gson = new Gson();
+            JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("vouchers");
+            JSONArray itemsArr = data.getJSONArray("voucher");
+            List<Voucher> voucherList = gson.fromJson(itemsArr.toString(), new TypeToken<List<Voucher>>(){}.getType());
+            for(Voucher voucher : voucherList){
+                db.execSQL("INSERT INTO vouchers VALUES" +
+                        "('"+voucher.getVoucherId()+"','"+voucher.getVoucherName()+"','"+voucher.getVoucherType()+"','"+voucher.getDiscount()+"');");
+            }
+            db.close();
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public List<Voucher> getVouchers(){
+        List<Voucher> voucherList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from vouchers", null);
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                Voucher voucher = new Voucher();
+                voucher.setVoucherId(cursor.getString(cursor.getColumnIndex("voucherId")));
+                voucher.setVoucherName(cursor.getString(cursor.getColumnIndex("voucherName")));
+                voucher.setVoucherType(cursor.getString(cursor.getColumnIndex("voucherType")));
+                voucher.setDiscount(cursor.getString(cursor.getColumnIndex("discount")));
+                voucherList.add(voucher);
+                cursor.moveToNext();
+            }
+        }
+        return voucherList;
     }
 
     public List<Promotion> getPromotionsFromServiceType(String serviceType){

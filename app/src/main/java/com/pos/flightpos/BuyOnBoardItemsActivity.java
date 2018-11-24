@@ -38,6 +38,7 @@ import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -85,7 +86,8 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         handler = new POSDBHandler(getApplicationContext());
         Intent intent = getIntent();
         serviceType = intent.getExtras().get("serviceType").toString();
-        setItemCatClickListeners();
+        loadItemCategoryImages();
+        //setItemCatClickListeners();
         ImageButton backButton = findViewById(R.id.backPressBtn);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,7 +97,60 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         });
     }
 
-    private void setItemCatClickListeners(){
+    private void loadItemCategoryImages(){
+        LinearLayout itemCatRow = findViewById(R.id.itemCatTableRow);
+        Map<String, String> itemCategories = new HashMap<>();
+        if(serviceType.equals("BOB")) {
+            itemCategories = POSCommonUtils.getBOBItemCategories();
+        }
+        else if(serviceType.equals("DTF")){
+            itemCategories = POSCommonUtils.getDTFItemCategories();
+        }
+        else if(serviceType.equals("VRT")){
+            itemCategories = POSCommonUtils.getVRTItemCategories();
+        }
+        for(final Map.Entry<String,String> categories : itemCategories.entrySet()){
+            final LinearLayout layout = new LinearLayout(this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
+                    LinearLayout.LayoutParams.MATCH_PARENT,1);
+            params.setMargins(5,0,5,0);
+            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(120,90);
+            LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);
+            layout.setLayoutParams(params);
+            layout.setGravity(Gravity.CENTER);
+            layout.setOrientation(LinearLayout.VERTICAL);
+            layout.setBackground(ContextCompat.getDrawable(this, R.drawable.textinputborder));
+            layout.setPadding(10,3,10,3);
+            layout.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    populateItemImages(categories.getKey());
+                    if(currentSelection != null)currentSelection.setBackground(getResources().getDrawable(R.drawable.textinputborder));
+                    currentSelection = layout;
+                    layout.setBackground(getResources().getDrawable(R.drawable.textinputborderlight));
+                }
+            });
+
+            ImageView imageView = new ImageView(this);
+            imageView.setLayoutParams(params1);
+            imageView.setImageResource(this.getResources().getIdentifier(categories.getValue(), "drawable", "com.pos.flightpos"));
+
+            TextView textView = new TextView(this);
+            textView.setLayoutParams(params2);
+            String textVal = categories.getKey();
+            if(textVal.contains("and")){
+                textVal = textVal.replace("and","and \n");
+            }
+            textView.setText(textVal);
+            layout.addView(imageView);
+            layout.addView(textView);
+            itemCatRow.addView(layout);
+        }
+
+    }
+
+    /*private void setItemCatClickListeners(){
 
         final LinearLayout mainMealLayout = findViewById(R.id.mainBOBItemsLayout);
         mainMealLayout.setOnClickListener(new View.OnClickListener() {
@@ -137,7 +192,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
                 currentSelection = beverageLayout;
             }
         });
-    }
+    }*/
 
     private void purchaseItems(){
         String seatNumberVal = seatNumber.getText() == null ? null : seatNumber.getText().toString();

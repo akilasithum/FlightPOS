@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -118,7 +119,7 @@ public class AddSeal extends AppCompatActivity {
 
     private void updateSealSequence(String firstSeal){
         if(firstSeal != null && !firstSeal.isEmpty()) {
-            Integer firstSealNo = Integer.valueOf(firstSeal);
+            Long firstSealNo = Long.valueOf(firstSeal);
             int childCount = outbonundLayout.getChildCount();
             for (int i = 1; i < childCount - 1; i++) {
                 EditText editText = (EditText) outbonundLayout.getChildAt(i);
@@ -147,13 +148,16 @@ public class AddSeal extends AppCompatActivity {
         EditText inboundSealText = new EditText(this);
         inboundSealText.setLayoutParams(mRparams);
         inboundSealText.setInputType(InputType.TYPE_CLASS_NUMBER);
+        InputFilter[] filterArray = new InputFilter[1];
+        filterArray[0] = new InputFilter.LengthFilter(18);
+        inboundSealText.setFilters(filterArray);
         EditText previousText = (EditText)inboundLayout.getChildAt(inboundSealCount-1);
         if(text != null){
             inboundSealText.setText(text);
         }
         else {
             if (previousText.getText() != null && !previousText.getText().toString().isEmpty()) {
-                inboundSealText.setText(Integer.parseInt(previousText.getText().toString()) + 1 + "");
+                inboundSealText.setText(Long.parseLong(previousText.getText().toString()) + 1 + "");
             }
         }
         inboundLayout.addView(inboundSealText, inboundSealCount);
@@ -173,6 +177,9 @@ public class AddSeal extends AppCompatActivity {
             EditText myEditText = new EditText(this);
             myEditText.setLayoutParams(mRparams);
             myEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+            InputFilter[] filterArray = new InputFilter[1];
+            filterArray[0] = new InputFilter.LengthFilter(18);
+            myEditText.setFilters(filterArray);
             if(sealList != null){
                 myEditText.setText(sealList.get(i));
             }
