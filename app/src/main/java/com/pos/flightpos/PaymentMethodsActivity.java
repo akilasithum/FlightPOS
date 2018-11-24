@@ -284,7 +284,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                 float discountVal = 0;
                 for (Map.Entry<Float, Float> discountMap : ratioMap.entrySet()) {
                     if (discountMap.getKey() < totalBeforeTax) {
-                        discountVal = totalBeforeTax - discountMap.getValue();
+                        discountVal = discountMap.getValue();
                     }
                 }
                 return String.valueOf(discountVal);

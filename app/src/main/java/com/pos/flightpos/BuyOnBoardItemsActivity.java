@@ -521,7 +521,8 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
 
     public int getItemResource(Context context, String itemName) {
         itemName = itemName.toLowerCase().replace("&","and").replace("’","")
-                .replace("(","").replace(")","").replace(" ","_");
+                .replace("(","").replace(")","").
+                        replace(" ","_").replace("-","");
         int resId = context.getResources().getIdentifier(itemName, "drawable", "com.pos.flightpos");
         return resId;
     }
