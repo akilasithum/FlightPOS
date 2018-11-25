@@ -132,8 +132,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     }
 
     private void showConfirmation() {
-        String openSeals = SaveSharedPreference.getStringValues(VerifyFlightByAdminActivity.this,
-                Constants.SHARED_PREFERENCE_OUT_BOUND_SEAL_LIST);
+        String openSeals = handler.getSealList(null,"outbound");
         if (openSeals == null || openSeals.length() == 0) {
             Toast.makeText(getApplicationContext(), "Add opening seals before login.",
                     Toast.LENGTH_SHORT).show();
@@ -168,8 +167,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     private void addAdminSeals() {
         String noOfSealsStr = handler.getKitNumberListCountValueFromKitCodes(kitCode, "noOfSeals");
         SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_NO_OF_SEAL, noOfSealsStr);
-        Intent intent = new Intent(this, AddSeal.class);
-        intent.putExtra("parent", "VerifyFlightByAdminActivity");
+        Intent intent = new Intent(this, SelectServiceTypeForSealActivity.class);
         startActivity(intent);
     }
 

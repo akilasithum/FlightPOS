@@ -16,6 +16,7 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.lang.reflect.Array;
@@ -28,11 +29,13 @@ public class ClosingSealsActivity extends AppCompatActivity {
     String noOfSeals;
     LinearLayout closeSealLayout;
     Spinner spinner;
+    POSDBHandler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_closing_seals);
+        handler = new POSDBHandler(this);
         noOfSeals = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_NO_OF_SEAL);
         closeSealLayout = (LinearLayout) findViewById(R.id.layout_addSeal);
         spinner = findViewById(R.id.spinner1);
@@ -61,7 +64,7 @@ public class ClosingSealsActivity extends AppCompatActivity {
     }
 
     private void populateAvailableSeals(Spinner sealSpinner){
-        String seals = SaveSharedPreference.getStringValues(this,"adminAdditionalSealList");
+        String seals = handler.getSealList(null,"inbound");
         if(seals != null) {
             String[] storedSealsArray = seals.split(",");
             ArrayList<String> options = new ArrayList<String>();
@@ -77,19 +80,12 @@ public class ClosingSealsActivity extends AppCompatActivity {
 
     public void addSeal(View view) {
         List<String> sealList = getSealListFromLayout(closeSealLayout);
-        String seals = SaveSharedPreference.getStringValues(this,"adminAdditionalSealList");
-        List<String> storedList = new ArrayList<>();
-        if(seals != null) {
-            String[] storedSealsArray = seals.split(",");
-            for(int i=0;i<storedSealsArray.length;i++) {
-                if(!sealList.contains(storedSealsArray[i])) {
-                    storedList.add(storedSealsArray[i]);
-                }
+        handler.deleteOutboundSeals();
+        if(sealList != null) {
+            for(String seal : sealList) {
+                handler.updateSealTable(seal,"sealType","outbound");
             }
         }
-
-        SaveSharedPreference.setStringValues(this,"adminAdditionalSealList", TextUtils.join(",", storedList));
-        SaveSharedPreference.setStringValues(this,"outBoundSealList",TextUtils.join(",", sealList));
             Toast.makeText(getApplicationContext(), "Closing seals added.",
                     Toast.LENGTH_SHORT).show();
             Handler handler = new Handler();

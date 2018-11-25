@@ -82,8 +82,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 "currencyRate VARCHAR, currencyType VARCHAR,priorityOrder VARCHAR,effectiveDate VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS preOrders (preOrderId VARCHAR,PNR VARCHAR,customerName VARCHAR," +
                 "serviceType VARCHAR,delivered VARCHAR,adminStatus VARCHAR);");
-        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS sealDetails (sealType VARCHAR,numOfSeals VARCHAR," +
-                "seals VARCHAR, sealAddedTime VARCHAR, flightName VARCHAR, flightDate VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS sealDetails (sealType VARCHAR,serviceType VARCHAR,numOfSeals VARCHAR," +
+                "sealNo VARCHAR, sealAddedTime VARCHAR, flightName VARCHAR, flightDate VARCHAR,isVerified VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS promotions (promotionId VARCHAR,serviceType VARCHAR," +
                 "itemId VARCHAR, discount VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS comboDiscounts (comboId VARCHAR,discount VARCHAR," +
@@ -106,6 +106,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 "quantity VARCHAR,delivered VARCHAR,adminStatus VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS vouchers (voucherId VARCHAR,voucherName VARCHAR,voucherType VARCHAR," +
                 "discount VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS seals (serviceType VARCHAR,sealType VARCHAR,sealNo VARCHAR);");
     }
 
     public void clearTable(){
@@ -132,6 +133,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.execSQL("delete from orderMainDetails");
         db.execSQL("delete from preOrders");
         db.execSQL("delete from preOrderItems");
+        db.execSQL("delete from sealDetails");
         db.close();
         resetDrawerValidation();
     }
@@ -139,6 +141,76 @@ public class POSDBHandler extends SQLiteOpenHelper {
     public void insertUserComments(String userId,String area,String comment){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("INSERT INTO userComments VALUES('"+userId+"','"+area+"','"+comment+"');");
+        db.close();
+    }
+
+    public String getSealList(String serviceType , String sealType){
+        SQLiteDatabase db = this.getWritableDatabase();
+        String seals = "";
+        String sql;
+        if(serviceType == null){
+            sql = "select * from sealDetails where sealType = '"+sealType+"'";
+    }
+        else{
+            sql = "select * from sealDetails where serviceType = '"+serviceType+"' and sealType = '"+sealType+"'";
+        }
+        Cursor cursor = db.rawQuery(sql, null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                String seal = cursor.getString(cursor.getColumnIndex("sealNo"));
+                seals += seal + ",";
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        if(seals.isEmpty()) return "";
+        return seals.substring(0,seals.length()-1);
+    }
+
+    public Map<String,Boolean> getSealVerifiedMap(String sealType){
+        Map<String,Boolean> verifiedMap = new HashMap<>();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from sealDetails where sealType = '"+sealType+"'", null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                String seal = cursor.getString(cursor.getColumnIndex("sealNo"));
+                String verified = cursor.getString(cursor.getColumnIndex("isVerified"));
+                verifiedMap.put(seal,"yes".equals(verified));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return verifiedMap;
+    }
+
+    public boolean isSealAlreadyUsed(String sealNo){
+        SQLiteDatabase db = this.getWritableDatabase();
+        boolean isSealUsed = false;
+        Cursor cursor = db.rawQuery("select sealNo from sealDetails where sealNo = '"+sealNo+"'", null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                String seal = cursor.getString(cursor.getColumnIndex("sealNo"));
+                if(seal.contains(sealNo)) isSealUsed = true;
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return isSealUsed;
+    }
+
+    public void updateSealTable(String sealNo ,String field, String value){
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL("update sealDetails set "+field+" = '"+value+"'" +
+                "where sealNo = '"+sealNo+"';");
+        db.close();
+    }
+
+    public void deleteOutboundSeals(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL("delete from sealDetails where sealType = 'outbound';");
         db.close();
     }
 
@@ -151,10 +223,10 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void insertSealData(String sealType,String numOfSeals,String seals,String date,String flightName,String flightDate){
+    public void insertSealData(String sealType,String serviceType,String numOfSeals,String seal,String date,String flightName,String flightDate){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("INSERT INTO sealDetails VALUES ('"+sealType+"','"+numOfSeals+"','"+seals+"'," +
-                "'"+date+"','"+flightName+"','"+flightDate+"' )");
+        db.execSQL("INSERT INTO sealDetails VALUES ('"+sealType+"','"+serviceType+"','"+numOfSeals+"','"+seal+"'," +
+                "'"+date+"','"+flightName+"','"+flightDate+"','no')");
         db.close();
     }
 

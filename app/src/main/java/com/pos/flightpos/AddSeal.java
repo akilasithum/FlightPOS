@@ -20,7 +20,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.amazonaws.util.StringUtils;
 import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -30,6 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class AddSeal extends AppCompatActivity {
 
@@ -45,29 +48,41 @@ public class AddSeal extends AppCompatActivity {
     int inboundSealCount = 1;
     boolean outBoundSealsAdded = false;
     boolean inBoundSealsAdded = false;
+    String serviceType;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_seal);
+        handler = new POSDBHandler(this);
         parent = getIntent().getExtras().getString("parent");
-        noOfSeals = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_NO_OF_SEAL);
+        if("VerifyFlightByAdminActivity".equals(parent)){
+            serviceType = getIntent().getExtras().getString("serviceType");
+            List<String> kitCodes = POSCommonUtils.getServiceTypeKitCodeMap(this).get(serviceType);
+            noOfSeals = handler.getKitNumberListCountValueFromKitCodes(kitCodes, "noOfSeals");
+
+        }
+        else{
+            noOfSeals = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_NO_OF_SEAL);
+        }
         outbonundLayout = (LinearLayout) findViewById(R.id.layout_addSeal);
         inboundLayout = findViewById(R.id.layout_addInboundSeal);
         verifySealsLayout = findViewById(R.id.layout_verifySeals);
         addSealBtn = (Button) findViewById(R.id.bt_addSeal);
-        handler = new POSDBHandler(this);
         flightMode = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_MODE);
 
         if("faUser".equals(flightMode)){
             inboundLayout.setVisibility(View.GONE);
             outbonundLayout.setVisibility(View.GONE);
             addVerifySealTextBoxes();
-            String storedSeals = SaveSharedPreference.getStringValues(this,"outBoundSealList");
-            String[] storedSealsArray = storedSeals.split(",");
-            for(int i = 0; i<storedSealsArray.length ; i++){
+            Map<String,Boolean> sealVerifiedMap = handler.getSealVerifiedMap("outbound");
+            int i = 0;
+            for(Map.Entry<String,Boolean> map : sealVerifiedMap.entrySet()){
                 LinearLayout layout = (LinearLayout)verifySealsLayout.getChildAt(i);
                 EditText editText = (EditText) layout.getChildAt(0);
-                editText.setText(storedSealsArray[i]);
+                editText.setText(map.getKey());
+                CheckBox checkBox = (CheckBox) layout.getChildAt(1);
+                checkBox.setChecked(map.getValue());
+                i++;
             }
         }
         else{
@@ -166,7 +181,7 @@ public class AddSeal extends AppCompatActivity {
 
     private void addSealTextBoxes(){
         int sealCount = Integer.parseInt(noOfSeals);
-        List<String> sealList =  getAdminSealList(Constants.SHARED_PREFERENCE_OUT_BOUND_SEAL_LIST);
+        List<String> sealList =  getAdminSealList("outbound");
         LinearLayout.LayoutParams mRparams = new LinearLayout.LayoutParams
                 (RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         if(sealList != null){
@@ -189,20 +204,24 @@ public class AddSeal extends AppCompatActivity {
     }
 
     private void addInBoundSealsIfExist(){
-        List<String> sealList = getAdminSealList(Constants.SHARED_PREFERENCE_IN_BOUND_SEAL_LIST);
+        List<String> sealList = getAdminSealList("inbound");
         if(sealList != null){
             EditText editText = (EditText) inboundLayout.getChildAt(0);
             editText.setText(sealList.get(0));
         }
         if(sealList != null && !sealList.isEmpty()){
+            int i = 0;
             for(String seal : sealList){
-                addAdditionalSealsByAdmin(seal);
+                if(i != 0) {
+                    addAdditionalSealsByAdmin(seal);
+                }
+                i++;
             }
         }
     }
 
     private List<String> getAdminSealList(String storedName){
-        String seals = SaveSharedPreference.getStringValues(this,storedName);
+        String seals = handler.getSealList(serviceType,storedName);
         if(seals != null && !seals.isEmpty()){
             String[] sealsArr = seals.split(",");
             return Arrays.asList(sealsArr);
@@ -254,6 +273,7 @@ public class AddSeal extends AppCompatActivity {
             SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_IS_SEAL_VERIFIED,"yes");
             Toast.makeText(getApplicationContext(), "Seal numbers are verified.",
                     Toast.LENGTH_SHORT).show();
+            updateVerifiedSeals();
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
                 public void run() {
@@ -267,31 +287,54 @@ public class AddSeal extends AppCompatActivity {
         }
     }
 
+    private void updateVerifiedSeals(){
+        int childCount = verifySealsLayout.getChildCount();
+        for(int i = 0;i< childCount-1;i++) {
+            LinearLayout layout = (LinearLayout) verifySealsLayout.getChildAt(i);
+            EditText editText = (EditText) layout.getChildAt(0);
+            CheckBox checkBox = (CheckBox) layout.getChildAt(1);
+            String isVerified = checkBox.isChecked() ? "yes" : "no";
+            handler.updateSealTable(editText.getText().toString(),"isVerified",isVerified);
+        }
+    }
+
     public void addInboundSeal(View view) {
         List<String> sealList = getSealListFromLayout(inboundLayout,2);
         saveSealDetails(Constants.SHARED_PREFERENCE_IN_BOUND_SEAL_LIST,sealList);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            public void run() {
-                onBackPressed();
-            }
-        }, 1000);
     }
 
     private void saveSealDetails(String storedName,List<String> sealList){
         if(sealList != null && !sealList.isEmpty()) {
-            String seals = TextUtils.join(",", sealList);
-            SaveSharedPreference.setStringValues(this, storedName, seals);
-            Toast.makeText(getApplicationContext(), "Successfully added " + sealList.size() + " seals.",
-                    Toast.LENGTH_SHORT).show();
             Date date = new Date();
             DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             String currentDateStr = df.format(date);
+            String sealType = storedName.equals(Constants.SHARED_PREFERENCE_OUT_BOUND_SEAL_LIST) ? "outbound" : "inbound";
             String flightName = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FLIGHT_NAME);
             String flightDate = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FLIGHT_DATE);
-            handler.insertSealData("outbound", String.valueOf(sealList.size()), seals, currentDateStr, flightName, flightDate);
-            if(storedName.equals(Constants.SHARED_PREFERENCE_OUT_BOUND_SEAL_LIST)) outBoundSealsAdded = true;
-            else inBoundSealsAdded = true;
+            boolean isSealUsed = false;
+            for(String seal : sealList){
+                if(handler.isSealAlreadyUsed(seal)){
+                    Toast.makeText(getApplicationContext(), "Seal number "+seal+" already used. Please use another seal.",
+                            Toast.LENGTH_SHORT).show();
+                    isSealUsed = true;
+                }
+            }
+
+            if(!isSealUsed) {
+                for (String seal : sealList) {
+                    handler.insertSealData(sealType, serviceType, String.valueOf(sealList.size()), seal, currentDateStr, flightName, flightDate);
+                }
+                Toast.makeText(getApplicationContext(), "Successfully added " + sealList.size() + " seals.",
+                        Toast.LENGTH_SHORT).show();
+                if(sealType.equals("inbound")) {
+                    Handler handler = new Handler();
+                    handler.postDelayed(new Runnable() {
+                        public void run() {
+                            onBackPressed();
+                        }
+                    }, 1000);
+                }
+            }
         }
         else{
             Toast.makeText(getApplicationContext(), "No seals added. Enter seals in the text boxes",
@@ -301,9 +344,9 @@ public class AddSeal extends AppCompatActivity {
 
     @Override
     public void onBackPressed(){
-        String inboundSeals = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_IN_BOUND_SEAL_LIST);
+        String inboundSeals = handler.getSealList(serviceType,"inbound");
         inBoundSealsAdded = inboundSeals != null && !inboundSeals.isEmpty();
-        String outboundSeals = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_OUT_BOUND_SEAL_LIST);
+        String outboundSeals = handler.getSealList(serviceType,"outbound");
         outBoundSealsAdded = outboundSeals != null && !outboundSeals.isEmpty();
         if((!inBoundSealsAdded || !outBoundSealsAdded) && !"faUser".equals(flightMode)){
             new AlertDialog.Builder(this)

@@ -120,10 +120,16 @@
         <activity
             android:name=".LoadPreOrderAdminActivity"
             android:label="Pack Pre Orders" />
-        <activity android:name=".SelectPreOrderTypeActivity" />
-        <activity android:name=".AcceptPreOrdersActivity" />
-        <activity android:name=".PreOrderPaymentsActivity" />
-        <activity android:name=".PrintInventorActivity" />
+        <activity android:name=".SelectPreOrderTypeActivity"
+            android:label="Select pre order type"/>
+        <activity android:name=".AcceptPreOrdersActivity"
+            android:label="Accept pre orders"/>
+        <activity android:name=".PreOrderPaymentsActivity"
+            android:label="Pre order payments"/>
+        <activity android:name=".PrintInventorActivity"
+            android:label="Print Inventory"/>
+        <activity android:name=".SelectServiceTypeForSealActivity"
+            android:label="Select Service type"></activity>
     </application>
 
 </manifest>
