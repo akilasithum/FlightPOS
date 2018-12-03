@@ -19,7 +19,10 @@ import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
+import org.xml.sax.SAXException;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class DefineCartNumbersActivity extends AppCompatActivity {
@@ -45,6 +48,15 @@ public class DefineCartNumbersActivity extends AppCompatActivity {
         noOfCarts = handler.getKitNumberListCountValueFromKitCodes(kitCode,"noOfEq");
         cart1 = findViewById(R.id.cart1Text);
         ImageButton scanCart1 = findViewById(R.id.scanCart1);
+        String addedCartNo = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_CART_NUM_LIST);
+        List<String> cartList = new ArrayList<>();
+        if(addedCartNo != null && !addedCartNo.isEmpty()){
+            cartList = Arrays.asList(addedCartNo.split(","));
+        }
+
+        if(cartList != null && !cartList.isEmpty()) {
+            cart1.setText(cartList.get(0));
+        }
         scanCart1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,7 +64,7 @@ public class DefineCartNumbersActivity extends AppCompatActivity {
             }
         });
         if(!"1".equals(noOfCarts)) {
-            addCartTextBoxes();
+            addCartTextBoxes(cartList);
         }
         ImageButton backButton = findViewById(R.id.backPressBtn);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -91,7 +103,7 @@ public class DefineCartNumbersActivity extends AppCompatActivity {
         }, 1000);
     }
 
-    private void addCartTextBoxes(){
+    private void addCartTextBoxes(List<String> addedCarts){
         int sealCount = Integer.parseInt(noOfCarts);
         LinearLayout.LayoutParams mRparams = new LinearLayout.LayoutParams
                 (60, 60);
@@ -104,6 +116,9 @@ public class DefineCartNumbersActivity extends AppCompatActivity {
                     TableRow.LayoutParams.MATCH_PARENT,
                     TableRow.LayoutParams.WRAP_CONTENT,1);
             myEditText.setLayoutParams(params);
+            if(addedCarts.size() >= i){
+                myEditText.setText(addedCarts.get(i));
+            }
             Button button = new Button(this);
             button.setLayoutParams(mRparams);
             button.setPadding(30,0,0,0);

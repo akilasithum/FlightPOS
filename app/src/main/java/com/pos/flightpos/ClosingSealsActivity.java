@@ -13,9 +13,11 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -30,13 +32,16 @@ public class ClosingSealsActivity extends AppCompatActivity {
     LinearLayout closeSealLayout;
     Spinner spinner;
     POSDBHandler handler;
+    String serviceType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_closing_seals);
         handler = new POSDBHandler(this);
-        noOfSeals = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_NO_OF_SEAL);
+        serviceType = getIntent().getExtras().getString("serviceType");
+        List<String> kitCodes = POSCommonUtils.getServiceTypeKitCodeMap(this).get(serviceType);
+        noOfSeals = handler.getKitNumberListCountValueFromKitCodes(kitCodes, "noOfSeals");
         closeSealLayout = (LinearLayout) findViewById(R.id.layout_addSeal);
         spinner = findViewById(R.id.spinner1);
         populateAvailableSeals(spinner);
@@ -48,6 +53,8 @@ public class ClosingSealsActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        TextView serviceTypeView = findViewById(R.id.sealServiceTypeId);
+        serviceTypeView.setText("Closing Seals - "+POSCommonUtils.getServiceTypeFromServiceType(serviceType));
     }
 
     private void addSealSpinner(){
@@ -64,7 +71,7 @@ public class ClosingSealsActivity extends AppCompatActivity {
     }
 
     private void populateAvailableSeals(Spinner sealSpinner){
-        String seals = handler.getSealList(null,"inbound");
+        String seals = handler.getSealList(serviceType,"inbound");
         if(seals != null) {
             String[] storedSealsArray = seals.split(",");
             ArrayList<String> options = new ArrayList<String>();
@@ -80,7 +87,7 @@ public class ClosingSealsActivity extends AppCompatActivity {
 
     public void addSeal(View view) {
         List<String> sealList = getSealListFromLayout(closeSealLayout);
-        handler.deleteOutboundSeals();
+        handler.deleteOutboundSeals(serviceType);
         if(sealList != null) {
             for(String seal : sealList) {
                 handler.updateSealTable(seal,"sealType","outbound");

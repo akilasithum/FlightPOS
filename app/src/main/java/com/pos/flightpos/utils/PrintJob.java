@@ -96,6 +96,170 @@ public class PrintJob {
                 Toast.LENGTH_SHORT).show();
     }
 
+    public static boolean printVoidOrderByReceipt(Context context,String orderNumber,String seatNumber,
+                                                  List<SoldItem> soldItems, boolean isCustomerCopy){
+        Printer printer = new Printer();
+        printer.open();
+        int printerStatus = printer.queState();
+        if(printerStatus == 1){
+            Toast.makeText(context, "Paper is not available. Please insert some papers.",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if(printerStatus == 2){
+            Toast.makeText(context, "Printer is too hot. Please wait.",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        Toast.makeText(context, "Printing started. Please wait.",
+                Toast.LENGTH_SHORT).show();
+        printer.init();
+        printer.setAlignment(1);
+        printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 200, 70);
+        printer.printString(" ");
+        printer.setBold(true);
+        printer.printString(getFlightDetailsStr(context));
+        Date date = new Date();
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        DateFormat dateTimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss aa");
+        printer.printString(df.format(date));
+        printer.printString(" ");
+        printer.printString("Void transaction");
+        printer.setAlignment(0);
+        printer.printString("Order Number : " + orderNumber);
+        printer.printString("Seat Number : " + seatNumber);
+        printer.printString(" ");
+        float total = 0;
+        for(SoldItem item : soldItems){
+            total += Float.parseFloat(item.getPrice())* Integer.parseInt(item.getQuantity());
+            int itemNameLength = item.getItemDesc().length();
+            String totalAmount = POSCommonUtils.getTwoDecimalFloatFromFloat(
+                    Float.parseFloat(item.getPrice())*Integer.parseInt(item.getQuantity()));
+            int totalAmountLength = totalAmount.length();
+            int spaceLength = 32 - (itemNameLength+totalAmountLength+1);
+            printer.printString(item.getItemDesc()
+                    + new String(new char[spaceLength]).replace("\0", " ") +"-"+ totalAmount);
+        }
+        printer.printString(" ");
+        printer.setAlignment(2);
+        printer.printString("Total USD -" + POSCommonUtils.getTwoDecimalFloatFromFloat(total));
+
+        printer.setAlignment(0);
+        if(!isCustomerCopy) {
+            printer.printString(" ");
+            printer.printString(" ");
+            printer.printString(".......................");
+            printer.printString("Card Holder Signature");
+            printer.printString("I got the refund");
+            printer.printString("for this void items");
+            printer.printString(" ");
+            printer.printString("Merchant Copy");
+        }
+        else{
+            printer.printString("Card holder copy");
+        }
+        printer.printString(" ");
+        printer.printString(" ");
+        printer.setBold(true);
+        printer.printString("Operated Staff");
+        printer.printString(SaveSharedPreference.getStringValues(context, Constants.SHARED_PREFERENCE_FA_NAME));
+        printer.printString(dateTimeFormat.format(date));
+        printer.printString(" ");
+        printer.printString(" ");
+        printer.close();
+        return true;
+    }
+
+    public static boolean printVoidOrderReceipt(Context context,String orderNumber,String seatNumber,List<SoldItem> soldItems
+            ,Map<String,String> paymentMethodsMap,String discount,String taxPercentage,boolean isCustomerCopy){
+        Printer printer = new Printer();
+        printer.open();
+        int printerStatus = printer.queState();
+        if(printerStatus == 1){
+            Toast.makeText(context, "Paper is not available. Please insert some papers.",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if(printerStatus == 2){
+            Toast.makeText(context, "Printer is too hot. Please wait.",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        Toast.makeText(context, "Printing started. Please wait.",
+                Toast.LENGTH_SHORT).show();
+        printer.init();
+        printer.setAlignment(1);
+        printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 200, 70);
+        printer.printString(" ");
+        printer.setBold(true);
+        printer.printString(getFlightDetailsStr(context));
+        Date date = new Date();
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        DateFormat dateTimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss aa");
+        printer.printString(df.format(date));
+        printer.printString(" ");
+        printer.printString(" ");
+        printer.printString("Void transaction");
+        printer.setAlignment(0);
+        printer.printString("Order Number : " + orderNumber);
+        printer.printString("Seat Number : " + seatNumber);
+        float total = 0;
+        for(SoldItem item : soldItems){
+            total += Float.parseFloat(item.getPrice())* Integer.parseInt(item.getQuantity());
+            int itemNameLength = item.getItemDesc().length();
+            String totalAmount = POSCommonUtils.getTwoDecimalFloatFromFloat(
+                    Float.parseFloat(item.getPrice())*Integer.parseInt(item.getQuantity()));
+            int totalAmountLength = totalAmount.length();
+            int spaceLength = 32 - (itemNameLength+totalAmountLength);
+            printer.printString(item.getItemDesc()
+                    + new String(new char[spaceLength]).replace("\0", " ") + totalAmount);
+            printer.printString(item.getItemId() + " Each $" + item.getPrice() );
+        }
+        printer.printString(" ");
+        printer.setAlignment(2);
+        printer.printString("Total USD " + POSCommonUtils.getTwoDecimalFloatFromFloat(total));
+        if(discount != null && !discount.isEmpty()) {
+            total -= Float.parseFloat(discount);
+            printer.printString("Discount USD " + POSCommonUtils.getTwoDecimalFloatFromString(discount));
+        }
+        Float dueBalance = total;
+        if(taxPercentage != null && !"null".equals(taxPercentage) && !taxPercentage.isEmpty()){
+            printer.printString("Service Tax " + taxPercentage + "%");
+            dueBalance = total * ((100 + Float.parseFloat(taxPercentage)) / 100);
+        }
+        printer.printString("Sub Total USD -" + POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
+        printer.setBold(false);
+        printer.setAlignment(0);
+        Iterator it = paymentMethodsMap.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry pair = (Map.Entry)it.next();
+            printer.printString(pair.getKey() + " " + pair.getValue());
+        }
+        if(!isCustomerCopy) {
+            printer.printString(" ");
+            printer.printString(" ");
+            printer.printString(".......................");
+            printer.printString("Card Holder Signature");
+            printer.printString("I got the full refund");
+            printer.printString("for this order");
+            printer.printString(" ");
+            printer.printString("Merchant Copy");
+        }
+        else{
+            printer.printString("Card holder copy");
+        }
+        printer.printString(" ");
+        printer.printString(" ");
+        printer.setBold(true);
+        printer.printString("Operated Staff");
+        printer.printString(SaveSharedPreference.getStringValues(context, Constants.SHARED_PREFERENCE_FA_NAME));
+        printer.printString(dateTimeFormat.format(date));
+        printer.printString(" ");
+        printer.printString(" ");
+        printer.close();
+        return true;
+    }
+
     public static boolean printOrderDetails(Context context,String orderNumber,String seatNumber, List<SoldItem> soldItems
                        ,Map<String,String> paymentMethodsMap,CreditCard card,boolean isCustomerCopy,
                                             String discount,String taxPercentage){
@@ -150,11 +314,12 @@ public class PrintJob {
             total -= Float.parseFloat(discount);
             printer.printString("Discount USD " + POSCommonUtils.getTwoDecimalFloatFromString(discount));
         }
+        Float dueBalance = total;
         if(taxPercentage != null && !"null".equals(taxPercentage) && !taxPercentage.isEmpty()){
             printer.printString("Service Tax " + taxPercentage + "%");
-            Float dueBalance = total * ((100 + Float.parseFloat(taxPercentage)) / 100);
-            printer.printString("Sub Total USD " + POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
+            dueBalance = total * ((100 + Float.parseFloat(taxPercentage)) / 100);
         }
+        printer.printString("Sub Total USD " + POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
         printer.setBold(false);
         printer.setAlignment(0);
         Iterator it = paymentMethodsMap.entrySet().iterator();

@@ -208,9 +208,9 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void deleteOutboundSeals(){
+    public void deleteOutboundSeals(String serviceType){
         SQLiteDatabase db = this.getReadableDatabase();
-        db.execSQL("delete from sealDetails where sealType = 'outbound';");
+        db.execSQL("delete from sealDetails where sealType = 'outbound' and serviceType = '"+serviceType+"';");
         db.close();
     }
 
@@ -241,6 +241,19 @@ public class POSDBHandler extends SQLiteOpenHelper {
     public void insertPaymentMethods(String orderNumber,String paymentType,String amount){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("INSERT INTO paymentMethods VALUES('"+orderNumber+"','"+paymentType+"','"+amount+"');");
+        db.close();
+    }
+
+    public void updatePaymentMethods(String orderNumber,String paymentType,String amount){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("update paymentMethods set amount = '"+amount+"' where orderNumber = '"+orderNumber+"' " +
+                "and paymentType = '"+paymentType+"';");
+        db.close();
+    }
+
+    public void updateCreditCardDetails(String orderNumber,String amount){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("update creditCardDetails set amount = '"+amount+"' where orderNumber = '"+orderNumber+"';");
         db.close();
     }
 

@@ -62,6 +62,16 @@ public class POSCommonUtils {
         }
     }
 
+    public static String getServiceTypeFromServiceType(String serviceType){
+        switch (serviceType){
+            case "BOB" : return "Buy on board";
+            case "DTP" : return "Duty paid";
+            case "DTF" : return "Duty free";
+            case "VRT" : return "Virtual inventory";
+            default: return "";
+        }
+    }
+
     public static Map<String,String> scanQRCode(Context context){
         Scan scan = new Scan();
         String str = "";

@@ -18,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.util.StringUtils;
@@ -59,9 +60,12 @@ public class AddSeal extends AppCompatActivity {
             serviceType = getIntent().getExtras().getString("serviceType");
             List<String> kitCodes = POSCommonUtils.getServiceTypeKitCodeMap(this).get(serviceType);
             noOfSeals = handler.getKitNumberListCountValueFromKitCodes(kitCodes, "noOfSeals");
-
+            TextView serviceTypeView = findViewById(R.id.sealServiceTypeId);
+            serviceTypeView.setText("Seal info - "+POSCommonUtils.getServiceTypeFromServiceType(serviceType));
         }
         else{
+            LinearLayout serviceTypeLayout = findViewById(R.id.serviceTypeLayout);
+            serviceTypeLayout.setVisibility(View.GONE);
             noOfSeals = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_NO_OF_SEAL);
         }
         outbonundLayout = (LinearLayout) findViewById(R.id.layout_addSeal);

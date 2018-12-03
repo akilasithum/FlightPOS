@@ -15,12 +15,14 @@ import java.util.Map;
 public class SelectServiceTypeForSealActivity extends AppCompatActivity {
 
     Map<String,List<String>> serviceTypeKitCodeMap;
+    String parent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_service_type_for_seal);
         serviceTypeKitCodeMap = POSCommonUtils.getServiceTypeKitCodeMap(this);
+        parent = getIntent().getExtras().getString("parent");
         registerLayoutClickEvents();
         ImageButton backButton = findViewById(R.id.backPressBtn);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -40,9 +42,9 @@ public class SelectServiceTypeForSealActivity extends AppCompatActivity {
             addBOBSeals.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(SelectServiceTypeForSealActivity.this, AddSeal.class);
+                    Intent intent = getIntentFromServiceType();
                     intent.putExtra("serviceType", "BOB");
-                    intent.putExtra("parent", "VerifyFlightByAdminActivity");
+                    intent.putExtra("parent", parent);
                     startActivity(intent);
                 }
             });
@@ -55,9 +57,9 @@ public class SelectServiceTypeForSealActivity extends AppCompatActivity {
             addDTPSeals.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(SelectServiceTypeForSealActivity.this, AddSeal.class);
+                    Intent intent = getIntentFromServiceType();
                     intent.putExtra("serviceType", "DTP");
-                    intent.putExtra("parent", "VerifyFlightByAdminActivity");
+                    intent.putExtra("parent", parent);
                     startActivity(intent);
                 }
             });
@@ -70,9 +72,9 @@ public class SelectServiceTypeForSealActivity extends AppCompatActivity {
             addDTFSeals.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(SelectServiceTypeForSealActivity.this, AddSeal.class);
+                    Intent intent = getIntentFromServiceType();
                     intent.putExtra("serviceType", "DTF");
-                    intent.putExtra("parent", "VerifyFlightByAdminActivity");
+                    intent.putExtra("parent", parent);
                     startActivity(intent);
                 }
             });
@@ -85,12 +87,18 @@ public class SelectServiceTypeForSealActivity extends AppCompatActivity {
             addVRTSeals.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(SelectServiceTypeForSealActivity.this, AddSeal.class);
+                    Intent intent = getIntentFromServiceType();
                     intent.putExtra("serviceType", "VRT");
-                    intent.putExtra("parent", "VerifyFlightByAdminActivity");
+                    intent.putExtra("parent", parent);
                     startActivity(intent);
                 }
             });
         }
+    }
+
+    private Intent getIntentFromServiceType(){
+        Intent addSeal = new Intent(SelectServiceTypeForSealActivity.this, AddSeal.class);
+        Intent closeSeal = new Intent(SelectServiceTypeForSealActivity.this, ClosingSealsActivity.class);
+        return parent.equals("VerifyFlightByAdminActivity") ? addSeal : closeSeal;
     }
 }

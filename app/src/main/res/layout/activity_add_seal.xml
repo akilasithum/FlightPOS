@@ -13,13 +13,39 @@
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
+    <LinearLayout
+        android:id="@+id/serviceTypeLayout"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="45dp"
+        android:layout_marginRight="45dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/layoutbackgroundborder"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:paddingBottom="15dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="15dp">
+        <TextView
+            android:id="@+id/sealServiceTypeId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Seal info - Buy on Board"
+            android:textSize="25dp"
+            android:gravity="center"/>
+    </LinearLayout>
+
         <LinearLayout
             android:id="@+id/layout_addSeal1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="45dp"
             android:layout_marginRight="45dp"
-            android:layout_marginTop="45dp"
+            android:layout_marginTop="25dp"
             android:background="@drawable/layoutbackgroundborder"
             android:focusable="true"
             android:focusableInTouchMode="true"

@@ -205,7 +205,7 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
         amount.setText(String.valueOf(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance)));
 
         Button okBtn = (Button) dialog.findViewById(R.id.cardSubmitBtn);
-        Button cancelBtn = (Button) dialog.findViewById(R.id.cancelBtn);
+        final Button cancelBtn = (Button) dialog.findViewById(R.id.cancelBtn);
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -227,6 +227,7 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
                     addPaymentMethodToTable("Credit Card", "USD", "1", amount.getText().toString(), amount.getText().toString());
                     closeMSR();
                     dialog.dismiss();
+                    cancelSaleBtn.setVisibility(View.GONE);
                 }
             }
         });

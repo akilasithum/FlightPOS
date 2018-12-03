@@ -1,14 +1,17 @@
 package com.pos.flightpos;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
@@ -18,6 +21,7 @@ import android.widget.Toast;
 
 import com.pos.flightpos.objects.OrderDetails;
 import com.pos.flightpos.objects.SoldItem;
+import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.PrintJob;
 
@@ -30,20 +34,35 @@ public class VoidOrderActivity extends AppCompatActivity {
 
     TableLayout orderDetailsTableLayout;
     TableLayout voidItemsBtnTable;
+    TableLayout paymentMethodsTable;
+    TableLayout selectItemsBtnTable;
     POSDBHandler handler;
     List<SoldItem> items;
     String orderIdStr;
     Map<String,TableRow> voidItemsList;
+    TableLayout mainOrderDetailsTable;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_void_order);
+        mainOrderDetailsTable = findViewById(R.id.mainOrderDetails);
         orderDetailsTableLayout = findViewById(R.id.orderDetails);
         orderDetailsTableLayout.setVisibility(View.INVISIBLE);
         voidItemsBtnTable = findViewById(R.id.voidItemsBtnTable);
         voidItemsBtnTable.setVisibility(View.INVISIBLE);
+        paymentMethodsTable = findViewById(R.id.paymentMethodsTable);
+        paymentMethodsTable.setVisibility(View.INVISIBLE);
+        selectItemsBtnTable = findViewById(R.id.selectItemsBtnTable);
+        selectItemsBtnTable.setVisibility(View.INVISIBLE);
         handler = new POSDBHandler(this);
         voidItemsList = new HashMap<>();
+        Button selectItemsVoidBtn = findViewById(R.id.selectItemsVoidBtn);
+        selectItemsVoidBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showPayments();
+            }
+        });
         Button cancelOrderBtn = findViewById(R.id.voidOrderBtn);
         cancelOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,7 +84,6 @@ public class VoidOrderActivity extends AppCompatActivity {
     private void showAvailableOrders(){
 
         List<OrderDetails> orderDetails = handler.getOrders();
-        final TableLayout mainOrderDetailsTable = findViewById(R.id.mainOrderDetails);
         TableRow.LayoutParams cellParams = new TableRow.LayoutParams(0,
                 TableRow.LayoutParams.WRAP_CONTENT, 4f);
         TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
@@ -136,6 +154,8 @@ public class VoidOrderActivity extends AppCompatActivity {
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    paymentMethodsTable.setVisibility(View.INVISIBLE);
+                    voidItemsBtnTable.setVisibility(View.INVISIBLE);
                     showOrder(detail.getOrderNumber());
                 }
             });
@@ -151,7 +171,7 @@ public class VoidOrderActivity extends AppCompatActivity {
                 true,details.getDiscount(),details.getTax());
     }
 
-    private void cancelOrder(String orderId){
+    private void cancelOrder(final String orderId){
         items = handler.getSoldItemsFromOrderId(orderId);
         if(items == null || items.isEmpty()){
             Toast.makeText(this, "No items to cancel", Toast.LENGTH_SHORT).show();
@@ -161,8 +181,24 @@ public class VoidOrderActivity extends AppCompatActivity {
             handler.updateSoldItemQty(item.getItemId(),"-"+item.getQuantity(),item.getEquipmentNo(),
             item.getDrawer());
         }
-        handler.clearOrderSalesTables(orderId);
         Toast.makeText(this, "Order successfully canceled.", Toast.LENGTH_SHORT).show();
+        final OrderDetails details = handler.getOrderDetailsFromOrderNumber(orderId);
+        boolean isSuccess = PrintJob.printVoidOrderReceipt(this,orderId,details.getSeatNo(),items,handler.getPaymentMethodsMapFromOrderNumber(orderId)
+        ,details.getDiscount(),details.getTax(),false);
+        if(isSuccess){
+            new AlertDialog.Builder(this)
+                    .setTitle("Print customer copy")
+                    .setMessage("Do you want to print customer copy?")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            PrintJob.printVoidOrderReceipt(VoidOrderActivity.this,orderId,details.getSeatNo(),items,handler.getPaymentMethodsMapFromOrderNumber(orderId)
+                                    ,details.getDiscount(),details.getTax(),true);
+                        }})
+                    .setNegativeButton(android.R.string.cancel, null).show();
+        }
+        handler.clearOrderSalesTables(orderId);
     }
 
     private void showOrder(String orderId){
@@ -194,7 +230,7 @@ public class VoidOrderActivity extends AppCompatActivity {
         orderDetailsTableLayout.addView(headerRow,i-1);
         i++;
         orderDetailsTableLayout.setVisibility(View.VISIBLE);
-        voidItemsBtnTable.setVisibility(View.VISIBLE);
+        selectItemsBtnTable.setVisibility(View.VISIBLE);
         for(final SoldItem item : items){
             final TableRow tr = new TableRow(this);
             tr.setLayoutParams(new TableRow.LayoutParams(
@@ -291,6 +327,17 @@ public class VoidOrderActivity extends AppCompatActivity {
 
     private void voidItems(){
         if (voidItemsList != null && !voidItemsList.isEmpty()) {
+            float refundAmount = getVoidAmount();
+            float amountToRefund = 0;
+            for(SoldItem item : items) {
+                if (voidItemsList.containsKey(item.getItemId())) {
+                    amountToRefund += Float.parseFloat(item.getPrice());
+                }
+            }
+            if(amountToRefund != refundAmount){
+                Toast.makeText(VoidOrderActivity.this, "Amount to refund should be equal to cancel items total.", Toast.LENGTH_SHORT).show();
+                return;
+            }
             new AlertDialog.Builder(VoidOrderActivity.this)
                     .setTitle("Void Items")
                     .setMessage("Do you want to void selected items from the order?")
@@ -308,25 +355,155 @@ public class VoidOrderActivity extends AppCompatActivity {
         }
     }
 
-    private void voidItemsFromList(){
-        items = handler.getSoldItemsFromOrderId(orderIdStr);
-        float newTotal = 0;
-        if(items.size() == voidItemsList.size()){
-            cancelOrder(orderIdStr);
-            return;
+    private void showPayments(){
+        if (voidItemsList != null && !voidItemsList.isEmpty()) {
+            items = handler.getSoldItemsFromOrderId(orderIdStr);
+            if (items.size() == voidItemsList.size()) {
+
+                new AlertDialog.Builder(VoidOrderActivity.this)
+                        .setTitle("Cancel Order")
+                        .setMessage("Do you want to cancel the whole order?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                cancelOrder(orderIdStr);
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null).show();
+
+                cancelOrder(orderIdStr);
+                return;
+            }
+            Map<String, String> paymentMethodsMap = handler.getPaymentMethodsMapFromOrderNumber(orderIdStr);
+            paymentMethodsTable.setVisibility(View.VISIBLE);
+            voidItemsBtnTable.setVisibility(View.VISIBLE);
+            showPaymentMethodsTable(paymentMethodsMap);
         }
+    }
+
+    private void voidItemsFromList(){
+        float newTotal = 0;
+        final List<SoldItem> refundItems = new ArrayList<>();
         for(SoldItem item : items){
             if(voidItemsList.containsKey(item.getItemId())) {
                 handler.updateSoldItemQty(item.getItemId(), "-" + item.getQuantity(), item.getEquipmentNo(),
                         item.getDrawer());
                 handler.updateDailySalesTable(orderIdStr,item.getItemId());
                 orderDetailsTableLayout.removeView(voidItemsList.get(item.getItemId()));
+                refundItems.add(item);
             }
             else{
                 newTotal += Float.parseFloat(item.getPrice());
             }
         }
+        updatePaymentMethods();
         handler.updateOrderMainDetails(orderIdStr,newTotal+"");
+        final OrderDetails details = handler.getOrderDetailsFromOrderNumber(orderIdStr);
+        boolean isSuccess = PrintJob.printVoidOrderByReceipt(this,orderIdStr,details.getSeatNo(),refundItems,false);
+
+        if(isSuccess){
+            new AlertDialog.Builder(this)
+                    .setTitle("Print customer copy")
+                    .setMessage("Do you want to print customer copy?")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            printCustomerCopy(refundItems,details);
+                        }})
+                    .setNegativeButton(android.R.string.cancel, null).show();
+
+
+        }
+
         Toast.makeText(VoidOrderActivity.this, "Void items successfully.", Toast.LENGTH_SHORT).show();
+    }
+
+    private void printCustomerCopy(List<SoldItem> refundItems,OrderDetails details){
+
+        boolean isSuccess = PrintJob.printVoidOrderByReceipt(VoidOrderActivity.this,orderIdStr,details.getSeatNo(),refundItems,true);
+        if(isSuccess) {
+            Intent intent = new Intent(this, SellItemsActivity.class);
+            startActivity(intent);
+        }
+    }
+
+    private void showPaymentMethodsTable(Map<String,String> paymentMethodsMap){
+        int i = 1;
+        int count = paymentMethodsTable.getChildCount();
+        if(count > 1 && paymentMethodsTable.getVisibility() == View.VISIBLE){
+            for(int j=1;j<count;j++){
+                paymentMethodsTable.removeViewAt(1);
+            }
+        }
+        TableRow.LayoutParams cellParams = new TableRow.LayoutParams(0,
+                TableRow.LayoutParams.WRAP_CONTENT, 1f);
+        for(Map.Entry<String,String> map : paymentMethodsMap.entrySet()){
+            final TableRow tr = new TableRow(this);
+            tr.setLayoutParams(new TableRow.LayoutParams(
+                    TableRow.LayoutParams.MATCH_PARENT,
+                    TableRow.LayoutParams.WRAP_CONTENT));
+
+            TextView itemDesc = new TextView(this);
+            itemDesc.setText(map.getKey());
+            itemDesc.setTextSize(16);
+            itemDesc.setLayoutParams(cellParams);
+            itemDesc.setPadding(0,10,0,0);
+            itemDesc.setGravity(Gravity.CENTER);
+            tr.addView(itemDesc);
+
+            TextView quantity = new TextView(this);
+            quantity.setText(map.getValue());
+            quantity.setTextSize(16);
+            quantity.setLayoutParams(cellParams);
+            quantity.setGravity(Gravity.CENTER);
+            quantity.setPadding(0,10,0,0);
+            tr.addView(quantity);
+
+            EditText refundValue = new EditText(this);
+            refundValue.setTextSize(16);
+            refundValue.setLayoutParams(cellParams);
+            refundValue.setInputType(InputType.TYPE_NUMBER_FLAG_DECIMAL);
+            tr.addView(refundValue);
+            paymentMethodsTable.addView(tr,i);
+            i++;
+        }
+    }
+
+    private void updatePaymentMethods(){
+        int count = paymentMethodsTable.getChildCount();
+        for (int i = 1; i < count; i++) {
+            TextView paymentMethod = (TextView) ((TableRow) paymentMethodsTable.getChildAt(i)).getChildAt(0);
+            TextView initialAmount = (TextView) ((TableRow) paymentMethodsTable.getChildAt(i)).getChildAt(1);
+            EditText refundAmount = (EditText) ((TableRow) paymentMethodsTable.getChildAt(i)).getChildAt(2);
+            if (refundAmount.getText() != null && !refundAmount.getText().toString().isEmpty()) {
+                float initialAmountFlt = Float.parseFloat(initialAmount.getText().toString());
+                float refundFlt = Float.parseFloat(refundAmount.getText().toString());
+                    handler.updatePaymentMethods(orderIdStr,paymentMethod.getText().toString(),String.valueOf(initialAmountFlt-refundFlt));
+                if(paymentMethod.getText().toString().equals("Credit Card USD")){
+                    handler.updateCreditCardDetails(orderIdStr,String.valueOf(initialAmountFlt-refundFlt));
+                }
+
+            }
+        }
+    }
+
+    private float getVoidAmount(){
+        int count = paymentMethodsTable.getChildCount();
+        float voidAmount = 0;
+        if(count > 1){
+            try {
+                for (int i = 1; i < count; i++) {
+                    EditText text = (EditText) ((TableRow) paymentMethodsTable.getChildAt(i)).getChildAt(2);
+                    if (text.getText() != null && !text.getText().toString().isEmpty()) {
+                        voidAmount += Float.parseFloat(text.getText().toString());
+                    }
+                }
+            }catch (Exception e){
+                return 0;
+            }
+        }
+        return voidAmount;
     }
 }

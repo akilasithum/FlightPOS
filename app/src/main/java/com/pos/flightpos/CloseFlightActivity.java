@@ -71,7 +71,7 @@ public class CloseFlightActivity extends AppCompatActivity {
         closingSeals.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CloseFlightActivity.this, ClosingSealsActivity.class);
+                Intent intent = new Intent(CloseFlightActivity.this, SelectServiceTypeForSealActivity.class);
                 intent.putExtra("parent","CloseFlightActivity");
                 startActivity(intent);
             }
@@ -147,18 +147,21 @@ public class CloseFlightActivity extends AppCompatActivity {
         DateFormat dateTimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss aa");
         printer.printString(df.format(date));
         printer.printString(" ");
-        printer.printString("SALES SUMMARY [PASSENGERS]");
+        printer.printString("SALES SUMMARY");
         Map<String,String> map = getServiceTypeDescMap();
         for(Map.Entry<String,String> details : map.entrySet()){
             printer.printString(" ");
             printer.printString(details.getValue());
             printer.setAlignment(2);
-            printer.printString("Total USD "+POSCommonUtils.getTwoDecimalFloatFromString(
+            printer.printString("Passenger - Total USD "+POSCommonUtils.getTwoDecimalFloatFromString(
                     handler.getTotalSaleFromServiceType(details.getKey(),"Passenger")));
+            printer.setAlignment(2);
+            printer.printString("Staff - Total USD "+POSCommonUtils.getTwoDecimalFloatFromString(
+                    handler.getTotalSaleFromServiceType(details.getKey(),"Staff")));
             printer.setAlignment(1);
             printer.printString(" ");
         }
-        printer.printString("SALES SUMMARY [STAFF]");
+        /*printer.printString("SALES SUMMARY [STAFF]");
         for(Map.Entry<String,String> details : map.entrySet()){
             printer.printString(" ");
             printer.printString(details.getValue());
@@ -166,7 +169,7 @@ public class CloseFlightActivity extends AppCompatActivity {
             printer.printString(" ");
             printer.printString("Total USD "+handler.getTotalSaleFromServiceType(details.getKey(),"Staff"));
             printer.setAlignment(1);
-        }
+        }*/
         printer.setAlignment(0);
         printer.printString("SELLERS INFORMATION");
         printer.printString(SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FA_NAME));

@@ -70,6 +70,9 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     String subTotalAfterTax;
     Float totalBeforeTax;
     TextView discountText;
+    Button cancelSaleBtn;
+    float discountFromVoucher = 0;
+    TextView subTotalTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +82,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         paymentTable = (TableLayout) findViewById(R.id.paymentMethodTable);
         confirmPaymentBtn = (Button) findViewById(R.id.printReceipt);
         balanceDueTextView = (TextView)  findViewById(R.id.balanceDueTextView);
+        subTotalTextView = findViewById(R.id.subTotalTextView);
         confirmPaymentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,6 +144,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             balanceDueTextView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
         }
         subTotalAfterTax = String.valueOf(dueBalance);
+        subTotalTextView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
         discountText = findViewById(R.id.discountTextView);
         discountText.setText((discount == null || discount.isEmpty()) ? "0.00" :
                 POSCommonUtils.getTwoDecimalFloatFromString(discount));
@@ -186,7 +191,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             }
         });
 
-        Button cancelSaleBtn = (Button) findViewById(R.id.cancelSale);
+        cancelSaleBtn = (Button) findViewById(R.id.cancelSale);
         cancelSaleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -240,11 +245,16 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (voucherDiscountText.getText() != null && voucherDiscountText.getText().toString() != null &&
                         !voucherDiscountText.getText().toString().equals("0.0")) {
-                    if (dueBalance == totalBeforeTax) {
+                    if (dueBalance == totalBeforeTax || discountFromVoucher != 0) {
+                        if(discountFromVoucher != 0){
+                            dueBalance = totalBeforeTax;
+                        }
                         dueBalance -= Float.parseFloat(voucherDiscountText.getText().toString());
                         balanceDueTextView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
-                        discountText.setText(voucherDiscountText.getText().toString());
-                        discount = voucherDiscountText.getText().toString();
+                        subTotalTextView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
+                        discount = POSCommonUtils.getTwoDecimalFloatFromString(voucherDiscountText.getText().toString());
+                        discountFromVoucher = Float.parseFloat(discount);
+                        discountText.setText(discount);
                         dialog.dismiss();
                     }
                 }
@@ -372,7 +382,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         amount.setText(String.valueOf(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance)));
 
         Button okBtn = (Button) dialog.findViewById(R.id.cardSubmitBtn);
-        Button cancelBtn = (Button) dialog.findViewById(R.id.cancelBtn);
+        final Button cancelBtn = (Button) dialog.findViewById(R.id.cancelBtn);
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -394,6 +404,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                     addPaymentMethodToTable("Credit Card", "USD", "1", amount.getText().toString(), amount.getText().toString());
                     closeMSR();
                     dialog.dismiss();
+                    cancelSaleBtn.setVisibility(View.GONE);
                 }
             }
         });

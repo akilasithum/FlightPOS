@@ -152,16 +152,40 @@
         android:layout_marginTop="50dp"
         android:layout_weight="1"
         android:layout_marginRight="20dp"
+        android:layout_marginLeft="20dp"
         android:gravity="left|bottom"
         android:orientation="vertical">
-
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+        <ImageButton
+            android:id="@+id/forwardPressBtn"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="center_horizontal|left"
+            android:background="@drawable/icon_left_arrow"
+            android:layout_weight="1"
+            android:clickable="true" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="20"
+                android:text=""
+                android:textSize="20dp" />
         <ImageButton
             android:id="@+id/backPressBtn"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_gravity="center_horizontal|right"
             android:background="@drawable/icon_right_arrow"
+            android:layout_weight="1"
             android:clickable="true" />
+        </TableRow>
+        </TableLayout>
     </LinearLayout>
 </LinearLayout>
 </ScrollView>
