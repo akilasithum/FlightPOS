@@ -6,6 +6,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.XMLMapper.PreOrder;
+import com.pos.flightpos.utils.HttpHandler;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
@@ -61,6 +63,33 @@ public class SellItemsActivity extends AppCompatActivity {
         serviceType = POSCommonUtils.getServiceTypeKitCodeMap(this).keySet();
     }
 
+    private class GetContacts extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            HttpHandler sh = new HttpHandler();
+            String url = "http://192.168.8.102:8080/backOfficeWS/kitCodes";
+            // Making a request to url and getting response
+            //String jsonStr = sh.makeServiceCall(url);
+            //handler.insertKitListFromWS(jsonStr);
+            String xml = "<userComments>" +
+                    "<userComment>" +
+                    "<userId>akila</userId>" +
+                    "<area>seal</area>" +
+                    "<comment>Some seal numbers are missing</comment>" +
+                    "</userComment>" +
+                    "<userComment>" +
+                    "<userId>sithum</userId>" +
+                    "<area>pre order</area>" +
+                    "<comment>pre order not wrapped properly</comment>" +
+                    "</userComment>" +
+                    "</userComments>";
+            String result = sh.postRequest(xml,"userComments");
+            return null;
+        }
+    }
+
+
     private void registerLayoutClickEvents(){
 
         LinearLayout buyOnBoardLayout = (LinearLayout) findViewById(R.id.buyOnBoardItems);
@@ -71,6 +100,7 @@ public class SellItemsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(isItemsAvailableToSell("BOB")) {
+                    new GetContacts().execute();
                     Intent intent = new Intent(SellItemsActivity.this, BuyOnBoardItemsActivity.class);
                     intent.putExtra("serviceType", "BOB");
                     startActivity(intent);

@@ -33,5 +33,6 @@ public class Constants {
             TableRow.LayoutParams.WRAP_CONTENT);
 
     public static final String PUBLIC_STATIC_STRING_IDENTIFIER = "intentIdentifier";
+    public static final String webServiceURL = "http://192.168.8.102:8080/";
 
 }

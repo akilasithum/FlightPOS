@@ -27,6 +27,7 @@ import com.pos.flightpos.objects.XMLMapper.Sector;
 import com.pos.flightpos.objects.XMLMapper.Voucher;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
 import org.w3c.dom.Document;
@@ -559,6 +560,19 @@ public class POSDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
         db.execSQL("update drawerValidation set isValidated = 'No'");
         db.close();
+    }
+
+    public void insertKitListFromWS(String xml){
+        try {
+            JSONObject jsonObj  = XML.toJSONObject(xml);
+            Gson gson = new Gson();
+            JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("KITNumbers");
+            JSONArray itemsArr = data.getJSONArray("KITNumber");
+            List<KitNumber> kitNumbers = gson.fromJson(itemsArr.toString(), new TypeToken<List<KitNumber>>(){}.getType());
+            SQLiteDatabase db = this.getWritableDatabase();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public void insertKITNumbersList(Context context){
