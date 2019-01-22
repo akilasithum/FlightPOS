@@ -4,12 +4,11 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,9 +18,15 @@ import com.amazonaws.mobile.client.AWSStartupHandler;
 import com.amazonaws.mobile.client.AWSStartupResult;
 import com.amazonaws.mobileconnectors.s3.transferutility.*;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.util.StringUtils;
+import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.utils.HttpHandler;
+import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
+
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,6 +44,7 @@ public class SyncActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sync);
         syncLayout = (LinearLayout) findViewById(R.id.syncLayout);
         handler = new POSDBHandler(this);
+        handler.clearTable();
         SaveSharedPreference.setStringValues(this,"syncKeyPressed","true");
         dia = new ProgressDialog(this);
         dia.setTitle("Sync");
@@ -46,16 +52,45 @@ public class SyncActivity extends AppCompatActivity {
         dia.show();
         completedFiles = new ArrayList<>();
         downloadData("users");
-        downloadData("flights");
-        downloadData("item_list");
-        downloadData("kit_number_list");
-        downloadData("kit_list");
-        downloadData("currency");
-        downloadData("promotions");
         downloadData("combo_discount");
-        downloadData("voucher");
-        downloadData("equipment_type");
+        new GetContacts().execute();
+    }
 
+    private String getSIFRequest() {
+
+        String deviceId = POSCommonUtils.getDeviceId(this);
+        SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_DEVICE_ID,deviceId);
+        Document document = DocumentHelper.createDocument();
+        Element root = document.addElement("sifDetails");
+        root.addElement("deviceId").addText(deviceId);
+        return document.asXML();
+    }
+
+    private class GetContacts extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            HttpHandler sh = new HttpHandler();
+            String sifNo = sh.postRequest(getSIFRequest(),"sifDetails");
+            SaveSharedPreference.setStringValues(SyncActivity.this,Constants.SHARED_PREFERENCE_SIF_NO,sifNo);
+            handler.insertSIFDetails(sifNo,SaveSharedPreference.getStringValues(SyncActivity.this,Constants.SHARED_PREFERENCE_DEVICE_ID));
+
+            handler.insertFlightData(sh.makeServiceCall("flights"));
+            completedFiles.add("flights");
+            handler.insertItemData(sh.makeServiceCall("items"));
+            completedFiles.add("items");
+            handler.insertKITNumbersList(sh.makeServiceCall("kitCodes"));
+            completedFiles.add("kitCodes");
+            handler.insertKITList(sh.makeServiceCall("kitItems"));
+            completedFiles.add("kitItems");
+            handler.insertCurrencyData(sh.makeServiceCall("currencies"));
+            completedFiles.add("currencies");
+            handler.insertEquipmentTypeList(sh.makeServiceCall("equipmentType"));
+            completedFiles.add("equipmentType");
+            handler.insertVoucherDetails(sh.makeServiceCall("vouchers"));
+            completedFiles.add("vouchers");
+            return null;
+        }
     }
 
     public void downloadData(final String fileName) {
@@ -90,7 +125,7 @@ public class SyncActivity extends AppCompatActivity {
                     insertDataIntoSQLIteDB(fileName);
                     //showCompletedFiles(fileName);
                     completedFiles.add(fileName);
-                    if(fileName.equals("equipment_type")){
+                    if(fileName.equals("combo_discount")){
                         //dia.cancel();
                         String fileNames = "";
                         for(String str : completedFiles){
@@ -105,6 +140,7 @@ public class SyncActivity extends AppCompatActivity {
 
                                     public void onClick(DialogInterface dialog, int whichButton) {
                                         Intent intent = new Intent(SyncActivity.this, MainActivity.class);
+                                        intent.putExtra("parent", "");
                                         startActivity(intent);
                                     }})
                                 .setNegativeButton(android.R.string.cancel, null).show();
@@ -154,15 +190,8 @@ public class SyncActivity extends AppCompatActivity {
 
     private void insertDataIntoSQLIteDB(String fileName){
         if(fileName.equals("users"))handler.insertUserData(getApplicationContext());
-        if(fileName.equals("flights"))handler.insertFlightData(getApplicationContext());
-        if(fileName.equals("item_list"))handler.insertItemData(getApplicationContext());
-        if(fileName.equals("kit_number_list"))handler.insertKITNumbersList(getApplicationContext());
-        if(fileName.equals("kit_list"))handler.insertKITList(getApplicationContext());
-        if(fileName.equals("currency")) handler.insertCurrencyData(getApplicationContext());
-        if(fileName.equals("equipment_type"))handler.insertEquipmentTypeList(getApplicationContext());
         if(fileName.equals("pre_orders"))handler.insertPreOrders(getApplicationContext());
         if(fileName.equals("promotions"))handler.insertPromotions(getApplicationContext());
         if(fileName.equals("combo_discount"))handler.insertComboDiscount(getApplicationContext());
-        if(fileName.equals("voucher"))handler.insertVoucherDetails(getApplicationContext());
     }
 }

@@ -460,17 +460,18 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
             }
         }
     }
-
     private void generateOrderNumber(){
-        orderNumber = SaveSharedPreference.getStringValues(this,"orderNumber");
-        if(orderNumber != null){
-            int newVal = Integer.parseInt(orderNumber) + 1;
-            orderNumber = String.valueOf(newVal);
-            SaveSharedPreference.updateValue(this,"orderNumber",orderNumber);
+        String orderNumberStr = SaveSharedPreference.getStringValues(this,"orderNumber");
+        if(orderNumberStr != null){
+            int newVal = Integer.parseInt(orderNumberStr) + 1;
+            orderNumber = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME).replace(" ","_") +
+                    "_"+POSCommonUtils.getDateString()+"_" + String.valueOf(newVal);
+            SaveSharedPreference.updateValue(this,"orderNumber",newVal+"");
         }
         else{
             SaveSharedPreference.setStringValues(this,"orderNumber","1");
-            orderNumber = "1";
+            orderNumber = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME).replace(" ","_") +
+                    "_"+POSCommonUtils.getDateString()+"_" + "1";
         }
     }
 }

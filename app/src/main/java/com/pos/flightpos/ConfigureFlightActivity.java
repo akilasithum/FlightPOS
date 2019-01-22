@@ -84,7 +84,7 @@ public class ConfigureFlightActivity extends AppCompatActivity {
     private void loadEquipmentNumbers(){
 
         /*List<KitNumber> options=new ArrayList<>();
-        List<KitNumber> equipmentList = handler.getKITCodeList();
+        List<KitNumber> equipmentList = posdbHandler.getKITCodeList();
         KitNumber item = new KitNumber();
         options.add(item);
         options.addAll(equipmentList);
@@ -155,6 +155,8 @@ public class ConfigureFlightActivity extends AppCompatActivity {
                     flightDateSpinner.getSelectedItem().toString());
             SaveSharedPreference.setStringValues(this,Constants.SHARED_ADMIN_CONFIGURE_FLIGHT,"yes");
             startActivity(intent);
+            String deviceId = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_DEVICE_ID);
+            handler.updateSIFDetails("packedFor",flightListTextView.getText().toString(),deviceId);
         }
         else{
             Toast.makeText(getApplicationContext(), "Please fill required details.",

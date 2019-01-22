@@ -17,10 +17,12 @@ import com.pos.flightpos.utils.SaveSharedPreference;
 
 public class AttCheckInfo extends AppCompatActivity {
 
+    POSDBHandler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_att_check_info);
+        handler = new POSDBHandler(this);
         registerLayoutClickEvents();
     }
 
@@ -86,6 +88,8 @@ public class AttCheckInfo extends AppCompatActivity {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        String deviceId = SaveSharedPreference.getStringValues(AttCheckInfo.this,Constants.SHARED_PREFERENCE_DEVICE_ID);
+                        handler.updateSIFDetails("crewOpenedDateTime",POSCommonUtils.getDateTimeString(),deviceId);
                         SaveSharedPreference.setStringValues(AttCheckInfo.this,"isOpenFlight","yes");
                         Intent intent = new Intent(AttCheckInfo.this, SellItemsActivity.class);
                         startActivity(intent);

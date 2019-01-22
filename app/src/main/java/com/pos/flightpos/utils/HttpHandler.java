@@ -64,13 +64,14 @@ public class HttpHandler {
             wr.writeBytes(urlParameters);
             wr.flush();
             wr.close();
-            response = con.getResponseMessage();
+            InputStream in = new BufferedInputStream(con.getInputStream());
+            response = convertStreamToString(in);
         }
      catch (IOException e) {
         e.printStackTrace();
         return null;
     }
-        return response;
+        return response.substring(0,response.length()-1);
     }
 
     private String convertStreamToString(InputStream is) {

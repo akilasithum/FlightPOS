@@ -186,7 +186,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 SaveSharedPreference.removeValue(this,Constants.SHARED_PREFERENCE_SYNC_PRE_ORDERS);
                 SaveSharedPreference.removeValue(this,Constants.SHARED_PREFERENCE_OUT_BOUND_SEAL_LIST);
                 POSDBHandler handler = new POSDBHandler(this);
-                handler.clearDailySalesTable();
+                //posdbHandler.clearDailySalesTable();
                 SaveSharedPreference.removeValue(this,"orderNumber");
                 reDirectToMainPage(email);
             }
@@ -200,6 +200,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void reDirectToMainPage(String userName){
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("userName",userName);
+        String isFlightClosed = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_CLOSED_FLIGHT);
+        if(isFlightClosed != null && isFlightClosed.equals("yes")){
+            intent.putExtra("parent","SelectModeActivity");
+        }
+        else {
+            intent.putExtra("parent", parent);
+        }
         startActivity(intent);
     }
 

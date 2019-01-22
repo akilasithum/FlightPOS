@@ -25,10 +25,12 @@ import java.util.Map;
 
 public class CloseFlightActivity extends AppCompatActivity {
 
+    POSDBHandler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_close_flight);
+        handler = new POSDBHandler(this);
         registerLayoutClickEvents();
     }
 
@@ -102,6 +104,9 @@ public class CloseFlightActivity extends AppCompatActivity {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        String deviceId = SaveSharedPreference.getStringValues(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_DEVICE_ID);
+                        handler.updateSIFDetails("crewClosedDateTime",POSCommonUtils.getDateTimeString(),deviceId);
+
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"isOpenFlight");
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"eClassPaxCount");
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"bClassPaxCount");
@@ -167,7 +172,7 @@ public class CloseFlightActivity extends AppCompatActivity {
             printer.printString(details.getValue());
             printer.setAlignment(2);
             printer.printString(" ");
-            printer.printString("Total USD "+handler.getTotalSaleFromServiceType(details.getKey(),"Staff"));
+            printer.printString("Total USD "+posdbHandler.getTotalSaleFromServiceType(details.getKey(),"Staff"));
             printer.setAlignment(1);
         }*/
         printer.setAlignment(0);

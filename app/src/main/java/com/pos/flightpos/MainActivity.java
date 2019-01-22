@@ -17,12 +17,13 @@ import com.pos.flightpos.utils.SaveSharedPreference;
 public class MainActivity extends AppCompatActivity {
 
     long mExitTime = 0;
+    String parent = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         AWSMobileClient.getInstance().initialize(this).execute();
-
+        parent = getIntent().getExtras().getString("parent");
         final LinearLayout configureFlightLayout = (LinearLayout) findViewById(R.id.configureFlightLayout);
         configureFlightLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,6 +38,18 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        LinearLayout uploadLayout = findViewById(R.id.uploadDataLayout);
+        uploadLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, UploadSalesDataActivity.class);
+                startActivity(intent);
+            }
+        });
+        if(parent == null || parent.isEmpty() || !parent.equals("SelectModeActivity") || parent.equals("UploadSalesDataActivity")){
+            uploadLayout.setVisibility(View.GONE);
+        }
 
         LinearLayout syncLayout = (LinearLayout) findViewById(R.id.syncLayout);
         syncLayout.setOnClickListener(new View.OnClickListener() {
@@ -54,17 +67,6 @@ public class MainActivity extends AppCompatActivity {
                 logoutAdmin();
             }
         });
-
-
-/*Button goToICCardBrn = (Button) findViewById(R.id.goToICCardBrn);
-        goToICCardBrn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-
-                Intent intent = new Intent(MainActivity.this,IC.class);
-                startActivity(intent);
-            }
-        });*/
     }
 
     private boolean isSyncClicked(){

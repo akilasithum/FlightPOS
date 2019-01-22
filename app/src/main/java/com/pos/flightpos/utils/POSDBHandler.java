@@ -1,7 +1,6 @@
 package com.pos.flightpos.utils;
 
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -17,12 +16,15 @@ import com.pos.flightpos.objects.XMLMapper.ComboDiscount;
 import com.pos.flightpos.objects.XMLMapper.Currency;
 import com.pos.flightpos.objects.XMLMapper.Equipment;
 import com.pos.flightpos.objects.XMLMapper.Item;
-import com.pos.flightpos.objects.XMLMapper.Items;
+import com.pos.flightpos.objects.XMLMapper.ItemSale;
 import com.pos.flightpos.objects.XMLMapper.KITItem;
 import com.pos.flightpos.objects.XMLMapper.KitNumber;
+import com.pos.flightpos.objects.XMLMapper.POSFlight;
+import com.pos.flightpos.objects.XMLMapper.PaymentMethods;
 import com.pos.flightpos.objects.XMLMapper.PreOrder;
 import com.pos.flightpos.objects.XMLMapper.PreOrderItem;
 import com.pos.flightpos.objects.XMLMapper.Promotion;
+import com.pos.flightpos.objects.XMLMapper.SIFDetails;
 import com.pos.flightpos.objects.XMLMapper.Sector;
 import com.pos.flightpos.objects.XMLMapper.Voucher;
 
@@ -94,7 +96,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS paymentMethods (orderNumber VARCHAR,paymentType VARCHAR," +
                 "amount VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS orderMainDetails (orderNumber VARCHAR,tax VARCHAR," +
-                "discount VARCHAR, seatNo VARCHAR,subTotal VARCHAR);");
+                "discount VARCHAR, seatNo VARCHAR,subTotal VARCHAR,serviceType VARCHAR,flightId VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS creditCardDetails (orderNumber VARCHAR,creditCardNumber VARCHAR," +
                 "cardHolderName VARCHAR, expireDate VARCHAR , amount VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS loyaltyCardDetails (orderNumber VARCHAR,loyaltyCardNumber VARCHAR," +
@@ -108,6 +110,10 @@ public class POSDBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS vouchers (voucherId VARCHAR,voucherName VARCHAR,voucherType VARCHAR," +
                 "discount VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS seals (serviceType VARCHAR,sealType VARCHAR,sealNo VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS posFlights (flightId VARCHAR,flightName VARCHAR,flightDate VARCHAR," +
+                "flightFrom VARCHAR,flightTo VARCHAR,paxCount VARCHAR,businessClassPaxCount VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS SIFDetails (sifNo VARCHAR,deviceId VARCHAR,packedFor VARCHAR," +
+                "packedDateTime VARCHAR,crewOpenedDateTime VARCHAR,crewClosedDateTime VARCHAR);");
     }
 
     public void clearTable(){
@@ -120,6 +126,11 @@ public class POSDBHandler extends SQLiteOpenHelper {
             db.execSQL("delete from KITNumberList");
             db.execSQL("delete from items");
             db.execSQL("delete from equipmentType");
+            db.execSQL("delete from currency");
+            db.execSQL("delete from promotions");
+            db.execSQL("delete from comboDiscounts");
+            db.execSQL("delete from vouchers");
+            db.execSQL("delete from SIFDetails");
             db.execSQL("VACUUM");
         }
         res.close();
@@ -135,13 +146,54 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.execSQL("delete from preOrders");
         db.execSQL("delete from preOrderItems");
         db.execSQL("delete from sealDetails");
+        db.execSQL("delete from posFlights");
         db.close();
         resetDrawerValidation();
+    }
+
+    public void insertSIFDetails(String sifNo,String deviceId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("INSERT INTO SIFDetails (sifNo,deviceId) VALUES('"+sifNo+"','"+deviceId+"');");
+        db.close();
+    }
+    public void updateSIFDetails(String fieldName,String value,String deviceId){
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL("update SIFDetails set "+fieldName+" = '"+value+"'" +
+                "where deviceId = '"+deviceId+"';");
+        db.close();
+    }
+
+    public SIFDetails getSIFDetails(String sifNo){
+        SIFDetails sif = new SIFDetails();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from SIFDetails where sifNo = '"+sifNo+"'", null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                sif.setSifNo(cursor.getString(cursor.getColumnIndex("sifNo")));
+                sif.setDeviceId(cursor.getString(cursor.getColumnIndex("deviceId")));
+                sif.setPackedFor(cursor.getString(cursor.getColumnIndex("packedFor")));
+                sif.setPackedTime(cursor.getString(cursor.getColumnIndex("packedDateTime")));
+                sif.setCrewOpenedTime(cursor.getString(cursor.getColumnIndex("crewOpenedDateTime")));
+                sif.setCrewClosedTime(cursor.getString(cursor.getColumnIndex("crewClosedDateTime")));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return sif;
     }
 
     public void insertUserComments(String userId,String area,String comment){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("INSERT INTO userComments VALUES('"+userId+"','"+area+"','"+comment+"');");
+        db.close();
+    }
+
+    public void insertPosFlights(String flightId,String flightName,String flightDate,String flightFrom,String flightTo,String paxCount,
+                                 String businessClassPaxCount){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("INSERT INTO posFlights VALUES('"+flightId+"','"+flightName+"','"+flightDate+"','"+flightFrom+"'," +
+                "'"+flightTo+"','"+paxCount+"','"+businessClassPaxCount+"');");
         db.close();
     }
 
@@ -276,10 +328,10 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return items;
     }
 
-    public void insertOrderMainDetails(String orderNumber,String tax,String discount,String seatNo,String subTotal){
+    public void insertOrderMainDetails(String orderNumber,String tax,String discount,String seatNo,String subTotal,String serviceType,String flightId){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("INSERT INTO orderMainDetails VALUES('"+orderNumber+"','"+tax+"','"+discount+"'" +
-                ",'"+seatNo+"','"+subTotal+"');");
+                ",'"+seatNo+"','"+subTotal+"','"+serviceType+"','"+flightId+"');");
         db.close();
     }
 
@@ -295,6 +347,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 details.setDiscount(cursor.getString(cursor.getColumnIndex("discount")));
                 details.setSeatNo(cursor.getString(cursor.getColumnIndex("seatNo")));
                 details.setSubTotal(cursor.getString(cursor.getColumnIndex("subTotal")));
+                details.setServiceType(cursor.getString(cursor.getColumnIndex("serviceType")));
+                details.setFlightId(cursor.getString(cursor.getColumnIndex("flightId")));
                 cursor.moveToNext();
             }
         }
@@ -316,6 +370,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 details.setDiscount(cursor.getString(cursor.getColumnIndex("discount")));
                 details.setSeatNo(cursor.getString(cursor.getColumnIndex("seatNo")));
                 details.setSubTotal(cursor.getString(cursor.getColumnIndex("subTotal")));
+                details.setServiceType(cursor.getString(cursor.getColumnIndex("serviceType")));
+                details.setFlightId(cursor.getString(cursor.getColumnIndex("flightId")));
                 orderDetails.add(details);
                 cursor.moveToNext();
             }
@@ -323,6 +379,93 @@ public class POSDBHandler extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return orderDetails;
+    }
+
+    public List<PaymentMethods> getPaymentMethods(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<PaymentMethods> paymentMethods = new ArrayList<>();
+        Cursor cursor = db.rawQuery("select * from paymentMethods"
+                , null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                PaymentMethods details = new PaymentMethods();
+                details.setOrderId(cursor.getString(cursor.getColumnIndex("orderNumber")));
+                details.setPaymentType(cursor.getString(cursor.getColumnIndex("paymentType")));
+                details.setAmount(cursor.getString(cursor.getColumnIndex("amount")));
+                paymentMethods.add(details);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return paymentMethods;
+    }
+
+    public List<ItemSale> getItemSale(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<ItemSale> itemSales = new ArrayList<>();
+        Cursor cursor = db.rawQuery("select * from dailySales"
+                , null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                ItemSale details = new ItemSale();
+                details.setOrderId(cursor.getString(cursor.getColumnIndex("orderNumber")));
+                details.setItemId(cursor.getString(cursor.getColumnIndex("itemNo")));
+                details.setQuantity(cursor.getString(cursor.getColumnIndex("quantity")));
+                details.setPrice(cursor.getString(cursor.getColumnIndex("totalPrice")));
+                itemSales.add(details);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return itemSales;
+    }
+
+    public List<CreditCard> getCreditCardDetails(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<CreditCard> itemSales = new ArrayList<>();
+        Cursor cursor = db.rawQuery("select * from creditCardDetails"
+                , null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                CreditCard details = new CreditCard();
+                details.setOrderId(cursor.getString(cursor.getColumnIndex("orderNumber")));
+                details.setCreditCardNumber(cursor.getString(cursor.getColumnIndex("creditCardNumber")));
+                details.setCardHolderName(cursor.getString(cursor.getColumnIndex("cardHolderName")));
+                details.setExpireDate(cursor.getString(cursor.getColumnIndex("expireDate")));
+                details.setPaidAmount(Float.parseFloat(cursor.getString(cursor.getColumnIndex("amount"))));
+                itemSales.add(details);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return itemSales;
+    }
+
+    public List<POSFlight> getPOSFlightDetails(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<POSFlight> posFlightList = new ArrayList<>();
+        Cursor cursor = db.rawQuery("select * from posFlights"
+                , null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                POSFlight posFlight = new POSFlight();
+                posFlight.setFlightId(cursor.getString(cursor.getColumnIndex("flightId")));
+                posFlight.setFlightName(cursor.getString(cursor.getColumnIndex("flightName")));
+                posFlight.setFlightDate(cursor.getString(cursor.getColumnIndex("flightDate")));
+                posFlight.setFlightFrom(cursor.getString(cursor.getColumnIndex("flightFrom")));
+                posFlight.setFlightTo(cursor.getString(cursor.getColumnIndex("flightTo")));
+                posFlight.seteClassPaxCount(cursor.getString(cursor.getColumnIndex("paxCount")));
+                posFlight.setbClassPaxCount(cursor.getString(cursor.getColumnIndex("businessClassPaxCount")));
+                posFlightList.add(posFlight);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return posFlightList;
     }
 
     public void insertCreditCardDetails(String orderNumber,String creditCardNumber,String cardHolderName,
@@ -434,6 +577,24 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void insertFlightData(String xml){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        String sectorsStr = "";
+        for(Flight flight : readFlightsXMLString(xml)) {
+            String sectors = "";
+            if(flight.getSectorList() != null && !flight.getSectorList().isEmpty()){
+                for(Sector sector : flight.getSectorList()){
+                    sectors += sector.getFrom() +"+"+sector.getTo() + "*" +sector.getType()+ ",";
+                }
+                sectorsStr = sectors.substring(0,sectors.length()-1);
+            }
+            db.execSQL("INSERT INTO flights VALUES" +
+                    "('"+flight.getFlightName()+"','"+flight.getFlightFrom()+"','"+flight.getFlightTo()+"','"+sectorsStr+"');");
+        }
+        db.close();
+    }
+
     public  String readStream(InputStream is) {
         StringBuilder sb = new StringBuilder(512);
         try {
@@ -448,10 +609,10 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return sb.toString();
     }
 
-    public void insertItemData(Context context){
+    public void insertItemData(String xml){
         try {
-            File xml = new File(context.getFilesDir(), "item_list.xml");
-            JSONObject jsonObj  = XML.toJSONObject(readStream(new FileInputStream(xml)));
+            //File xml = new File(context.getFilesDir(), "item_list.xml");
+            JSONObject jsonObj  = XML.toJSONObject(xml);
             Gson gson = new Gson();
             JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("Items");
             JSONArray itemsArr = data.getJSONArray("Item");
@@ -473,10 +634,9 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
-    public void insertKITList(Context context){
+    public void insertKITList(String xml){
         try {
-            File xml = new File(context.getFilesDir(), "kit_list.xml");
-            JSONObject jsonObj  = XML.toJSONObject(readStream(new FileInputStream(xml)));
+            JSONObject jsonObj  = XML.toJSONObject(xml);
             Gson gson = new Gson();
             JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("KITItems");
             JSONArray itemsArr = data.getJSONArray("KITItem");
@@ -575,10 +735,9 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
-    public void insertKITNumbersList(Context context){
+    public void insertKITNumbersList(String xml){
         try {
-            File xml = new File(context.getFilesDir(), "kit_number_list.xml");
-            JSONObject jsonObj  = XML.toJSONObject(readStream(new FileInputStream(xml)));
+            JSONObject jsonObj  = XML.toJSONObject(xml);
             Gson gson = new Gson();
             JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("KITNumbers");
             JSONArray itemsArr = data.getJSONArray("KITNumber");
@@ -596,10 +755,9 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insertEquipmentTypeList(Context context){
+    public boolean insertEquipmentTypeList(String xml){
         try {
-            File xml = new File(context.getFilesDir(), "equipment_type.xml");
-            JSONObject jsonObj  = XML.toJSONObject(readStream(new FileInputStream(xml)));
+            JSONObject jsonObj  = XML.toJSONObject(xml);
             Gson gson = new Gson();
             JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("Equipments");
             JSONArray itemsArr = data.getJSONArray("Equipment");
@@ -619,11 +777,10 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insertCurrencyData(Context context){
+    public boolean insertCurrencyData(String xml){
 
         try {
-            File xml = new File(context.getFilesDir(), "currency.xml");
-            JSONObject jsonObj  = XML.toJSONObject(readStream(new FileInputStream(xml)));
+            JSONObject jsonObj  = XML.toJSONObject(xml);
             Gson gson = new Gson();
             JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("currencies");
             JSONArray itemsArr = data.getJSONArray("currency");
@@ -723,11 +880,10 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insertVoucherDetails(Context context){
+    public boolean insertVoucherDetails(String xml){
         SQLiteDatabase db = this.getWritableDatabase();
         try {
-            File xml = new File(context.getFilesDir(), "voucher.xml");
-            JSONObject jsonObj  = XML.toJSONObject(readStream(new FileInputStream(xml)));
+            JSONObject jsonObj  = XML.toJSONObject(xml);
             Gson gson = new Gson();
             JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("vouchers");
             JSONArray itemsArr = data.getJSONArray("voucher");
@@ -1358,6 +1514,33 @@ public class POSDBHandler extends SQLiteOpenHelper {
         List<Flight> flights = new ArrayList<>();
         try {
             Document doc = getXMLDoc(context,"flights");
+            if(doc != null) {
+                Element element = doc.getDocumentElement();
+                element.normalize();
+                NodeList nList = doc.getElementsByTagName("flight");
+                for (int i = 0; i < nList.getLength(); i++) {
+                    Node node = nList.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element element2 = (Element) node;
+                        Flight flight = new Flight();
+                        flight.setFlightName(((Element) node).getAttribute("flightName"));
+                        flight.setFlightFrom(getValue("from", element2));
+                        flight.setFlightTo(getValue("to", element2));
+                        flight.setSectorList(getSectors(element2));
+                        flights.add(flight);
+                    }
+                }
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return flights;
+    }
+
+    private List<Flight> readFlightsXMLString(String xml){
+        List<Flight> flights = new ArrayList<>();
+        try {
+            Document doc = POSCommonUtils.loadXMLFromString(xml);
             if(doc != null) {
                 Element element = doc.getDocumentElement();
                 element.normalize();

@@ -276,7 +276,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
 
     private String getDiscountFromVoucher(Voucher voucher){
         if(voucher.toString() != null) {
-            if (voucher.getVoucherType().equals("precentage")) {
+            if (voucher.getVoucherType().equalsIgnoreCase("Percentage")) {
                 return String.valueOf(dueBalance * (Float.parseFloat(voucher.getDiscount())) / 100);
             } else {
                 String discountStr = voucher.getDiscount();
@@ -284,7 +284,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                 if (discountStr.contains(",")) {
                     String[] rationStr = discountStr.split(",");
                     for (int i = 0; i < rationStr.length; i++) {
-                        String[] ratioArr = rationStr[i].split(">");
+                        String[] ratioArr = rationStr[i].split("\\+");
                         ratioMap.put(Float.parseFloat(ratioArr[0]), Float.parseFloat(ratioArr[1]));
                     }
                 } else {
@@ -684,7 +684,8 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         for(Map.Entry<String,String> entry : paymentMethodsMap.entrySet()){
             handler.insertPaymentMethods(orderNumber,entry.getKey(),entry.getValue());
         }
-        handler.insertOrderMainDetails(orderNumber,taxPercentage,discount,seatNumber,subTotalAfterTax+"");
+        String flightId = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_ID);
+        handler.insertOrderMainDetails(orderNumber,taxPercentage,discount,seatNumber,subTotalAfterTax+"",serviceType,flightId);
         if(creditCardList != null && !creditCardList.isEmpty()){
             CreditCard creditCard = creditCardList.get(0);
             handler.insertCreditCardDetails(orderNumber,creditCard.getCreditCardNumber(),creditCard.getCardHolderName(),
@@ -699,17 +700,17 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     private void printReceipt(){
 
             if(confirmPaymentBtn.getText().equals("Print Card Holder copy")){
-                PrintJob.printOrderDetails(PaymentMethodsActivity.this,orderNumber,
+                /*PrintJob.printOrderDetails(PaymentMethodsActivity.this,orderNumber,
                         seatNumber,soldItems,paymentMethodsMap,
-                        creditCardList.isEmpty() ? null : creditCardList.get(0),true,discount,taxPercentage);
+                        creditCardList.isEmpty() ? null : creditCardList.get(0),true,discount,taxPercentage);*/
                 Intent intent = new Intent(PaymentMethodsActivity.this, SellItemsActivity.class);
                 startActivity(intent);
             }
             else{
                 generateOrderNumber();
                 updateSale();
-                PrintJob.printOrderDetails(this,orderNumber,seatNumber,soldItems,paymentMethodsMap,
-                        creditCardList.isEmpty() ? null : creditCardList.get(0),false,discount,taxPercentage);
+                /*PrintJob.printOrderDetails(this,orderNumber,seatNumber,soldItems,paymentMethodsMap,
+                        creditCardList.isEmpty() ? null : creditCardList.get(0),false,discount,taxPercentage);*/
                 if(!creditCardList.isEmpty()) {
                     confirmPaymentBtn.setText("Print Card Holder copy");
                 }
@@ -721,15 +722,17 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     }
 
     private void generateOrderNumber(){
-        orderNumber = SaveSharedPreference.getStringValues(this,"orderNumber");
-        if(orderNumber != null){
-            int newVal = Integer.parseInt(orderNumber) + 1;
-            orderNumber = String.valueOf(newVal);
-            SaveSharedPreference.updateValue(this,"orderNumber",orderNumber);
+        String orderNumberStr = SaveSharedPreference.getStringValues(this,"orderNumber");
+        if(orderNumberStr != null){
+            int newVal = Integer.parseInt(orderNumberStr) + 1;
+            orderNumber = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME).replace(" ","_") +
+                    "_"+POSCommonUtils.getDateString()+"_" + String.valueOf(newVal);
+            SaveSharedPreference.updateValue(this,"orderNumber",newVal+"");
         }
         else{
             SaveSharedPreference.setStringValues(this,"orderNumber","1");
-            orderNumber = "1";
+            orderNumber = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME).replace(" ","_") +
+                    "_"+POSCommonUtils.getDateString()+"_" + "1";
         }
     }
 }

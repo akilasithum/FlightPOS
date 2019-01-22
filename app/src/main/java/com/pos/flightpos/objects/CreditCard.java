@@ -8,6 +8,7 @@ public class CreditCard implements Serializable {
     private String creditCardType;
     private String expireDate;
     private float paidAmount;
+    private String orderId;
 
     public String getCreditCardNumber() {
         return creditCardNumber;
@@ -47,5 +48,13 @@ public class CreditCard implements Serializable {
 
     public void setPaidAmount(float paidAmount) {
         this.paidAmount = paidAmount;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
     }
 }

@@ -53,7 +53,8 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         serviceType = POSCommonUtils.getServiceTypeKitCodeMap(this).keySet();
         registerLayoutClickEvents();
         disablePackPreOrderLayout(false);
-
+        String deviceId = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_DEVICE_ID);
+        handler.updateSIFDetails("packedDateTime",POSCommonUtils.getDateTimeString(),deviceId);
     }
 
     private void disablePackPreOrderLayout(boolean isEnable){

@@ -36,11 +36,15 @@ public class AttendendMainActivity extends AppCompatActivity {
     String serviceType;
     Spinner sectorSelectionSpinner;
     TableRow taxPercentageRow;
+    POSDBHandler handler;
+    String flightName;
+    String flightDateStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendend_main);
+        handler = new POSDBHandler(this);
         flightFrom = (TextView) findViewById(R.id.fromTextField);
         flightTo = (TextView) findViewById(R.id.toTextField);
         flightDate = (EditText) findViewById(R.id.flightDateSpinner);
@@ -63,7 +67,7 @@ public class AttendendMainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if(sectorSelectionSpinner.getSelectedItem() != null && !sectorSelectionSpinner.
                         getSelectedItem().toString().isEmpty()){
-                    showHideTaxPercentage(((Sector)sectorSelectionSpinner.getSelectedItem()).getType().equals("international"));
+                    showHideTaxPercentage(((Sector)sectorSelectionSpinner.getSelectedItem()).getType().equalsIgnoreCase("international"));
                 }
             }
 
@@ -87,13 +91,12 @@ public class AttendendMainActivity extends AppCompatActivity {
 
     private void setFlightDetails(){
 
-        String flightName = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FLIGHT_NAME);
+        flightName = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FLIGHT_NAME);
         flightTextView.setText(flightName);
         flightTextView.setEnabled(false);
-        String flightDateStr = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FLIGHT_DATE);
+        flightDateStr = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FLIGHT_DATE);
         flightDate.setText(flightDateStr);
         flightDate.setEnabled(false);
-        POSDBHandler handler = new POSDBHandler(this);
         Flight flight = handler.getFlightFromFlightName(flightName);
         flightFrom.setText(flight.getFlightFrom());
         flightTo.setText(flight.getFlightTo());
@@ -173,6 +176,13 @@ public class AttendendMainActivity extends AppCompatActivity {
                     return;
                 }
             }
+            Sector sector = (Sector)sectorSelectionSpinner.getSelectedItem();
+            String flightId = flightName.replace(" ","") + "_" +
+                    sector.getFrom().substring(0,3) + "_" +sector.getTo().substring(0,3)+"_"+ flightDateStr;
+            handler.insertPosFlights(flightId,flightName,flightDateStr,sector.getFrom(),
+                    sector.getTo(),eClassPaxCount.getText().toString(),bClassPaxCount.getText().toString());
+            SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_ID,flightId);
+
             Intent intent = new Intent(this, AttCheckInfo.class);
             SaveSharedPreference.setStringValues(this,"eClassPaxCount", eClassPaxCount.getText().toString());
             startActivity(intent);

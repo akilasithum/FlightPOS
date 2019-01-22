@@ -88,7 +88,7 @@ public class CheckInventoryActivity extends AppCompatActivity {
     private void showDataInTable(){
         POSDBHandler handler = new POSDBHandler(this);
         String kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
-        //Map<String,Map<String,List<KITItem>>> drawerKitItemMap = handler.getDrawerKitItemMapFromServiceType(kitCode);
+        //Map<String,Map<String,List<KITItem>>> drawerKitItemMap = posdbHandler.getDrawerKitItemMapFromServiceType(kitCode);
 
         TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
                 TableRow.LayoutParams.WRAP_CONTENT, 3f);

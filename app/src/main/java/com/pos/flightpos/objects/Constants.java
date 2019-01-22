@@ -24,6 +24,9 @@ public class Constants {
     public static final String SHARED_PREFERENCE_SYNC_PRE_ORDERS = "isPreOrderSynced";
     public static final String SHARED_PREFERENCE_OUT_BOUND_SEAL_LIST = "outBoundSealList";
     public static final String SHARED_PREFERENCE_IN_BOUND_SEAL_LIST = "adminAdditionalSealList";
+    public static final String SHARED_PREFERENCE_FLIGHT_ID = "flightId";
+    public static final String SHARED_PREFERENCE_DEVICE_ID = "deviceId";
+    public static final String SHARED_PREFERENCE_SIF_NO = "SIFNo";
 
     public static final String PRINTER_LOGO_LOCATION = "/res/drawable/porter_print_bg.PNG";
     public static final String FILED_NAME_SERVICE_TYPE = "serviceType";
@@ -33,6 +36,6 @@ public class Constants {
             TableRow.LayoutParams.WRAP_CONTENT);
 
     public static final String PUBLIC_STATIC_STRING_IDENTIFIER = "intentIdentifier";
-    public static final String webServiceURL = "http://192.168.8.102:8080/";
+    public static final String webServiceURL = "http://192.186.116.61:8080/back-office-ws/";
 
 }

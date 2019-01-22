@@ -71,7 +71,7 @@ public class SellItemsActivity extends AppCompatActivity {
             String url = "http://192.168.8.102:8080/backOfficeWS/kitCodes";
             // Making a request to url and getting response
             //String jsonStr = sh.makeServiceCall(url);
-            //handler.insertKitListFromWS(jsonStr);
+            //posdbHandler.insertKitListFromWS(jsonStr);
             String xml = "<userComments>" +
                     "<userComment>" +
                     "<userId>akila</userId>" +
@@ -222,7 +222,7 @@ public class SellItemsActivity extends AppCompatActivity {
     }
 
     /*private Map<String,List<PreOrder>> getPreOrderList(){
-        return handler.getAvailablePreOrders(serviceType,"faUser");
+        return posdbHandler.getAvailablePreOrders(serviceType,"faUser");
     }*/
 
     @Override
