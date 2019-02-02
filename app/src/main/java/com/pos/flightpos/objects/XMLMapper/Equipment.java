@@ -7,7 +7,7 @@ public class Equipment {
     private String equipmentType;
     private String drawerPrefix;
     private String noOfDrawers;
-    private String kitCode;
+    private String noOfSeals;
 
     public String getEquipmentNo() {
         return equipmentNo;
@@ -49,12 +49,12 @@ public class Equipment {
         this.noOfDrawers = noOfDrawers;
     }
 
-    public String getKitCode() {
-        return kitCode;
+    public String getNoOfSeals() {
+        return noOfSeals;
     }
 
-    public void setKitCode(String kitCode) {
-        this.kitCode = kitCode;
+    public void setNoOfSeals(String noOfSeals) {
+        this.noOfSeals = noOfSeals;
     }
 
     @Override

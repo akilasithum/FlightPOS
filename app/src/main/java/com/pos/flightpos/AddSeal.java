@@ -56,18 +56,18 @@ public class AddSeal extends AppCompatActivity {
         setContentView(R.layout.activity_add_seal);
         handler = new POSDBHandler(this);
         parent = getIntent().getExtras().getString("parent");
-        if("VerifyFlightByAdminActivity".equals(parent)){
+        //if("VerifyFlightByAdminActivity".equals(parent)){
             serviceType = getIntent().getExtras().getString("serviceType");
             List<String> kitCodes = POSCommonUtils.getServiceTypeKitCodeMap(this).get(serviceType);
-            noOfSeals = handler.getKitNumberListCountValueFromKitCodes(kitCodes, "noOfSeals");
+            noOfSeals = handler.getNoOfSealsFromKitCodes(kitCodes);
             TextView serviceTypeView = findViewById(R.id.sealServiceTypeId);
             serviceTypeView.setText("Seal info - "+POSCommonUtils.getServiceTypeFromServiceType(serviceType));
-        }
+        /*}
         else{
             LinearLayout serviceTypeLayout = findViewById(R.id.serviceTypeLayout);
             serviceTypeLayout.setVisibility(View.GONE);
             noOfSeals = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_NO_OF_SEAL);
-        }
+        }*/
         outbonundLayout = (LinearLayout) findViewById(R.id.layout_addSeal);
         inboundLayout = findViewById(R.id.layout_addInboundSeal);
         verifySealsLayout = findViewById(R.id.layout_verifySeals);
@@ -78,7 +78,7 @@ public class AddSeal extends AppCompatActivity {
             inboundLayout.setVisibility(View.GONE);
             outbonundLayout.setVisibility(View.GONE);
             addVerifySealTextBoxes();
-            Map<String,Boolean> sealVerifiedMap = handler.getSealVerifiedMap("outbound");
+            Map<String,Boolean> sealVerifiedMap = handler.getSealVerifiedMap("outbound",serviceType);
             int i = 0;
             for(Map.Entry<String,Boolean> map : sealVerifiedMap.entrySet()){
                 LinearLayout layout = (LinearLayout)verifySealsLayout.getChildAt(i);

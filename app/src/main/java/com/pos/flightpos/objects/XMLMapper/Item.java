@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class Item {
 
     private String itemNo;
+    private String itemCode;
     private String itemName;
     private String itemHHC;
     private String category;
@@ -31,6 +32,14 @@ public class Item {
 
     public void setItemNo(String itemNo) {
         this.itemNo = itemNo;
+    }
+
+    public String getItemCode() {
+        return itemCode;
+    }
+
+    public void setItemCode(String itemCode) {
+        this.itemCode = itemCode;
     }
 
     public String getItemName() {
@@ -118,7 +127,7 @@ public class Item {
     }
 
     public void setServiceType(String serviceType) {
-        serviceType = serviceType;
+        this.serviceType = serviceType;
     }
 
     public String getScPrice() {

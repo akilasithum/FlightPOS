@@ -32,6 +32,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.xml.transform.Result;
+
 public class SyncActivity extends AppCompatActivity {
 
     LinearLayout syncLayout;
@@ -52,8 +54,9 @@ public class SyncActivity extends AppCompatActivity {
         dia.show();
         completedFiles = new ArrayList<>();
         downloadData("users");
-        downloadData("combo_discount");
-        new GetContacts().execute();
+        //downloadData("combo_discount");
+        AsyncTask<Void, Void, Void> task = new GetContacts().execute();
+
     }
 
     private String getSIFRequest() {
@@ -89,7 +92,30 @@ public class SyncActivity extends AppCompatActivity {
             completedFiles.add("equipmentType");
             handler.insertVoucherDetails(sh.makeServiceCall("vouchers"));
             completedFiles.add("vouchers");
+            handler.insertComboDiscount(sh.makeServiceCall("promotions"));
+            completedFiles.add("promotions");
             return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            String fileNames = "";
+            for(String str : completedFiles){
+                fileNames += str + "\n";
+            }
+            new AlertDialog.Builder(SyncActivity.this)
+                    .setTitle("Sync Completed")
+                    .setMessage("Following files successfully synced. \n" +fileNames+
+                            ". Click ok to go to main window")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            Intent intent = new Intent(SyncActivity.this, MainActivity.class);
+                            intent.putExtra("parent", "");
+                            startActivity(intent);
+                        }})
+                    .setNegativeButton(android.R.string.cancel, null).show();
         }
     }
 
@@ -125,7 +151,7 @@ public class SyncActivity extends AppCompatActivity {
                     insertDataIntoSQLIteDB(fileName);
                     //showCompletedFiles(fileName);
                     completedFiles.add(fileName);
-                    if(fileName.equals("combo_discount")){
+                    if(fileName.equals("users1")){
                         //dia.cancel();
                         String fileNames = "";
                         for(String str : completedFiles){

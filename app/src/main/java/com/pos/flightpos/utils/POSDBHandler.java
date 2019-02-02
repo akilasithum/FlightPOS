@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.pos.flightpos.objects.AcceptPreOrder;
@@ -73,9 +74,9 @@ public class POSDBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS KITList (equipmentNo VARCHAR,itemNo VARCHAR," +
                 "itemDescription VARCHAR,quantity VARCHAR,drawer VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS KITNumberList (kitCode VARCHAR,kitDesc VARCHAR," +
-                "serviceType VARCHAR,activeDate VARCHAR,noOfEq VARCHAR,noOfSeals VARCHAR,equipment VARCHAR);");
+                "serviceType VARCHAR,activeDate VARCHAR,noOfEq VARCHAR,equipment VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS equipmentType (equipmentNo VARCHAR,equipmentDesc VARCHAR," +
-                "equipmentType VARCHAR,drawerPrefix VARCHAR,noOfDrawers VARCHAR,kitCode VARCHAR);");
+                "equipmentType VARCHAR,drawerPrefix VARCHAR,noOfDrawers VARCHAR,noOfSeals VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS drawerValidation (equipmentNo VARCHAR," +
                 "drawer VARCHAR,isValidated VARCHAR,userMode VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS dailySales (orderNumber VARCHAR,itemNo VARCHAR," +
@@ -221,10 +222,10 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return seals.substring(0,seals.length()-1);
     }
 
-    public Map<String,Boolean> getSealVerifiedMap(String sealType){
+    public Map<String,Boolean> getSealVerifiedMap(String sealType,String serviceType){
         Map<String,Boolean> verifiedMap = new HashMap<>();
         SQLiteDatabase db = this.getWritableDatabase();
-        Cursor cursor = db.rawQuery("select * from sealDetails where sealType = '"+sealType+"'", null);
+        Cursor cursor = db.rawQuery("select * from sealDetails where serviceType = '"+serviceType+"' and sealType = '"+sealType+"'", null);
         if (cursor.moveToFirst()){
             while(!cursor.isAfterLast()){
                 String seal = cursor.getString(cursor.getColumnIndex("sealNo"));
@@ -577,21 +578,23 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void insertFlightData(String xml){
+    public void insertFlightData(String xml) {
 
         SQLiteDatabase db = this.getWritableDatabase();
         String sectorsStr = "";
-        for(Flight flight : readFlightsXMLString(xml)) {
-            String sectors = "";
-            if(flight.getSectorList() != null && !flight.getSectorList().isEmpty()){
-                for(Sector sector : flight.getSectorList()){
-                    sectors += sector.getFrom() +"+"+sector.getTo() + "*" +sector.getType()+ ",";
+        for (Flight flight : readFlightsXMLString(xml)) {
+            if (flight.getFlightName() != null && !flight.getFlightName().isEmpty()){
+                String sectors = "";
+            if (flight.getSectorList() != null && !flight.getSectorList().isEmpty()) {
+                for (Sector sector : flight.getSectorList()) {
+                    sectors += sector.getFrom() + "+" + sector.getTo() + "*" + sector.getType() + ",";
                 }
-                sectorsStr = sectors.substring(0,sectors.length()-1);
+                sectorsStr = sectors.substring(0, sectors.length() - 1);
             }
             db.execSQL("INSERT INTO flights VALUES" +
-                    "('"+flight.getFlightName()+"','"+flight.getFlightFrom()+"','"+flight.getFlightTo()+"','"+sectorsStr+"');");
+                    "('" + flight.getFlightName() + "','" + flight.getFlightFrom() + "','" + flight.getFlightTo() + "','" + sectorsStr + "');");
         }
+    }
         db.close();
     }
 
@@ -620,7 +623,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
             SQLiteDatabase db = this.getWritableDatabase();
             for(Item item : list){
                 db.execSQL("INSERT INTO items VALUES" +
-                        "('"+item.getItemNo()+"','"+item.getItemName()+"','"+item.getItemHHC()+"'," +
+                        "('"+item.getItemCode()+"' ,'"+item.getItemName()+"','"+item.getItemHHC()+"'," +
                         "'"+item.getCategory()+"','"+item.getCatCode()+"','"+item.getCatlogNo()+"','"+item.getPrice()+"'," +
                         "'"+item.getPaxDiscPrice()+"','"+item.getStaffDiscPrice()+"','"+item.getDelist()+"'," +
                         "'"+item.getDfsrOrder()+"','"+item.getServiceType()+"','"+item.getScPrice()+"'," +
@@ -643,9 +646,11 @@ public class POSDBHandler extends SQLiteOpenHelper {
             List<KITItem> kitList = gson.fromJson(itemsArr.toString(), new TypeToken<List<KITItem>>(){}.getType());
             SQLiteDatabase db = this.getWritableDatabase();
             for(KITItem item : kitList){
-                db.execSQL("INSERT INTO KITList VALUES" +
-                        "('"+item.getEquipmentNo()+"','"+item.getItemNo()+"','"+item.getItemDescription()+"'," +
-                        "'"+item.getQuantity()+"','"+item.getDrawer()+"');");
+                if(item.getItemNo() != null && !item.getItemNo().isEmpty()) {
+                    db.execSQL("INSERT INTO KITList VALUES" +
+                            "('" + item.getEquipmentNo() + "','" + item.getItemNo() + "','" + item.getItemDescription() + "'," +
+                            "'" + item.getQuantity() + "','" + item.getDrawer() + "');");
+                }
             }
             db.close();
             insertDrawerValidation();
@@ -744,9 +749,11 @@ public class POSDBHandler extends SQLiteOpenHelper {
             List<KitNumber> kitNumbers = gson.fromJson(itemsArr.toString(), new TypeToken<List<KitNumber>>(){}.getType());
             SQLiteDatabase db = this.getWritableDatabase();
             for(KitNumber item : kitNumbers){
-                db.execSQL("INSERT INTO KITNumberList VALUES" +
-                        "('"+item.getKitCode()+"','"+item.getKitDesc()+"','"+item.getServiceType()+"'," +
-                        "'"+item.getActiveDate()+"','"+item.getNoOfEq()+"','"+item.getNoOfSeals()+"','"+item.getEquipment()+"');");
+                if(item.getKitCode() != null && !item.getKitCode().isEmpty()) {
+                    db.execSQL("INSERT INTO KITNumberList VALUES" +
+                            "('" + item.getKitCode() + "','" + item.getKitDesc() + "','" + item.getServiceType() + "'," +
+                            "'" + item.getActiveDate() + "','" + item.getNoOfEq() + "','" + item.getEquipment() + "');");
+                }
             }
             db.close();
         }
@@ -764,9 +771,11 @@ public class POSDBHandler extends SQLiteOpenHelper {
             List<Equipment> equipmentList = gson.fromJson(itemsArr.toString(), new TypeToken<List<Equipment>>(){}.getType());
             SQLiteDatabase db = this.getWritableDatabase();
             for(Equipment item : equipmentList){
-                db.execSQL("INSERT INTO equipmentType VALUES" +
-                        "('"+item.getEquipmentNo()+"','"+item.getEquipmentDesc()+"','"+item.getEquipmentType()+"'," +
-                        "'"+item.getDrawerPrefix()+"','"+item.getNoOfDrawers()+"','"+item.getKitCode()+"');");
+                if(item.getEquipmentNo() != null && !item.getEquipmentNo().isEmpty()) {
+                    db.execSQL("INSERT INTO equipmentType VALUES" +
+                            "('" + item.getEquipmentNo() + "','" + item.getEquipmentDesc() + "','" + item.getEquipmentType() + "'," +
+                            "'" + item.getDrawerPrefix() + "','" + item.getNoOfDrawers() + "','" + item.getNoOfSeals() + "');");
+                }
             }
             db.close();
             return true;
@@ -787,9 +796,11 @@ public class POSDBHandler extends SQLiteOpenHelper {
             List<Currency> currencyList = gson.fromJson(itemsArr.toString(), new TypeToken<List<Currency>>(){}.getType());
             SQLiteDatabase db = this.getWritableDatabase();
             for(Currency currency : currencyList){
-                db.execSQL("INSERT INTO currency VALUES" +
-                        "('"+currency.getCurrencyCode()+"','"+currency.getCurrencyDesc()+"','"+currency.getCurrencyRate()+"'," +
-                        "'"+currency.getCurrencyType()+"','"+currency.getPriorityOrder()+"','"+currency.getEffectiveDate()+"');");
+                if(currency.getCurrencyCode() != null && !currency.getCurrencyCode().isEmpty()) {
+                    db.execSQL("INSERT INTO currency VALUES" +
+                            "('" + currency.getCurrencyCode() + "','" + currency.getCurrencyDesc() + "','" + currency.getCurrencyRate() + "'," +
+                            "'" + currency.getCurrencyType() + "','" + currency.getPriorityOrder() + "','" + currency.getEffectiveDate() + "');");
+                }
             }
             db.close();
             return true;
@@ -880,6 +891,29 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
+    public boolean insertComboDiscount(String xml){
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            JSONObject jsonObj  = XML.toJSONObject(xml);
+            Gson gson = new Gson();
+            JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("comboDiscounts");
+            JSONArray itemsArr = data.getJSONArray("comboDiscount");
+            List<ComboDiscount> comboDiscounts = gson.fromJson(itemsArr.toString(), new TypeToken<List<ComboDiscount>>(){}.getType());
+            for(ComboDiscount comboDiscount : comboDiscounts){
+                if (comboDiscount.getComboId() != null && !comboDiscount.getComboId().isEmpty()) {
+                    db.execSQL("INSERT INTO comboDiscounts VALUES" +
+                            "('" + comboDiscount.getComboId() + "','" + comboDiscount.getDiscount() + "','" + comboDiscount.getItems() + "');");
+                }
+            }
+            db.close();
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean insertVoucherDetails(String xml){
         SQLiteDatabase db = this.getWritableDatabase();
         try {
@@ -888,9 +922,11 @@ public class POSDBHandler extends SQLiteOpenHelper {
             JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("vouchers");
             JSONArray itemsArr = data.getJSONArray("voucher");
             List<Voucher> voucherList = gson.fromJson(itemsArr.toString(), new TypeToken<List<Voucher>>(){}.getType());
-            for(Voucher voucher : voucherList){
-                db.execSQL("INSERT INTO vouchers VALUES" +
-                        "('"+voucher.getVoucherId()+"','"+voucher.getVoucherName()+"','"+voucher.getVoucherType()+"','"+voucher.getDiscount()+"');");
+            for(Voucher voucher : voucherList) {
+                if (voucher.getVoucherId() != null && !voucher.getVoucherId().isEmpty()){
+                    db.execSQL("INSERT INTO vouchers VALUES" +
+                            "('" + voucher.getVoucherId() + "','" + voucher.getVoucherName() + "','" + voucher.getVoucherType() + "','" + voucher.getDiscount() + "');");
+            }
             }
             db.close();
             return true;
@@ -1078,13 +1114,12 @@ public class POSDBHandler extends SQLiteOpenHelper {
     }
 
     public List<String> getItemCatFromItems(String serviceType){
+        String packTypes = getEquipmentsFromKitCodes(serviceType);
         SQLiteDatabase db = this.getReadableDatabase();
         List<String> categoryList = new ArrayList<>();
         try {
             Cursor cursor = db.rawQuery("select distinct category from items where itemNo in " +
-                    "( select itemNo from  KITList where  equipmentNo in (  " +
-                    "select equipmentNo from equipmentType where " +
-                    "kitCode in (select kitCode from KITNumberList where serviceType = '"+serviceType+"')))"
+                    "( select itemNo from  KITList where  equipmentNo in ("+packTypes+")"
                     , null);
             if (cursor.moveToFirst()){
                 while(!cursor.isAfterLast()){
@@ -1098,6 +1133,54 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
         catch (Exception e){
             e.printStackTrace();
+            return null;
+        }
+    }
+
+    public String getEquipmentsFromKitCodes(String serviceType){
+        String eqTypeStr = "";
+        SQLiteDatabase db = this.getReadableDatabase();
+        try {
+            Cursor cursor = db.rawQuery("select equipment from KITNumberList where serviceType = '"+serviceType+"'", null);
+            if (cursor.moveToFirst()){
+                while(!cursor.isAfterLast()){
+                    eqTypeStr += "'" + cursor.getString(cursor.getColumnIndex("equipment")).replace(",","','") +"',";
+                    cursor.moveToNext();
+                }
+            }
+            else{
+                return null;
+            }
+            db.close();
+            cursor.close();
+            return eqTypeStr.substring(0,eqTypeStr.length()-1);
+        }
+        catch (Exception e){
+            db.close();
+            return null;
+        }
+    }
+
+    public String getEquipmentsFromKitCode(String kitCode){
+        String eqTypeStr = "";
+        SQLiteDatabase db = this.getReadableDatabase();
+        try {
+            Cursor cursor = db.rawQuery("select equipment from KITNumberList where kitCode in ("+kitCode+")", null);
+            if (cursor.moveToFirst()){
+                while(!cursor.isAfterLast()){
+                    eqTypeStr += "'" + cursor.getString(cursor.getColumnIndex("equipment")).replace(",","','") +"',";
+                    cursor.moveToNext();
+                }
+            }
+            else{
+                return null;
+            }
+            db.close();
+            cursor.close();
+            return eqTypeStr.substring(0,eqTypeStr.length()-1);
+        }
+        catch (Exception e){
+            db.close();
             return null;
         }
     }
@@ -1220,14 +1303,14 @@ public class POSDBHandler extends SQLiteOpenHelper {
     }
 
     public List<SoldItem> getItemListFromItemCategory(String category,String kitCodes){
+        String packTypes = getEquipmentsFromKitCode(kitCodes);
         SQLiteDatabase db = this.getReadableDatabase();
         List<SoldItem> itemList = new ArrayList<>();
         try {
             Cursor cursor = db.rawQuery("SELECT items.itemNo as itemNo,items.itemName as itemName," +
                     "items.price as price,KITList.equipmentNo as equipmentNo," +
                     "KITList.drawer as drawer FROM (SELECT * FROM items where category = '"+category+"') as items INNER JOIN " +
-                    "(SELECT * FROM KITList WHERE equipmentNo in (select equipmentNo from equipmentType " +
-                    "where kitCode in ("+kitCodes+"))) " +
+                    "(SELECT * FROM KITList WHERE equipmentNo in ("+packTypes+")) " +
                     "as KITList ON items.itemNo = KITList.itemNo", null);
 
             if (cursor.moveToFirst()){
@@ -1332,6 +1415,27 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return serviceType;
     }
 
+    public String getNoOfSealsFromKitCodes(List<String> kitCodeList){
+        int count = 0;
+        String kitCodes = "";
+        for(String str : kitCodeList){
+            kitCodes += "'"+str+"',";
+        }
+        String packTypes = getEquipmentsFromKitCode(kitCodes.substring(0,kitCodes.length()-1));
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select noOfSeals from equipmentType where equipmentNo in ("+packTypes+")",null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                String countField = cursor.getString(cursor.getColumnIndex("noOfSeals"));
+                count += Integer.parseInt(countField);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return count+"";
+    }
+
     public String getKitNumberListCountValueFromKitCodes(List<String> kitCode,String fieldVal){
         int count = 0;
         String kitCodes = "";
@@ -1357,11 +1461,11 @@ public class POSDBHandler extends SQLiteOpenHelper {
     }
 
     public Map<String,Map<String,List<KITItem>>> getDrawerKitItemMapFromServiceType(String kitCode){
+        String packTypes = getEquipmentsFromKitCode(kitCode);
         SQLiteDatabase db = this.getReadableDatabase();
         Map<String,Map<String,List<KITItem>>> drawerKitItemMap = new HashMap<>();
         try {
-            Cursor cursor = db.rawQuery("select * from  KITList where  equipmentNo in (  " +
-                    "select equipmentNo from equipmentType where kitCode in  ("+kitCode+"))", null);
+            Cursor cursor = db.rawQuery("select * from  KITList where  equipmentNo in ("+packTypes+" )", null);
             if (cursor.moveToFirst()){
                 while(!cursor.isAfterLast()){
                     KITItem kitItem = new KITItem();
@@ -1422,7 +1526,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 equipment.setEquipmentType(cursor.getString(cursor.getColumnIndex("equipmentType")));
                 equipment.setDrawerPrefix(cursor.getString(cursor.getColumnIndex("drawerPrefix")));
                 equipment.setNoOfDrawers(cursor.getString(cursor.getColumnIndex("noOfDrawers")));
-                equipment.setKitCode(cursor.getString(cursor.getColumnIndex("kitCode")));
+                equipment.setNoOfSeals(cursor.getString(cursor.getColumnIndex("noOfSeals")));
                 equipments.add(equipment);
                 cursor.moveToNext();
             }
@@ -1443,7 +1547,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 kitNumber.setKitDesc(cursor.getString(cursor.getColumnIndex("kitDesc")));
                 kitNumber.setServiceType(cursor.getString(cursor.getColumnIndex("serviceType")));
                 kitNumber.setNoOfEq(cursor.getString(cursor.getColumnIndex("noOfEq")));
-                kitNumber.setNoOfSeals(cursor.getString(cursor.getColumnIndex("noOfSeals")));
+                kitNumber.setEquipment(cursor.getString(cursor.getColumnIndex("equipment")));
                 kitCodes.add(kitNumber);
                 cursor.moveToNext();
             }

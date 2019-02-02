@@ -32,7 +32,7 @@ public class AttCheckInfo extends AppCompatActivity {
         addSealLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AttCheckInfo.this, AddSeal.class);
+                Intent intent = new Intent(AttCheckInfo.this, SelectServiceTypeForSealActivity.class);
                 intent.putExtra("parent","AttCheckInfo");
                 startActivity(intent);
             }

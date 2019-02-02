@@ -166,7 +166,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     }
 
     private void addAdminSeals() {
-        String noOfSealsStr = handler.getKitNumberListCountValueFromKitCodes(kitCode, "noOfSeals");
+        String noOfSealsStr = handler.getNoOfSealsFromKitCodes(kitCode);
         SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_NO_OF_SEAL, noOfSealsStr);
         Intent intent = new Intent(this, SelectServiceTypeForSealActivity.class);
         intent.putExtra("parent","VerifyFlightByAdminActivity");

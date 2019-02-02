@@ -78,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         SaveSharedPreference.removeValue(this, Constants.SHARED_PREFERENCE_FLIGHT_NAME);
         SaveSharedPreference.removeValue(this, Constants.SHARED_PREFERENCE_FLIGHT_DATE);
         Intent intent = new Intent(this,LoginActivity.class);
+        intent.putExtra("parent","MainActivity");
         startActivity(intent);
     }
 

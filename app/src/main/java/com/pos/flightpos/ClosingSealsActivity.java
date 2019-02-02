@@ -41,7 +41,7 @@ public class ClosingSealsActivity extends AppCompatActivity {
         handler = new POSDBHandler(this);
         serviceType = getIntent().getExtras().getString("serviceType");
         List<String> kitCodes = POSCommonUtils.getServiceTypeKitCodeMap(this).get(serviceType);
-        noOfSeals = handler.getKitNumberListCountValueFromKitCodes(kitCodes, "noOfSeals");
+        noOfSeals = handler.getNoOfSealsFromKitCodes(kitCodes);
         closeSealLayout = (LinearLayout) findViewById(R.id.layout_addSeal);
         spinner = findViewById(R.id.spinner1);
         populateAvailableSeals(spinner);

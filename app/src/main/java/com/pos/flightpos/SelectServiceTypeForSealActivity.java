@@ -99,6 +99,6 @@ public class SelectServiceTypeForSealActivity extends AppCompatActivity {
     private Intent getIntentFromServiceType(){
         Intent addSeal = new Intent(SelectServiceTypeForSealActivity.this, AddSeal.class);
         Intent closeSeal = new Intent(SelectServiceTypeForSealActivity.this, ClosingSealsActivity.class);
-        return parent.equals("VerifyFlightByAdminActivity") ? addSeal : closeSeal;
+        return parent.equals("VerifyFlightByAdminActivity") || parent.equals("AttCheckInfo") ? addSeal : closeSeal;
     }
 }

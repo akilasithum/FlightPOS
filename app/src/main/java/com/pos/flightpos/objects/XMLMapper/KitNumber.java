@@ -7,7 +7,6 @@ public class KitNumber {
     private String serviceType;
     private String activeDate;
     private String noOfEq;
-    private String noOfSeals;
     private String equipment;
 
     public String getKitCode() {
@@ -48,14 +47,6 @@ public class KitNumber {
 
     public void setNoOfEq(String noOfEq) {
         this.noOfEq = noOfEq;
-    }
-
-    public String getNoOfSeals() {
-        return noOfSeals;
-    }
-
-    public void setNoOfSeals(String noOfSeals) {
-        this.noOfSeals = noOfSeals;
     }
 
     public String getEquipment() {

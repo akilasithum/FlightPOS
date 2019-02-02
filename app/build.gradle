@@ -42,4 +42,5 @@ dependencies {
     implementation files('libs/java-json.jar')
     implementation files('libs/Scan7003.jar')
     implementation files('libs/nfc7003.jar')
+    implementation files('libs/dom4j-1.6.jar')
 }

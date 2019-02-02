@@ -64,7 +64,7 @@
             android:label="Sell Items" />
         <activity
             android:name=".BuyOnBoardItemsActivity"
-            android:label="Sell Buy on Board Items" />
+            android:label="Sell Items" />
         <activity
             android:name=".PaymentMethodsActivity"
             android:label="Payments" />
