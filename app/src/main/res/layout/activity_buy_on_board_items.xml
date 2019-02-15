@@ -37,7 +37,6 @@
                         android:textStyle="bold"
                         android:textSize="16dp"/>
             </LinearLayout>
-
         <HorizontalScrollView
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
@@ -276,6 +275,28 @@
                     android:text="Scan Boarding Pass" />
             </TableRow>
 
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingTop="20dp"
+                android:text="RFID value :"
+                android:textSize="20dp" />
+
+            <EditText
+                android:id="@+id/rfidValue"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:background="@drawable/textbox_background"
+                android:inputType="textPersonName"
+                android:textSize="20dp" />
+
+            </TableRow>
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">

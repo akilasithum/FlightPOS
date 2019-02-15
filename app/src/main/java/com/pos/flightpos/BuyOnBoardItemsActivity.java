@@ -1,11 +1,17 @@
 package com.pos.flightpos;
 
 import android.app.Dialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
+import android.os.Handler;
+import android.os.Message;
+import android.pt.nfc.Nfc;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -13,6 +19,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -29,6 +36,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.amazonaws.util.StringUtils;
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.XMLMapper.Promotion;
@@ -36,7 +44,10 @@ import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,12 +63,14 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
     private float subtotal = 0;
     TextView subTotalView;
     EditText seatNumber;
+    EditText rfidValue;
     List<SoldItem> soldItemList;
     POSDBHandler handler;
     String serviceType;
     List<SoldItem> discountItemList;
     LinearLayout currentSelection;
     List<String> itemIds;
+    LinearLayout scanRFIDLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +80,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         contentTable = (TableLayout) findViewById(R.id.contentTable);
         subTotalView = (TextView)  findViewById(R.id.subTotalTextView);
         seatNumber = (EditText) findViewById(R.id.seatNumber);
+        rfidValue = findViewById(R.id.rfidValue);
         purchaseItemsBtn = (Button) findViewById(R.id.purchaseItems);
         purchaseItemsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,12 +101,69 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         serviceType = intent.getExtras().get("serviceType").toString();
         loadItemCategoryImages();
+        scanRFIDLayout = findViewById(R.id.scanRFIDLayout);
+        scanRFIDLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                showNFCDetails();
+            }
+        });
         //setItemCatClickListeners();
         ImageButton backButton = findViewById(R.id.backPressBtn);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
+            }
+        });
+    }
+
+    private void showNFCDetails(){
+        final Nfc nfc = new Nfc();
+        nfc.open();
+        final ProgressDialog dia = new ProgressDialog(this);
+        dia.setTitle("NFC");
+        dia.setMessage("please touch the nfc tag...");
+        dia.show();
+        dia.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                nfc.close();
+            }
+        });
+        final byte[] data = new byte[1024];
+
+        new Thread(){
+            public void run() {
+                int ret = -1;
+                while(true)
+                {
+                    ret = nfc.seek(data);
+                    if(ret >= 0)
+                    {
+                        String string1 ="" ;
+                        for (int i = 0; i < data.length; i++) {
+                            //String str = Integer.toHexString(data[i]&0xff);
+                            String str = String.format("%02x",data[i]&0xff);
+                            if(str != null && !str.equals("00")){
+                                string1 += str;
+                            }
+                        }
+                        dia.dismiss();
+                        setData(string1);
+                        break;
+                    }
+                }
+            }
+        }.start();
+    }
+
+    private void setData(final String str){
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                rfidValue.setText(str);
             }
         });
     }
@@ -502,7 +573,8 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
             ImageView imageView = new ImageView(this);
             imageView.setLayoutParams(params);
             imageView.setPadding(4,4,4,0);
-            imageView.setImageResource(getItemResource(this,item.getItemDesc()));
+            //imageView.setImageResource(getItemResource(this,item.getItemDesc()));
+            imageView.setImageBitmap(getImageFromItemCode(item.getItemId()));
 
             TextView textView = new TextView(this);
             textView.setLayoutParams(params);
@@ -525,6 +597,20 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
                         replace(" ","_").replace("-","");
         int resId = context.getResources().getIdentifier(itemName, "drawable", "com.pos.flightpos");
         return resId;
+    }
+
+    private Bitmap getImageFromItemCode(String itemCode)
+    {
+        try {
+            File f=new File("/data/data/com.pos.flightpos/app_imageDir", itemCode+".png");
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            return b;
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+
     }
 
     private void populateItemCatField(){

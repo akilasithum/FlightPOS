@@ -1402,6 +1402,19 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return itemName;
     }
 
+    public List<String> getItemCodesList(){
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select itemNo from items",null);
+        List<String> itemCodes = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                itemCodes.add(cursor.getString(cursor.getColumnIndex("itemNo")));
+                cursor.moveToNext();
+            }
+        }
+        return itemCodes;
+    }
+
     public String getKitNumberListFieldValueFromKitCode(String kitCode,String fieldVal){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("select "+fieldVal+" from KITNumberList where kitCode = '" +kitCode+"'",null);

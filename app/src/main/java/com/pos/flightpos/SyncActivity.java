@@ -1,8 +1,11 @@
 package com.pos.flightpos;
 
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
@@ -18,7 +21,10 @@ import com.amazonaws.mobile.client.AWSStartupHandler;
 import com.amazonaws.mobile.client.AWSStartupResult;
 import com.amazonaws.mobileconnectors.s3.transferutility.*;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.util.StringUtils;
 import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.objects.SoldItem;
+import com.pos.flightpos.objects.XMLMapper.Item;
 import com.pos.flightpos.utils.HttpHandler;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
@@ -29,6 +35,8 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +55,9 @@ public class SyncActivity extends AppCompatActivity {
         syncLayout = (LinearLayout) findViewById(R.id.syncLayout);
         handler = new POSDBHandler(this);
         handler.clearTable();
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        directory.delete();
         SaveSharedPreference.setStringValues(this,"syncKeyPressed","true");
         dia = new ProgressDialog(this);
         dia.setTitle("Sync");
@@ -54,7 +65,6 @@ public class SyncActivity extends AppCompatActivity {
         dia.show();
         completedFiles = new ArrayList<>();
         downloadData("users");
-        //downloadData("combo_discount");
         AsyncTask<Void, Void, Void> task = new GetContacts().execute();
 
     }
@@ -99,6 +109,23 @@ public class SyncActivity extends AppCompatActivity {
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            new saveItemImages().execute();
+        }
+    }
+
+    private class saveItemImages extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            HttpHandler sh = new HttpHandler();
+            List<String> itemCodesList = handler.getItemCodesList();
+            for(String item : itemCodesList){
+                saveToInternalStorage(sh.makeServiceCallForImage(item,"itemImages"),item);
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
             String fileNames = "";
             for(String str : completedFiles){
                 fileNames += str + "\n";
@@ -117,6 +144,29 @@ public class SyncActivity extends AppCompatActivity {
                         }})
                     .setNegativeButton(android.R.string.cancel, null).show();
         }
+    }
+
+    private String saveToInternalStorage(Bitmap bitmapImage,String itemCode){
+        ContextWrapper cw = new ContextWrapper(getApplicationContext());
+        // path to /data/data/yourapp/app_data/imageDir
+        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+        // Create imageDir
+        File mypath=new File(directory,itemCode+".png");
+        FileOutputStream fos = null;
+        try {
+            fos = new FileOutputStream(mypath);
+            // Use the compress method on the BitMap object to write image to the OutputStream
+            bitmapImage.compress(Bitmap.CompressFormat.PNG, 100, fos);
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        return directory.getAbsolutePath();
     }
 
     public void downloadData(final String fileName) {

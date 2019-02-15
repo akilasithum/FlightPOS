@@ -1,5 +1,7 @@
 package com.pos.flightpos.utils;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.util.Log;
 
 import com.amazonaws.http.HttpResponse;
@@ -48,6 +50,30 @@ public class HttpHandler {
             Log.e(TAG, "Exception: " + e.getMessage());
         }
         return response;
+    }
+
+    public Bitmap makeServiceCallForImage(String urlParameters,String funcArea){
+        Bitmap response = null;
+        try {
+            String url = Constants.webServiceURL +funcArea;
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type",
+                    "text/plain;charset=utf-8");
+            con.setDoOutput(true);
+            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+            wr.writeBytes(urlParameters);
+            wr.flush();
+            wr.close();
+            InputStream in = new BufferedInputStream(con.getInputStream());
+            response = BitmapFactory.decodeStream(in);
+            return response;
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public String postRequest(String urlParameters,String funcArea){
