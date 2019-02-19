@@ -551,13 +551,25 @@ public class POSDBHandler extends SQLiteOpenHelper {
 
     }
 
-    public void insertUserData(Context context){
+    public boolean insertUserData(String xml){
 
         SQLiteDatabase db = this.getWritableDatabase();
-        for(User user : readUserXML(context)) {
-            db.execSQL("INSERT INTO Users VALUES('"+user.getUserName()+"','"+user.getPassword()+"');");
+        try {
+            JSONObject jsonObj  = XML.toJSONObject(xml);
+            Gson gson = new Gson();
+            JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("users");
+            JSONArray itemsArr = data.getJSONArray("user");
+            List<User> comboDiscounts = gson.fromJson(itemsArr.toString(), new TypeToken<List<User>>(){}.getType());
+            for(User user : comboDiscounts){
+                db.execSQL("INSERT INTO Users VALUES('"+user.getUserName()+"','"+user.getPassword()+"');");
+            }
+            db.close();
+            return true;
         }
-        db.close();
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public void insertFlightData(Context context){

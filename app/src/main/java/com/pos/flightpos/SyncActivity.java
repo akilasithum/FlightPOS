@@ -64,7 +64,7 @@ public class SyncActivity extends AppCompatActivity {
         dia.setMessage("POS sync is in progress. Please wait...");
         dia.show();
         completedFiles = new ArrayList<>();
-        downloadData("users");
+        //downloadData("users");
         AsyncTask<Void, Void, Void> task = new GetContacts().execute();
 
     }
@@ -104,6 +104,8 @@ public class SyncActivity extends AppCompatActivity {
             completedFiles.add("vouchers");
             handler.insertComboDiscount(sh.makeServiceCall("promotions"));
             completedFiles.add("promotions");
+            handler.insertUserData(sh.makeServiceCall("users"));
+            completedFiles.add("users");
             return null;
         }
 
@@ -265,7 +267,6 @@ public class SyncActivity extends AppCompatActivity {
     }
 
     private void insertDataIntoSQLIteDB(String fileName){
-        if(fileName.equals("users"))handler.insertUserData(getApplicationContext());
         if(fileName.equals("pre_orders"))handler.insertPreOrders(getApplicationContext());
         if(fileName.equals("promotions"))handler.insertPromotions(getApplicationContext());
         if(fileName.equals("combo_discount"))handler.insertComboDiscount(getApplicationContext());
