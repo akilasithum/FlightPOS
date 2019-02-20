@@ -92,7 +92,7 @@ public class SellItemsActivity extends AppCompatActivity {
 
     private void registerLayoutClickEvents(){
 
-        LinearLayout buyOnBoardLayout = (LinearLayout) findViewById(R.id.buyOnBoardItems);
+        /*LinearLayout buyOnBoardLayout = (LinearLayout) findViewById(R.id.buyOnBoardItems);
         if(!serviceType.contains("BOB")){
             buyOnBoardLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
         }
@@ -134,7 +134,7 @@ public class SellItemsActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             }
-        });
+        });*/
         LinearLayout virtualInventoryLayout = (LinearLayout) findViewById(R.id.virtualInventory);
         if(!serviceType.contains("VRT")){
             virtualInventoryLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
@@ -149,26 +149,26 @@ public class SellItemsActivity extends AppCompatActivity {
                 }
             }
         });
-        final LinearLayout preOrderLayout = (LinearLayout) findViewById(R.id.preOrderDelivery);
-        /*final Map<String,List<PreOrder>> preOrders = getPreOrderList();
+       /* final LinearLayout preOrderLayout = (LinearLayout) findViewById(R.id.preOrderDelivery);
+         *//*final Map<String,List<PreOrder>> preOrders = getPreOrderList();
         if(preOrders == null || preOrders.isEmpty()) {
             preOrderLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
-        }*/
+        }*//*
         preOrderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //if(preOrders != null && !preOrders.isEmpty()) {
                     Intent intent = new Intent(SellItemsActivity.this, SelectPreOrderTypeActivity.class);
-                    /*Bundle args = new Bundle();
+                    *//*Bundle args = new Bundle();
                     args.putSerializable("preOrders",(Serializable)preOrders);
-                    intent.putExtra("BUNDLE",args);*/
+                    intent.putExtra("BUNDLE",args);*//*
                     startActivity(intent);
                 //}
-                /*else{
+                *//*else{
                     showAlertDialog("No Items","No pre order items available for this flight");
-                }*/
+                }*//*
             }
-        });
+        });*/
 
         LinearLayout voidOrdersLayout = (LinearLayout) findViewById(R.id.voidOrder);
         voidOrdersLayout.setOnClickListener(new View.OnClickListener() {

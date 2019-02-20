@@ -28,14 +28,14 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     ImageButton flightUserLoginLayout;
     LinearLayout verifyInventoryLayout;
     LinearLayout printReport;
-    LinearLayout addSealsLayout;
-    LinearLayout syncPreOrderLayout;
-    LinearLayout defineCartNumbersLayout;
+    //LinearLayout addSealsLayout;
+    //LinearLayout syncPreOrderLayout;
+    //LinearLayout defineCartNumbersLayout;
     POSDBHandler handler;
     List<String> kitCode;
     long mExitTime = 0;
     Set<String> serviceType;
-    LinearLayout preOrderPackLayout;
+    //LinearLayout preOrderPackLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,20 +44,20 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         flightUserLoginLayout = (ImageButton) findViewById(R.id.userLoginLayout);
         verifyInventoryLayout = (LinearLayout) findViewById(R.id.verifyInventoryByAdmin);
         printReport = (LinearLayout) findViewById(R.id.printReportByAdmin);
-        addSealsLayout = (LinearLayout) findViewById(R.id.addAdminSeal);
-        syncPreOrderLayout = (LinearLayout) findViewById(R.id.syncPreOrderLayout);
-        defineCartNumbersLayout = (LinearLayout) findViewById(R.id.defineCartNumbers);
-        preOrderPackLayout = findViewById(R.id.packPreOrderLayout);
+        //addSealsLayout = (LinearLayout) findViewById(R.id.addAdminSeal);
+        //syncPreOrderLayout = (LinearLayout) findViewById(R.id.syncPreOrderLayout);
+        //defineCartNumbersLayout = (LinearLayout) findViewById(R.id.defineCartNumbers);
+        //preOrderPackLayout = findViewById(R.id.packPreOrderLayout);
         handler = new POSDBHandler(this);
         kitCode = POSCommonUtils.availableKitCodes(this);
         serviceType = POSCommonUtils.getServiceTypeKitCodeMap(this).keySet();
         registerLayoutClickEvents();
-        disablePackPreOrderLayout(false);
+        //disablePackPreOrderLayout(false);
         String deviceId = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_DEVICE_ID);
         handler.updateSIFDetails("packedDateTime",POSCommonUtils.getDateTimeString(),deviceId);
     }
 
-    private void disablePackPreOrderLayout(boolean isEnable){
+    /*private void disablePackPreOrderLayout(boolean isEnable){
         String isPreOrderSynced = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_SYNC_PRE_ORDERS);
         if((isPreOrderSynced == null || !isPreOrderSynced.equals("yes")) && !isEnable) {
             preOrderPackLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
@@ -65,7 +65,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         else{
             preOrderPackLayout.setBackground(getResources().getDrawable(R.drawable.textinputborder));
         }
-    }
+    }*/
 
     private void registerLayoutClickEvents() {
 
@@ -76,26 +76,19 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
             }
         });
 
-        syncPreOrderLayout.setOnClickListener(new View.OnClickListener() {
+        /*syncPreOrderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 syncPreOrders();
             }
-        });
+        });*/
 
         verifyInventoryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(VerifyFlightByAdminActivity.this, VerifyInventoryActivity.class);
+                Intent intent = new Intent(VerifyFlightByAdminActivity.this, VerifyCartsActivity.class);
+                intent.putExtra("serviceType", "VRT");
                 intent.putExtra("parent", "VerifyFlightByAdminActivity");
-                startActivity(intent);
-            }
-        });
-
-        defineCartNumbersLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(VerifyFlightByAdminActivity.this, DefineCartNumbersActivity.class);
                 startActivity(intent);
             }
         });
@@ -106,22 +99,30 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
                 printInventoryReport();
             }
         });
+
+       /* defineCartNumbersLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(VerifyFlightByAdminActivity.this, DefineCartNumbersActivity.class);
+                startActivity(intent);
+            }
+        });
         addSealsLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addAdminSeals();
             }
-        });
-        preOrderPackLayout.setOnClickListener(new View.OnClickListener() {
+        });*/
+        /*preOrderPackLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String isPreOrderSynced = SaveSharedPreference.getStringValues(VerifyFlightByAdminActivity.this,
                         Constants.SHARED_PREFERENCE_SYNC_PRE_ORDERS);
                 if(isPreOrderSynced != null && isPreOrderSynced.equals("yes")) {
                     Intent intent = new Intent(VerifyFlightByAdminActivity.this, LoadPreOrderAdminActivity.class);
-                    /*Bundle args = new Bundle();
+                    *//*Bundle args = new Bundle();
                     args.putSerializable("cartItems", (Serializable) serviceType);
-                    intent.putExtra("serviceType", args)*/;
+                    intent.putExtra("serviceType", args)*//*;
                     startActivity(intent);
                 }
                 else{
@@ -129,16 +130,16 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
                             Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        });*/
     }
 
     private void showConfirmation() {
-        String openSeals = handler.getSealList(null,"outbound");
+        /*String openSeals = handler.getSealList(null,"outbound");
         if (openSeals == null || openSeals.length() == 0) {
             Toast.makeText(getApplicationContext(), "Add opening seals before login.",
                     Toast.LENGTH_SHORT).show();
             return;
-        }
+        }*/
         new AlertDialog.Builder(this)
                 .setTitle("Logging out")
                 .setMessage("You are about to log out from admin mode. Do you wish to continue?")
@@ -162,7 +163,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
         POSSyncUtils syncActivity = new POSSyncUtils(this);
         syncActivity.downloadData("pre_orders","pre_order_items");
-        disablePackPreOrderLayout(true);
+        //disablePackPreOrderLayout(true);
     }
 
     private void addAdminSeals() {
@@ -174,10 +175,25 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     }
 
     private void printInventoryReport() {
-        Intent intent = new Intent(this, PrintInventorActivity.class);
+        /*Intent intent = new Intent(this, PrintInventorActivity.class);
         intent.putExtra("parent", "VerifyFlightByAdminActivity");
-        startActivity(intent);
+        startActivity(intent);*/
 
+        new AlertDialog.Builder(this)
+                .setTitle("Print Inventory Report")
+                .setMessage("You are sure you want to print inventory report?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        PrintJob job = new PrintJob();
+                        String userName = SaveSharedPreference.getStringValues(VerifyFlightByAdminActivity.this, Constants.SHARED_PREFERENCE_ADMIN_USER_NAME);
+                        job.printInventoryReports(VerifyFlightByAdminActivity.this, "OPENING INVENTORY",
+                                POSCommonUtils.getServiceTypeDescFromServiceType("VRT"),"VRT",userName);
+
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null).show();
     }
 
     @Override

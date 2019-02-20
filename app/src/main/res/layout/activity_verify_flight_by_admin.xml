@@ -11,14 +11,14 @@
         android:orientation="vertical"
         android:paddingLeft="30dp"
         android:paddingRight="30dp"
-        android:paddingTop="20dp"
+        android:paddingTop="100dp"
         android:weightSum="1">
 
         <TableLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
 
-            <TableRow
+            <!--<TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
 
@@ -48,11 +48,11 @@
                         android:text="Sync Pre Orders"
                         android:textSize="25dp" />
                 </LinearLayout>
-                <!--</TableRow>
+                &lt;!&ndash;</TableRow>
 
                 <TableRow
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">-->
+                    android:layout_height="fill_parent">&ndash;&gt;
 
                 <LinearLayout
                     android:id="@+id/packPreOrderLayout"
@@ -80,9 +80,9 @@
                         android:text="Pack Pre Orders"
                         android:textSize="25dp" />
                 </LinearLayout>
-            </TableRow>
+            </TableRow>-->
 
-            <TableRow
+            <!--<TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
 
@@ -113,7 +113,7 @@
                         android:textSize="25dp" />
 
                 </LinearLayout>
-            </TableRow>
+            </TableRow>-->
 
             <TableRow
                 android:layout_width="fill_parent"
@@ -128,13 +128,14 @@
                     android:background="@drawable/textinputborder"
                     android:clickable="true"
                     android:orientation="vertical"
-                    android:paddingTop="8dp">
+                    android:paddingTop="20dp">
 
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_gravity="center"
                         android:background="@drawable/icon_verify"
+                        android:paddingTop="15dp"
                         android:textSize="20dp" />
 
                     <TextView
@@ -142,12 +143,13 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:layout_margin="10dp"
+                        android:paddingBottom="15dp"
                         android:text="Verify Inventory"
                         android:textSize="25dp" />
                 </LinearLayout>
             </TableRow>
 
-            <TableRow
+            <!--<TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
 
@@ -178,7 +180,7 @@
                         android:textSize="25dp" />
 
                 </LinearLayout>
-            </TableRow>
+            </TableRow>-->
 
             <TableRow
                 android:layout_width="fill_parent"
@@ -193,13 +195,14 @@
                     android:background="@drawable/textinputborder"
                     android:clickable="true"
                     android:orientation="vertical"
-                    android:paddingTop="8dp">
+                    android:paddingTop="20dp">
 
                     <ImageView
                         android:layout_width="50dp"
                         android:layout_height="50dp"
                         android:layout_gravity="center"
                         android:background="@drawable/icon_printer"
+                        android:paddingTop="15dp"
                         android:textSize="20dp" />
 
                     <TextView
@@ -208,6 +211,7 @@
                         android:layout_gravity="center"
                         android:layout_margin="10dp"
                         android:text="Print Inventory Report"
+                        android:paddingBottom="15dp"
                         android:textSize="25dp" />
                 </LinearLayout>
             </TableRow>
@@ -222,6 +226,7 @@
                     android:layout_margin="10dp"
                     android:layout_weight="1"
                     android:clickable="true"
+                    android:paddingTop="100dp"
                     android:orientation="vertical">
 
                     <ImageButton

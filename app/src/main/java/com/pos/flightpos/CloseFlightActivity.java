@@ -40,7 +40,8 @@ public class CloseFlightActivity extends AppCompatActivity {
         verifyCloseInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CloseFlightActivity.this, VerifyInventoryActivity.class);
+                Intent intent = new Intent(CloseFlightActivity.this, VerifyCartsActivity.class);
+                intent.putExtra("serviceType", "VRT");
                 intent.putExtra("parent", "CloseFlightActivity");
                 startActivity(intent);
             }
@@ -49,9 +50,21 @@ public class CloseFlightActivity extends AppCompatActivity {
         closingInventoryReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(CloseFlightActivity.this, PrintInventorActivity.class);
-                intent.putExtra("parent","CloseFlightActivity");
-                startActivity(intent);
+                new AlertDialog.Builder(CloseFlightActivity.this)
+                        .setTitle("Print Inventory Report")
+                        .setMessage("You are sure you want to print inventory report?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                PrintJob job = new PrintJob();
+                                String userName = SaveSharedPreference.getStringValues(CloseFlightActivity.this, Constants.SHARED_PREFERENCE_FA_NAME);
+                                job.printInventoryReports(CloseFlightActivity.this, "CLOSING INVENTORY",
+                                        POSCommonUtils.getServiceTypeDescFromServiceType("VRT"),"VRT",userName);
+
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null).show();
             }
         });
         LinearLayout closeFlightSalesReport = (LinearLayout) findViewById(R.id.closeFlightSalesReport);
@@ -69,7 +82,7 @@ public class CloseFlightActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        LinearLayout closingSeals = (LinearLayout) findViewById(R.id.closingSeals);
+        /*LinearLayout closingSeals = (LinearLayout) findViewById(R.id.closingSeals);
         closingSeals.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -77,7 +90,7 @@ public class CloseFlightActivity extends AppCompatActivity {
                 intent.putExtra("parent","CloseFlightActivity");
                 startActivity(intent);
             }
-        });
+        });*/
         LinearLayout closeFlight = (LinearLayout) findViewById(R.id.closeFlightFinal);
         closeFlight.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,9 +200,6 @@ public class CloseFlightActivity extends AppCompatActivity {
 
     private Map<String,String> getServiceTypeDescMap(){
         Map<String,String> map = new HashMap<>();
-        map.put("BOB","BUY ON BOARD SALES");
-        map.put("DTP","DUTY FREE SALES");
-        map.put("DTF","DUTY PAID SALES");
         map.put("VRT","VIRTUAL INVENTORY SALES");
         return map;
     }

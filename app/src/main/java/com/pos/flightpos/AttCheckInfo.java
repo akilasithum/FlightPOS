@@ -28,7 +28,7 @@ public class AttCheckInfo extends AppCompatActivity {
 
     private void registerLayoutClickEvents(){
 
-        LinearLayout addSealLayout = (LinearLayout) findViewById(R.id.sealInfoLayout);
+        /*LinearLayout addSealLayout = (LinearLayout) findViewById(R.id.sealInfoLayout);
         addSealLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -36,7 +36,7 @@ public class AttCheckInfo extends AppCompatActivity {
                 intent.putExtra("parent","AttCheckInfo");
                 startActivity(intent);
             }
-        });
+        });*/
         LinearLayout sellerInfoLayout = (LinearLayout) findViewById(R.id.sellerInfoLayout);
         sellerInfoLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,7 +49,8 @@ public class AttCheckInfo extends AppCompatActivity {
         verifyInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AttCheckInfo.this, VerifyInventoryActivity.class);
+                Intent intent = new Intent(AttCheckInfo.this, VerifyCartsActivity.class);
+                intent.putExtra("serviceType", "VRT");
                 intent.putExtra("parent", "AttCheckInfo");
                 startActivity(intent);
             }
@@ -58,13 +59,27 @@ public class AttCheckInfo extends AppCompatActivity {
         inventoryReport.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(AttCheckInfo.this, PrintInventorActivity.class);
-                intent.putExtra("parent","AttCheckInfo");
-                startActivity(intent);
+                new AlertDialog.Builder(AttCheckInfo.this)
+                        .setTitle("Print Inventory Report")
+                        .setMessage("You are sure you want to print inventory report?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                PrintJob job = new PrintJob();
+                                String userName = SaveSharedPreference.getStringValues(AttCheckInfo.this, Constants.SHARED_PREFERENCE_FA_NAME);
+                                job.printInventoryReports(AttCheckInfo.this, "OPENING INVENTORY",
+                                        POSCommonUtils.getServiceTypeDescFromServiceType("VRT"),"VRT",userName);
+
+                            }
+                        })
+                        .setNegativeButton(android.R.string.no, null).show();
             }
         });
 
-        LinearLayout openFlight = (LinearLayout) findViewById(R.id.openFlight);
+
+
+        LinearLayout openFlight =  findViewById(R.id.openFlight);
         openFlight.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,12 +89,12 @@ public class AttCheckInfo extends AppCompatActivity {
     }
 
     private void showConfirmation(){
-        String isSealsVerified = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_IS_SEAL_VERIFIED);
+        /*String isSealsVerified = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_IS_SEAL_VERIFIED);
         if(isSealsVerified == null || isSealsVerified.length() == 0){
             Toast.makeText(getApplicationContext(), "Verify Seals before open the flight.",
                     Toast.LENGTH_SHORT).show();
             return;
-        }
+        }*/
 
         new AlertDialog.Builder(this)
                 .setTitle("Open Flight")

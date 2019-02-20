@@ -63,7 +63,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
     private float subtotal = 0;
     TextView subTotalView;
     EditText seatNumber;
-    EditText rfidValue;
+    //EditText rfidValue;
     List<SoldItem> soldItemList;
     POSDBHandler handler;
     String serviceType;
@@ -80,7 +80,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         contentTable = (TableLayout) findViewById(R.id.contentTable);
         subTotalView = (TextView)  findViewById(R.id.subTotalTextView);
         seatNumber = (EditText) findViewById(R.id.seatNumber);
-        rfidValue = findViewById(R.id.rfidValue);
+        //rfidValue = findViewById(R.id.rfidValue);
         purchaseItemsBtn = (Button) findViewById(R.id.purchaseItems);
         purchaseItemsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,7 +105,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         scanRFIDLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showNFCDetails();
+                //showNFCDetails();
             }
         });
         //setItemCatClickListeners();
@@ -163,7 +163,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                rfidValue.setText(str);
+                //rfidValue.setText(str);
             }
         });
     }

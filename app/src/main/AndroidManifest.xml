@@ -54,7 +54,8 @@
             android:enabled="true" />
 
         <activity android:name=".PrintActivity" />
-        <activity android:name=".AttCheckInfo" />
+        <activity android:name=".AttCheckInfo"
+            android:label="Flight User - Info" />
         <activity android:name=".ICCardReader" />
         <activity android:name=".MSReader" />
         <activity

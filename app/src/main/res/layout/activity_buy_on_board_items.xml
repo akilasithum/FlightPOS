@@ -275,9 +275,9 @@
                     android:text="Scan Boarding Pass" />
             </TableRow>
 
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+            <!--<TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
 
             <TextView
                 android:layout_width="0dp"
@@ -296,7 +296,7 @@
                 android:inputType="textPersonName"
                 android:textSize="20dp" />
 
-            </TableRow>
+            </TableRow>-->
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
