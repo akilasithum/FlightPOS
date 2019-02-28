@@ -493,6 +493,12 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         dia.setTitle("MSR");
         dia.setMessage("please swipe MSR card...");
         dia.show();
+        dia.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialog) {
+                msr.close();
+            }
+        });
         final Handler handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {

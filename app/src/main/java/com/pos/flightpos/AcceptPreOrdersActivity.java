@@ -33,6 +33,7 @@ import com.pos.flightpos.objects.Flight;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.XMLMapper.ComboDiscount;
 import com.pos.flightpos.objects.XMLMapper.Promotion;
+import com.pos.flightpos.objects.XMLMapper.Sector;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
@@ -67,7 +68,9 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
     Calendar myCalendar;
     Spinner flightSectorSpinner;
     EditText paxName;
+    TableRow taxPercentageRow;
     boolean hasSectors = false;
+    EditText taxPercentage;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,6 +82,7 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
         contentTable = (TableLayout) findViewById(R.id.contentTable);
         subTotalView = (TextView) findViewById(R.id.subTotalTextView);
         purchaseItemsBtn = (Button) findViewById(R.id.purchaseItems);
+        taxPercentageRow = findViewById(R.id.taxPercentageRow);
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -102,6 +106,7 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
         soldItemList = new ArrayList<>();
         handler = new POSDBHandler(getApplicationContext());
         populateServiceTypes();
+        taxPercentage = findViewById(R.id.taxPercentage);
         serviceTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -131,6 +136,33 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
         paxName = findViewById(R.id.paxName);
         setDatePicker();
         configureFlightNumber();
+        showHideTaxPercentage(true);
+        flightSectorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                if(flightSectorSpinner.getSelectedItem() != null && !flightSectorSpinner.
+                        getSelectedItem().toString().isEmpty()){
+                    showHideTaxPercentage(!(flightSectorSpinner.getSelectedItem().toString().split("\\*")[1].equalsIgnoreCase("Domestic")));
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+    }
+
+    private void showHideTaxPercentage(boolean isNotVisible){
+        if(isNotVisible) {
+            taxPercentage.setText("");
+            taxPercentageRow.setVisibility(View.GONE);
+        }
+        else{
+            taxPercentageRow.setVisibility(View.VISIBLE);
+            taxPercentage.setText("13");
+
+        }
     }
 
     private void configureFlightNumber(){
@@ -340,6 +372,7 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
         intent.putExtra("orderNumber", orderNumber);
         intent.putExtra("serviceType", serviceType);
         intent.putExtra("discount", "");
+        intent.putExtra("serviceTax",taxPercentage.getText() != null ? taxPercentage.getText().toString() : "");
         startActivity(intent);
     }
 

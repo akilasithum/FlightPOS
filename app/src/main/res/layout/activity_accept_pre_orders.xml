@@ -277,6 +277,32 @@
                     android:layout_marginTop="5dp"
                     android:layout_weight="1" />
             </TableRow>
+
+            <TableRow
+                android:id="@+id/taxPercentageRow"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:paddingTop="10dp">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:text="Tax Percentage"
+                    android:textSize="20dp" />
+
+                <EditText
+                    android:id="@+id/taxPercentage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:text="13"
+                    android:inputType="number" />
+            </TableRow>
+
+
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">

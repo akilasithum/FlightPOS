@@ -116,9 +116,9 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
         TableRow totalTextRow = findViewById(R.id.totalTextRow);
         TableRow taxTextRow = findViewById(R.id.serviceTaxRow);
         if(serviceType != null && (serviceType.equals("DTP")||serviceType.equals("BOB"))){
-            taxPercentage = SaveSharedPreference.getStringValues(this,
-                    Constants.SHARED_PREFERENCE_TAX_PERCENTAGE);
-            if(taxPercentage != null) {
+            taxPercentage = intent.getExtras().getString("serviceTax");
+
+            if(taxPercentage != null && !taxPercentage.isEmpty()) {
                 dueBalance = Float.parseFloat(subTotal) * ((100 + Float.parseFloat(taxPercentage)) / 100);
                 balanceDueTextView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
             }
