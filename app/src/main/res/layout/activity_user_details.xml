@@ -3,12 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ConfigureFlightActivity">
+    tools:context=".UserDetailsActivity">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
+        android:layout_height="0dip"
+        android:layout_weight="1"
         android:orientation="vertical">
 
     <TableLayout
@@ -33,36 +32,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="Flight date"
-                android:textSize="25dp" />
-
-            <Spinner
-                android:id="@+id/flightDateSpinner"
-                style="@style/Widget.AppCompat.Spinner.Underlined"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="60dp" />
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:paddingTop="10dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text="Flight Number"
+                android:text="Passenger Name"
                 android:textSize="25dp" />
 
             <EditText
-                android:id="@+id/flightList"
+                android:id="@+id/passengerNameFld"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:inputType="number"
-                android:paddingRight="50dp" />
+                android:ems="10"
+                android:inputType="textPersonName"  />
         </TableRow>
 
         <TableRow
@@ -74,11 +53,32 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="From"
+                android:text="PNR Number"
                 android:textSize="25dp" />
 
             <EditText
-                android:id="@+id/fromTextField"
+                android:id="@+id/pnrNumberFld"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:ems="10"
+                android:inputType="textPersonName"  />
+        </TableRow>
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingTop="10dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:text="Seat No"
+                android:textSize="25dp" />
+
+            <EditText
+                android:id="@+id/seatNoFld"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -95,16 +95,27 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
-                android:text="To"
+                android:text="Email"
                 android:textSize="25dp" />
 
             <EditText
-                android:id="@+id/toTextField"
+                android:id="@+id/emailFld"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:ems="10"
                 android:inputType="textPersonName" />
+        </TableRow>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <Button
+                android:id="@+id/scanBoardingPass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Scan Boarding Pass" />
         </TableRow>
         <TableRow
             android:layout_width="fill_parent"
@@ -119,17 +130,19 @@
         </TableRow>
     </TableLayout>
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:paddingLeft="30dp"
-        android:paddingTop="80dp">
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:paddingTop="100dp"
+        android:layout_marginLeft="30dp"
+        android:layout_weight="1"
+        android:gravity="left|bottom"
+        android:orientation="vertical">
+
         <ImageButton
             android:id="@+id/backPressBtn"
-            android:paddingTop="30dp"
-            android:paddingLeft="30dp"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:layout_gravity="center_horizontal|left"
             android:background="@drawable/icon_left_arrow"
             android:clickable="true" />
     </LinearLayout>

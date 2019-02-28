@@ -1,11 +1,14 @@
 package com.pos.flightpos;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -24,13 +27,12 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         AWSMobileClient.getInstance().initialize(this).execute();
         parent = getIntent().getExtras().getString("parent");
-        final LinearLayout configureFlightLayout = (LinearLayout) findViewById(R.id.configureFlightLayout);
+        final ImageButton configureFlightLayout =  findViewById(R.id.backPressBtn);
         configureFlightLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(isSyncClicked()){
-                    Intent intent = new Intent(MainActivity.this, ConfigureFlightActivity.class);
-                    startActivity(intent);
+                    redirectToAttMode();
                 }
                 else{
                     Toast.makeText(getApplicationContext(), "Sync items first.",
@@ -60,6 +62,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        LinearLayout changeBaseStationLayout = findViewById(R.id.changeBaseStation);
+        changeBaseStationLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, BaseStationActivity.class);
+                startActivity(intent);
+            }
+        });
+
         LinearLayout adminLogoutLayout = (LinearLayout) findViewById(R.id.adminLogutLayout);
         adminLogoutLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,6 +78,25 @@ public class MainActivity extends AppCompatActivity {
                 logoutAdmin();
             }
         });
+    }
+
+    private void redirectToAttMode(){
+        new AlertDialog.Builder(this)
+                .setTitle("Logging out")
+                .setMessage("You are about to log out from admin mode. Do you wish to continue?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        SaveSharedPreference.removeValue(MainActivity.this, Constants.SHARED_PREFERENCE_ADMIN_USER);
+                        SaveSharedPreference.setStringValues(MainActivity.this,
+                                Constants.SHARED_PREFERENCE_CAN_ATT_LOGIN,"yes");
+                        Intent intent = new Intent(MainActivity.this, FlightAttendentLogin.class);
+                        startActivity(intent);
+
+                    }
+                })
+                .setNegativeButton(android.R.string.no, null).show();
     }
 
     private boolean isSyncClicked(){

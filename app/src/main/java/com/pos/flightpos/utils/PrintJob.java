@@ -354,7 +354,7 @@ public class PrintJob {
         printer.printString(" ");
         printer.setBold(true);
         printer.printString("Operated Staff");
-        printer.printString(SaveSharedPreference.getStringValues(context, Constants.SHARED_PREFERENCE_FA_NAME));
+        printer.printString(SaveSharedPreference.getStringValues(context, Constants.SHARED_PREFERENCE_ADMIN_USER));
         printer.printString(dateTimeFormat.format(date));
         printer.printString(" ");
         printer.printString(" ");

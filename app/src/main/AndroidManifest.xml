@@ -10,10 +10,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.NFC" />
-    <uses-feature android:name="android.hardware.nfc" android:required="true" />
+
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -54,7 +57,8 @@
             android:enabled="true" />
 
         <activity android:name=".PrintActivity" />
-        <activity android:name=".AttCheckInfo"
+        <activity
+            android:name=".AttCheckInfo"
             android:label="Flight User - Info" />
         <activity android:name=".ICCardReader" />
         <activity android:name=".MSReader" />
@@ -125,11 +129,12 @@
         <activity android:name=".NFCReader">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".LoadPreOrderAdminActivity"
             android:label="Pack Pre Orders" />
@@ -148,7 +153,19 @@
         <activity
             android:name=".SelectServiceTypeForSealActivity"
             android:label="Select Service type" />
-        <activity android:name=".UploadSalesDataActivity"></activity>
+        <activity android:name=".UploadSalesDataActivity" />
+        <activity
+            android:name=".GateUserMainActivity"
+            android:label="Select Category" />
+        <activity
+            android:name=".UserDetailsActivity"
+            android:label="Passenger Details" />
+        <activity
+            android:name=".GateItemSelectionActivity"
+            android:label="Sell Items" />
+        <activity android:name=".OptionsActivity" />
+        <activity android:name=".BaseStationActivity" />
+        <activity android:name=".ConpensationSelectionActivity"></activity>
     </application>
 
 </manifest>

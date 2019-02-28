@@ -129,24 +129,15 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
     }
 
     private void reDirectToMainPage(String userName){
-        Intent intent = new Intent(this, AttendendMainActivity.class);
+        Intent intent = new Intent(this, GateUserMainActivity.class);
         SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_FA_NAME,userName);
         SaveSharedPreference.setStringValues(this,
                 Constants.SHARED_PREFERENCE_FLIGHT_MODE,"faUser");
-        String flightType = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_TYPE);
-        if(flightType == null || flightType.isEmpty()){
-            SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_TYPE,
-                    "outBound");
-        }
-        else{
-            SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_TYPE,
-                    "inBound");
-        }
         startActivity(intent);
     }
 
     private boolean isLoggingSuccessful(String userName, String password){
-        return handler.isLoginSuccess(userName,password);
+        return handler.isLoginSuccess(userName,password,"9");
     }
 
     @Override

@@ -61,10 +61,8 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     List<CreditCard> creditCardList;
     LoyaltyCard loyaltyCard;
     Map<String,String> paymentMethodsMap;
-    String seatNumber;
     String orderNumber;
     POSDBHandler handler;
-    String serviceType;
     String discount;
     String taxPercentage;
     String subTotalAfterTax;
@@ -79,9 +77,9 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_payment_methods);
         handler = new POSDBHandler(this);
-        paymentTable = (TableLayout) findViewById(R.id.paymentMethodTable);
-        confirmPaymentBtn = (Button) findViewById(R.id.printReceipt);
-        balanceDueTextView = (TextView)  findViewById(R.id.balanceDueTextView);
+        paymentTable = findViewById(R.id.paymentMethodTable);
+        confirmPaymentBtn = findViewById(R.id.printReceipt);
+        balanceDueTextView = findViewById(R.id.balanceDueTextView);
         subTotalTextView = findViewById(R.id.subTotalTextView);
         confirmPaymentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -114,8 +112,6 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         Bundle args = intent.getBundleExtra("BUNDLE");
         soldItems = (ArrayList<SoldItem>) args.getSerializable("soldItemList");
         String subTotal = intent.getExtras().get("subTotal").toString();
-        seatNumber = intent.getExtras().get("SeatNumber").toString();
-        serviceType = intent.getExtras().get("serviceType").toString();
         discount = intent.getExtras().get("discount").toString();
         String serviceType = POSCommonUtils.getServiceType(this);
         TableRow totalTextRow = findViewById(R.id.totalTextRow);
@@ -169,13 +165,13 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                 addCreditCardSettlementDetails();
             }
         });
-        LinearLayout loyaltyLayout = (LinearLayout) findViewById(R.id.loyaltyPaymentLayout);
+        /*LinearLayout loyaltyLayout = (LinearLayout) findViewById(R.id.loyaltyPaymentLayout);
         loyaltyLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 addLoyaltyCardDetails();
             }
-        });
+        });*/
         LinearLayout voucherLayout = (LinearLayout) findViewById(R.id.voucherPaymentLayout);
         voucherLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -191,7 +187,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             }
         });
 
-        cancelSaleBtn = (Button) findViewById(R.id.cancelSale);
+        cancelSaleBtn =  findViewById(R.id.cancelSale);
         cancelSaleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -202,7 +198,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
                             public void onClick(DialogInterface dialog, int whichButton) {
-                                Intent intent = new Intent(PaymentMethodsActivity.this, SellItemsActivity.class);
+                                Intent intent = new Intent(PaymentMethodsActivity.this, GateUserMainActivity.class);
                                 startActivity(intent);
                             }
                         })
@@ -238,8 +234,8 @@ public class PaymentMethodsActivity extends AppCompatActivity {
 
             }
         });
-        Button okBtn = (Button) dialog.findViewById(R.id.voucherOkBtn);
-        Button cancelBtn = (Button) dialog.findViewById(R.id.cancelBtn);
+        Button okBtn =  dialog.findViewById(R.id.voucherOkBtn);
+        Button cancelBtn =  dialog.findViewById(R.id.cancelBtn);
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -542,10 +538,10 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         window.setLayout(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
         cashSettleDialog.setTitle("Settle by Cash");
 
-        final EditText amount = (EditText) cashSettleDialog.findViewById(R.id.cashSettleAmountTextField);
-        final Spinner currency = (Spinner) cashSettleDialog.findViewById(R.id.currencyText);
-        final TextView errorMsgText = (TextView)  cashSettleDialog.findViewById(R.id.errorMsgText);
-        final TextView initialAmount = (TextView)  cashSettleDialog.findViewById(R.id.initialAmount);
+        final EditText amount = cashSettleDialog.findViewById(R.id.cashSettleAmountTextField);
+        final Spinner currency = cashSettleDialog.findViewById(R.id.currencyText);
+        final TextView errorMsgText = cashSettleDialog.findViewById(R.id.errorMsgText);
+        final TextView initialAmount = cashSettleDialog.findViewById(R.id.initialAmount);
         currency.setAdapter(loadCurrencies());
         currency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -561,8 +557,8 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         amount.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
         initialAmount.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
 
-        Button okBtn = (Button) cashSettleDialog.findViewById(R.id.cardSubmitBtn);
-        Button cancelBtn = (Button) cashSettleDialog.findViewById(R.id.cancelBtn);
+        Button okBtn =  cashSettleDialog.findViewById(R.id.cardSubmitBtn);
+        Button cancelBtn =  cashSettleDialog.findViewById(R.id.cancelBtn);
 
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -674,8 +670,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         String currentDateStr = df.format(date);
         for(SoldItem soldItem : soldItems) {
             String userID = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FA_NAME);
-            handler.insertDailySalesEntry(orderNumber, soldItem.getItemId(), serviceType,
-                    soldItem.getEquipmentNo(), soldItem.getDrawer(), soldItem.getQuantity(),
+            handler.insertDailySalesEntry(orderNumber, soldItem.getItemId(), soldItem.getQuantity(),
                     soldItem.getTotal(), "Passenger", userID,currentDateStr);
             handler.updateSoldItemQty(soldItem.getItemId(), soldItem.getQuantity(),soldItem.getEquipmentNo(),
                     soldItem.getDrawer());
@@ -684,27 +679,31 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         for(Map.Entry<String,String> entry : paymentMethodsMap.entrySet()){
             handler.insertPaymentMethods(orderNumber,entry.getKey(),entry.getValue());
         }
-        String flightId = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_ID);
-        handler.insertOrderMainDetails(orderNumber,taxPercentage,discount,seatNumber,subTotalAfterTax+"",serviceType,flightId);
+        String flightId = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME);
+        handler.insertOrderMainDetails(orderNumber,taxPercentage,discount,subTotalAfterTax+"",flightId);
         if(creditCardList != null && !creditCardList.isEmpty()){
-            CreditCard creditCard = creditCardList.get(0);
-            handler.insertCreditCardDetails(orderNumber,creditCard.getCreditCardNumber(),creditCard.getCardHolderName(),
-                    creditCard.getExpireDate(),paymentMethodsMap.get("Credit Card USD"));
+            for(CreditCard creditCard : creditCardList){
+                handler.insertCreditCardDetails(orderNumber,creditCard.getCreditCardNumber(),creditCard.getCardHolderName(),
+                        creditCard.getExpireDate(),paymentMethodsMap.get("Credit Card USD"));
+            }
+
         }
-        if(loyaltyCard != null){
+        String[] passengerDetails = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_USER_DETAILS).split("==");
+        handler.insertPassengerDetails(orderNumber,passengerDetails[0],passengerDetails[1],passengerDetails[2],passengerDetails[3],
+                flightId,SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_DATE));
+        /*if(loyaltyCard != null){
             handler.insertLoyaltyCardDetails(orderNumber,loyaltyCard.getLoyaltyCardNumber(),
                     loyaltyCard.getCardHolderName(),String.valueOf(loyaltyCard.getAmount()));
-        }
+        }*/
     }
 
     private void printReceipt(){
-
+        String seatNumber = "12C";
             if(confirmPaymentBtn.getText().equals("Print Card Holder copy")){
                 PrintJob.printOrderDetails(PaymentMethodsActivity.this,orderNumber,
                         seatNumber,soldItems,paymentMethodsMap,
                         creditCardList.isEmpty() ? null : creditCardList.get(0),true,discount,taxPercentage);
-                Intent intent = new Intent(PaymentMethodsActivity.this, SellItemsActivity.class);
-                startActivity(intent);
+                redirectToMainPage();
             }
             else{
                 generateOrderNumber();
@@ -715,10 +714,32 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                     confirmPaymentBtn.setText("Print Card Holder copy");
                 }
                 else {
-                    Intent intent = new Intent(PaymentMethodsActivity.this, SellItemsActivity.class);
-                    startActivity(intent);
+                    redirectToMainPage();
                 }
             }
+    }
+
+    private void redirectToMainPage(){
+        new android.support.v7.app.AlertDialog.Builder(PaymentMethodsActivity.this)
+                .setTitle("Leave")
+                .setMessage("Do you wish to keep same flight?")
+                .setIcon(android.R.drawable.ic_dialog_alert)
+                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        SaveSharedPreference.setStringValues(PaymentMethodsActivity.this,Constants.SHARED_PREFERENCE_KEEP_SAME_FLIGHT,"yes");
+                        Intent intent = new Intent(PaymentMethodsActivity.this, GateUserMainActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface dialog, int whichButton) {
+                        Intent intent = new Intent(PaymentMethodsActivity.this, GateUserMainActivity.class);
+                        startActivity(intent);
+                    }
+                }).show();
+
     }
 
     private void generateOrderNumber(){

@@ -32,9 +32,9 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     //LinearLayout syncPreOrderLayout;
     //LinearLayout defineCartNumbersLayout;
     POSDBHandler handler;
-    List<String> kitCode;
+    //List<String> kitCode;
     long mExitTime = 0;
-    Set<String> serviceType;
+    //Set<String> serviceType;
     //LinearLayout preOrderPackLayout;
 
     @Override
@@ -49,8 +49,8 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         //defineCartNumbersLayout = (LinearLayout) findViewById(R.id.defineCartNumbers);
         //preOrderPackLayout = findViewById(R.id.packPreOrderLayout);
         handler = new POSDBHandler(this);
-        kitCode = POSCommonUtils.availableKitCodes(this);
-        serviceType = POSCommonUtils.getServiceTypeKitCodeMap(this).keySet();
+        //kitCode = POSCommonUtils.availableKitCodes(this);
+        //serviceType = POSCommonUtils.getServiceTypeKitCodeMap(this).keySet();
         registerLayoutClickEvents();
         //disablePackPreOrderLayout(false);
         String deviceId = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_DEVICE_ID);
@@ -167,8 +167,8 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     }
 
     private void addAdminSeals() {
-        String noOfSealsStr = handler.getNoOfSealsFromKitCodes(kitCode);
-        SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_NO_OF_SEAL, noOfSealsStr);
+        //String noOfSealsStr = handler.getNoOfSealsFromKitCodes(kitCode);
+        //SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_NO_OF_SEAL, noOfSealsStr);
         Intent intent = new Intent(this, SelectServiceTypeForSealActivity.class);
         intent.putExtra("parent","VerifyFlightByAdminActivity");
         startActivity(intent);

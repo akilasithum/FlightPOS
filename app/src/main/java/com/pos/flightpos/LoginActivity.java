@@ -77,13 +77,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
         String flightUserName = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FA_NAME);
         if(flightUserName != null && flightUserName.length() != 0){
-            Intent intent = new Intent(this, AttendendMainActivity.class);
+            Intent intent = new Intent(this, GateUserMainActivity.class);
             startActivity(intent);
             return;
         }
         String canAttLogin = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_CAN_ATT_LOGIN);
         if(canAttLogin != null && canAttLogin.equals("yes")){
             Intent intent = new Intent(this, FlightAttendentLogin.class);
+            startActivity(intent);
+            return;
+        }
+
+        boolean isSyncPressed = "true".equals(SaveSharedPreference.getStringValues(this,"syncKeyPressed"));
+        if(isSyncPressed){
+            Intent intent = new Intent(this, GateUserMainActivity.class);
             startActivity(intent);
             return;
         }

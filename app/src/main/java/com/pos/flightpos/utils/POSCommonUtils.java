@@ -351,6 +351,35 @@ public class POSCommonUtils {
         return catList;
     }
 
+    public static Map<String, String> getBagCatList() {
+
+        Map<String, String> catList = new HashMap<>();
+        catList.put("Gate check free", "icon_gate_check_free");
+        catList.put("Gate check paid", "icon_gate_check_paid");
+        catList.put("Over wgt Bags", "icon_over_wgt_bags");
+        catList.put("Checked Bags", "icon_check_bag");
+        return catList;
+    }
+
+    public static Map<String, String> getUpgradeCatList() {
+
+        Map<String, String> catList = new HashMap<>();
+        catList.put("Economy - Business", "economy__business");
+        catList.put("Economy - Premium", "economy__premium");
+        catList.put("Premium - Business", "premium__business");
+        return catList;
+    }
+
+    public static Map<String, String> getTransportCatList() {
+
+        Map<String, String> catList = new HashMap<>();
+        catList.put("Shuttle", "icon_shuttle");
+        catList.put("Taxi", "taxi_zone_1");
+        catList.put("Rail", "rail");
+        catList.put("Bus", "icon_bus");
+        return catList;
+    }
+
     public static Document loadXMLFromString(String xml) {
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();

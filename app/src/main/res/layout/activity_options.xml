@@ -4,9 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:paddingLeft="30dp"
-    android:paddingRight="30dp"
-    android:paddingTop="100dp"
+    android:paddingTop="30dp"
     android:weightSum="1">
 
     <TableLayout
@@ -16,157 +14,156 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
             <LinearLayout
-                android:id="@+id/uploadDataLayout"
+                android:id="@+id/refundLayout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="10dp"
+                android:layout_margin="35dp"
                 android:clickable="true"
                 android:orientation="vertical"
                 android:background="@drawable/textinputborder"
-                android:padding="20dp">
+                android:padding="5dp">
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
+                    android:background="@drawable/icon_refund"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_upload"
                     android:textSize="20dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:layout_gravity="center"
-                    android:text="Upload Sales Data"
-                    android:textSize="25dp" />
-            </LinearLayout>
-        </TableRow>
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <LinearLayout
-                android:id="@+id/syncLayout"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:clickable="true"
-                android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:padding="20dp">
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/icon_synchronize"
-                    android:textSize="20dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_gravity="center"
-                    android:text="Sync"
-                    android:textSize="25dp" />
-            </LinearLayout>
-        </TableRow>
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <LinearLayout
-                android:id="@+id/changeBaseStation"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:clickable="true"
-                android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:padding="20dp">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/icon_open_flight"
+                    android:text="Refunds"
                     android:textSize="20dp" />
 
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/voidOrderLayout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="35dp"
+                android:orientation="vertical"
+                android:background="@drawable/textinputborder"
+                android:clickable="true"
+                android:padding="5dp">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/icon_cancel_order"
+                    android:layout_gravity="center"
+                    android:textSize="20dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:text="Void Options"
                     android:layout_gravity="center"
-                    android:text="Change Base Station"
-                    android:textSize="25dp" />
+                    android:textSize="20dp" />
             </LinearLayout>
         </TableRow>
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
             <LinearLayout
-                android:id="@+id/adminLogutLayout"
+                android:id="@+id/printTransactionsLayout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:clickable="true"
+                android:layout_margin="35dp"
                 android:orientation="vertical"
                 android:background="@drawable/textinputborder"
+                android:clickable="true"
+                android:padding="5dp">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/icon_printer"
+                    android:layout_gravity="center"
+                    android:textSize="20dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_gravity="center"
+                    android:text="Print Transactions"
+                    android:textSize="20dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/salesReportsLayout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="35dp"
+                android:orientation="vertical"
+                android:background="@drawable/textinputborder"
+                android:clickable="true"
+                android:padding="5dp">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_gravity="center"
+                    android:background="@drawable/icon_report"
+                    android:textSize="20dp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
+                    android:layout_gravity="center"
+                    android:text="Sales Reports"
+                    android:textSize="20dp" />
+            </LinearLayout>
+        </TableRow>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+            <LinearLayout
+                android:id="@+id/logoutLayout"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_margin="35dp"
+                android:orientation="vertical"
+                android:background="@drawable/textinputborder"
+                android:clickable="true"
+                android:padding="5dp"
                 android:paddingTop="20dp">
+
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
-                    android:background="@drawable/icon_logout"
                     android:layout_gravity="center"
+                    android:background="@drawable/icon_logout"
                     android:textSize="20dp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:text="Logout"
                     android:layout_gravity="center"
-                    android:text="Admin Logout"
-                    android:textSize="25dp" />
+                    android:textSize="20dp" />
             </LinearLayout>
-        </TableRow>
-        <!--<TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <Button
-                android:id="@+id/goToICCardBrn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="card reader"
-                android:textStyle="bold" />
-        </TableRow>-->
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:clickable="true"
+                android:layout_margin="35dp"
                 android:orientation="vertical"
-                android:paddingTop="70dp">
+                android:padding="5dp">
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
-                    android:layout_weight="21"
                     android:text=""
+                    android:layout_gravity="center"
                     android:textSize="20dp" />
-                <ImageButton
-                    android:id="@+id/backPressBtn"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="50dp"
-                    android:layout_margin="10dp"
-                    android:layout_gravity="center_horizontal|right"
-                    android:background="@drawable/icon_right_arrow"
-                    android:layout_weight="1"
-                    android:clickable="true" />
             </LinearLayout>
-
         </TableRow>
     </TableLayout>
 </LinearLayout>

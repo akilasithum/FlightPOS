@@ -64,13 +64,13 @@ public class POSDBHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS Users (Username VARCHAR,Password VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS Users (Username VARCHAR,Password VARCHAR,userRole VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS flights (flightName VARCHAR,flightFrom VARCHAR," +
                 "flightTo VARCHAR,sectors VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS items (itemNo VARCHAR,itemName VARCHAR,itemHHC VARCHAR,category VARCHAR," +
                 "catCode VARCHAR,catlogNo VARCHAR,price VARCHAR," +
-                "paxDiscPrice VARCHAR,staffDiscPrice VARCHAR,delist VARCHAR,dfsrOrder VARCHAR,serviceType VARCHAR,scPrice VARCHAR," +
-                "baseCurrency VARCHAR,basePrice VARCHAR,secondCurrency VARCHAR,secondPrice VARCHAR,activeDate VARCHAR,weight VARCHAR);");
+                "paxDiscPrice VARCHAR,staffDiscPrice VARCHAR,delist VARCHAR,dfsrOrder VARCHAR,scPrice VARCHAR," +
+                "baseCurrency VARCHAR,basePrice VARCHAR,secondCurrency VARCHAR,secondPrice VARCHAR,activeDate VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS KITList (equipmentNo VARCHAR,itemNo VARCHAR," +
                 "itemDescription VARCHAR,quantity VARCHAR,drawer VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS KITNumberList (kitCode VARCHAR,kitDesc VARCHAR," +
@@ -80,7 +80,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS drawerValidation (equipmentNo VARCHAR," +
                 "drawer VARCHAR,isValidated VARCHAR,userMode VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS dailySales (orderNumber VARCHAR,itemNo VARCHAR," +
-                "equipmentNo VARCHAR,drawer VARCHAR,quantity VARCHAR,serviceType VARCHAR," +
+                "quantity VARCHAR," +
                 "totalPrice VARCHAR,buyerType VARCHAR,sellarName VARCHAR,date VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS currency (currencyCode VARCHAR,currencyDesc VARCHAR," +
                 "currencyRate VARCHAR, currencyType VARCHAR,priorityOrder VARCHAR,effectiveDate VARCHAR);");
@@ -97,7 +97,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS paymentMethods (orderNumber VARCHAR,paymentType VARCHAR," +
                 "amount VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS orderMainDetails (orderNumber VARCHAR,tax VARCHAR," +
-                "discount VARCHAR, seatNo VARCHAR,subTotal VARCHAR,serviceType VARCHAR,flightId VARCHAR);");
+                "discount VARCHAR, subTotal VARCHAR,flightId VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS creditCardDetails (orderNumber VARCHAR,creditCardNumber VARCHAR," +
                 "cardHolderName VARCHAR, expireDate VARCHAR , amount VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS loyaltyCardDetails (orderNumber VARCHAR,loyaltyCardNumber VARCHAR," +
@@ -115,6 +115,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 "flightFrom VARCHAR,flightTo VARCHAR,paxCount VARCHAR,businessClassPaxCount VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS SIFDetails (sifNo VARCHAR,deviceId VARCHAR,packedFor VARCHAR," +
                 "packedDateTime VARCHAR,crewOpenedDateTime VARCHAR,crewClosedDateTime VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS orderPassengerDetails (orderNumber VARCHAR,passangerName VARCHAR,pnrNo VARCHAR," +
+                "seatNo VARCHAR,email VARCHAR,flightName VARCHAR,flightDate VARCHAR);");
     }
 
     public void clearTable(){
@@ -148,6 +150,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.execSQL("delete from preOrderItems");
         db.execSQL("delete from sealDetails");
         db.execSQL("delete from posFlights");
+        db.execSQL("delete from orderPassengerDetails");
         db.close();
         resetDrawerValidation();
     }
@@ -274,6 +277,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.execSQL("delete from orderMainDetails where orderNumber ='"+orderId+"'");
         db.execSQL("delete from paymentMethods where orderNumber ='"+orderId+"'");
         db.execSQL("delete from creditCardDetails where orderNumber ='"+orderId+"'");
+        db.execSQL("delete from orderPassengerDetails where orderNumber ='"+orderId+"'");
         db.close();
     }
 
@@ -284,11 +288,19 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void insertDailySalesEntry(String orderNumber,String itemNo,String serviceType,String equipmentNo,String drawer,
+    public void insertDailySalesEntry(String orderNumber,String itemNo,
                                       String quantity,String total,String buyerType,String sellerId,String date){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("INSERT INTO dailySales VALUES('"+orderNumber+"','"+itemNo+"','"+equipmentNo+"','"+drawer+"','"
-                +quantity+"','"+serviceType+"', '"+total+"','"+buyerType+"','"+sellerId+"','"+date+"');");
+        db.execSQL("INSERT INTO dailySales VALUES('"+orderNumber+"','"+itemNo+"','"
+                +quantity+"', '"+total+"','"+buyerType+"','"+sellerId+"','"+date+"');");
+        db.close();
+    }
+
+    public void insertPassengerDetails(String orderNumber,String passengerName,
+                                       String pnrNumber,String seatNo,String email,String flightDate,String flightName){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("INSERT INTO orderPassengerDetails VALUES('"+orderNumber+"','"+passengerName+"','"
+                +pnrNumber+"', '"+seatNo+"','"+email+"','"+flightName+"','"+flightDate+"');");
         db.close();
     }
 
@@ -329,10 +341,10 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return items;
     }
 
-    public void insertOrderMainDetails(String orderNumber,String tax,String discount,String seatNo,String subTotal,String serviceType,String flightId){
+    public void insertOrderMainDetails(String orderNumber,String tax,String discount,String subTotal,String flightId){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("INSERT INTO orderMainDetails VALUES('"+orderNumber+"','"+tax+"','"+discount+"'" +
-                ",'"+seatNo+"','"+subTotal+"','"+serviceType+"','"+flightId+"');");
+                ",'"+subTotal+"','"+flightId+"');");
         db.close();
     }
 
@@ -346,9 +358,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 details.setOrderNumber(cursor.getString(cursor.getColumnIndex("orderNumber")));
                 details.setTax(cursor.getString(cursor.getColumnIndex("tax")));
                 details.setDiscount(cursor.getString(cursor.getColumnIndex("discount")));
-                details.setSeatNo(cursor.getString(cursor.getColumnIndex("seatNo")));
                 details.setSubTotal(cursor.getString(cursor.getColumnIndex("subTotal")));
-                details.setServiceType(cursor.getString(cursor.getColumnIndex("serviceType")));
                 details.setFlightId(cursor.getString(cursor.getColumnIndex("flightId")));
                 cursor.moveToNext();
             }
@@ -369,9 +379,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 details.setOrderNumber(cursor.getString(cursor.getColumnIndex("orderNumber")));
                 details.setTax(cursor.getString(cursor.getColumnIndex("tax")));
                 details.setDiscount(cursor.getString(cursor.getColumnIndex("discount")));
-                details.setSeatNo(cursor.getString(cursor.getColumnIndex("seatNo")));
                 details.setSubTotal(cursor.getString(cursor.getColumnIndex("subTotal")));
-                details.setServiceType(cursor.getString(cursor.getColumnIndex("serviceType")));
                 details.setFlightId(cursor.getString(cursor.getColumnIndex("flightId")));
                 orderDetails.add(details);
                 cursor.moveToNext();
@@ -517,8 +525,6 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 item.setItemId(cursor.getString(cursor.getColumnIndex("itemNo")));
                 item.setPrice(cursor.getString(cursor.getColumnIndex("totalPrice")));
                 item.setQuantity(cursor.getString(cursor.getColumnIndex("quantity")));
-                item.setEquipmentNo(cursor.getString(cursor.getColumnIndex("equipmentNo")));
-                item.setDrawer(cursor.getString(cursor.getColumnIndex("drawer")));
                 items.add(item);
                 cursor.moveToNext();
             }
@@ -561,7 +567,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
             JSONArray itemsArr = data.getJSONArray("user");
             List<User> comboDiscounts = gson.fromJson(itemsArr.toString(), new TypeToken<List<User>>(){}.getType());
             for(User user : comboDiscounts){
-                db.execSQL("INSERT INTO Users VALUES('"+user.getUserName()+"','"+user.getPassword()+"');");
+                db.execSQL("INSERT INTO Users VALUES('"+user.getUserName()+"','"+user.getPassword()+"','"+user.getUserRole()+"');");
             }
             db.close();
             return true;
@@ -638,9 +644,9 @@ public class POSDBHandler extends SQLiteOpenHelper {
                         "('"+item.getItemCode()+"' ,'"+item.getItemName()+"','"+item.getItemHHC()+"'," +
                         "'"+item.getCategory()+"','"+item.getCatCode()+"','"+item.getCatlogNo()+"','"+item.getPrice()+"'," +
                         "'"+item.getPaxDiscPrice()+"','"+item.getStaffDiscPrice()+"','"+item.getDelist()+"'," +
-                        "'"+item.getDfsrOrder()+"','"+item.getServiceType()+"','"+item.getScPrice()+"'," +
+                        "'"+item.getDfsrOrder()+"','"+item.getScPrice()+"'," +
                         "'"+item.getBaseCurrency()+"','"+item.getBasePrice()+"','"+item.getSecondCurrency()+"'," +
-                        "'"+item.getSecondPrice()+"','"+item.getActiveDate()+"','"+item.getWeight()+"');");
+                        "'"+item.getSecondPrice()+"','"+item.getActiveDate()+"');");
             }
             db.close();
         }
@@ -1031,11 +1037,11 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
-    public boolean isLoginSuccess(String userName, String password){
+    public boolean isLoginSuccess(String userName, String password,String userRole){
         SQLiteDatabase db = this.getReadableDatabase();
         try {
             Cursor res = db.rawQuery("select * from Users where " +
-                    "Username='" + userName + "' and Password='" + password + "'", null);
+                    "Username='" + userName + "' and Password='" + password + "' and userRole = '"+userRole+"'", null);
 
             int rowCount = res.getCount();
             db.close();
@@ -1333,6 +1339,33 @@ public class POSDBHandler extends SQLiteOpenHelper {
                     item.setPrice(cursor.getString(cursor.getColumnIndex("price")));
                     item.setEquipmentNo(cursor.getString(cursor.getColumnIndex("equipmentNo")));
                     item.setDrawer(cursor.getString(cursor.getColumnIndex("drawer")));
+                    itemList.add(item);
+                    cursor.moveToNext();
+                }
+            }
+            db.close();
+            cursor.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+        return itemList;
+    }
+
+    public List<SoldItem> getItemListFromItemCategory(String category){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<SoldItem> itemList = new ArrayList<>();
+        try {
+            Cursor cursor = db.rawQuery("SELECT * FROM items WHERE category = '"+category+"'" , null);
+
+            if (cursor.moveToFirst()){
+                while(!cursor.isAfterLast()){
+                    SoldItem item = new SoldItem();
+                    item.setItemId(cursor.getString(cursor.getColumnIndex("itemNo")));
+                    item.setItemDesc(cursor.getString(cursor.getColumnIndex("itemName")));
+                    item.setPrice(cursor.getString(cursor.getColumnIndex("price")));
                     itemList.add(item);
                     cursor.moveToNext();
                 }

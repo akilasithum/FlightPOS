@@ -11,6 +11,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,35 +30,34 @@ import java.util.List;
 
 public class ConfigureFlightActivity extends AppCompatActivity {
 
-    MultiSelectionSpinner equipmentSpinner;
     POSDBHandler handler;
     TextView flightFrom;
     TextView flightTo;
     Button submitBtn;
     Spinner flightDateSpinner;
     EditText flightListTextView;
+    String category;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_configure_flight);
         handler = new POSDBHandler(this);
-        equipmentSpinner =  findViewById(R.id.equipmentNumber);
-        flightFrom = (TextView) findViewById(R.id.fromTextField);
-        flightTo = (TextView) findViewById(R.id.toTextField);
-        flightDateSpinner = (Spinner) findViewById(R.id.flightDateSpinner);
+        flightFrom = findViewById(R.id.fromTextField);
+        flightTo =  findViewById(R.id.toTextField);
+        flightDateSpinner =  findViewById(R.id.flightDateSpinner);
         flightListTextView =  findViewById(R.id.flightList);
         flightFrom.setEnabled(false);
         flightTo.setEnabled(false);
-        submitBtn = (Button) findViewById(R.id.submitBtn);
+        submitBtn =  findViewById(R.id.submitBtn);
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 clickSubmitBtn();
             }
         });
+        category = getIntent().getStringExtra("category").toString();
         populateDateField();
-        loadEquipmentNumbers();
         flightListTextView.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -79,25 +79,13 @@ public class ConfigureFlightActivity extends AppCompatActivity {
 
             }
         });
-    }
-
-    private void loadEquipmentNumbers(){
-
-        /*List<KitNumber> options=new ArrayList<>();
-        List<KitNumber> equipmentList = posdbHandler.getKITCodeList();
-        KitNumber item = new KitNumber();
-        options.add(item);
-        options.addAll(equipmentList);
-        ArrayAdapter<KitNumber> adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,options);
-        adapter.setDropDownViewResource(R.layout.spinner_item);
-        equipmentSpinner.setAdapter(adapter);*/
-
-        equipmentSpinner= findViewById(R.id.equipmentNumber);
-        List<KitNumber> equipmentList = handler.getKITCodeList();
-        List<String> list = new ArrayList<>();
-        //list.add("");
-        for(KitNumber kitNumber : equipmentList)list.add(kitNumber.getKitCode());
-        equipmentSpinner.setItems(list);
+        ImageButton backButton = findViewById(R.id.backPressBtn);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     private void populateDateField(){
@@ -126,7 +114,6 @@ public class ConfigureFlightActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Invalid flight number",
                     Toast.LENGTH_SHORT).show();
         }
-
     }
 
     private void clearFlightFromToDetails(){
@@ -138,25 +125,17 @@ public class ConfigureFlightActivity extends AppCompatActivity {
         if(flightDateSpinner.getSelectedItem() != null && !flightDateSpinner.getSelectedItem().equals("") &&
                 flightListTextView.getText() != null && flightListTextView.getText().toString() != null
                 && !flightListTextView.getText().toString().equals("") && flightFrom.getText() != null &&
-                !flightFrom.getText().toString().equals("") && equipmentSpinner.getSelectedItem() != null &&
-                ! equipmentSpinner.getSelectedItem().equals("")) {
-            Intent intent = new Intent(this, VerifyFlightByAdminActivity.class);
-            String kitNumber = String.valueOf(equipmentSpinner.getSelectedItem());
-            String[] kitCodes = kitNumber.split(",");
-            String kitCode = "";
-            for(int i =0;i<kitCodes.length;i++){
-                kitCode += kitCodes[i].trim()+",";
-            }
-            SaveSharedPreference.setStringValues(this,
-                    Constants.SHARED_PREFERENCE_KIT_CODE,kitCode.substring(0,kitCode.length()-1));
+                !flightFrom.getText().toString().equals("")) {
+            Intent intent = new Intent(this, UserDetailsActivity.class);
             SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME,
                     flightListTextView.getText().toString());
             SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_DATE,
                     flightDateSpinner.getSelectedItem().toString());
-            SaveSharedPreference.setStringValues(this,Constants.SHARED_ADMIN_CONFIGURE_FLIGHT,"yes");
-            startActivity(intent);
             String deviceId = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_DEVICE_ID);
             handler.updateSIFDetails("packedFor",flightListTextView.getText().toString(),deviceId);
+            intent.putExtra("category",category);
+            SaveSharedPreference.removeValue(this,Constants.SHARED_PREFERENCE_KEEP_SAME_FLIGHT);
+            startActivity(intent);
         }
         else{
             Toast.makeText(getApplicationContext(), "Please fill required details.",

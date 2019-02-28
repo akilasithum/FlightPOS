@@ -16,14 +16,12 @@ public class Item {
     private String staffDiscPrice;
     private String delist;
     private String dfsrOrder;
-    private String serviceType;
     private String scPrice;
     private String baseCurrency;
     private String basePrice;
     private String secondCurrency;
     private String secondPrice;
     private String activeDate;
-    private String Weight;
     private String quantity;
 
     public String getItemNo() {
@@ -122,14 +120,6 @@ public class Item {
         this.dfsrOrder = dfsrOrder;
     }
 
-    public String getServiceType() {
-        return serviceType;
-    }
-
-    public void setServiceType(String serviceType) {
-        this.serviceType = serviceType;
-    }
-
     public String getScPrice() {
         return scPrice;
     }
@@ -176,14 +166,6 @@ public class Item {
 
     public void setActiveDate(String activeDate) {
         this.activeDate = activeDate;
-    }
-
-    public String getWeight() {
-        return Weight;
-    }
-
-    public void setWeight(String weight) {
-        Weight = weight;
     }
 
     public String getQuantity() {
