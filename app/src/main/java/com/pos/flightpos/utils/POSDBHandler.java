@@ -72,7 +72,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 "paxDiscPrice VARCHAR,staffDiscPrice VARCHAR,delist VARCHAR,dfsrOrder VARCHAR,serviceType VARCHAR,scPrice VARCHAR," +
                 "baseCurrency VARCHAR,basePrice VARCHAR,secondCurrency VARCHAR,secondPrice VARCHAR,activeDate VARCHAR,weight VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS KITList (equipmentNo VARCHAR,itemNo VARCHAR," +
-                "itemDescription VARCHAR,quantity VARCHAR,drawer VARCHAR);");
+                "itemDescription VARCHAR,quantity VARCHAR,drawer VARCHAR,originalQty VARCHER);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS KITNumberList (kitCode VARCHAR,kitDesc VARCHAR," +
                 "serviceType VARCHAR,activeDate VARCHAR,noOfEq VARCHAR,equipment VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS equipmentType (equipmentNo VARCHAR,equipmentDesc VARCHAR," +
@@ -661,7 +661,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 if(item.getItemNo() != null && !item.getItemNo().isEmpty()) {
                     db.execSQL("INSERT INTO KITList VALUES" +
                             "('" + item.getEquipmentNo() + "','" + item.getItemNo() + "','" + item.getItemDescription() + "'," +
-                            "'" + item.getQuantity() + "','" + item.getDrawer() + "');");
+                            "'" + item.getQuantity() + "','" + item.getDrawer() + "','" + item.getQuantity() + "');");
                 }
             }
             db.close();
