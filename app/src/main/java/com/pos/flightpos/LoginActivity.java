@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         boolean isSyncPressed = "true".equals(SaveSharedPreference.getStringValues(this,"syncKeyPressed"));
         if(isSyncPressed){
-            Intent intent = new Intent(this, GateUserMainActivity.class);
+            Intent intent = new Intent(this, FlightAttendentLogin.class);
             startActivity(intent);
             return;
         }
