@@ -25,6 +25,7 @@ public class Item {
     private String activeDate;
     private String Weight;
     private String quantity;
+    private String nfcTag;
 
     public String getItemNo() {
         return itemNo;
@@ -192,6 +193,14 @@ public class Item {
 
     public void setQuantity(String quantity) {
         this.quantity = quantity;
+    }
+
+    public String getNfcTag() {
+        return nfcTag;
+    }
+
+    public void setNfcTag(String nfcTag) {
+        this.nfcTag = nfcTag;
     }
 
     @Override

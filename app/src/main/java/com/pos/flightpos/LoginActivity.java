@@ -49,7 +49,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * TODO: remove after connecting to a real authentication system.
      */
     private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "admin:At100@", "readUser:readUser"
+            "admin:admin", "readUser:readUser"
     };
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;

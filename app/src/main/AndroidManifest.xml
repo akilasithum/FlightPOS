@@ -10,10 +10,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.NFC" />
-    <uses-feature android:name="android.hardware.nfc" android:required="true" />
+
+    <uses-feature
+        android:name="android.hardware.nfc"
+        android:required="true" />
 
     <application
         android:allowBackup="true"
@@ -124,11 +127,12 @@
         <activity android:name=".NFCReader">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
+
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/plain" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".LoadPreOrderAdminActivity"
             android:label="Pack Pre Orders" />
@@ -147,7 +151,8 @@
         <activity
             android:name=".SelectServiceTypeForSealActivity"
             android:label="Select Service type" />
-        <activity android:name=".UploadSalesDataActivity"></activity>
+        <activity android:name=".UploadSalesDataActivity" />
+        <activity android:name=".Main2Activity"></activity>
     </application>
 
 </manifest>

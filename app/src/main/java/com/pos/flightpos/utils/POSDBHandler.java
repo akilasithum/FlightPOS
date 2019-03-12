@@ -70,7 +70,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS items (itemNo VARCHAR,itemName VARCHAR,itemHHC VARCHAR,category VARCHAR," +
                 "catCode VARCHAR,catlogNo VARCHAR,price VARCHAR," +
                 "paxDiscPrice VARCHAR,staffDiscPrice VARCHAR,delist VARCHAR,dfsrOrder VARCHAR,serviceType VARCHAR,scPrice VARCHAR," +
-                "baseCurrency VARCHAR,basePrice VARCHAR,secondCurrency VARCHAR,secondPrice VARCHAR,activeDate VARCHAR,weight VARCHAR);");
+                "baseCurrency VARCHAR,basePrice VARCHAR,secondCurrency VARCHAR,secondPrice VARCHAR,activeDate VARCHAR,weight VARCHAR,nfcTag VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS KITList (equipmentNo VARCHAR,itemNo VARCHAR," +
                 "itemDescription VARCHAR,quantity VARCHAR,drawer VARCHAR,originalQty VARCHER);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS KITNumberList (kitCode VARCHAR,kitDesc VARCHAR," +
@@ -640,7 +640,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
                         "'"+item.getPaxDiscPrice()+"','"+item.getStaffDiscPrice()+"','"+item.getDelist()+"'," +
                         "'"+item.getDfsrOrder()+"','"+item.getServiceType()+"','"+item.getScPrice()+"'," +
                         "'"+item.getBaseCurrency()+"','"+item.getBasePrice()+"','"+item.getSecondCurrency()+"'," +
-                        "'"+item.getSecondPrice()+"','"+item.getActiveDate()+"','"+item.getWeight()+"');");
+                        "'"+item.getSecondPrice()+"','"+item.getActiveDate()+"','"+item.getWeight()+"','"+item.getNfcTag()+"');");
             }
             db.close();
         }
@@ -670,6 +670,21 @@ public class POSDBHandler extends SQLiteOpenHelper {
         catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public Item getItemFromNFCTag(String nfcTag){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from items where nfcTag = '"+nfcTag+"'", null);
+        Item item = new Item();
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                item.setItemCode(cursor.getString(cursor.getColumnIndex("itemNo")));
+                item.setItemName(cursor.getString(cursor.getColumnIndex("itemName")));
+                item.setPrice(cursor.getString(cursor.getColumnIndex("price")));
+                item.setCategory(cursor.getString(cursor.getColumnIndex("category")));
+            }
+        }
+        return item;
     }
 
     private void insertDrawerValidation(){

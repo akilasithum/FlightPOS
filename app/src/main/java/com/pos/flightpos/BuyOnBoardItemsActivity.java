@@ -1,6 +1,7 @@
 package com.pos.flightpos;
 
 import android.app.Dialog;
+import android.app.Notification;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -35,20 +36,17 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.amazonaws.util.StringUtils;
-import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.SoldItem;
+import com.pos.flightpos.objects.XMLMapper.Item;
 import com.pos.flightpos.objects.XMLMapper.Promotion;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
-import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.Serializable;
-import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -106,6 +104,8 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 showNFCDetails();
+                /*Intent intent = new Intent(BuyOnBoardItemsActivity.this, Main2Activity.class);
+                startActivity(intent);*/
             }
         });
         //setItemCatClickListeners();
@@ -132,12 +132,12 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
             }
         });
         final byte[] data = new byte[1024];
-
         new Thread(){
             public void run() {
                 int ret = -1;
-                while(true)
-                {
+                Calendar c = Calendar.getInstance();
+                long startTime = c.getTimeInMillis();
+                while(Calendar.getInstance().getTimeInMillis()<startTime+10000){
                     ret = nfc.seek(data);
                     if(ret >= 0)
                     {
@@ -149,17 +149,30 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
                                 string1 += str;
                             }
                         }
+                        nfc.close();
                         dia.dismiss();
                         setData(string1);
                         break;
                     }
                 }
+                nfc.close();
+                dia.dismiss();
+
             }
         }.start();
     }
 
     private void setData(final String str){
-
+        Item item = handler.getItemFromNFCTag(str);
+        List<SoldItem> itemList = handler.getItemListFromItemCategory(item.getCategory(),getKitCodes());
+        SoldItem selectedItem = null;
+        for(SoldItem soldItem : itemList){
+            if(soldItem.getItemDesc().equals(item.getItemName())){
+                selectedItem = soldItem;
+                return;
+            }
+        }
+        clickSubmitBtn(selectedItem,true);
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -413,7 +426,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         discountDialog.show();
     }
 
-    private void clickSubmitBtn(final SoldItem item){
+    private void clickSubmitBtn(final SoldItem item,boolean isNFC){
         if(item == null || item.equals("")){
             Toast.makeText(getApplicationContext(), "select item first.",
                     Toast.LENGTH_SHORT).show();
@@ -529,7 +542,9 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         drawer.setVisibility(View.GONE);
         tr.addView(drawer);
 
-        tr.addView(lookupBtn);
+        if(isNFC) {
+            tr.addView(lookupBtn);
+        }
         tr.addView(removeItemBtn);
 
         subtotal += total;
@@ -548,9 +563,13 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         subTotalView.setText(String.valueOf(subtotal));
     }
 
-    private void populateItemImages(String selectedCat){
+    private String getKitCodes(){
         List<String> kitCodes = POSCommonUtils.getServiceTypeKitCodeMap(this).get(serviceType);
-        String kitCodesStr = POSCommonUtils.getCommaSeparateStrFromList(kitCodes);
+       return POSCommonUtils.getCommaSeparateStrFromList(kitCodes);
+    }
+
+    private void populateItemImages(String selectedCat){
+        String kitCodesStr = getKitCodes();
         List<SoldItem> itemList = handler.getItemListFromItemCategory(selectedCat,kitCodesStr);
         LinearLayout innerLayout = (LinearLayout) findViewById(R.id.innerLay);
         innerLayout.removeAllViews();
@@ -566,7 +585,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
             layout.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View view) {
-                    clickSubmitBtn(item);
+                    clickSubmitBtn(item,false);
                 }
             });
 
