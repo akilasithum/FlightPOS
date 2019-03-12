@@ -78,7 +78,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         contentTable = (TableLayout) findViewById(R.id.contentTable);
         subTotalView = (TextView)  findViewById(R.id.subTotalTextView);
         seatNumber = (EditText) findViewById(R.id.seatNumber);
-        rfidValue = findViewById(R.id.rfidValue);
+        //rfidValue = findViewById(R.id.rfidValue);
         purchaseItemsBtn = (Button) findViewById(R.id.purchaseItems);
         purchaseItemsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -172,13 +172,19 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
                 return;
             }
         }
-        clickSubmitBtn(selectedItem,true);
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                rfidValue.setText(str);
-            }
-        });
+        if(selectedItem != null) {
+            clickSubmitBtn(selectedItem, true);
+            /*runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    rfidValue.setText(str);
+                }
+            });*/
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "No item available for the NFC tag",
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void loadItemCategoryImages(){
