@@ -397,8 +397,8 @@ public class PrintJob {
         printer.setFontHeightZoomIn(4);
         printer.printString(destination);
         printer.setAlignment(0);
-        printer.setFontwidthZoomIn(1);
-        printer.setFontHeightZoomIn(1);
+        printer.setFontwidthZoomIn(2);
+        printer.setFontHeightZoomIn(2);
         printer.printString(" ");
         printer.setBold(false);
         printer.printString(name);
