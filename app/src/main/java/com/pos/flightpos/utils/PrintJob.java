@@ -354,7 +354,7 @@ public class PrintJob {
         printer.printString(" ");
         printer.setBold(true);
         printer.printString("Operated Staff");
-        printer.printString(SaveSharedPreference.getStringValues(context, Constants.SHARED_PREFERENCE_ADMIN_USER));
+        printer.printString(SaveSharedPreference.getStringValues(context, Constants.SHARED_PREFERENCE_FA_NAME));
         printer.printString(dateTimeFormat.format(date));
         printer.printString(" ");
         printer.printString(" ");
@@ -367,5 +367,51 @@ public class PrintJob {
         String flightNo = SaveSharedPreference.getStringValues(context,Constants.SHARED_PREFERENCE_FLIGHT_NAME);
         Flight flight = handler.getFlightFromFlightName(flightNo);
         return flightNo + " " + flight.getFlightFrom() +"-"+flight.getFlightTo();
+    }
+
+    public static boolean printBaggageTag(Context context,String destination,String name,String PNR, String flightNo){
+        Printer printer = new Printer();
+        printer.open();
+        int printerStatus = printer.queState();
+        if(printerStatus == 1){
+            Toast.makeText(context, "Paper is not available. Please insert some papers.",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if(printerStatus == 2){
+            Toast.makeText(context, "Printer is too hot. Please wait.",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        Toast.makeText(context, "Printing started. Please wait.",
+                Toast.LENGTH_SHORT).show();
+
+        printer.init();
+        printer.setAlignment(1);
+        printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 200, 70);
+        printer.printString(" ");
+        printer.printCODE128("20160601");
+        printer.printString(" ");
+        printer.setBold(true);
+        printer.setFontwidthZoomIn(4);
+        printer.setFontHeightZoomIn(4);
+        printer.printString(destination);
+        printer.setAlignment(0);
+        printer.setFontwidthZoomIn(1);
+        printer.setFontHeightZoomIn(1);
+        printer.printString(" ");
+        printer.setBold(false);
+        printer.printString(name);
+        printer.printString(PNR);
+        Date date = new Date();
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        printer.printString(df.format(date));
+        printer.printString(flightNo);
+        printer.printString(" ");
+        printer.printString(" ");
+        printer.printString(" ");
+        printer.printString(" ");
+        printer.close();
+        return true;
     }
 }

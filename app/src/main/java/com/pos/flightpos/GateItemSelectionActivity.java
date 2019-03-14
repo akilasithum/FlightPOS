@@ -121,6 +121,7 @@ public class GateItemSelectionActivity extends AppCompatActivity {
         args.putSerializable("soldItemList",(Serializable)soldItems);
         intent.putExtra("BUNDLE",args);
         intent.putExtra("discount",discount);
+        intent.putExtra("category",category);
         startActivity(intent);
     }
 

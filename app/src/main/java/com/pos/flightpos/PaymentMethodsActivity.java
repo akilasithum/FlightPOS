@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.CreditCard;
+import com.pos.flightpos.objects.Flight;
 import com.pos.flightpos.objects.LoyaltyCard;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.XMLMapper.Currency;
@@ -71,6 +72,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     Button cancelSaleBtn;
     float discountFromVoucher = 0;
     TextView subTotalTextView;
+    String category;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +86,6 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         confirmPaymentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
                 if(confirmPaymentBtn.getText().equals("Confirm Payment")) {
                     Float dispDueBalance = Float.parseFloat(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
                     if (dispDueBalance <= 0.1) {
@@ -113,6 +114,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         soldItems = (ArrayList<SoldItem>) args.getSerializable("soldItemList");
         String subTotal = intent.getExtras().get("subTotal").toString();
         discount = intent.getExtras().get("discount").toString();
+        category = intent.getExtras().get("category").toString();
         String serviceType = POSCommonUtils.getServiceType(this);
         TableRow totalTextRow = findViewById(R.id.totalTextRow);
         TableRow taxTextRow = findViewById(R.id.serviceTaxRow);
@@ -720,6 +722,32 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     }
 
     private void redirectToMainPage(){
+        if(category.equalsIgnoreCase("Bags")){
+            new android.support.v7.app.AlertDialog.Builder(PaymentMethodsActivity.this)
+                    .setTitle("Print baggage tag")
+                    .setMessage("Do you wants print baggage tag?")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            printBaggageTag();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            redirect();
+                        }
+                    }).show();
+        }
+        else{
+            redirect();
+        }
+
+
+    }
+
+    private void redirect(){
         new android.support.v7.app.AlertDialog.Builder(PaymentMethodsActivity.this)
                 .setTitle("Leave")
                 .setMessage("Do you wish to keep same flight?")
@@ -739,7 +767,21 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 }).show();
+    }
 
+    private void printBaggageTag(){
+        String  userDetails = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_USER_DETAILS);
+        String[] detailsArr = userDetails.split("==");
+        String flightNo = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME);
+        Flight flight = handler.getFlightFromFlightName(flightNo);
+        String flightTo = flight.getFlightTo();
+        if(flightTo.length() > 3){
+            flightTo = flightTo.substring(0,3);
+        }
+        for(int i = 0 ;i<soldItems.size();i++) {
+            PrintJob.printBaggageTag(this, flightTo, detailsArr[0], detailsArr[1], flightNo);
+        }
+        redirect();
     }
 
     private void generateOrderNumber(){
