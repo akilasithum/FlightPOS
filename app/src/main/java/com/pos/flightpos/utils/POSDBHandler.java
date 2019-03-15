@@ -838,6 +838,29 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
+    public boolean insertPreOrders(String xml){
+        try {
+        JSONObject jsonObj  = XML.toJSONObject(xml);
+        Gson gson = new Gson();
+        JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("items");
+        JSONArray itemsArr = data.getJSONArray("item");
+        List<PreOrderItem> preOrders = gson.fromJson(itemsArr.toString(), new TypeToken<List<PreOrder>>(){}.getType());
+        SQLiteDatabase db = this.getWritableDatabase();
+            for(PreOrderItem item : preOrders){
+                db.execSQL("INSERT INTO preOrderItems VALUES" +
+                        "('"+item.getPreOrderId()+"','"+item.getItemNo()+"','"+item.getCategory()+"'," +
+                        "'"+item.getQuantity()+"','Not Delivered','');");
+            }
+
+            db.close();
+            return true;
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean insertPreOrders(Context context){
         SQLiteDatabase db = this.getWritableDatabase();
         try {

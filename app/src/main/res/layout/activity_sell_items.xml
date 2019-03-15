@@ -1,276 +1,301 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:paddingTop="30dp"
-    android:weightSum="1">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AttendendMainActivity">
 
-    <TableLayout
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        <TableRow
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:paddingTop="30dp"
+        android:weightSum="1">
+
+        <TableLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <LinearLayout
-                android:id="@+id/buyOnBoardItems"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:clickable="true"
-                android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:padding="5dp">
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/icon_buy_onboard"
-                    android:layout_gravity="center"
-                    android:textSize="20dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <LinearLayout
+                    android:id="@+id/buyOnBoardItems"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_margin="10dp"
-                    android:layout_gravity="center"
-                    android:text="Buy On Board"
-                    android:textSize="20dp" />
+                    android:layout_weight="1"
+                    android:background="@drawable/textinputborder"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
-            </LinearLayout>
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_buy_onboard"
+                        android:textSize="20dp" />
 
-            <LinearLayout
-                android:id="@+id/dutyPaidItems"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:clickable="true"
-                android:padding="5dp">
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/icon_duty_paid"
-                    android:layout_gravity="center"
-                    android:textSize="20dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:text="Buy On Board"
+                        android:textSize="20dp" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/dutyPaidItems"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_margin="10dp"
-                    android:text="Duty Paid"
-                    android:layout_gravity="center"
-                    android:textSize="20dp" />
-            </LinearLayout>
+                    android:layout_weight="1"
+                    android:background="@drawable/textinputborder"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_duty_paid"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:text="Duty Paid"
+                        android:textSize="20dp" />
+                </LinearLayout>
 
 
-        </TableRow>
-        <TableRow
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <LinearLayout
+                    android:id="@+id/dutyFreeItems"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/textinputborder"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_duty_free"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:text="Duty Free"
+                        android:textSize="20dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/virtualInventory"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/textinputborder"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_virtual_inventory"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:text="Virtual Inventory"
+                        android:textSize="20dp" />
+                </LinearLayout>
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <LinearLayout
+                    android:id="@+id/preOrderDelivery"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/textinputborder"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_pre_order"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:text="Manage Pre Order"
+                        android:textSize="20dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/voidOrder"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/textinputborder"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_cancel_order"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:text="Change Order"
+                        android:textSize="20dp" />
+                </LinearLayout>
+            </TableRow>
+        </TableLayout>
+
+        <TableLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <LinearLayout
-                android:id="@+id/dutyFreeItems"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:clickable="true"
-                android:padding="5dp">
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/icon_duty_free"
-                    android:layout_gravity="center"
-                    android:textSize="20dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <LinearLayout
+                    android:id="@+id/exchangeRates"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_margin="10dp"
-                    android:layout_gravity="center"
-                    android:text="Duty Free"
-                    android:textSize="20dp" />
-            </LinearLayout>
+                    android:layout_weight="1"
+                    android:background="@drawable/textinputborder"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp"
+                    android:paddingTop="20dp">
 
-            <LinearLayout
-                android:id="@+id/virtualInventory"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:clickable="true"
-                android:padding="5dp">
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/icon_virtual_inventory"
-                    android:textSize="20dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_exchange_rates"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:text="Exchange Rates"
+                        android:textSize="20dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/announcements"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_margin="10dp"
-                    android:layout_gravity="center"
-                    android:text="Virtual Inventory"
-                    android:textSize="20dp" />
-            </LinearLayout>
-        </TableRow>
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <LinearLayout
-                android:id="@+id/preOrderDelivery"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:clickable="true"
-                android:padding="5dp">
+                    android:layout_weight="1"
+                    android:background="@drawable/textinputborder"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/icon_pre_order"
-                    android:textSize="20dp" />
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_announcements"
+                        android:textSize="20dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:text="Announcements"
+                        android:textSize="20dp" />
+                </LinearLayout>
+
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <LinearLayout
+                    android:id="@+id/closeFlight"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
                     android:layout_margin="10dp"
-                    android:layout_gravity="center"
-                    android:text="Manage Pre Order"
-                    android:textSize="20dp" />
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/voidOrder"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:clickable="true"
-                android:padding="5dp">
+                    android:layout_weight="1"
+                    android:background="@drawable/textinputborder"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
 
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/icon_cancel_order"
-                    android:textSize="20dp" />
+                    <ImageView
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/icon_close_flight"
+                        android:textSize="20dp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_gravity="center"
-                    android:text="Change Order"
-                    android:textSize="20dp" />
-            </LinearLayout>
-        </TableRow>
-    </TableLayout>
-
-    <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <LinearLayout
-                android:id="@+id/exchangeRates"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:clickable="true"
-                android:padding="5dp"
-                android:paddingTop="20dp">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/icon_exchange_rates"
-                    android:textSize="20dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Exchange Rates"
-                    android:layout_gravity="center"
-                    android:textSize="20dp" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/announcements"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:clickable="true"
-                android:padding="5dp">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/icon_announcements"
-                    android:textSize="20dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:text="Announcements"
-                    android:layout_gravity="center"
-                    android:textSize="20dp" />
-            </LinearLayout>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="10dp"
+                        android:text="Close Flight"
+                        android:textSize="20dp" />
+                </LinearLayout>
 
 
-        </TableRow>
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <LinearLayout
-                android:id="@+id/closeFlight"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:clickable="true"
-                android:padding="5dp">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="center"
-                    android:background="@drawable/icon_close_flight"
-                    android:textSize="20dp" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_gravity="center"
-                    android:text="Close Flight"
-                    android:textSize="20dp" />
-            </LinearLayout>
-
-
-        </TableRow>
-    </TableLayout>
-</LinearLayout>
+            </TableRow>
+        </TableLayout>
+    </LinearLayout>
+</ScrollView>

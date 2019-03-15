@@ -50,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
         if(parent == null || parent.isEmpty() || !parent.equals("SelectModeActivity") || parent.equals("UploadSalesDataActivity")){
             uploadLayout.setVisibility(View.GONE);
         }
+        else{
+
+        }
 
         LinearLayout syncLayout = (LinearLayout) findViewById(R.id.syncLayout);
         syncLayout.setOnClickListener(new View.OnClickListener() {

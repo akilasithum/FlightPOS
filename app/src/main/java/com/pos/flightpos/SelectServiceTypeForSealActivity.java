@@ -31,6 +31,14 @@ public class SelectServiceTypeForSealActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+
+        ImageButton forwardBtn = findViewById(R.id.forwardPressBtn);
+        forwardBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     private void registerLayoutClickEvents(){

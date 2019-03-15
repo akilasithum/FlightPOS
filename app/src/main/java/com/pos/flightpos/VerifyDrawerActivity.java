@@ -55,7 +55,7 @@ public class VerifyDrawerActivity extends AppCompatActivity {
         rowIndex = intent.getExtras().get("rowIndex").toString();
         TextView drawerNameText = (TextView) findViewById(R.id.drawerNameText);
         drawerNameText.setText("Verify " +drawerName);
-        LinearLayout verifyDrawerBtn = (LinearLayout) findViewById(R.id.verifyDrawerBtn);
+        Button verifyDrawerBtn =  findViewById(R.id.verifyDrawerBtn);
         //if(!parent.equals("VerifyFlightByAdminActivity")) {
             verifyDrawerBtn.setOnClickListener(new View.OnClickListener() {
                 @Override

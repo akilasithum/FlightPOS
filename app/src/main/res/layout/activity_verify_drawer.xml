@@ -101,7 +101,13 @@
                 android:layout_height="wrap_content"
                 android:text="Add a Remark" />
 
-            <LinearLayout
+            <Button
+                android:id="@+id/verifyDrawerBtn"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:text="Click here to verify" />
+
+            <!--<LinearLayout
                 android:id="@+id/verifyDrawerBtn"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -122,7 +128,7 @@
                     android:paddingLeft="10dp"
                     android:text="Click here to verify"
                     android:textSize="25dp" />
-            </LinearLayout>
+            </LinearLayout>-->
 
             <ImageButton
                 android:id="@+id/backPressBtn"
