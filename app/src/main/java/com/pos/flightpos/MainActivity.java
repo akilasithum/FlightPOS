@@ -39,6 +39,15 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        LinearLayout syncLayout = (LinearLayout) findViewById(R.id.syncLayout);
+        syncLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, SyncActivity.class);
+                startActivity(intent);
+            }
+        });
+
         LinearLayout uploadLayout = findViewById(R.id.uploadDataLayout);
         uploadLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -49,19 +58,14 @@ public class MainActivity extends AppCompatActivity {
         });
         if(parent == null || parent.isEmpty() || !parent.equals("SelectModeActivity") || parent.equals("UploadSalesDataActivity")){
             uploadLayout.setVisibility(View.GONE);
+            syncLayout.setVisibility(View.VISIBLE);
         }
         else{
-
+            syncLayout.setVisibility(View.GONE);
+            uploadLayout.setVisibility(View.VISIBLE);
         }
 
-        LinearLayout syncLayout = (LinearLayout) findViewById(R.id.syncLayout);
-        syncLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, SyncActivity.class);
-                startActivity(intent);
-            }
-        });
+
 
         LinearLayout adminLogoutLayout = (LinearLayout) findViewById(R.id.adminLogutLayout);
         adminLogoutLayout.setOnClickListener(new View.OnClickListener() {

@@ -677,12 +677,12 @@ public class POSDBHandler extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery("select * from items where nfcTag = '"+nfcTag+"'", null);
         Item item = new Item();
         if (cursor.moveToFirst()){
-            while(!cursor.isAfterLast()){
+           // while(!cursor.isAfterLast()){
                 item.setItemCode(cursor.getString(cursor.getColumnIndex("itemNo")));
                 item.setItemName(cursor.getString(cursor.getColumnIndex("itemName")));
                 item.setPrice(cursor.getString(cursor.getColumnIndex("price")));
                 item.setCategory(cursor.getString(cursor.getColumnIndex("category")));
-            }
+           // }
         }
         return item;
     }

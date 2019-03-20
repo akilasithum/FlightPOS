@@ -401,7 +401,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                     creditCard.setExpireDate(expiryDate.getText().toString());
                     creditCard.setPaidAmount(Float.parseFloat(amount.getText().toString()));
                     creditCardList.add(creditCard);
-                    addPaymentMethodToTable("Credit Card", "USD", "1", amount.getText().toString(), amount.getText().toString());
+                    addPaymentMethodToTable("Credit Card", "CAD", "1", amount.getText().toString(), amount.getText().toString());
                     closeMSR();
                     dialog.dismiss();
                     cancelSaleBtn.setVisibility(View.GONE);
@@ -600,13 +600,13 @@ public class PaymentMethodsActivity extends AppCompatActivity {
 
     private String getAmountInUSD(Currency currency, String amount){
         amount.replace(",","");
-        return POSCommonUtils.getTwoDecimalFloatFromFloat(Float.parseFloat(amount) /
+        return POSCommonUtils.getTwoDecimalFloatFromFloat(Float.parseFloat(amount) *
                 Float.parseFloat(currency.getCurrencyRate()));
     }
 
     private String updateAmountBasedOnCurrency(Currency currency,String currentAmount){
         currentAmount.replace(",","");
-        return POSCommonUtils.getTwoDecimalFloatFromFloat(Float.parseFloat(currentAmount) *
+        return POSCommonUtils.getTwoDecimalFloatFromFloat(Float.parseFloat(currentAmount) /
                 Float.parseFloat(currency.getCurrencyRate()));
     }
     private ArrayAdapter<Currency> loadCurrencies(){
@@ -656,14 +656,15 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         value.setLayoutParams(cellParams);
         tr.addView(value);
 
-        TextView usdVal = new TextView(this);
+        /*TextView usdVal = new TextView(this);
         usdVal.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(Float.valueOf(USD)));
         usdVal.setTextSize(15);
         usdVal.setGravity(Gravity.CENTER);
         usdVal.setLayoutParams(cellParams);
-        tr.addView(usdVal);
+        tr.addView(usdVal);*/
 
         dueBalance -= Float.parseFloat(USD);
+        if(dueBalance <= 0.01) dueBalance = 0.00f;
         String dueBalanceStr = POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance);
         if(dueBalanceStr.equals("-0.00")){
             dueBalanceStr = "0.00";

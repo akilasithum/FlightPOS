@@ -152,7 +152,6 @@
             android:name=".SelectServiceTypeForSealActivity"
             android:label="Select Service type" />
         <activity android:name=".UploadSalesDataActivity" />
-        <activity android:name=".Main2Activity"></activity>
     </application>
 
 </manifest>

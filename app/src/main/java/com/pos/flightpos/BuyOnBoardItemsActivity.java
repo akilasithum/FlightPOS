@@ -78,7 +78,6 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         contentTable = (TableLayout) findViewById(R.id.contentTable);
         subTotalView = (TextView)  findViewById(R.id.subTotalTextView);
         seatNumber = (EditText) findViewById(R.id.seatNumber);
-        //rfidValue = findViewById(R.id.rfidValue);
         purchaseItemsBtn = (Button) findViewById(R.id.purchaseItems);
         purchaseItemsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -139,15 +138,20 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
                 long startTime = c.getTimeInMillis();
                 while(Calendar.getInstance().getTimeInMillis()<startTime+10000){
                     ret = nfc.seek(data);
-                    if(ret >= 0)
+                    if(ret >= 0 && ret<=3)
                     {
                         String string1 ="" ;
-                        for (int i = 0; i < data.length; i++) {
-                            //String str = Integer.toHexString(data[i]&0xff);
-                            String str = String.format("%02x",data[i]&0xff);
+                        /*for (int i = 0; i < data.length; i++) {
+                            String str = Integer.toHexString(data[i]&0xff);
+                            //String str = String.format("%02x",data[i]&0xff);
                             if(str != null && !str.equals("00")){
                                 string1 += str;
                             }
+                        }*/
+
+                        for (int i = 1; i < data[0]+1; i++) {
+                            //dat_card += Integer.toHexString(data[i]&0xff);
+                            string1 += String.format("%02x", (data[i]&0xff));
                         }
                         nfc.close();
                         dia.dismiss();
@@ -169,21 +173,27 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         for(SoldItem soldItem : itemList){
             if(soldItem.getItemDesc().equals(item.getItemName())){
                 selectedItem = soldItem;
-                return;
             }
         }
+
         if(selectedItem != null) {
-            clickSubmitBtn(selectedItem, true);
-            /*runOnUiThread(new Runnable() {
+            final SoldItem item1 = selectedItem;
+            runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    rfidValue.setText(str);
+                    clickSubmitBtn(item1, true);
                 }
-            });*/
+            });
         }
         else{
-            Toast.makeText(getApplicationContext(), "No item available for the NFC tag",
-                    Toast.LENGTH_SHORT).show();
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(), "No item available for the NFC tag",
+                            Toast.LENGTH_SHORT).show();
+                }
+            });
+
         }
     }
 
