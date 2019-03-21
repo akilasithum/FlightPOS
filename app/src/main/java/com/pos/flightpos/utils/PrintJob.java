@@ -414,4 +414,55 @@ public class PrintJob {
         printer.close();
         return true;
     }
+
+    public static boolean printVoucherDetails(Context context,String voucherName,String amount,String voucherNo,
+                                              String expireDate,String passngerName){
+        Printer printer = new Printer();
+        printer.open();
+        int printerStatus = printer.queState();
+        if(printerStatus == 1){
+            Toast.makeText(context, "Paper is not available. Please insert some papers.",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if(printerStatus == 2){
+            Toast.makeText(context, "Printer is too hot. Please wait.",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        Toast.makeText(context, "Printing started. Please wait.",
+                Toast.LENGTH_SHORT).show();
+        printer.init();
+        printer.setAlignment(1);
+        printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 200, 70);
+        printer.printString(" ");
+        printer.setBold(true);
+        printer.printString(getFlightDetailsStr(context));
+        Date date = new Date();
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        DateFormat dateTimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss aa");
+        printer.printString(df.format(date));
+        printer.printString(" ");
+        printer.printString(" ");
+        printer.setAlignment(0);
+        String totalAmount = POSCommonUtils.getTwoDecimalFloatFromFloat(Float.parseFloat(amount));
+        int totalAmountLength = totalAmount.length();
+        int spaceLength = 32 - (voucherName.length()+totalAmountLength);
+        printer.printString(voucherName
+                + new String(new char[spaceLength]).replace("\0", " ") + amount);
+        printer.printString("Voucher No : "+voucherNo);
+        printer.printString("Expire on : " + expireDate);
+        printer.printString("Passenger Name : ");
+        printer.printString(passngerName);
+        printer.printString(" ");
+        printer.printString(" ");
+        printer.setBold(true);
+        printer.printString("Operated Staff");
+        printer.printString(SaveSharedPreference.getStringValues(context, Constants.SHARED_PREFERENCE_FA_NAME));
+        printer.printString(dateTimeFormat.format(date));
+        printer.printString(" ");
+        printer.printString(" ");
+        printer.close();
+        return true;
+    }
 }

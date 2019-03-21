@@ -66,9 +66,16 @@ public class UserDetailsActivity extends AppCompatActivity {
             String userDetailsStr = passengerName.getText().toString() + "==" + pnrNo.getText().toString() +"==" +
                     seatNo.getText().toString() +"=="+emailId.getText().toString();
             SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_USER_DETAILS,userDetailsStr);
-            Intent intent = new Intent(this, GateItemSelectionActivity.class);
-            intent.putExtra("category",category);
-            startActivity(intent);
+            if(category.equalsIgnoreCase("compensation")){
+                Intent intent = new Intent(this, ConpensationSelectionActivity.class);
+                startActivity(intent);
+            }
+            else {
+                Intent intent = new Intent(this, GateItemSelectionActivity.class);
+                intent.putExtra("category",category);
+                startActivity(intent);
+            }
+
 
         }
         else{

@@ -7,6 +7,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -53,20 +55,54 @@ public class SyncActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sync);
         syncLayout = (LinearLayout) findViewById(R.id.syncLayout);
-        handler = new POSDBHandler(this);
-        handler.clearTable();
-        ContextWrapper cw = new ContextWrapper(getApplicationContext());
-        File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
-        directory.delete();
-        SaveSharedPreference.setStringValues(this,"syncKeyPressed","true");
-        dia = new ProgressDialog(this);
-        dia.setTitle("Sync");
-        dia.setMessage("POS sync is in progress. Please wait...");
-        dia.show();
-        completedFiles = new ArrayList<>();
-        //downloadData("users");
-        AsyncTask<Void, Void, Void> task = new GetContacts().execute();
+        if(isNetworkAvailable()){
+            handler = new POSDBHandler(this);
+            handler.clearTable();
+            ContextWrapper cw = new ContextWrapper(getApplicationContext());
+            File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
+            directory.delete();
+            SaveSharedPreference.setStringValues(this,"syncKeyPressed","true");
+            dia = new ProgressDialog(this);
+            dia.setTitle("Sync");
+            dia.setMessage("POS sync is in progress. Please wait...");
+            dia.show();
+            completedFiles = new ArrayList<>();
+            //downloadData("users");
+            AsyncTask<Void, Void, Void> task = new GetContacts().execute();
+        }
+        else{
+            new AlertDialog.Builder(SyncActivity.this)
+                    .setTitle("Network not available")
+                    .setMessage("Please switch on wifi.")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            Intent intent = new Intent(SyncActivity.this, MainActivity.class);
+                            intent.putExtra("parent", "");
+                            startActivity(intent);
+                        }}).show();
+        }
+
+
+    }
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivity =(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivity == null) {
+            return false;
+        } else {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null) {
+                for (int i = 0; i < info.length; i++) {
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private String getSIFRequest() {
@@ -92,14 +128,14 @@ public class SyncActivity extends AppCompatActivity {
             completedFiles.add("flights");
             handler.insertItemData(sh.makeServiceCall("items"));
             completedFiles.add("items");
-            handler.insertKITNumbersList(sh.makeServiceCall("kitCodes"));
-            completedFiles.add("kitCodes");
-            handler.insertKITList(sh.makeServiceCall("kitItems"));
-            completedFiles.add("kitItems");
+            //handler.insertKITNumbersList(sh.makeServiceCall("kitCodes"));
+            //completedFiles.add("kitCodes");
+            //handler.insertKITList(sh.makeServiceCall("kitItems"));
+            //completedFiles.add("kitItems");
             handler.insertCurrencyData(sh.makeServiceCall("currencies"));
             completedFiles.add("currencies");
-            handler.insertEquipmentTypeList(sh.makeServiceCall("equipmentType"));
-            completedFiles.add("equipmentType");
+            //handler.insertEquipmentTypeList(sh.makeServiceCall("equipmentType"));
+            //completedFiles.add("equipmentType");
             handler.insertVoucherDetails(sh.makeServiceCall("vouchers"));
             completedFiles.add("vouchers");
             handler.insertComboDiscount(sh.makeServiceCall("promotions"));

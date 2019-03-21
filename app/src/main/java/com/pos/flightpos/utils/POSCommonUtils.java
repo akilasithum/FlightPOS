@@ -66,6 +66,9 @@ public class POSCommonUtils {
         DecimalFormat df = new DecimalFormat();
         df.setMaximumFractionDigits(2);
         String formatStr = df.format(floatVal);
+        if(!formatStr.contains(".")){
+            formatStr = formatStr + ".00";
+        }
         return getTwoDecimalFloatFromString(formatStr);
     }
 

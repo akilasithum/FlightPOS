@@ -95,18 +95,18 @@ public class GateUserMainActivity extends AppCompatActivity {
 
     private void showUserPasswordView(){
 
-        final Dialog cashSettleDialog = new Dialog(this);
-        cashSettleDialog.setContentView(R.layout.activity_manager_login);
-        Window window = cashSettleDialog.getWindow();
+        final Dialog managerLoginDialog = new Dialog(this);
+        managerLoginDialog.setContentView(R.layout.activity_manager_login);
+        Window window = managerLoginDialog.getWindow();
         window.setLayout(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-        cashSettleDialog.setTitle("Manager Login");
+        managerLoginDialog.setTitle("Manager Login");
 
-        final EditText userName = cashSettleDialog.findViewById(R.id.userNameFld);
-        final EditText password = cashSettleDialog.findViewById(R.id.passwordFld);
-        final TextView errorMsgText = cashSettleDialog.findViewById(R.id.errorMsgText);
+        final EditText userName = managerLoginDialog.findViewById(R.id.userNameFld);
+        final EditText password = managerLoginDialog.findViewById(R.id.passwordFld);
+        final TextView errorMsgText = managerLoginDialog.findViewById(R.id.errorMsgText);
 
-        Button okBtn =  cashSettleDialog.findViewById(R.id.submitBtn);
-        Button cancelBtn =  cashSettleDialog.findViewById(R.id.cancelBtn);
+        Button okBtn =  managerLoginDialog.findViewById(R.id.submitBtn);
+        Button cancelBtn =  managerLoginDialog.findViewById(R.id.cancelBtn);
 
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,9 +120,10 @@ public class GateUserMainActivity extends AppCompatActivity {
                 }
                 else {
                     if(handler.isLoginSuccess(userName.getText().toString(),password.getText().toString(),"10")){
-                        Intent intent = new Intent(GateUserMainActivity.this, ConpensationSelectionActivity.class);
+                        Intent intent = new Intent(GateUserMainActivity.this, ConfigureFlightActivity.class);
+                        intent.putExtra("category","compensation");
                         startActivity(intent);
-                        cashSettleDialog.dismiss();
+                        managerLoginDialog.dismiss();
                     }
                     else{
                         errorMsgText.setText("UserName or password is incorrect");
@@ -134,10 +135,10 @@ public class GateUserMainActivity extends AppCompatActivity {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                cashSettleDialog.dismiss();
+                managerLoginDialog.dismiss();
             }
         });
-        cashSettleDialog.show();
+        managerLoginDialog.show();
     }
 
     private void gotoNextView(String category) {

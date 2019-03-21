@@ -117,6 +117,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 "packedDateTime VARCHAR,crewOpenedDateTime VARCHAR,crewClosedDateTime VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS orderPassengerDetails (orderNumber VARCHAR,passangerName VARCHAR,pnrNo VARCHAR," +
                 "seatNo VARCHAR,email VARCHAR,flightName VARCHAR,flightDate VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS compensationVoucher (voucherNo VARCHAR,voucherName VARCHAR,amount VARCHAR," +
+                "expireDate VARCHAR, passangerName VARCHAR,passengerPNR VARCHAR,staffId VARCHAR);");
     }
 
     public void clearTable(){
@@ -160,6 +162,15 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO SIFDetails (sifNo,deviceId) VALUES('"+sifNo+"','"+deviceId+"');");
         db.close();
     }
+
+    public void insertCompensationVouchers(String voucherNo,String voucherName,String amount,String expireDate,
+                                           String passengerName,String passangerPNR,String staffId){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("INSERT INTO compensationVoucher  VALUES('"+voucherNo+"','"+voucherName+"','"+amount+"'" +
+                ",'"+expireDate+"','"+passengerName+"','"+passangerPNR+"','"+staffId+"');");
+        db.close();
+    }
+
     public void updateSIFDetails(String fieldName,String value,String deviceId){
         SQLiteDatabase db = this.getReadableDatabase();
         db.execSQL("update SIFDetails set "+fieldName+" = '"+value+"'" +
