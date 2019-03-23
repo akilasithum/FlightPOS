@@ -16,7 +16,7 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
             <LinearLayout
-                android:id="@+id/voucherLayout"
+                android:id="@+id/flightDelaysLayout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
@@ -29,14 +29,14 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_voucher_payment"
+                    android:background="@drawable/icon_flight_delay"
                     android:textSize="20dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:layout_gravity="center"
-                    android:text="Vouchers"
+                    android:text="Flight Delays"
                     android:textSize="25dp" />
             </LinearLayout>
         </TableRow>

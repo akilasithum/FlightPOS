@@ -119,6 +119,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 "seatNo VARCHAR,email VARCHAR,flightName VARCHAR,flightDate VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS compensationVoucher (voucherNo VARCHAR,voucherName VARCHAR,amount VARCHAR," +
                 "expireDate VARCHAR, passangerName VARCHAR,passengerPNR VARCHAR,staffId VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS voluntoryItemDetails (orderNumber VARCHAR,itemId VARCHAR," +
+                "qty VARCHAR, total VARCHAR, passangerName VARCHAR,flightId VARCHAR,flightDate VARCHAR);");
     }
 
     public void clearTable(){
@@ -153,6 +155,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.execSQL("delete from sealDetails");
         db.execSQL("delete from posFlights");
         db.execSQL("delete from orderPassengerDetails");
+        db.execSQL("delete from compensationVoucher");
+        db.execSQL("delete from voluntoryItemDetails");
         db.close();
         resetDrawerValidation();
     }
@@ -160,6 +164,14 @@ public class POSDBHandler extends SQLiteOpenHelper {
     public void insertSIFDetails(String sifNo,String deviceId){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("INSERT INTO SIFDetails (sifNo,deviceId) VALUES('"+sifNo+"','"+deviceId+"');");
+        db.close();
+    }
+
+    public void insertVoluntaryRemovalItems(String orderNo, String itemId, String qty, String total,
+                                            String passengerName, String flightId, String flightDate){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("INSERT INTO voluntoryItemDetails  VALUES('"+orderNo+"','"+itemId+"','"+qty+"','"+total+"'" +
+                ",'"+passengerName+"','"+flightId+"','"+flightDate+"');");
         db.close();
     }
 

@@ -354,6 +354,25 @@ public class POSCommonUtils {
         return catList;
     }
 
+    public static Map<String, String> getFlightDelaysCatList() {
+
+        Map<String, String> catList = new HashMap<>();
+        catList.put("Meals", "icon_bob_main");
+        catList.put("Hotels", "icon_hotel");
+        catList.put("Transport", "icon_transport");
+        return catList;
+    }
+
+    public static Map<String, String> getVoluntoryCatList() {
+
+        Map<String, String> catList = new HashMap<>();
+        catList.put("Meals", "icon_bob_main");
+        catList.put("Hotels", "icon_hotel");
+        catList.put("Transport", "icon_transport");
+        catList.put("Credit", "icon_credit");
+        return catList;
+    }
+
     public static Map<String, String> getBagCatList() {
 
         Map<String, String> catList = new HashMap<>();

@@ -610,7 +610,6 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         {
             return null;
         }
-
     }
 
     private void populateItemCatField(){

@@ -260,6 +260,68 @@ public class PrintJob {
         return true;
     }
 
+    public static boolean printVoluntaryRemovalReceipt(Context context,String orderNumber,List<SoldItem> soldItems){
+        Printer printer = new Printer();
+        printer.open();
+        int printerStatus = printer.queState();
+        if(printerStatus == 1){
+            Toast.makeText(context, "Paper is not available. Please insert some papers.",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        else if(printerStatus == 2){
+            Toast.makeText(context, "Printer is too hot. Please wait.",
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        Toast.makeText(context, "Printing started. Please wait.",
+                Toast.LENGTH_SHORT).show();
+        printer.init();
+        printer.setAlignment(1);
+        printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 200, 70);
+        printer.printString(" ");
+        printer.setBold(true);
+        printer.printString(getFlightDetailsStr(context));
+        Date date = new Date();
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        DateFormat dateTimeFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss aa");
+        printer.printString(df.format(date));
+        printer.printString("Voucher Details");
+        printer.printString(" ");
+        printer.setAlignment(0);
+        printer.printString("Voucher No : " + orderNumber);
+        printer.printString(" ");
+        float total = 0;
+        for(SoldItem item : soldItems){
+            total += Float.parseFloat(item.getPrice())* Integer.parseInt(item.getQuantity());
+            int itemNameLength = item.getItemDesc().length();
+            String totalAmount = POSCommonUtils.getTwoDecimalFloatFromFloat(
+                    Float.parseFloat(item.getPrice())*Integer.parseInt(item.getQuantity()));
+            int totalAmountLength = totalAmount.length();
+            int spaceLength = 32 - (itemNameLength+totalAmountLength);
+            printer.printString(item.getItemDesc()
+                    + new String(new char[spaceLength]).replace("\0", " ") + totalAmount);
+            printer.printString(item.getItemId() + " Each $" + item.getPrice() +" Complementary");
+        }
+        printer.printString(" ");
+        printer.setAlignment(2);
+        printer.printString("Total : " + POSCommonUtils.getTwoDecimalFloatFromFloat(total));
+        printer.printString(" ");
+        printer.printString(" ");
+        printer.setBold(true);
+        printer.setAlignment(0);
+        printer.printPictureByRelativePath("/res/drawable/barcode.png", 300, 100);
+        printer.printString(" ");
+        printer.printString("Operated Staff");
+        printer.printString(SaveSharedPreference.getStringValues(context, Constants.SHARED_PREFERENCE_FA_NAME));
+        printer.printString(dateTimeFormat.format(date));
+        printer.printString(" ");
+        printer.printString(" ");
+        printer.printString(" ");
+        printer.close();
+        return true;
+    }
+
     public static boolean printOrderDetails(Context context,String orderNumber,String seatNumber, List<SoldItem> soldItems
                        ,Map<String,String> paymentMethodsMap,CreditCard card,boolean isCustomerCopy,
                                             String discount,String taxPercentage){
@@ -293,7 +355,7 @@ public class PrintJob {
         printer.printString(" ");
         printer.printString("Sale transaction");
         printer.setAlignment(0);
-        printer.printString("Order Number : " + orderNumber);
+        printer.printString("Order No : " + orderNumber);
         printer.printString("Seat Number : " + seatNumber);
         float total = 0;
         for(SoldItem item : soldItems){
@@ -390,7 +452,8 @@ public class PrintJob {
         printer.setAlignment(1);
         printer.printPictureByRelativePath(Constants.PRINTER_LOGO_LOCATION, 200, 70);
         printer.printString(" ");
-        printer.printCODE128("20160601");
+        printer.printPictureByRelativePath("/res/drawable/baggage_tag.png", 350, 170);
+        //printer.printCODE128("20160601");
         printer.printString(" ");
         printer.setBold(true);
         printer.setFontwidthZoomIn(4);

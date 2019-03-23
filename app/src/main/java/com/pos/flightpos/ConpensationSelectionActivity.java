@@ -24,11 +24,12 @@ public class ConpensationSelectionActivity extends AppCompatActivity {
     }
 
     private void setLayoutClickListeners(){
-        LinearLayout voucherLayout = findViewById(R.id.voucherLayout);
-        voucherLayout.setOnClickListener(new View.OnClickListener() {
+        LinearLayout flightDelayLayout = findViewById(R.id.flightDelaysLayout);
+        flightDelayLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ConpensationSelectionActivity.this, VoucherDetailsActivity.class);
+                Intent intent = new Intent(ConpensationSelectionActivity.this, RemovalComponsationActivity.class);
+                intent.putExtra("voluntaryType","flightDelay");
                 startActivity(intent);
             }
         });
@@ -37,7 +38,8 @@ public class ConpensationSelectionActivity extends AppCompatActivity {
         involuntaryRemovalLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ConpensationSelectionActivity.this, VoucherDetailsActivity.class);
+                Intent intent = new Intent(ConpensationSelectionActivity.this, RemovalComponsationActivity.class);
+                intent.putExtra("voluntaryType","involuntaryRemoval");
                 startActivity(intent);
             }
         });
@@ -46,7 +48,8 @@ public class ConpensationSelectionActivity extends AppCompatActivity {
         voluntaryRemovalLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ConpensationSelectionActivity.this, VoucherDetailsActivity.class);
+                Intent intent = new Intent(ConpensationSelectionActivity.this, RemovalComponsationActivity.class);
+                intent.putExtra("voluntaryType","voluntaryRemoval");
                 startActivity(intent);
             }
         });

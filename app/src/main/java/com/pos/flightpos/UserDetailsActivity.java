@@ -5,10 +5,14 @@ import android.content.Intent;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListAdapter;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
@@ -26,6 +30,7 @@ public class UserDetailsActivity extends AppCompatActivity {
     EditText emailId;
     Button submitBtn;
     String category;
+    boolean isEmailSuggested = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +61,7 @@ public class UserDetailsActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        suggestEmailAddress();
     }
 
     private void clickSubmitBtn(){
@@ -82,6 +88,42 @@ public class UserDetailsActivity extends AppCompatActivity {
             Toast.makeText(getApplicationContext(), "Please fill required details.",
                     Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void suggestEmailAddress(){
+        emailId.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+                if(s != null && s.toString().contains("@")) {
+                    String[] str = s.toString().split("@");
+                    if(str.length > 1 && str[1].length() == 1 && !isEmailSuggested){
+                        if(str[1].equalsIgnoreCase("g")){
+                            emailId.setText(s.toString()+"mail.com");
+                            isEmailSuggested = true;
+                        }
+                        else if(str[1].equalsIgnoreCase("y")){
+                            emailId.setText(s.toString()+"ahoo.com");
+                            isEmailSuggested = true;
+                        }
+                        else if(str[1].equalsIgnoreCase("o")){
+                            emailId.setText(s.toString()+"utlook.com");
+                            isEmailSuggested = true;
+                        }
+                    }
+                }
+
+            }
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 
     private void populateSeatNumberFromBoardingPass(){
