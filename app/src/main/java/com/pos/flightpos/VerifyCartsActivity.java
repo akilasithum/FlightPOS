@@ -3,16 +3,21 @@ package com.pos.flightpos;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.XMLMapper.KITItem;
@@ -58,14 +63,16 @@ public class VerifyCartsActivity extends AppCompatActivity {
         TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
                 TableRow.LayoutParams.WRAP_CONTENT);
 
+        cellParams1.setMargins(0,0,0,15);
         int cartCount = 0;
         for (final Map.Entry map : drawerKitItemMap.entrySet()) {
 
             cartCount++;
             TableRow tr = new TableRow(this);
-            tr.setLayoutParams(new TableRow.LayoutParams(
+            TableRow.LayoutParams trp = new TableRow.LayoutParams(
                     TableRow.LayoutParams.MATCH_PARENT,
-                    TableRow.LayoutParams.WRAP_CONTENT));
+                    TableRow.LayoutParams.WRAP_CONTENT);
+            tr.setLayoutParams(trp);
 
             LinearLayout linearLayout = new LinearLayout(this);
             linearLayout.setLayoutParams(cellParams1);
@@ -94,16 +101,64 @@ public class VerifyCartsActivity extends AppCompatActivity {
                     (int) (yourBitmap.getHeight() * 0.2), true);
             imageView.setImageBitmap(resized);
 
-            TextView textView = new TextView(this);
+            /*TextView textView = new TextView(this);
             textView.setLayoutParams(cellParams1);
             textView.setText("Cart " + cartCount);
             textView.setGravity(Gravity.CENTER);
-            textView.setTextSize(25);
+            textView.setTextSize(25);*/
 
+            LinearLayout.LayoutParams mRparams = new LinearLayout.LayoutParams
+                    (60, 60);
+
+            final EditText myEditText = new EditText(this);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                    TableRow.LayoutParams.MATCH_PARENT,
+                    TableRow.LayoutParams.WRAP_CONTENT,1);
+            myEditText.setLayoutParams(params);
+            Button button = new Button(this);
+            button.setLayoutParams(mRparams);
+            button.setPadding(30,0,0,0);
+            button.setBackground(getResources().getDrawable(R.drawable.icon_barcode_reader));
+            button.setClickable(true);
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    setBarcodeValue(myEditText,map.getKey().toString());
+                }
+            });
+            myEditText.setText(posdbHandler.getBarcodeFromEquipmentType(map.getKey().toString()));
+            myEditText.getBackground().setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
+            myEditText.setTextSize(40);
+
+            TableLayout tableLayout = new TableLayout(this);
+
+            LinearLayout llh=new LinearLayout(this);
+            llh.setOrientation(LinearLayout.HORIZONTAL);
+            llh.setPadding(10,10,10,10);
+            llh.addView(myEditText);
+            llh.addView(button);
+            tableLayout.addView(llh);
             linearLayout.addView(imageView);
-            linearLayout.addView(textView);
+            linearLayout.addView(tableLayout);
             tr.addView(linearLayout);
             cartsTable.addView(tr);
+        }
+    }
+
+    private void setBarcodeValue(TextView textView,String equipmentType){
+        String barcode = POSCommonUtils.scanBarCode(this);
+        if(posdbHandler.isCartNumberEntered(barcode)) {
+            if(posdbHandler.getBarcodeFromEquipmentType(equipmentType).isEmpty()) {
+                posdbHandler.insertCartNumbers(equipmentType, barcode);
+            }
+            else{
+                posdbHandler.updateCartNumber(equipmentType, barcode);
+            }
+            textView.setText(barcode);
+        }
+        else{
+            Toast.makeText(getApplicationContext(), "Cart number already scanned.",
+                    Toast.LENGTH_SHORT).show();
         }
     }
 

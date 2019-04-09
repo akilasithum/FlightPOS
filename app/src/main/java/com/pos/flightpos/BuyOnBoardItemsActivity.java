@@ -136,18 +136,42 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
                 int ret = -1;
                 Calendar c = Calendar.getInstance();
                 long startTime = c.getTimeInMillis();
-                while(Calendar.getInstance().getTimeInMillis()<startTime+10000){
+                while(Calendar.getInstance().getTimeInMillis()<startTime+10000) {
                     ret = nfc.seek(data);
-                    if(ret >= 0 && ret<=3)
+                    if(ret >= 0 && ret<=3){
+                    String str = "00,a4,04,00,0e,32,50,41,59,2e,53,59,53,2e,44,44,46,30,31,00";
+                    String temp_str[] = str.split(",");
+                    byte[] out_dat = new byte[1024];
+                    byte[] intbyte_dat = new byte[temp_str.length];
+                    for (int i = 0; i < intbyte_dat.length; i++) {
+                        intbyte_dat[i] = (byte) Integer.parseInt(temp_str[i], 16);
+                    }
+                    nfc.activate();
+                    ret = nfc.exeAPDU(intbyte_dat, out_dat);
+                    if (ret > 0) {
+                        String out_temp = "";
+                        for (int i = 0; i < ret; i++) {
+                            out_temp += String.format("%02x", out_dat[i] & 0xff) + " ";
+                        }
+                        setData(out_temp);
+                    }
+                    else{
+                        setData("");
+                    }
+                        nfc.close();
+                        dia.dismiss();
+                        break;
+                }
+                    /*if(ret >= 0 && ret<=3)
                     {
                         String string1 ="" ;
-                        /*for (int i = 0; i < data.length; i++) {
+                        *//*for (int i = 0; i < data.length; i++) {
                             String str = Integer.toHexString(data[i]&0xff);
                             //String str = String.format("%02x",data[i]&0xff);
                             if(str != null && !str.equals("00")){
                                 string1 += str;
                             }
-                        }*/
+                        }*//*
 
                         for (int i = 1; i < data[0]+1; i++) {
                             //dat_card += Integer.toHexString(data[i]&0xff);
@@ -157,7 +181,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
                         dia.dismiss();
                         setData(string1);
                         break;
-                    }
+                    }*/
                 }
                 nfc.close();
                 dia.dismiss();

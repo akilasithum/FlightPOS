@@ -43,6 +43,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,7 +52,7 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
 
     Button submitBtn;
     Button purchaseItemsBtn;
-    Spinner serviceTypeSpinner;
+    //Spinner serviceTypeSpinner;
     Spinner itemCatSpinner;
     Spinner itemSpinner;
     TableLayout contentTable;
@@ -76,7 +77,7 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accept_pre_orders);
         itemCatSpinner = (Spinner) findViewById(R.id.itemCategorySpinner);
-        serviceTypeSpinner = findViewById(R.id.serviceTypeSpinner);
+        //serviceTypeSpinner = findViewById(R.id.serviceTypeSpinner);
         itemSpinner = (Spinner) findViewById(R.id.itemSpinner);
         submitBtn = (Button) findViewById(R.id.addItemBtn);
         contentTable = (TableLayout) findViewById(R.id.contentTable);
@@ -105,9 +106,13 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
         discountItemList = new ArrayList<>();
         soldItemList = new ArrayList<>();
         handler = new POSDBHandler(getApplicationContext());
-        populateServiceTypes();
+        //populateServiceTypes();
         taxPercentage = findViewById(R.id.taxPercentage);
-        serviceTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        serviceType = getIntent().getExtras().getString("serviceType");
+        populateItemCatField(serviceType);
+
+        itemCatSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override/*serviceTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 populateItemCatField(serviceTypeSpinner.getSelectedItem().toString());
@@ -118,9 +123,7 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
             public void onNothingSelected(AdapterView<?> adapterView) {
 
             }
-        });
-        itemCatSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
+        });*/
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
                 populateItemsFromCat(itemCatSpinner.getSelectedItem().toString());
             }
@@ -277,6 +280,11 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
+        if(!isDateLaterThreeDays(flightDateStr)){
+            Toast.makeText(getApplicationContext(), "Pre order flight date should be three dates later.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         String orderNumber = SaveSharedPreference.getStringValues(this, "orderNumber");
         if (orderNumber != null) {
@@ -296,6 +304,26 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
             redirectToPaymentPage(soldItems, orderNumber);
         }
     }
+
+    private boolean isDateLaterThreeDays(String dateStr){
+
+        try {
+            Date date = new SimpleDateFormat("dd/MM/yyyy").parse(dateStr);
+            Date today = new Date();
+            Calendar c = Calendar.getInstance();
+            c.setTime(today);
+            c.add(Calendar.DATE, 3);
+            if(c.getTime().equals(date) || c.getTime().before(date) ){
+                return true;
+            }
+        }
+        catch (Exception e){
+            return false;
+        }
+
+        return false;
+    }
+
     private void showComboDiscount(final List<SoldItem> soldItems,
                                    final String orderNumber,String discount) {
         new AlertDialog.Builder(AcceptPreOrdersActivity.this)
@@ -553,7 +581,7 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
         itemSpinner.setAdapter(adapter);
     }
 
-    private void populateServiceTypes(){
+    /*private void populateServiceTypes(){
         List<String> options = new ArrayList<String>();
         options.add("");
         options.add("BOB");
@@ -562,7 +590,7 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, options);
         adapter.setDropDownViewResource(R.layout.spinner_item);
         serviceTypeSpinner.setAdapter(adapter);
-    }
+    }*/
 
     private void populateItemCatField(String serviceType) {
 

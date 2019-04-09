@@ -10,7 +10,6 @@ public class Flight {
     private String flightFrom;
     private String flightTo;
     private String sectorStr;
-    private List<Sector> sectorList;
 
     public String getFlightName() {
         return flightName;
@@ -34,14 +33,6 @@ public class Flight {
 
     public void setFlightTo(String flightTo) {
         this.flightTo = flightTo;
-    }
-
-    public List<Sector> getSectorList() {
-        return sectorList;
-    }
-
-    public void setSectorList(List<Sector> sectorList) {
-        this.sectorList = sectorList;
     }
 
     public String getSectorStr() {

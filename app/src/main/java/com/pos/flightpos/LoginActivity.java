@@ -3,10 +3,14 @@ package com.pos.flightpos;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.pt.minilcd.Minilcd;
+import android.os.Handler;
+import android.os.Message;
+import android.pt.minilcd.MiniLcd;
+import android.pt.msr.Msr;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -23,9 +27,11 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +42,7 @@ import com.pos.flightpos.utils.SaveSharedPreference;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -51,13 +58,20 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "admin:admin", "readUser:readUser"
     };
+
+    private static final List<String> BASE_STATIONS = Arrays.asList( new String[] {
+            "YYZ", "YUL", "YOW", "IAD"
+    });
+
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
+    private AutoCompleteTextView  baseStation;
     private View mProgressView;
     private View mLoginFormView;
     Button mEmailSignInButton;
     long mExitTime = 0;
     String parent = null;
+    private Msr msr = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,6 +79,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
         mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
         parent = getIntent().getExtras().getString("parent");
+        //showBootImage();
         try {
             if(isAppExpired()){
                 return;
@@ -123,6 +138,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 return false;
             }
         });
+        baseStation = findViewById(R.id.baseStation);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, BASE_STATIONS);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+        baseStation.setAdapter(adapter);
 
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
@@ -133,6 +153,88 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+        msr = new Msr();
+        //readMSR();
+    }
+
+    private void showBootImage(){
+        MiniLcd minilcd = new MiniLcd ();
+        minilcd.open();
+        minilcd.downloadBootPicture(BitmapFactory.decodeResource(getResources(), R.drawable.pos_img),1);
+    }
+
+    private void closeMSR(){
+         if(msr != null)
+            msr.close();
+    }
+
+    private void readMSR(){
+        msr.open();
+        final Handler handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                // TODO Auto-generated method stub
+
+                if(msg.what == 1){
+                    for(int i = 1; i < 4; i++)
+                    {
+                        if(msr.getTrackError(i) == 0)
+                        {
+                            //Log.i("123", "i:"+i);
+                            byte[] out_data = new byte[msr.getTrackDataLength(i)];
+                            msr.getTrackData(i, out_data);
+                            readMsrData(i,out_data);
+                            return;
+                        }
+                    }
+                }
+                super.handleMessage(msg);
+            }
+        };
+
+        new Thread(){
+            public void run() {
+                int ret = -1;
+                while(true)
+                {
+                    ret = msr.poll(1000);
+                    if(ret == 0)
+                    {
+                        Message msg = new Message();
+                        msg.what    = 1;
+                        handler.sendMessage(msg);
+                        //break;
+                    }
+                }
+            }
+        }.start();
+    }
+
+    private void readMsrData(int i, byte[] out_data){
+        if(i == 1)
+        {
+            String track1Str = new String(out_data);
+            String[] credentials = track1Str.split(" ");
+            if(credentials.length > 3){
+                if(BASE_STATIONS.contains(credentials[1])) {
+                    if (isLoggingSuccessful(credentials[2].toLowerCase(), credentials[3].toLowerCase())) {
+                        setInitialData(credentials[2], credentials[1]);
+                        closeMSR();
+                        return;
+                    } else {
+                        Toast.makeText(this, "Not a valid card.", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else{
+                    baseStation.setError("Base station not found");
+                    baseStation.requestFocus();
+                }
+            }
+            else {
+                Toast.makeText(this, "Not a valid card.", Toast.LENGTH_SHORT).show();
+            }
+            readMSR();
+        }
     }
 
     private boolean isAppExpired() throws ParseException {
@@ -161,6 +263,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String baseStationVal = baseStation.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -172,6 +275,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             cancel = true;
         }
 
+        if (TextUtils.isEmpty(baseStationVal)) {
+            baseStation.setError(getString(R.string.error_field_required));
+            focusView = baseStation;
+            cancel = true;
+        }
+
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -180,24 +289,37 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             //showProgress(true);
-            if(isLoggingSuccessful(email,password)){
-                SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_ADMIN_USER_NAME,email);
-                SaveSharedPreference.setStringValues(this,
-                        Constants.SHARED_PREFERENCE_FLIGHT_MODE,"admin");
-                SaveSharedPreference.removeValue(this,Constants.SHARED_PREFERENCE_FLIGHT_TYPE);
-                SaveSharedPreference.removeValue(this,"adminAdditionalSealList");
-                SaveSharedPreference.removeValue(this,Constants.SHARED_PREFERENCE_SYNC_PRE_ORDERS);
-                SaveSharedPreference.removeValue(this,Constants.SHARED_PREFERENCE_OUT_BOUND_SEAL_LIST);
-                POSDBHandler handler = new POSDBHandler(this);
-                //posdbHandler.clearDailySalesTable();
-                SaveSharedPreference.removeValue(this,"orderNumber");
-                reDirectToMainPage(email);
+            if(BASE_STATIONS.contains(baseStationVal)) {
+                if (isLoggingSuccessful(email, password)) {
+                    setInitialData(email, baseStationVal);
+                } else {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                }
             }
             else{
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
+                baseStation.setError("Base station not found");
+                baseStation.requestFocus();
             }
         }
+    }
+
+    private void setInitialData(String email,String baseStation){
+        if(msr != null){
+            msr.close();
+        }
+        SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_ADMIN_USER_NAME,email);
+        SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_BASE_STATION,baseStation);
+        SaveSharedPreference.setStringValues(this,
+                Constants.SHARED_PREFERENCE_FLIGHT_MODE,"admin");
+        SaveSharedPreference.removeValue(this,Constants.SHARED_PREFERENCE_FLIGHT_TYPE);
+        SaveSharedPreference.removeValue(this,"adminAdditionalSealList");
+        SaveSharedPreference.removeValue(this,Constants.SHARED_PREFERENCE_SYNC_PRE_ORDERS);
+        SaveSharedPreference.removeValue(this,Constants.SHARED_PREFERENCE_OUT_BOUND_SEAL_LIST);
+        POSDBHandler handler = new POSDBHandler(this);
+        //posdbHandler.clearDailySalesTable();
+        SaveSharedPreference.removeValue(this,"orderNumber");
+        reDirectToMainPage(email);
     }
 
     private void reDirectToMainPage(String userName){
@@ -309,6 +431,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_HOME);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            if(msr != null){
+                msr.close();
+            }
             startActivity(intent);
         }
         else

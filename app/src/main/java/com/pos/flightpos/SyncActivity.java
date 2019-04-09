@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -39,6 +40,7 @@ import org.dom4j.Element;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +50,6 @@ public class SyncActivity extends AppCompatActivity {
 
     LinearLayout syncLayout;
     POSDBHandler handler;
-    ProgressDialog dia;
     List<String> completedFiles;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,10 +64,9 @@ public class SyncActivity extends AppCompatActivity {
             File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
             directory.delete();
             SaveSharedPreference.setStringValues(this,"syncKeyPressed","true");
-            dia = new ProgressDialog(this);
-            dia.setTitle("Sync");
-            dia.setMessage("POS sync is in progress. Please wait...");
-            dia.show();
+
+
+
             completedFiles = new ArrayList<>();
             AsyncTask<Void, Void, Void> task = new GetContacts().execute();
         }
@@ -122,8 +122,12 @@ public class SyncActivity extends AppCompatActivity {
             SaveSharedPreference.setStringValues(SyncActivity.this,Constants.SHARED_PREFERENCE_SIF_NO,sifNo);
             handler.insertSIFDetails(sifNo,SaveSharedPreference.getStringValues(SyncActivity.this,Constants.SHARED_PREFERENCE_DEVICE_ID));
 
-            handler.insertFlightData(sh.makeServiceCall("flights"));
+            handler.insertFlightData(sh.makeGetCallWithParams
+                    ("flights","baseStation="+SaveSharedPreference.getStringValues(SyncActivity.this,Constants.SHARED_PREFERENCE_BASE_STATION)));
             completedFiles.add("flights");
+            handler.insertSectors(sh.makeGetCallWithParams
+                    ("sectors","baseStation="+SaveSharedPreference.getStringValues(SyncActivity.this,Constants.SHARED_PREFERENCE_BASE_STATION)));
+            completedFiles.add("sectors");
             handler.insertItemData(sh.makeServiceCall("items"));
             completedFiles.add("items");
             handler.insertKITNumbersList(sh.makeServiceCall("kitCodes"));

@@ -44,7 +44,7 @@ public class SelectPreOrderTypeActivity extends AppCompatActivity {
         acceptOrderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(SelectPreOrderTypeActivity.this, AcceptPreOrdersActivity.class);
+                Intent intent = new Intent(SelectPreOrderTypeActivity.this, SelectServiceTypeForPreOrdersActivity.class);
                 startActivity(intent);
             }
         });

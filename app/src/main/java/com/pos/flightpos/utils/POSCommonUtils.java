@@ -2,19 +2,25 @@ package com.pos.flightpos.utils;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.pt.scan.Scan;
 import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.widget.Toast;
 
+import com.pos.flightpos.UploadSalesDataActivity;
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.Flight;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.XMLMapper.ComboDiscount;
+import com.pos.flightpos.objects.XMLMapper.SIFDetails;
 
+import org.dom4j.DocumentHelper;
+import org.dom4j.Element;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 
@@ -33,6 +39,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 public class POSCommonUtils {
+
+    ProgressDialog dia;
 
     public static String getCreditCardTypeFromFirstDigit(String digit) {
 
@@ -54,6 +62,10 @@ public class POSCommonUtils {
         Date date = new Date();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         return format.format(date);
+    }
+
+    public static String getFlightDateString(Context context){
+        return SaveSharedPreference.getStringValues(context,Constants.SHARED_PREFERENCE_FLIGHT_DATE);
     }
 
     public static String getDateTimeString(){
@@ -239,6 +251,11 @@ public class POSCommonUtils {
         String kitCode = SaveSharedPreference.getStringValues(context, Constants.SHARED_PREFERENCE_KIT_CODE);
         String[] kitCodes = kitCode.split(",");
         return Arrays.asList(kitCodes);
+    }
+
+    public static List<String> getAvailableEquipmentTypes(Context context){
+        POSDBHandler handler = new POSDBHandler(context);
+        return handler.getEquipmentTypesList(availableKitCodes(context));
     }
 
     public static Map<String, List<String>> getServiceTypeKitCodeMap(Context context) {

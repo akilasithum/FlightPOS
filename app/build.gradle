@@ -43,4 +43,6 @@ dependencies {
     implementation files('libs/Scan7003.jar')
     implementation files('libs/nfc7003.jar')
     implementation files('libs/dom4j-1.6.jar')
+    implementation files('libs/minilcd7003.jar')
+    implementation 'pl.droidsonroids.gif:android-gif-drawable:1.2.+'
 }

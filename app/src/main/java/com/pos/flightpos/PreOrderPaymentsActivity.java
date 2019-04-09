@@ -465,13 +465,13 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
         if(orderNumberStr != null){
             int newVal = Integer.parseInt(orderNumberStr) + 1;
             orderNumber = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME).replace(" ","_") +
-                    "_"+POSCommonUtils.getDateString()+"_" + String.valueOf(newVal);
+                    "_"+POSCommonUtils.getFlightDateString(this)+"_" + String.valueOf(newVal);
             SaveSharedPreference.updateValue(this,"orderNumber",newVal+"");
         }
         else{
             SaveSharedPreference.setStringValues(this,"orderNumber","1");
             orderNumber = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME).replace(" ","_") +
-                    "_"+POSCommonUtils.getDateString()+"_" + "1";
+                    "_"+POSCommonUtils.getFlightDateString(this)+"_" + "1";
         }
     }
 }

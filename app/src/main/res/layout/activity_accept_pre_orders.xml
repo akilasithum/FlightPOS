@@ -24,7 +24,7 @@
             android:paddingRight="35dp"
             >
 
-            <TableRow
+            <!--<TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
                 <TextView
@@ -42,7 +42,7 @@
                     android:layout_weight="1"
                     android:paddingRight="30dp"
                     android:textSize="25dp" />
-            </TableRow>
+            </TableRow>-->
             <TableRow
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
