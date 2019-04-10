@@ -1269,30 +1269,115 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
+    public List<Flight> getFlightPairFromFlightName(String flightNo){
+        List<Flight> flightList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        try {
+            Cursor cursor = db.rawQuery("select * from flights where obFlightName = '" + flightNo + "' or ibFlightName = '"+flightNo+"'", null);
+            if (cursor.moveToFirst()){
+                while(!cursor.isAfterLast()){
+                    Flight flight1 = new Flight();
+                    flight1.setFlightId(cursor.getString(cursor.getColumnIndex("flightId")));
+                    flight1.setFlightName(cursor.getString(cursor.getColumnIndex("obFlightName")));
+                    flight1.setFlightFrom(cursor.getString(cursor.getColumnIndex("obFlightFrom")));
+                    flight1.setFlightTo(cursor.getString(cursor.getColumnIndex("obFlightTo")));
+                    flight1.setSectorList(getSectorsFromFlightId(cursor.getString(cursor.getColumnIndex("flightId")),"Outbound"));
+                    flightList.add(flight1);
+
+                    Flight flight2 = new Flight();
+                    flight2.setFlightId(cursor.getString(cursor.getColumnIndex("flightId")));
+                    flight2.setFlightName(cursor.getString(cursor.getColumnIndex("ibFlightName")));
+                    flight2.setFlightFrom(cursor.getString(cursor.getColumnIndex("ibFlightFrom")));
+                    flight2.setFlightTo(cursor.getString(cursor.getColumnIndex("ibFlightTo")));
+                    flight2.setSectorList(getSectorsFromFlightId(cursor.getString(cursor.getColumnIndex("flightId")),"Inbound"));
+                    flightList.add(flight2);
+                    cursor.moveToNext();
+                }
+            }
+            cursor.close();
+        }
+        catch (Exception e){
+            db.close();
+            return null;
+        }
+        db.close();
+        return flightList;
+    }
+
     public Flight getFlightFromFlightName(String flightName){
         Flight flight = new Flight();
         SQLiteDatabase db = this.getReadableDatabase();
         try {
-            Cursor cursor = db.rawQuery("select * from flights where flightName like '%"+flightName+"'", null);
+            Cursor cursor = db.rawQuery("select * from flights where obFlightName like '%"+flightName+"'", null);
+            Cursor cursor1 = db.rawQuery("select * from flights where ibFlightName like '%"+flightName+"'", null);
             if (cursor.moveToFirst()){
                 while(!cursor.isAfterLast()){
-                    flight.setFlightName(cursor.getString(cursor.getColumnIndex("flightName")));
-                    flight.setFlightFrom(cursor.getString(cursor.getColumnIndex("flightFrom")));
-                    flight.setFlightTo(cursor.getString(cursor.getColumnIndex("flightTo")));
-                    flight.setSectorStr(cursor.getString(cursor.getColumnIndex("sectors")));
+                    flight.setFlightId(cursor.getString(cursor.getColumnIndex("flightId")));
+                    flight.setFlightName(cursor.getString(cursor.getColumnIndex("obFlightName")));
+                    flight.setFlightFrom(cursor.getString(cursor.getColumnIndex("obFlightFrom")));
+                    flight.setFlightTo(cursor.getString(cursor.getColumnIndex("obFlightTo")));
+                    flight.setSectorList(getSectorsFromFlightId(cursor.getString(cursor.getColumnIndex("flightId")),"Outbound"));
                     cursor.moveToNext();
                 }
             }
+            else if(cursor1.moveToFirst()){
+                while(!cursor1.isAfterLast()){
+                    flight.setFlightId(cursor1.getString(cursor.getColumnIndex("flightId")));
+                    flight.setFlightName(cursor1.getString(cursor.getColumnIndex("ibFlightName")));
+                    flight.setFlightFrom(cursor1.getString(cursor.getColumnIndex("ibFlightFrom")));
+                    flight.setFlightTo(cursor1.getString(cursor.getColumnIndex("ibFlightTo")));
+                    flight.setSectorList(getSectorsFromFlightId(cursor1.getString(cursor.getColumnIndex("flightId")),"Inbound"));
+                    cursor1.moveToNext();
+                }
+            }
             else{
+                cursor.close();
+                cursor1.close();
+                db.close();
                 return null;
             }
             db.close();
             cursor.close();
+            cursor1.close();
             return flight;
         }
         catch (Exception e){
+            db.close();
             return null;
         }
+    }
+
+    public List<Sector> getSectorsFromFlightId(String flightId,String flightType){
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<Sector> sectors = new ArrayList<>();
+        try {
+            Cursor cursor = db.rawQuery("select * from sectors where flightNo = '"+flightId+"' and flightType = '"+flightType+"'", null);
+            if (cursor.moveToFirst()){
+                while(!cursor.isAfterLast()){
+                    Sector sector = new Sector();
+                    sector.setFlightNo(cursor.getString(cursor.getColumnIndex("flightNo")));
+                    sector.setFrom(cursor.getString(cursor.getColumnIndex("sectorFrom")));
+                    sector.setTo(cursor.getString(cursor.getColumnIndex("sectorTo")));
+                    sector.setSectorType(cursor.getString(cursor.getColumnIndex("sectorType")));
+                    sector.setFlightType(cursor.getString(cursor.getColumnIndex("flightType")));
+                    sectors.add(sector);
+                    cursor.moveToNext();
+                }
+            }
+            else{
+                db.close();
+                cursor.close();
+                return null;
+            }
+            db.close();
+            cursor.close();
+            return sectors;
+        }
+        catch (Exception e){
+            db.close();
+            return null;
+        }
+
     }
 
     public void updateSoldItemQty(String itemNo,String soldQty,String equipmentNo,String drawer){

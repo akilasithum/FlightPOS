@@ -15,26 +15,28 @@ import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.Flight;
-import com.pos.flightpos.objects.XMLMapper.Sector;
+import com.pos.flightpos.objects.Sector;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class AttendendMainActivity extends AppCompatActivity {
 
-    TextView flightFrom;
-    TextView flightTo;
+    //TextView flightFrom;
+    //TextView flightTo;
     Button submitBtn;
     EditText flightDate;
-    EditText flightTextView;
+    //EditText flightTextView;
     TextView eClassPaxCount;
     TextView bClassPaxCount;
     EditText taxPercentage;
     long mExitTime = 0;
     String serviceType;
     Spinner sectorSelectionSpinner;
+    Spinner flightSelectionSpinner;
     TableRow taxPercentageRow;
     POSDBHandler handler;
     String flightName;
@@ -45,10 +47,10 @@ public class AttendendMainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_attendend_main);
         handler = new POSDBHandler(this);
-        flightFrom = (TextView) findViewById(R.id.fromTextField);
-        flightTo = (TextView) findViewById(R.id.toTextField);
+        //flightFrom = (TextView) findViewById(R.id.fromTextField);
+        //flightTo = (TextView) findViewById(R.id.toTextField);
         flightDate = (EditText) findViewById(R.id.flightDateSpinner);
-        flightTextView = (EditText) findViewById(R.id.flightList);
+        //flightTextView = (EditText) findViewById(R.id.flightList);
         eClassPaxCount = (EditText) findViewById(R.id.eClassPaxContField);
         bClassPaxCount = (EditText) findViewById(R.id.bClassPaxContField);
         taxPercentage = findViewById(R.id.taxPercentage);
@@ -61,13 +63,28 @@ public class AttendendMainActivity extends AppCompatActivity {
             }
         });
         sectorSelectionSpinner = findViewById(R.id.sectorSelectionSpinner);
+        flightSelectionSpinner = findViewById(R.id.flightSelectionSpinner);
         taxPercentageRow = findViewById(R.id.taxPercentageRow);
+        flightSelectionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if(flightSelectionSpinner.getSelectedItem() != null && !flightSelectionSpinner.
+                        getSelectedItem().toString().isEmpty()){
+                    addSectorSelection(((Flight)flightSelectionSpinner.getSelectedItem()).getSectorList());
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
         sectorSelectionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 if(sectorSelectionSpinner.getSelectedItem() != null && !sectorSelectionSpinner.
                         getSelectedItem().toString().isEmpty()){
-                    showHideTaxPercentage(((Sector)sectorSelectionSpinner.getSelectedItem()).getType().equalsIgnoreCase("international"));
+                    showHideTaxPercentage(((Sector)sectorSelectionSpinner.getSelectedItem()).getSectorType().equalsIgnoreCase("international"));
                 }
             }
 
@@ -92,23 +109,21 @@ public class AttendendMainActivity extends AppCompatActivity {
     private void setFlightDetails(){
 
         flightName = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FLIGHT_NAME);
-        flightTextView.setText(flightName);
-        flightTextView.setEnabled(false);
+        //flightTextView.setText(flightName);
+        //flightTextView.setEnabled(false);
         flightDateStr = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FLIGHT_DATE);
         flightDate.setText(flightDateStr);
         flightDate.setEnabled(false);
         Flight flight = handler.getFlightFromFlightName(flightName);
-        flightFrom.setText(flight.getFlightFrom());
-        flightTo.setText(flight.getFlightTo());
-        flightFrom.setEnabled(false);
-        flightTo.setEnabled(false);
-        if(flight.getSectorStr() != null && !flight.getSectorStr().isEmpty()){
-            showSectorSelectionSpinner(flight.getSectorStr());
-        }
-        else{
-            TableRow tableRow = findViewById(R.id.sectorRow);
-            tableRow.setVisibility(View.GONE);
-        }
+        List<Flight> flightList = new ArrayList<>();
+        Flight dummyFlight = new Flight();
+        flightList.add(dummyFlight);
+        flightList.addAll(handler.getFlightPairFromFlightName(flightName));
+       // flightFrom.setText(flight.getFlightFrom());
+        //flightTo.setText(flight.getFlightTo());
+        //flightFrom.setEnabled(false);
+        //flightTo.setEnabled(false);
+        showFlightSelectionSpinner(flightList);
         showPaxCount();
     }
 
@@ -123,8 +138,8 @@ public class AttendendMainActivity extends AppCompatActivity {
         }
     }
 
-    private void showSectorSelectionSpinner(String sectors){
-        ArrayList<Sector> options=new ArrayList<>();
+    private void showFlightSelectionSpinner(List<Flight> flights){
+        /*ArrayList<Sector> options=new ArrayList<>();
         Sector sector = new Sector();
         options.add(sector);
         String[] sectorArr = sectors.split(",");
@@ -138,9 +153,14 @@ public class AttendendMainActivity extends AppCompatActivity {
                 sector1.setType(toType[1]);
                 options.add(sector1);
             }
-        }
+        }*/
+        ArrayAdapter<Flight> flightAdapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,flights);
+        flightAdapter.setDropDownViewResource(R.layout.spinner_item);
+        flightSelectionSpinner.setAdapter(flightAdapter);
+    }
 
-        ArrayAdapter<Sector> adapter = new ArrayAdapter<Sector>(this,android.R.layout.simple_spinner_item,options);
+    private void addSectorSelection(List<Sector> sectorList){
+        ArrayAdapter<Sector> adapter = new ArrayAdapter<Sector>(this,android.R.layout.simple_spinner_item,sectorList);
         adapter.setDropDownViewResource(R.layout.spinner_item);
         sectorSelectionSpinner.setAdapter(adapter);
     }
@@ -176,13 +196,14 @@ public class AttendendMainActivity extends AppCompatActivity {
                     return;
                 }
             }
+            flightName = flightSelectionSpinner.getSelectedItem().toString();
             Sector sector = (Sector)sectorSelectionSpinner.getSelectedItem();
             String flightId = flightName.replace(" ","") + "_" +
                     sector.getFrom().substring(0,3) + "_" +sector.getTo().substring(0,3)+"_"+ flightDateStr;
             handler.insertPosFlights(flightId,flightName,flightDateStr,sector.getFrom(),
                     sector.getTo(),eClassPaxCount.getText().toString(),bClassPaxCount.getText().toString());
             SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_ID,flightId);
-
+            SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_FLIGHT_NAME,flightName);
             Intent intent = new Intent(this, AttCheckInfo.class);
             SaveSharedPreference.setStringValues(this,"eClassPaxCount", eClassPaxCount.getText().toString());
             startActivity(intent);

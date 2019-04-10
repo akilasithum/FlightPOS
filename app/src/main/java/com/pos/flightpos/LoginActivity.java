@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
-import android.pt.minilcd.MiniLcd;
 import android.pt.msr.Msr;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -154,14 +153,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
         msr = new Msr();
-        //readMSR();
+        readMSR();
     }
 
-    private void showBootImage(){
+    /*private void showBootImage(){
         MiniLcd minilcd = new MiniLcd ();
         minilcd.open();
         minilcd.downloadBootPicture(BitmapFactory.decodeResource(getResources(), R.drawable.pos_img),1);
-    }
+    }*/
 
     private void closeMSR(){
          if(msr != null)

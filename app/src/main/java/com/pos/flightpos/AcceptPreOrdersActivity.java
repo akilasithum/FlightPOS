@@ -30,10 +30,10 @@ import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.Flight;
+import com.pos.flightpos.objects.Sector;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.XMLMapper.ComboDiscount;
 import com.pos.flightpos.objects.XMLMapper.Promotion;
-import com.pos.flightpos.objects.XMLMapper.Sector;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
@@ -188,16 +188,16 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
             }
         });
     }
-    private void showSectorSelectionSpinner(String sectors){
-        ArrayList<String> options=new ArrayList<String>();
+    private void showSectorSelectionSpinner(List<Sector> options){
+        /*ArrayList<String> options=new ArrayList<String>();
         options.add("");
         String[] sectorArr = sectors.split(",");
         for(int i=0;i<sectorArr.length;i++){
             if(sectorArr[i] != null && !sectorArr[i].isEmpty())
                 options.add(sectorArr[i].replace("+","->"));
-        }
+        }*/
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_spinner_item,options);
+        ArrayAdapter<Sector> adapter = new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,options);
         adapter.setDropDownViewResource(R.layout.spinner_item);
         flightSectorSpinner.setAdapter(adapter);
     }
@@ -211,9 +211,9 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
                 InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
-            if(flight.getSectorStr() != null && !flight.getSectorStr().isEmpty()){
+            if(flight.getSectorList() != null && !flight.getSectorList().isEmpty()){
                 hasSectors = true;
-                showSectorSelectionSpinner(flight.getSectorStr());
+                showSectorSelectionSpinner(flight.getSectorList());
             }
             else{
                 hasSectors = false;

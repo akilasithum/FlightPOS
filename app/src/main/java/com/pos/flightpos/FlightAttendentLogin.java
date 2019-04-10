@@ -88,7 +88,7 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
         mLoginFormView = findViewById(R.id.login_form_att);
         mProgressView = findViewById(R.id.login_progress_att);
         msr = new Msr();
-        readMSR();
+        //readMSR();
     }
 
 

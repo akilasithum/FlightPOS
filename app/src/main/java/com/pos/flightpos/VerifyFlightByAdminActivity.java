@@ -220,7 +220,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
             handler.postRequest(getSIFDetailsXML(),"sifDetails");
             handler.postRequest(getCartNumbers(),"cartNumbers");
             handler.postRequest(getSealDetails(),"sealDetails");
-            handler.postRequest(getOpeningInventory(),"openingInventory");
+            //handler.postRequest(getOpeningInventory(),"openingInventory");
             return null;
         }
 

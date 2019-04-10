@@ -38,7 +38,7 @@
                 android:textSize="20dp" />
         </TableRow>
 
-        <TableRow
+        <!--<TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:paddingTop="10dp">
@@ -58,9 +58,9 @@
                 android:layout_weight="1"
                 android:textColor="@color/black"
                 android:paddingRight="50dp" />
-        </TableRow>
+        </TableRow>-->
 
-        <TableRow
+        <!--<TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:paddingTop="10dp">
@@ -104,6 +104,53 @@
                 android:ems="10"
                 android:textColor="@color/black"
                 android:inputType="textPersonName" />
+        </TableRow>-->
+
+        <TableRow
+            android:id="@+id/flightRow"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingTop="10dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:text="Flight"
+                android:textSize="20dp" />
+
+            <Spinner
+                android:id="@+id/flightSelectionSpinner"
+                android:layout_width="0dp"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+                android:layout_height="wrap_content"
+                android:textSize="40dp"
+                android:layout_weight="1" />
+        </TableRow>
+
+
+        <TableRow
+            android:id="@+id/sectorRow"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingTop="10dp">
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_weight="1"
+                android:text="Flight Sector"
+                android:textSize="20dp" />
+
+            <Spinner
+                android:id="@+id/sectorSelectionSpinner"
+                android:layout_width="0dp"
+                style="@style/Widget.AppCompat.Spinner.Underlined"
+                android:layout_height="wrap_content"
+                android:textSize="40dp"
+                android:layout_weight="1" />
         </TableRow>
 
         <TableRow
@@ -149,29 +196,6 @@
                 android:ems="10"
                 android:inputType="number" />
         </TableRow>
-        <TableRow
-            android:id="@+id/sectorRow"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:paddingTop="10dp">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:text="Flight Sector"
-                android:textSize="20dp" />
-
-            <Spinner
-                android:id="@+id/sectorSelectionSpinner"
-                android:layout_width="0dp"
-                style="@style/Widget.AppCompat.Spinner.Underlined"
-                android:layout_height="wrap_content"
-                android:textSize="40dp"
-                android:layout_weight="1" />
-        </TableRow>
-
         <TableRow
             android:id="@+id/taxPercentageRow"
             android:layout_width="fill_parent"

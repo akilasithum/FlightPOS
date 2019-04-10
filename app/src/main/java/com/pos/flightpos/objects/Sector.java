@@ -47,4 +47,12 @@ public class Sector {
     public void setFlightType(String flightType) {
         this.flightType = flightType;
     }
+
+    @Override
+    public String toString() {
+        if(from == null || from.isEmpty()){
+            return "";
+        }
+        return "from : "+from + " to : "+to;
+    }
 }
