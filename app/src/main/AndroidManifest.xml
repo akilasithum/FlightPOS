@@ -12,7 +12,6 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
-    <uses-permission android:name="android.permission.NFC" />
 
     <uses-feature
         android:name="android.hardware.nfc"
@@ -97,7 +96,7 @@
             android:label="Sell Items" />
         <activity
             android:name=".ConfigureFlightActivity"
-            android:label="Configure Flight" />
+            android:label="Flight Details" />
         <activity
             android:name=".VerifyFlightByAdminActivity"
             android:label="POS Admin verifications" />
@@ -173,7 +172,8 @@
         <activity
             android:name=".VoucherDetailsActivity"
             android:label="Voucher Details" />
-        <activity android:name=".RemovalComponsationActivity"></activity>
+        <activity android:name=".RemovalComponsationActivity"
+            android:label="Compensation"></activity>
     </application>
 
 </manifest>

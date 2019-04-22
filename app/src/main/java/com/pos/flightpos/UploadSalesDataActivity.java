@@ -49,12 +49,12 @@ public class UploadSalesDataActivity extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             HttpHandler handler = new HttpHandler();
             resultList = new ArrayList<>();
-            resultList.add(handler.postRequest(getSIFDetailsXML(),"sifDetails"));
+            //resultList.add(handler.postRequest(getSIFDetailsXML(),"sifDetails"));
             resultList.add(handler.postRequest(getOrderMailDetailsXML(),"orderMainDetails"));
             resultList.add(handler.postRequest(getPaymentMethodsXML(),"paymentMethods"));
             resultList.add(handler.postRequest(getItemSaleXML(),"itemSales"));
             resultList.add(handler.postRequest(getCreditCardXML(),"creditCardDetails"));
-            resultList.add(handler.postRequest(getFlightDetailsXML(),"posFlightDetails"));
+            //resultList.add(handler.postRequest(getFlightDetailsXML(),"posFlightDetails"));
 
             return null;
         }

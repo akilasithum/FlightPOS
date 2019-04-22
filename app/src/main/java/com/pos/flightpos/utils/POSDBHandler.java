@@ -129,15 +129,11 @@ public class POSDBHandler extends SQLiteOpenHelper {
         if(res.getCount() > 0) {
             db.execSQL("delete from Users");
             db.execSQL("delete from flights");
-            db.execSQL("delete from KITList");
-            db.execSQL("delete from KITNumberList");
             db.execSQL("delete from items");
-            db.execSQL("delete from equipmentType");
             db.execSQL("delete from currency");
             db.execSQL("delete from promotions");
-            db.execSQL("delete from comboDiscounts");
+            //db.execSQL("delete from comboDiscounts");
             db.execSQL("delete from vouchers");
-            db.execSQL("delete from SIFDetails");
             db.execSQL("VACUUM");
         }
         res.close();
@@ -159,6 +155,21 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.execSQL("delete from voluntoryItemDetails");
         db.close();
         resetDrawerValidation();
+    }
+
+    public boolean isUsersSynced(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from Users", null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                cursor.close();
+                db.close();
+                return true;
+            }
+        }
+        cursor.close();
+        db.close();
+        return false;
     }
 
     public void insertSIFDetails(String sifNo,String deviceId){

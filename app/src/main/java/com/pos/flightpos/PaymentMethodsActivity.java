@@ -118,6 +118,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         String serviceType = POSCommonUtils.getServiceType(this);
         TableRow totalTextRow = findViewById(R.id.totalTextRow);
         TableRow taxTextRow = findViewById(R.id.serviceTaxRow);
+        TextView initialTotalText = findViewById(R.id.initialTotalTextView);
         totalBeforeTax = Float.parseFloat(subTotal);
         if(serviceType != null && (serviceType.equals("DTP")||serviceType.equals("BOB"))){
             taxPercentage = SaveSharedPreference.getStringValues(this,
@@ -141,6 +142,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             dueBalance = Float.parseFloat(subTotal);
             balanceDueTextView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
         }
+        initialTotalText.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
         subTotalAfterTax = String.valueOf(dueBalance);
         subTotalTextView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
         discountText = findViewById(R.id.discountTextView);

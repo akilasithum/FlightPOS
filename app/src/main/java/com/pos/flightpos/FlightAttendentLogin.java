@@ -1,6 +1,8 @@
 package com.pos.flightpos;
 
 import android.content.Intent;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -21,6 +23,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.pt.msr.Msr;
 
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.utils.POSDBHandler;
@@ -45,6 +48,7 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private Msr msr = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +63,6 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
         }
         // Set up the login form.
         mEmailView = (AutoCompleteTextView) findViewById(R.id.att_email);
-        //populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -83,9 +86,78 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
 
         mLoginFormView = findViewById(R.id.login_form_att);
         mProgressView = findViewById(R.id.login_progress_att);
+
+        msr = new Msr();
+        readMSR();
     }
 
+    private void closeMSR(){
+        if(msr != null)
+            msr.close();
+    }
 
+    private void readMSR(){
+        msr.open();
+        final Handler handler = new Handler(){
+            @Override
+            public void handleMessage(Message msg) {
+                // TODO Auto-generated method stub
+
+                if(msg.what == 1){
+                    for(int i = 1; i < 4; i++)
+                    {
+                        if(msr.getTrackError(i) == 0)
+                        {
+                            //Log.i("123", "i:"+i);
+                            byte[] out_data = new byte[msr.getTrackDataLength(i)];
+                            msr.getTrackData(i, out_data);
+                            readMsrData(i,out_data);
+                            return;
+                        }
+                    }
+                }
+                super.handleMessage(msg);
+            }
+        };
+
+        new Thread(){
+            public void run() {
+                int ret = -1;
+                while(true)
+                {
+                    ret = msr.poll(1000);
+                    if(ret == 0)
+                    {
+                        Message msg = new Message();
+                        msg.what    = 1;
+                        handler.sendMessage(msg);
+                        //break;
+                    }
+                }
+            }
+        }.start();
+    }
+
+    private void readMsrData(int i, byte[] out_data){
+        if(i == 1)
+        {
+            String track1Str = new String(out_data);
+            String[] credentials = track1Str.split(" ");
+            if(credentials.length > 3){
+                if(isLoggingSuccessful(credentials[1].toLowerCase(),credentials[2].toLowerCase())){
+                    closeMSR();
+                    reDirectToMainPage(credentials[1].toLowerCase());
+                }
+                else{
+                    Toast.makeText(this, "Not a valid card.", Toast.LENGTH_SHORT).show();
+                }
+            }
+            else {
+                Toast.makeText(this, "Not a valid card.", Toast.LENGTH_SHORT).show();
+            }
+            readMSR();
+        }
+    }
 
     /**
      * Attempts to sign in or register the account specified by the login form.

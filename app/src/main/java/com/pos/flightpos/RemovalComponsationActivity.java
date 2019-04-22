@@ -94,7 +94,6 @@ public class RemovalComponsationActivity extends AppCompatActivity {
 
     private void printReceipt(List<SoldItem> soldItems){
         generateOrderNumber();
-        //updateSale();
         PrintJob.printVoluntaryRemovalReceipt(this,orderNumber,soldItems);
         Intent intent = new Intent(RemovalComponsationActivity.this, GateUserMainActivity.class);
         startActivity(intent);
@@ -200,11 +199,16 @@ public class RemovalComponsationActivity extends AppCompatActivity {
         innerLayout.removeAllViews();
         for(final SoldItem item : itemList){
             LinearLayout layout = new LinearLayout(this);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+            /*LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT);*/
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
+                    LinearLayout.LayoutParams.MATCH_PARENT,1);
+            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(90,75);
+            LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
-            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(200,200);
-            layout.setLayoutParams(params1);
             layout.setGravity(Gravity.CENTER);
+            params.setMargins(5,0,5,0);
+            layout.setLayoutParams(params);
             layout.setOrientation(LinearLayout.VERTICAL);
             layout.setBackground(ContextCompat.getDrawable(this, R.drawable.textinputborder));
             layout.setOnClickListener(new View.OnClickListener(){
@@ -215,17 +219,17 @@ public class RemovalComponsationActivity extends AppCompatActivity {
             });
 
             ImageView imageView = new ImageView(this);
-            imageView.setLayoutParams(params);
+            imageView.setLayoutParams(params1);
             imageView.setPadding(4,4,4,0);
             //imageView.setImageResource(getItemResource(this,item.getItemDesc()));
             imageView.setImageBitmap(getImageFromItemCode(item.getItemId()));
 
             TextView textView = new TextView(this);
-            textView.setLayoutParams(params);
+            textView.setLayoutParams(params2);
             textView.setText(item.getItemDesc());
 
             TextView priceText = new TextView(this);
-            priceText.setLayoutParams(params);
+            priceText.setLayoutParams(params2);
             priceText.setText("$"+POSCommonUtils.getTwoDecimalFloatFromString(item.getPrice()));
 
             layout.addView(imageView);
@@ -284,7 +288,7 @@ public class RemovalComponsationActivity extends AppCompatActivity {
             }
         });
 
-        Button lookupBtn = new Button(this);
+        /*Button lookupBtn = new Button(this);
         lookupBtn.setLayoutParams(cellParams3);
         lookupBtn.setBackground(getResources().getDrawable(R.drawable.icon_llokup));
         lookupBtn.setOnClickListener(new View.OnClickListener() {
@@ -292,7 +296,7 @@ public class RemovalComponsationActivity extends AppCompatActivity {
             public void onClick(View view) {
                 POSCommonUtils.showDrawerAndEquipment(item,RemovalComponsationActivity.this);
             }
-        });
+        });*/
 
         itemIdHdn.setText(item.getItemId());
         itemIdHdn.setVisibility(View.GONE);
@@ -350,7 +354,7 @@ public class RemovalComponsationActivity extends AppCompatActivity {
         drawer.setVisibility(View.GONE);
         tr.addView(drawer);
 
-        tr.addView(lookupBtn);
+        //tr.addView(lookupBtn);
         tr.addView(removeItemBtn);
 
         subtotal += total;

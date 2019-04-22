@@ -152,11 +152,14 @@ public class GateItemSelectionActivity extends AppCompatActivity {
     private void addItemsWithCategory(List<SoldItem> itemList,LinearLayout itemCatRow){
         for(final SoldItem item : itemList){
             LinearLayout layout = new LinearLayout(this);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
+                    LinearLayout.LayoutParams.MATCH_PARENT,1);
+            params.setMargins(5,0,5,0);
+            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(120,90);
+            LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
-            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(200,200);
-            layout.setLayoutParams(params1);
             layout.setGravity(Gravity.CENTER);
+            layout.setLayoutParams(params);
             layout.setOrientation(LinearLayout.VERTICAL);
             layout.setBackground(ContextCompat.getDrawable(this, R.drawable.textinputborder));
             layout.setOnClickListener(new View.OnClickListener(){
@@ -167,17 +170,17 @@ public class GateItemSelectionActivity extends AppCompatActivity {
             });
 
             ImageView imageView = new ImageView(this);
-            imageView.setLayoutParams(params);
+            imageView.setLayoutParams(params1);
             imageView.setPadding(4,4,4,0);
             //imageView.setImageResource(getItemResource(this,item.getItemDesc()));
             imageView.setImageBitmap(getImageFromItemCode(item.getItemId()));
 
             TextView textView = new TextView(this);
-            textView.setLayoutParams(params);
+            textView.setLayoutParams(params2);
             textView.setText(item.getItemDesc());
 
             TextView priceText = new TextView(this);
-            priceText.setLayoutParams(params);
+            priceText.setLayoutParams(params2);
             priceText.setText("$"+POSCommonUtils.getTwoDecimalFloatFromString(item.getPrice()));
 
             layout.addView(imageView);
