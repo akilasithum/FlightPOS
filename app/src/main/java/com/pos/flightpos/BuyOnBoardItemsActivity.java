@@ -12,6 +12,7 @@ import android.media.AudioManager;
 import android.media.ToneGenerator;
 import android.os.Handler;
 import android.os.Message;
+import android.os.RemoteException;
 import android.pt.nfc.Nfc;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -41,6 +42,11 @@ import com.pos.flightpos.objects.XMLMapper.Item;
 import com.pos.flightpos.objects.XMLMapper.Promotion;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
+import com.pos.flightpos.utils.PrintUtils;
+import com.pos.flightpos.utils.SaveSharedPreference;
+import com.sunmi.pay.hardware.aidlv2.AidlConstantsV2;
+import com.sunmi.pay.hardware.aidlv2.readcard.CheckCardCallbackV2;
+import com.sunmi.pay.hardware.aidlv2.readcard.ReadCardOptV2;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -50,6 +56,8 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import sunmi.paylib.SunmiPayKernel;
 
 public class BuyOnBoardItemsActivity extends AppCompatActivity {
 
@@ -102,9 +110,14 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         scanRFIDLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                showNFCDetails();
+                //showNFCDetails();
                 /*Intent intent = new Intent(BuyOnBoardItemsActivity.this, Main2Activity.class);
                 startActivity(intent);*/
+                //PrintUtils printUtils = new PrintUtils();
+               //printUtils.printQr("akila sithum",10,0,BuyOnBoardItemsActivity.this);
+                Intent intent = new Intent(BuyOnBoardItemsActivity.this, ScannerMainActivity.class);
+                startActivity(intent);
+
             }
         });
         //setItemCatClickListeners();
@@ -115,7 +128,88 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        NFCReader();
+        checkCard();
     }
+    ReadCardOptV2 mReadCardOptV2;
+    SunmiPayKernel mSMPayKernel;
+
+    private void NFCReader(){
+        SunmiPayKernel mSMPayKernel = SunmiPayKernel.getInstance();
+        mSMPayKernel.initPaySDK(this, mConnectCallback);
+    }
+
+    private void checkCard() {
+        try {
+            int cardType = AidlConstantsV2.CardType.NFC.getValue() ;
+            mReadCardOptV2.checkCard(cardType, mCheckCardCallback, 60);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private CheckCardCallbackV2 mCheckCardCallback = new CheckCardCallbackV2.Stub() {
+
+        @Override
+        public void findMagCard(Bundle bundle) throws RemoteException {
+
+        }
+
+        @Override
+        public void findICCard(String atr) throws RemoteException {
+            handleResult(false, atr);
+        }
+
+        @Override
+        public void findRFCard(String uuid) throws RemoteException {
+            handleResult(true, uuid);
+        }
+
+        @Override
+        public void onError(int code, String message) throws RemoteException {
+            String error = "onError:" + message + " -- " + code;
+            handleResult(false, "");
+        }
+
+    };
+
+    private void handleResult(final boolean nfc, final String value) {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (nfc) {
+                    String temp = "UUID" + " " + value;
+                    seatNumber.setText(temp);
+                } else {
+                    String temp = "ATTR" + " " + value;
+                    seatNumber.setText(temp);
+
+                }
+                // 继续检卡
+                checkCard();
+            }
+        });
+    }
+
+    private SunmiPayKernel.ConnectCallback mConnectCallback = new SunmiPayKernel.ConnectCallback() {
+
+        @Override
+        public void onConnectPaySDK() {
+            try {
+                mReadCardOptV2 = mSMPayKernel.mReadCardOptV2;
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onDisconnectPaySDK() {
+
+        }
+
+    };
 
     private void showNFCDetails(){
         final Nfc nfc = new Nfc();

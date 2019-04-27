@@ -109,7 +109,7 @@ public class SyncActivity extends AppCompatActivity {
         SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_DEVICE_ID,deviceId);
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("sifDetails");
-        root.addElement("deviceId").addText(deviceId);
+        root.addElement("deviceId").addText("10");
         return document.asXML();
     }
 

@@ -8,6 +8,8 @@
     <color name="primary_darker">#0A0E64</color>
     <color name="accent">#1821E7</color>
     <color name="traccent">#BF507399</color>
+    <color name="finder_mask">#60000000</color>
+    <color name="rea">#ffff0000</color>
 
     <color name="black">#000000</color>
     <color name="jet">#222222</color>

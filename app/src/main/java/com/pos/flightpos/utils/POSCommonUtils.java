@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.pt.scan.Scan;
@@ -143,7 +144,6 @@ public class POSCommonUtils {
     public static String scanBarCode(Context context) {
         Scan scan = new Scan();
         String str = "";
-        Map<String, String> retMap = null;
         int ret = scan.open();
         if (ret < 0) {
             Toast.makeText(context, "Scanner open fails.", Toast.LENGTH_SHORT).show();
@@ -155,6 +155,11 @@ public class POSCommonUtils {
         }
         scan.close();
         return str;
+    }
+
+    public static String scanBarcode(){
+
+        return "";
     }
 
     private static Map<String, String> readBarcodeDetails(String code, Context context) {

@@ -153,7 +153,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
         msr = new Msr();
-        readMSR();
+        //readMSR();
     }
 
     /*private void showBootImage(){
@@ -232,7 +232,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             else {
                 Toast.makeText(this, "Not a valid card.", Toast.LENGTH_SHORT).show();
             }
-            readMSR();
+            //readMSR();
         }
     }
 

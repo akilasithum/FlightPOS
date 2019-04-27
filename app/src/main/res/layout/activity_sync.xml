@@ -41,11 +41,11 @@
             android:minWidth="200dp"
             android:progress="1" />-->
 
-        <pl.droidsonroids.gif.GifImageView
+        <!--<pl.droidsonroids.gif.GifImageView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:src="@drawable/preloader"
-            />
+            />-->
         <TextView
             android:id="@+id/textView"
             android:layout_width="wrap_content"

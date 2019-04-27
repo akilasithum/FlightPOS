@@ -218,7 +218,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
             //dialog.show();
             HttpHandler handler = new HttpHandler();
             handler.postRequest(getSIFDetailsXML(),"sifDetails");
-            handler.postRequest(getCartNumbers(),"cartNumbers");
+           // handler.postRequest(getCartNumbers(),"cartNumbers");
             handler.postRequest(getSealDetails(),"sealDetails");
             //handler.postRequest(getOpeningInventory(),"openingInventory");
             return null;
@@ -244,7 +244,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         org.dom4j.Document document = DocumentHelper.createDocument();
         Element root = document.addElement("sifDetails");
         root.addElement("sifNo").addText(sifNo);
-        root.addElement("deviceId").addText(deviceId);
+        root.addElement("deviceId").addText("10");
         root.addElement("packedFor").addText(sif.getPackedFor());
         root.addElement("packedTime").addText(sif.getPackedTime());
         root.addElement("flightDate").addText(SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_DATE));
