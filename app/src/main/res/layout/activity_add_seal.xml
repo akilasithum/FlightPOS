@@ -17,25 +17,25 @@
         android:id="@+id/serviceTypeLayout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="45dp"
-        android:layout_marginRight="45dp"
-        android:layout_marginTop="20dp"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="9dp"
         android:background="@drawable/layoutbackgroundborder"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:gravity="center_horizontal"
         android:orientation="vertical"
-        android:paddingBottom="15dp"
-        android:paddingLeft="15dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp">
+        android:paddingBottom="9dp"
+        android:paddingLeft="9dp"
+        android:paddingRight="9dp"
+        android:paddingTop="9dp">
         <TextView
             android:id="@+id/sealServiceTypeId"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Seal info - Buy on Board"
-            android:textSize="25dp"
+            android:textSize="18dp"
             android:gravity="center"/>
     </LinearLayout>
 
@@ -43,18 +43,18 @@
             android:id="@+id/layout_addSeal1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="45dp"
-            android:layout_marginRight="45dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
             android:layout_marginTop="25dp"
             android:background="@drawable/layoutbackgroundborder"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:paddingBottom="15dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:paddingTop="15dp">
+            android:paddingBottom="9dp"
+            android:paddingLeft="9dp"
+            android:paddingRight="9dp"
+            android:paddingTop="9dp">
 
             <LinearLayout
                 android:id="@+id/layout_addSeal"
@@ -108,6 +108,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:onClick="addSeal"
+                        android:textSize="15dp"
                         android:text="Save" />
 
             </LinearLayout>
@@ -117,18 +118,18 @@
             android:id="@+id/layout_addInboundSeal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="45dp"
-            android:layout_marginRight="45dp"
-            android:layout_marginTop="45dp"
+            android:layout_marginLeft="25dp"
+            android:layout_marginRight="25dp"
+            android:layout_marginTop="25dp"
             android:background="@drawable/layoutbackgroundborder"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:paddingBottom="15dp"
-            android:paddingLeft="15dp"
-            android:paddingRight="15dp"
-            android:paddingTop="15dp">
+            android:paddingBottom="9dp"
+            android:paddingLeft="9dp"
+            android:paddingRight="9dp"
+            android:paddingTop="9dp">
 
             <EditText
                 android:id="@+id/addInboundSealText"
@@ -144,6 +145,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="15dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
                 android:text="Add Another Seal" />
@@ -152,6 +154,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:textSize="15dp"
                 android:onClick="addInboundSeal"
                 android:text="Save Inbound seals" />
         </LinearLayout>
@@ -180,6 +183,7 @@
             android:id="@+id/addSealRemark"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:textSize="15dp"
             android:text="Add a Remark" />
     </LinearLayout>
         <LinearLayout
@@ -187,7 +191,7 @@
             android:layout_height="0dip"
             android:layout_weight="1"
             android:gravity="left|bottom"
-            android:layout_marginRight="45dp"
+            android:layout_marginRight="25dp"
             android:layout_marginTop="30dp"
             android:layout_marginBottom="55dp"
             android:orientation="vertical" >

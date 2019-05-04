@@ -6,8 +6,8 @@
     android:orientation="vertical"
     android:paddingLeft="30dp"
     android:paddingRight="30dp"
-    android:paddingTop="100dp"
-    android:paddingBottom="70dp"
+    android:paddingTop="30dp"
+    android:paddingBottom="20dp"
     android:weightSum="1">
 
 
@@ -29,20 +29,22 @@
                 android:background="@drawable/textinputborder"
                 android:padding="10dp">
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_buy_onboard"
                     android:textSize="20dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:layout_gravity="center"
-                    android:text="Buy On Board" android:textSize="25dp" />
+                    android:text="Buy On Board" android:textSize="20dp" />
 
             </LinearLayout>
-
+        </TableRow>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
             <LinearLayout
                 android:id="@+id/verifyDutyPaid"
                 android:layout_width="0dp"
@@ -54,18 +56,17 @@
                 android:background="@drawable/textinputborder"
                 android:padding="10dp">
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_duty_paid"
                     android:textSize="20dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:layout_gravity="center"
                     android:text="Duty Paid"
-                    android:textSize="25dp" />
+                    android:textSize="20dp" />
             </LinearLayout>
 
         </TableRow>
@@ -83,20 +84,22 @@
                 android:background="@drawable/textinputborder"
                 android:padding="10dp">
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_duty_free"
                     android:textSize="20dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:text="Duty Free"
                     android:layout_gravity="center"
-                    android:textSize="25dp" />
+                    android:textSize="20dp" />
             </LinearLayout>
-
+        </TableRow>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
             <LinearLayout
                 android:id="@+id/verifyVirtualInventory"
                 android:layout_width="0dp"
@@ -108,8 +111,8 @@
                 android:background="@drawable/textinputborder"
                 android:padding="10dp">
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_virtual_inventory"
                     android:textSize="20dp" />
@@ -117,14 +120,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Virtual"
-                    android:textSize="25dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Inventory"
-                    android:textSize="25dp" />
+                    android:text="Virtual Inventory"
+                    android:textSize="20dp" />
             </LinearLayout>
         </TableRow>
     </TableLayout>
@@ -133,7 +130,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="25dp"
         android:layout_weight="1"
         android:layout_marginRight="20dp"
         android:layout_marginLeft="20dp"

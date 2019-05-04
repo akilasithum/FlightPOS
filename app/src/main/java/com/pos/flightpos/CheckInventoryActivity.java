@@ -59,7 +59,7 @@ public class CheckInventoryActivity extends AppCompatActivity {
         TextView drawer = new TextView(this);
         drawer.setText("Drawer ID");
         drawer.setBackgroundColor(ContextCompat.getColor(this, R.color.lightAsh));
-        drawer.setTextSize(22);
+        drawer.setTextSize(18);
         drawer.setLayoutParams(cellParams1);
         drawer.setGravity(Gravity.CENTER);
         tr.addView(drawer);
@@ -67,16 +67,16 @@ public class CheckInventoryActivity extends AppCompatActivity {
         TextView quantity = new TextView(this);
         quantity.setText("Quantity");
         quantity.setBackgroundColor(ContextCompat.getColor(this, R.color.ash));
-        quantity.setTextSize(22);
+        quantity.setTextSize(18);
         quantity.setLayoutParams(cellParams2);
         quantity.setGravity(Gravity.CENTER);
         tr.addView(quantity);
 
         //if(!parent.equals("VerifyFlightByAdminActivity")) {
             TextView isValidated = new TextView(this);
-            isValidated.setText("Is Validated");
+            isValidated.setText("Validated");
             isValidated.setBackgroundColor(ContextCompat.getColor(this, R.color.lightAsh));
-            isValidated.setTextSize(22);
+            isValidated.setTextSize(18);
             isValidated.setLayoutParams(cellParams2);
             isValidated.setGravity(Gravity.CENTER);
             tr.addView(isValidated);
@@ -104,7 +104,7 @@ public class CheckInventoryActivity extends AppCompatActivity {
                     TableRow.LayoutParams.WRAP_CONTENT));
             TextView header = new TextView(this);
             header.setText("Equipment No : " + equipmentName);
-            header.setTextSize(24);
+            header.setTextSize(20);
             header.setLayoutParams(cellParams2);
             header.setPadding(0,0,0,20);
             headerRow.addView(header);

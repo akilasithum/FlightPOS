@@ -19,6 +19,7 @@ import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.Flight;
 import com.pos.flightpos.objects.XMLMapper.KitNumber;
 import com.pos.flightpos.utils.MultiSelectionSpinner;
+import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
@@ -118,6 +119,7 @@ public class ConfigureFlightActivity extends AppCompatActivity {
 
         Flight flight = handler.getFlightFromFlightName(flightNumber);
         if(flight != null) {
+            POSCommonUtils.hideKeyboard(ConfigureFlightActivity.this);
             flightListTextView.setText(flight.getFlightName());
             flightFrom.setText(flight.getFlightFrom());
             flightTo.setText(flight.getFlightTo());

@@ -13,8 +13,8 @@
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:paddingBottom="15dp"
-        android:paddingLeft="50dp"
-        android:paddingRight="75dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
         android:paddingTop="15dp">
 
         <TableRow
@@ -27,7 +27,7 @@
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:text="Flight date"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
 
             <EditText
                 android:id="@+id/flightDateSpinner"
@@ -118,14 +118,14 @@
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:text="Flight"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
 
             <Spinner
                 android:id="@+id/flightSelectionSpinner"
                 android:layout_width="0dp"
                 style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_height="wrap_content"
-                android:textSize="40dp"
+                android:textSize="30dp"
                 android:layout_weight="1" />
         </TableRow>
 
@@ -142,14 +142,14 @@
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:text="Flight Sector"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
 
             <Spinner
                 android:id="@+id/sectorSelectionSpinner"
                 android:layout_width="0dp"
                 style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_height="wrap_content"
-                android:textSize="40dp"
+                android:textSize="30dp"
                 android:layout_weight="1" />
         </TableRow>
 
@@ -164,7 +164,7 @@
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:text="Economy Class Pax Count"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
 
             <EditText
                 android:id="@+id/eClassPaxContField"
@@ -186,7 +186,7 @@
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:text="Business Class Pax Count"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
 
             <EditText
                 android:id="@+id/bClassPaxContField"
@@ -208,7 +208,7 @@
                 android:layout_margin="10dp"
                 android:layout_weight="1"
                 android:text="Tax Percentage"
-                android:textSize="20dp" />
+                android:textSize="15dp" />
 
             <EditText
                 android:id="@+id/taxPercentage"

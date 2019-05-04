@@ -133,7 +133,7 @@ public class VerifyDrawerActivity extends AppCompatActivity {
             TableRow.LayoutParams cellParams2 = new TableRow.LayoutParams(0,
                     TableRow.LayoutParams.WRAP_CONTENT, 6f);
             TableRow.LayoutParams cellParams3 = new TableRow.LayoutParams(0,
-                    TableRow.LayoutParams.WRAP_CONTENT, 3f);
+                    TableRow.LayoutParams.WRAP_CONTENT, 2f);
             final String itemNoStr = item.getItemNo();
             final String equipmentNo = item.getEquipmentNo();
             TextView itemNO = new TextView(this);

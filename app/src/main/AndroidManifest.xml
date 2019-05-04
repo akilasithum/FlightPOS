@@ -73,7 +73,8 @@
             android:enabled="true" />
 
         <activity android:name=".PrintActivity" />
-        <activity android:name=".AttCheckInfo" />
+        <activity android:name=".AttCheckInfo"
+            android:label="Check Info"/>
         <activity android:name=".ICCardReader" />
         <activity android:name=".MSReader" />
         <activity
@@ -96,7 +97,7 @@
             android:label="Print Inventory Reports" />
         <activity
             android:name=".VerifyInventoryActivity"
-            android:label="Verify Inventory" />
+            android:label="Select Service Type" />
         <activity
             android:name=".CheckInventoryActivity"
             android:label="Verify Drawers" />

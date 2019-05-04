@@ -30,4 +30,5 @@
     <color name="tableLight">#F9F9F6</color>
     <color name="tableDark">#E8E8E7</color>
     <color name="splashbg">#003D66</color>
+    <color name="bgColor">#122E54</color>
 </resources>

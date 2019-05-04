@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:paddingLeft="30dp"
     android:paddingRight="30dp"
-    android:paddingTop="100dp"
+    android:paddingTop="40dp"
     android:weightSum="1">
 
     <TableLayout
@@ -36,7 +36,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:layout_gravity="center"
                     android:text="Configure Flight"
                     android:textSize="25dp" />
@@ -64,7 +63,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:layout_gravity="center"
                     android:text="Upload Sales Data"
                     android:textSize="25dp" />
@@ -88,11 +86,10 @@
                     android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_synchronize"
-                    android:textSize="20dp" />
+                     />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:layout_gravity="center"
                     android:text="Sync"
                     android:textSize="25dp" />
@@ -120,7 +117,6 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:layout_gravity="center"
                     android:text="Admin Logout"
                     android:textSize="25dp" />

@@ -134,7 +134,7 @@ public class SyncActivity extends AppCompatActivity {
             completedFiles.add("kitCodes");
             handler.insertKITList(sh.makeServiceCall("kitItems"));
             completedFiles.add("kitItems");
-            handler.insertCurrencyData(sh.makeServiceCall("currencies"));
+            handler.insertCurrencyData(sh.makeServiceCall("currencies"),SyncActivity.this);
             completedFiles.add("currencies");
             handler.insertEquipmentTypeList(sh.makeServiceCall("equipmentType"));
             completedFiles.add("equipmentType");

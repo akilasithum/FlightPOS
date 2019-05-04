@@ -1,6 +1,10 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".PaymentMethodsActivity">
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -42,8 +46,8 @@
                 android:background="@drawable/textinputborderlight"
                 android:padding="3dp">
                 <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_cash_payment" />
                 <TextView
@@ -63,8 +67,8 @@
                 android:background="@drawable/textinputborderlight"
                 android:padding="3dp">
                 <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_credit_card_payment"/>
                 <TextView
@@ -84,8 +88,8 @@
                 android:background="@drawable/textinputborderlight"
                 android:padding="3dp">
                 <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_voucher_payment"/>
                 <TextView
@@ -105,8 +109,8 @@
                 android:background="@drawable/textinputborderlight"
                 android:padding="3dp">
                 <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_loyalty_payments" />
                 <TextView
@@ -171,7 +175,7 @@
                 android:layout_weight="1"
                 android:background="#D5D3D3"
                 android:text="Type"
-                android:textSize="22dp"
+                android:textSize="15dp"
                 android:gravity="center"/>
 
             <TextView
@@ -180,7 +184,7 @@
                 android:layout_weight="1"
                 android:background="#CAC7C7"
                 android:text="Currency"
-                android:textSize="22dp"
+                android:textSize="15dp"
                 android:gravity="center"/>
 
             <TextView
@@ -189,7 +193,7 @@
                 android:layout_weight="1"
                 android:background="#D5D3D3"
                 android:text="Rate"
-                android:textSize="22dp"
+                android:textSize="15dp"
                 android:gravity="center"/>
 
             <TextView
@@ -198,7 +202,7 @@
                 android:layout_weight="1"
                 android:background="#CAC7C7"
                 android:text="Value"
-                android:textSize="22dp"
+                android:textSize="15dp"
                 android:gravity="center"/>
             <!--<TextView
                 android:layout_width="0dp"
@@ -219,7 +223,7 @@
                 android:layout_weight="1"
                 android:paddingTop="20dp"
                 android:text="Total : "
-                android:textSize="20dp"/>
+                android:textSize="15dp"/>
 
             <TextView
                 android:id="@+id/totalTextView"
@@ -227,7 +231,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="0"
-                android:textSize="20dp"/>
+                android:textSize="15dp"/>
         </TableRow>
         <TableRow
             android:id="@+id/serviceTaxRow"
@@ -238,7 +242,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Service Tax : "
-                android:textSize="20dp"/>
+                android:textSize="15dp"/>
 
             <TextView
                 android:id="@+id/serviceTaxTextView"
@@ -246,7 +250,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="0"
-                android:textSize="20dp"/>
+                android:textSize="15dp"/>
         </TableRow>
         <TableRow
             android:layout_width="fill_parent"
@@ -256,7 +260,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Balance Due : "
-                android:textSize="20dp"/>
+                android:textSize="15dp"/>
 
             <TextView
                 android:id="@+id/balanceDueTextView"
@@ -264,7 +268,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="0"
-                android:textSize="20dp"/>
+                android:textSize="15dp"/>
         </TableRow>
         <TableRow
             android:layout_width="fill_parent"
@@ -274,7 +278,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Discount : "
-                android:textSize="20dp"/>
+                android:textSize="15dp"/>
 
             <TextView
                 android:id="@+id/discountTextView"
@@ -282,7 +286,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="0"
-                android:textSize="20dp"/>
+                android:textSize="15dp"/>
         </TableRow>
         <TableRow
             android:layout_width="fill_parent"
@@ -292,7 +296,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="Sub Total : "
-                android:textSize="20dp"/>
+                android:textSize="15dp"/>
 
             <TextView
                 android:id="@+id/subTotalTextView"
@@ -300,7 +304,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="0"
-                android:textSize="20dp"/>
+                android:textSize="15dp"/>
         </TableRow>
         <TableRow
             android:layout_width="fill_parent"
@@ -309,7 +313,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingTop="30dp"
+                android:paddingTop="20dp"
                 android:text=""/>
         </TableRow>
         <TableRow
@@ -330,7 +334,7 @@
                 android:layout_weight="2"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 android:text="Confirm Payment" />
             <Button
                 android:id="@+id/cancelSale"
@@ -339,7 +343,7 @@
                 android:layout_weight="2"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:textSize="20dp"
+                android:textSize="15dp"
                 android:text="Cancel Sale" />
             <TextView
                 android:layout_width="0dp"
@@ -369,3 +373,4 @@
             android:clickable="true" />
     </LinearLayout>
 </LinearLayout>
+</ScrollView>

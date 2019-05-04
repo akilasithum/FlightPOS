@@ -42,32 +42,32 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="4"
                 android:background="@color/lightAsh"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:text="Order No"
-                android:textSize="17dp" />
+                android:text="Order #"
+                android:textSize="14dp" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
+                android:layout_weight="4"
                 android:background="@color/tableDark"
                 android:gravity="center"
                 android:textStyle="bold"
                 android:text="PNR"
-                android:textSize="17dp" />
+                android:textSize="14dp" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="5"
+                android:layout_weight="9"
                 android:background="@color/lightAsh"
                 android:gravity="center"
                 android:textStyle="bold"
                 android:text="Customer Name"
-                android:textSize="17dp" />
+                android:textSize="14dp" />
 
             <TextView
                 android:layout_width="0dp"
@@ -76,8 +76,8 @@
                 android:background="@color/tableDark"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:text="Service Type"
-                android:textSize="17dp" />
+                android:text="Type"
+                android:textSize="14dp" />
         </TableRow>
     </TableLayout>
 
@@ -163,8 +163,8 @@
             android:layout_height="wrap_content">
         <ImageButton
             android:id="@+id/forwardPressBtn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_gravity="center_horizontal|left"
             android:background="@drawable/icon_left_arrow"
             android:layout_weight="1"
@@ -178,8 +178,8 @@
                 android:textSize="20dp" />
         <ImageButton
             android:id="@+id/backPressBtn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_gravity="center_horizontal|right"
             android:background="@drawable/icon_right_arrow"
             android:layout_weight="1"

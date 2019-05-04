@@ -53,7 +53,7 @@ public class ExchangeRateActivity extends AppCompatActivity {
             currencyCode.setGravity(Gravity.CENTER);
             currencyCode.setBackgroundColor(getResources().getColor(R.color.tableLight));
             currencyCode.setText(currency.getCurrencyCode());
-            currencyCode.setTextSize(18);
+            currencyCode.setTextSize(14);
             currencyCode.setLayoutParams(cellParams1);
             tr.addView(currencyCode);
 
@@ -61,7 +61,7 @@ public class ExchangeRateActivity extends AppCompatActivity {
             currencyDesc.setGravity(Gravity.CENTER);
             currencyDesc.setBackgroundColor(getResources().getColor(R.color.tableDark));
             currencyDesc.setText(String.valueOf(currency.getCurrencyDesc()));
-            currencyDesc.setTextSize(18);
+            currencyDesc.setTextSize(14);
             currencyDesc.setLayoutParams(cellParams2);
             tr.addView(currencyDesc);
 
@@ -69,7 +69,7 @@ public class ExchangeRateActivity extends AppCompatActivity {
             currencyRate.setGravity(Gravity.CENTER);
             currencyRate.setBackgroundColor(getResources().getColor(R.color.tableLight));
             currencyRate.setText(String.valueOf(currency.getCurrencyRate()));
-            currencyRate.setTextSize(18);
+            currencyRate.setTextSize(14);
             currencyRate.setLayoutParams(cellParams3);
             tr.addView(currencyRate);
 

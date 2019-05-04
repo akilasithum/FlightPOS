@@ -23,7 +23,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:background="#D5D3D3"
-                        android:text="Currency Code"
+                        android:text="Code"
                         android:textSize="20dp"
                         android:gravity="center"/>
 
@@ -32,7 +32,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="4"
                         android:background="#CAC7C7"
-                        android:text="Currency Description"
+                        android:text="Description"
                         android:textSize="20dp"
                         android:gravity="center"/>
 
@@ -41,7 +41,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="3"
                         android:background="#D5D3D3"
-                        android:text="Currency Rate"
+                        android:text="Rate"
                         android:gravity="center"
                         android:textSize="20dp"/>
                 </TableRow>
@@ -51,7 +51,7 @@
         android:layout_height="0dip"
         android:layout_weight="1"
         android:gravity="left|bottom"
-        android:layout_marginLeft="55dp"
+        android:layout_marginLeft="25dp"
         android:layout_marginTop="30dp"
         android:layout_marginBottom="55dp"
         android:orientation="vertical" >

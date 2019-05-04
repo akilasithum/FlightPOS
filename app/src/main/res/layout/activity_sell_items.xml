@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:paddingTop="30dp"
+        android:paddingTop="15dp"
         android:weightSum="1">
 
         <TableLayout
@@ -32,11 +32,11 @@
                     android:padding="5dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:layout_gravity="center"
                         android:background="@drawable/icon_buy_onboard"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
                         android:layout_gravity="center"
                         android:layout_margin="10dp"
                         android:text="Buy On Board"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
 
                 </LinearLayout>
 
@@ -60,11 +60,11 @@
                     android:padding="5dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:layout_gravity="center"
                         android:background="@drawable/icon_duty_paid"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -72,7 +72,7 @@
                         android:layout_gravity="center"
                         android:layout_margin="10dp"
                         android:text="Duty Paid"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
                 </LinearLayout>
 
 
@@ -94,11 +94,11 @@
                     android:padding="5dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:layout_gravity="center"
                         android:background="@drawable/icon_duty_free"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -106,7 +106,7 @@
                         android:layout_gravity="center"
                         android:layout_margin="10dp"
                         android:text="Duty Free"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -121,11 +121,11 @@
                     android:padding="5dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:layout_gravity="center"
                         android:background="@drawable/icon_virtual_inventory"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -133,7 +133,7 @@
                         android:layout_gravity="center"
                         android:layout_margin="10dp"
                         android:text="Virtual Inventory"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
                 </LinearLayout>
             </TableRow>
 
@@ -153,11 +153,11 @@
                     android:padding="5dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:layout_gravity="center"
                         android:background="@drawable/icon_pre_order"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -165,7 +165,7 @@
                         android:layout_gravity="center"
                         android:layout_margin="10dp"
                         android:text="Manage Pre Order"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -180,11 +180,11 @@
                     android:padding="5dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:layout_gravity="center"
                         android:background="@drawable/icon_cancel_order"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -192,7 +192,7 @@
                         android:layout_gravity="center"
                         android:layout_margin="10dp"
                         android:text="Change Order"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
                 </LinearLayout>
             </TableRow>
         </TableLayout>
@@ -215,14 +215,14 @@
                     android:clickable="true"
                     android:orientation="vertical"
                     android:padding="5dp"
-                    android:paddingTop="20dp">
+                    android:paddingTop="15dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:layout_gravity="center"
                         android:background="@drawable/icon_exchange_rates"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -230,7 +230,7 @@
                         android:layout_gravity="center"
                         android:layout_margin="10dp"
                         android:text="Exchange Rates"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -245,11 +245,11 @@
                     android:padding="5dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:layout_gravity="center"
                         android:background="@drawable/icon_announcements"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -257,7 +257,7 @@
                         android:layout_gravity="center"
                         android:layout_margin="10dp"
                         android:text="Announcements"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
                 </LinearLayout>
 
 
@@ -279,11 +279,11 @@
                     android:padding="5dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="25dp"
+                        android:layout_height="25dp"
                         android:layout_gravity="center"
                         android:background="@drawable/icon_close_flight"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -291,7 +291,7 @@
                         android:layout_gravity="center"
                         android:layout_margin="10dp"
                         android:text="Close Flight"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
                 </LinearLayout>
 
 

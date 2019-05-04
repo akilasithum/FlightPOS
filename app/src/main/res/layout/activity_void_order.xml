@@ -51,12 +51,12 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
+                    android:layout_weight="4"
                     android:background="@color/lightAsh"
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="Order No"
-                    android:textSize="20dp" />
+                    android:textSize="15dp" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -66,7 +66,7 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="Seat No"
-                    android:textSize="20dp" />
+                    android:textSize="15dp" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -75,16 +75,16 @@
                     android:background="@color/lightAsh"
                     android:gravity="center"
                     android:padding="5dp"
-                    android:text="Total USD"
-                    android:textSize="20dp" />
+                    android:text="Total"
+                    android:textSize="15dp" />
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:padding="10dp"
                     android:text=""
-                    android:textSize="20dp" />
+                    android:textSize="15dp" />
 
             </TableRow>
             <!--<TableRow
@@ -126,7 +126,7 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="Item Desc"
-                    android:textSize="20dp" />
+                    android:textSize="15dp" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -136,7 +136,7 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="Quantity"
-                    android:textSize="20dp" />
+                    android:textSize="15dp" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -146,7 +146,7 @@
                     android:gravity="center"
                     android:padding="5dp"
                     android:text="Price"
-                    android:textSize="20dp" />
+                    android:textSize="15dp" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -154,7 +154,7 @@
                     android:layout_weight="1"
                     android:padding="5dp"
                     android:text=""
-                    android:textSize="20dp" />
+                    android:textSize="15dp" />
             </TableRow>
         </TableLayout>
 

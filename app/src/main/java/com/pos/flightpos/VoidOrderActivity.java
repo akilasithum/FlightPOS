@@ -88,24 +88,26 @@ public class VoidOrderActivity extends AppCompatActivity {
                 TableRow.LayoutParams.WRAP_CONTENT, 4f);
         TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
                 50, 1f);
+        TableRow.LayoutParams cellParams2 = new TableRow.LayoutParams(0,
+                TableRow.LayoutParams.WRAP_CONTENT, 2f);
         for(final OrderDetails detail : orderDetails){
             final TableRow row = new TableRow(this);
             TextView orderNo = new TextView(this);
             orderNo.setText(detail.getOrderNumber());
             orderNo.setLayoutParams(cellParams);
-            orderNo.setTextSize(20);
+            orderNo.setTextSize(15);
             orderNo.setGravity(Gravity.CENTER);
 
             TextView seatNo = new TextView(this);
             seatNo.setText(detail.getSeatNo());
-            seatNo.setLayoutParams(cellParams);
-            seatNo.setTextSize(20);
+            seatNo.setLayoutParams(cellParams2);
+            seatNo.setTextSize(15);
             seatNo.setGravity(Gravity.CENTER);
 
             TextView total = new TextView(this);
             total.setText(detail.getSubTotal());
-            total.setLayoutParams(cellParams);
-            total.setTextSize(20);
+            total.setLayoutParams(cellParams2);
+            total.setTextSize(15);
             total.setGravity(Gravity.CENTER);
 
             Button removeItemBtn = new Button(this);

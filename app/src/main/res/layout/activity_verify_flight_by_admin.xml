@@ -26,7 +26,7 @@
                     android:id="@+id/syncPreOrderLayout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/textinputborder"
                     android:clickable="true"
@@ -34,19 +34,18 @@
                     android:paddingTop="8dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/icon_synchronize"
-                        android:textSize="20dp" />
+                        android:background="@drawable/icon_synchronize"/>
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:layout_margin="8dp"
                         android:text="Sync Pre Orders"
-                        android:textSize="25dp" />
+                        android:textSize="20dp" />
                 </LinearLayout>
                 </TableRow>
 
@@ -58,7 +57,7 @@
                     android:id="@+id/packPreOrderLayout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/textinputborder"
                     android:clickable="true"
@@ -66,19 +65,18 @@
                     android:paddingTop="8dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/icon_packed"
-                        android:textSize="20dp" />
+                        android:background="@drawable/icon_packed" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:layout_margin="8dp"
                         android:text="Pack Pre Orders"
-                        android:textSize="25dp" />
+                        android:textSize="20dp" />
                 </LinearLayout>
             </TableRow>
 
@@ -90,7 +88,7 @@
                     android:id="@+id/defineCartNumbers"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
+                    android:layout_margin="8dp"
                     android:layout_weight="1"
                     android:background="@drawable/textinputborder"
                     android:clickable="true"
@@ -98,8 +96,8 @@
                     android:paddingTop="8dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:background="@drawable/icon_cart"
                         android:textSize="20dp" />
@@ -108,9 +106,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:layout_margin="8dp"
                         android:text="Save Cart Numbers"
-                        android:textSize="25dp" />
+                        android:textSize="20dp" />
 
                 </LinearLayout>
             </TableRow>-->
@@ -123,7 +121,7 @@
                     android:id="@+id/verifyInventoryByAdmin"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/textinputborder"
                     android:clickable="true"
@@ -131,19 +129,18 @@
                     android:paddingTop="8dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/icon_cart"
-                        android:textSize="20dp" />
+                        android:background="@drawable/icon_cart" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:layout_margin="8dp"
                         android:text="Pack Carts"
-                        android:textSize="25dp" />
+                        android:textSize="20dp" />
                 </LinearLayout>
             </TableRow>
 
@@ -155,7 +152,7 @@
                     android:id="@+id/addAdminSeal"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/textinputborder"
                     android:clickable="true"
@@ -163,8 +160,8 @@
                     android:paddingTop="8dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:background="@drawable/icon_seal_info"
                         android:textSize="20dp" />
@@ -173,9 +170,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:layout_margin="8dp"
                         android:text="Add Seals"
-                        android:textSize="25dp" />
+                        android:textSize="20dp" />
 
                 </LinearLayout>
             </TableRow>
@@ -188,7 +185,7 @@
                     android:id="@+id/printReportByAdmin"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:background="@drawable/textinputborder"
                     android:clickable="true"
@@ -196,8 +193,8 @@
                     android:paddingTop="8dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:background="@drawable/icon_printer"
                         android:textSize="20dp" />
@@ -206,9 +203,9 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:layout_margin="8dp"
                         android:text="Print Inventory Report"
-                        android:textSize="25dp" />
+                        android:textSize="20dp" />
                 </LinearLayout>
             </TableRow>
 
@@ -219,15 +216,15 @@
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
+                    android:layout_margin="5dp"
                     android:layout_weight="1"
                     android:clickable="true"
                     android:orientation="vertical">
 
                     <ImageButton
                         android:id="@+id/userLoginLayout"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
                         android:layout_gravity="right"
                         android:background="@drawable/icon_right_arrow"
                         android:clickable="true" />

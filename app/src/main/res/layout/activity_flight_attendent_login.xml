@@ -29,7 +29,7 @@
         android:background="@drawable/layoutbackgroundborder"
         android:paddingLeft="50dp"
         android:paddingRight="50dp"
-        android:paddingTop="80dp">
+        android:paddingTop="50dp">
 
         <LinearLayout
             android:id="@+id/email_login_form"
@@ -64,6 +64,7 @@
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:singleLine="true"
+                    android:textSize="15dp"
                     android:drawableLeft="@drawable/icon_user"/>
 
             </android.support.design.widget.TextInputLayout>
@@ -82,8 +83,9 @@
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
                     android:maxLines="1"
+                    android:textSize="15dp"
                     android:singleLine="true"
-                    android:drawableLeft="@drawable/icon_passowrd"/>
+                    android:drawableLeft="@drawable/icon_password"/>
 
             </android.support.design.widget.TextInputLayout>
 
@@ -101,10 +103,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="20dp" />
-            <ImageView
+            <!--<ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/loginbg"/>
+                android:background="@drawable/loginbg"/>-->
 
         </LinearLayout>
     </ScrollView>

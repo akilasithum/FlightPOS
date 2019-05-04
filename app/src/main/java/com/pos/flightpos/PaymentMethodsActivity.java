@@ -34,6 +34,7 @@ import com.pos.flightpos.objects.XMLMapper.Voucher;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.PrintJob;
+import com.pos.flightpos.utils.PrintUtils;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.text.DateFormat;
@@ -73,6 +74,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     Button cancelSaleBtn;
     float discountFromVoucher = 0;
     TextView subTotalTextView;
+    PrintUtils printUtils;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +85,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         confirmPaymentBtn = (Button) findViewById(R.id.printReceipt);
         balanceDueTextView = (TextView)  findViewById(R.id.balanceDueTextView);
         subTotalTextView = findViewById(R.id.subTotalTextView);
+        printUtils = new PrintUtils(this);
         confirmPaymentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -600,13 +603,13 @@ public class PaymentMethodsActivity extends AppCompatActivity {
 
     private String getAmountInUSD(Currency currency, String amount){
         amount.replace(",","");
-        return POSCommonUtils.getTwoDecimalFloatFromFloat(Float.parseFloat(amount) *
+        return POSCommonUtils.getTwoDecimalFloatFromFloat(Float.parseFloat(amount) /
                 Float.parseFloat(currency.getCurrencyRate()));
     }
 
     private String updateAmountBasedOnCurrency(Currency currency,String currentAmount){
         currentAmount.replace(",","");
-        return POSCommonUtils.getTwoDecimalFloatFromFloat(Float.parseFloat(currentAmount) /
+        return POSCommonUtils.getTwoDecimalFloatFromFloat(Float.parseFloat(currentAmount) *
                 Float.parseFloat(currency.getCurrencyRate()));
     }
     private ArrayAdapter<Currency> loadCurrencies(){
@@ -716,7 +719,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             else{
                 generateOrderNumber();
                 updateSale();
-                PrintJob.printOrderDetails(this,orderNumber,seatNumber,soldItems,paymentMethodsMap,
+                printUtils.printOrderDetails(this,orderNumber,seatNumber,soldItems,paymentMethodsMap,
                         creditCardList.isEmpty() ? null : creditCardList.get(0),false,discount,taxPercentage);
                 if(!creditCardList.isEmpty()) {
                     confirmPaymentBtn.setText("Print Card Holder copy");

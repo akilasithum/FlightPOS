@@ -63,7 +63,7 @@ public class VerifyCartsActivity extends AppCompatActivity {
         TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
                 TableRow.LayoutParams.WRAP_CONTENT);
 
-        cellParams1.setMargins(0,0,0,15);
+        cellParams1.setMargins(0,0,0,10);
         int cartCount = 0;
         for (final Map.Entry map : drawerKitItemMap.entrySet()) {
 
@@ -97,8 +97,8 @@ public class VerifyCartsActivity extends AppCompatActivity {
             ImageView imageView = new ImageView(this);
             Bitmap yourBitmap = BitmapFactory.decodeResource(getResources(),
                     R.drawable.image_cart);
-            Bitmap resized = Bitmap.createScaledBitmap(yourBitmap, (int) (yourBitmap.getWidth() * 0.2),
-                    (int) (yourBitmap.getHeight() * 0.2), true);
+            Bitmap resized = Bitmap.createScaledBitmap(yourBitmap, (int) (yourBitmap.getWidth() * 0.13),
+                    (int) (yourBitmap.getHeight() * 0.13), true);
             imageView.setImageBitmap(resized);
 
             /*TextView textView = new TextView(this);
@@ -108,7 +108,7 @@ public class VerifyCartsActivity extends AppCompatActivity {
             textView.setTextSize(25);*/
 
             LinearLayout.LayoutParams mRparams = new LinearLayout.LayoutParams
-                    (60, 60);
+                    (45, 45);
 
             final EditText myEditText = new EditText(this);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
@@ -128,18 +128,20 @@ public class VerifyCartsActivity extends AppCompatActivity {
             });
             myEditText.setText(posdbHandler.getBarcodeFromEquipmentType(map.getKey().toString()));
             myEditText.getBackground().setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
-            myEditText.setTextSize(40);
+            myEditText.setTextSize(25);
 
             TableLayout tableLayout = new TableLayout(this);
 
             LinearLayout llh=new LinearLayout(this);
             llh.setOrientation(LinearLayout.HORIZONTAL);
-            llh.setPadding(10,10,10,10);
+            llh.setPadding(10,10,10,0);
             llh.addView(myEditText);
             llh.addView(button);
             tableLayout.addView(llh);
             linearLayout.addView(imageView);
-            linearLayout.addView(tableLayout);
+            if(parent.equals("VerifyFlightByAdminActivity")) {
+                linearLayout.addView(tableLayout);
+            }
             tr.addView(linearLayout);
             cartsTable.addView(tr);
         }

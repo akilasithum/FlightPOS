@@ -10,8 +10,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:paddingLeft="80dp"
-        android:paddingRight="50dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:paddingLeft="25dp"
+        android:paddingRight="25dp"
         android:layout_marginTop="20dp">
 
         <TableLayout
@@ -29,17 +31,8 @@
                     android:padding="10dp"
                     android:background="@drawable/layoutbackgroundborder"
                     android:text="Available carts for selected KIT."
-                    android:textSize="25dp" />
-            </TableRow>
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginTop="30dp"
-                    android:textSize="25dp" />
+                    android:layout_marginBottom="10dp"
+                    android:textSize="20dp" />
             </TableRow>
         </TableLayout>
         <LinearLayout

@@ -94,9 +94,11 @@ public class LoadPreOrderAdminActivity extends AppCompatActivity {
             }
 
             TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
-                    TableRow.LayoutParams.WRAP_CONTENT, 5f);
+                    TableRow.LayoutParams.WRAP_CONTENT, 9f);
             TableRow.LayoutParams cellParams2 = new TableRow.LayoutParams(0,
-                    TableRow.LayoutParams.WRAP_CONTENT, 2f);
+                    TableRow.LayoutParams.WRAP_CONTENT, 4f);
+            TableRow.LayoutParams cellParams3 = new TableRow.LayoutParams(0,
+                    TableRow.LayoutParams.WRAP_CONTENT, 3f);
             TextView customerDetails = new TextView(this);
             customerDetails.setText(preOrder.getPreOrderId());
             customerDetails.setTextSize(15);
@@ -118,7 +120,7 @@ public class LoadPreOrderAdminActivity extends AppCompatActivity {
 
             TextView serviceTypeText = new TextView(this);
             serviceTypeText.setText(service);
-            serviceTypeText.setLayoutParams(cellParams2);
+            serviceTypeText.setLayoutParams(cellParams3);
             serviceTypeText.setTextSize(15);
             tr.addView(serviceTypeText);
 
@@ -192,7 +194,7 @@ public class LoadPreOrderAdminActivity extends AppCompatActivity {
         TableRow.LayoutParams cellParams = new TableRow.LayoutParams(0,
                 TableRow.LayoutParams.WRAP_CONTENT, 5f);
         TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
-                50, 2f);
+                TableRow.LayoutParams.WRAP_CONTENT, 3f);
         TextView headerText = new TextView(this);
         headerText.setText("Order No : " + orderId);
         headerText.setTextSize(16);
@@ -212,7 +214,7 @@ public class LoadPreOrderAdminActivity extends AppCompatActivity {
             TextView itemDesc = new TextView(this);
             String itemName = posdbHandler.getItemDescFromItemNo(item.getItemNo());
             itemDesc.setText(itemName);
-            itemDesc.setTextSize(16);
+            itemDesc.setTextSize(12);
             itemDesc.setLayoutParams(cellParams);
             itemDesc.setPadding(0,10,0,0);
             itemDesc.setGravity(Gravity.CENTER);
@@ -220,7 +222,7 @@ public class LoadPreOrderAdminActivity extends AppCompatActivity {
 
             TextView category = new TextView(this);
             category.setText(item.getCategory());
-            category.setTextSize(16);
+            category.setTextSize(12);
             category.setGravity(Gravity.CENTER);
             category.setLayoutParams(cellParams);
             category.setPadding(0,10,0,0);
@@ -228,8 +230,8 @@ public class LoadPreOrderAdminActivity extends AppCompatActivity {
 
             TextView quantity = new TextView(this);
             quantity.setText(item.getQuantity());
-            quantity.setTextSize(16);
-            quantity.setLayoutParams(cellParams);
+            quantity.setTextSize(12);
+            quantity.setLayoutParams(cellParams1);
             quantity.setGravity(Gravity.CENTER);
             quantity.setPadding(0,10,0,0);
             tr.addView(quantity);
@@ -254,12 +256,14 @@ public class LoadPreOrderAdminActivity extends AppCompatActivity {
                 TableRow.LayoutParams.WRAP_CONTENT, 5f);
         TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
                 50, 2f);
+        TableRow.LayoutParams cellParams2 = new TableRow.LayoutParams(0,
+                TableRow.LayoutParams.WRAP_CONTENT, 3f);
         LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(
                 TableRow.LayoutParams.MATCH_PARENT,
                 TableRow.LayoutParams.WRAP_CONTENT,4f);
         TextView itemDesc = new TextView(this);
-        itemDesc.setText("Item Desc");
-        itemDesc.setTextSize(20);
+        itemDesc.setText("Item");
+        itemDesc.setTextSize(15);
         itemDesc.setGravity(Gravity.CENTER);
         itemDesc.setLayoutParams(cellParams);
         itemDesc.setPadding(5,5,5,5);
@@ -268,7 +272,7 @@ public class LoadPreOrderAdminActivity extends AppCompatActivity {
 
         TextView totalPrice = new TextView(this);
         totalPrice.setText("Category");
-        totalPrice.setTextSize(20);
+        totalPrice.setTextSize(15);
         totalPrice.setGravity(Gravity.CENTER);
         totalPrice.setLayoutParams(cellParams);
         totalPrice.setPadding(5,5,5,5);
@@ -277,9 +281,9 @@ public class LoadPreOrderAdminActivity extends AppCompatActivity {
 
         TextView quantity = new TextView(this);
         quantity.setText("Quantity");
-        quantity.setTextSize(20);
+        quantity.setTextSize(15);
         quantity.setGravity(Gravity.CENTER);
-        quantity.setLayoutParams(cellParams);
+        quantity.setLayoutParams(cellParams2);
         quantity.setPadding(5,5,5,5);
         quantity.setBackgroundColor(getResources().getColor(R.color.lightAsh));
         tr.addView(quantity);

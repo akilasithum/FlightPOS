@@ -11,7 +11,7 @@
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
-                <LinearLayout
+                <!--<LinearLayout
                     android:id="@+id/scanRFIDLayout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -36,7 +36,7 @@
                         android:paddingRight="10dp"
                         android:textStyle="bold"
                         android:textSize="16dp"/>
-            </LinearLayout>
+            </LinearLayout>-->
 
         <HorizontalScrollView
             android:layout_width="fill_parent"
@@ -45,8 +45,8 @@
             android:fillViewport="true"
             android:measureAllChildren="false"
             android:paddingTop="20dp"
-            android:layout_marginLeft="40dp"
-            android:layout_marginRight="40dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
             android:scrollbars="horizontal">
                 <LinearLayout
                     android:id="@+id/itemCatTableRow"
@@ -54,90 +54,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
                 </LinearLayout>
-                <!--<LinearLayout
-                    android:id="@+id/mainBOBItemsLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:orientation="vertical"
-                    android:background="@drawable/textinputborderlight"
-                    android:padding="3dp">
-                    <ImageView
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/icon_bob_main" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="Main"
-                        android:textSize="13dp" />
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/snackBOBLayour"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:orientation="vertical"
-                    android:background="@drawable/textinputborderlight"
-                    android:padding="3dp">
-                    <ImageView
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/icon_bob_snack"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="Snacks"
-                        android:textSize="13dp" />
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/beverageBOBLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:orientation="vertical"
-                    android:background="@drawable/textinputborderlight"
-                    android:padding="3dp">
-                    <ImageView
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/icon_bob_beverage"/>
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="Beverages"
-                        android:textSize="13dp" />
-                </LinearLayout>
-                <LinearLayout
-                    android:id="@+id/otherBOBLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:orientation="vertical"
-                    android:background="@drawable/textinputborderlight"
-                    android:padding="3dp">
-                    <ImageView
-                        android:layout_width="64dp"
-                        android:layout_height="64dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/icon_bob_other" />
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="Other"
-                        android:textSize="13dp" />
-                </LinearLayout>-->
         </HorizontalScrollView>
 
         <HorizontalScrollView
@@ -169,7 +85,7 @@
             android:background="@drawable/layoutbackgroundborder"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:paddingTop="50dp">
+            android:paddingTop="30dp">
 
             <TableRow
                 android:layout_width="fill_parent"
@@ -182,7 +98,7 @@
                     android:background="#D5D3D3"
                     android:gravity="center"
                     android:text="Item Desc"
-                    android:textSize="25dp" />
+                    android:textSize="18dp" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -191,7 +107,7 @@
                     android:background="#CAC7C7"
                     android:gravity="center"
                     android:text="Qty"
-                    android:textSize="25dp" />
+                    android:textSize="18dp" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -200,7 +116,7 @@
                     android:background="#D5D3D3"
                     android:gravity="center"
                     android:text="Price"
-                    android:textSize="25dp" />
+                    android:textSize="18dp" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -209,7 +125,7 @@
                     android:background="#CAC7C7"
                     android:gravity="center"
                     android:text="Total"
-                    android:textSize="25dp" />
+                    android:textSize="18dp" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -225,7 +141,7 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="3"
+                    android:layout_weight="2"
                     android:paddingTop="20dp"
                     android:text="" />
 
@@ -234,7 +150,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="sub Total : "
-                    android:textSize="20dp" />
+                    android:textSize="15dp" />
 
                 <TextView
                     android:id="@+id/subTotalTextView"
@@ -242,7 +158,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="0"
-                    android:textSize="20dp" />
+                    android:textSize="15dp" />
             </TableRow>
 
             <TableRow
@@ -252,10 +168,10 @@
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="2"
-                    android:paddingTop="20dp"
-                    android:text="Seat Number :"
-                    android:textSize="20dp" />
+                    android:layout_weight="1"
+                    android:paddingTop="5dp"
+                    android:text="Seat No:"
+                    android:textSize="15dp" />
 
                 <EditText
                     android:id="@+id/seatNumber"
@@ -270,10 +186,11 @@
                     android:id="@+id/scanBoardingPass"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginRight="30dp"
-                    android:layout_marginLeft="30dp"
-                    android:layout_weight="3"
-                    android:text="Scan Boarding Pass" />
+                    android:layout_marginRight="10dp"
+                    android:layout_marginLeft="2dp"
+                    android:layout_weight="1"
+                    android:textSize="12dp"
+                    android:text="Scan" />
             </TableRow>
             <TableRow
                 android:layout_width="fill_parent"

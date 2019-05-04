@@ -1,12 +1,16 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".CloseFlightActivity">
+<LinearLayout
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:paddingLeft="30dp"
     android:paddingRight="30dp"
-    android:paddingTop="35dp"
+    android:paddingTop="25dp"
     android:weightSum="1">
 
     <TableLayout
@@ -27,8 +31,8 @@
                 android:background="@drawable/textinputborder"
                 android:padding="10dp">
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_verify"
                     android:textSize="20dp" />
@@ -36,16 +40,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Verify"
-                    android:textSize="25dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Inventory"
-                    android:textSize="25dp" />
-            </LinearLayout>
+                    android:text="Verify Inventory"
+                    android:textSize="20dp" />
 
+            </LinearLayout>
+        </TableRow>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
             <LinearLayout
                 android:id="@+id/closeInventoryReport"
                 android:layout_width="0dp"
@@ -57,8 +59,8 @@
                 android:background="@drawable/textinputborder"
                 android:padding="10dp">
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_report"
                     android:textSize="20dp" />
@@ -66,14 +68,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Inventory"
-                    android:textSize="25dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Report"
-                    android:textSize="25dp" />
+                    android:text="Inventory Report"
+                    android:textSize="20dp" />
+
             </LinearLayout>
 
         </TableRow>
@@ -92,20 +89,22 @@
                 android:background="@drawable/textinputborder"
                 android:padding="10dp">
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_sales_report"
                     android:textSize="20dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:layout_gravity="center"
                     android:text="Sales Report"
-                    android:textSize="25dp" />
+                    android:textSize="20dp" />
             </LinearLayout>
-
+        </TableRow>
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
             <LinearLayout
                 android:id="@+id/messageToBond"
                 android:layout_width="0dp"
@@ -117,8 +116,8 @@
                 android:background="@drawable/textinputborder"
                 android:padding="10dp">
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_message"
                     android:textSize="20dp" />
@@ -126,17 +125,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:text="Message to"
-                    android:textSize="25dp" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Bond"
-                    android:textSize="25dp" />
+                    android:text="Message to Bond"
+                    android:textSize="20dp" />
             </LinearLayout>
 
         </TableRow>
+
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
@@ -153,8 +147,8 @@
                 android:padding="10dp">
 
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_seal_info"
                     android:textSize="20dp" />
@@ -162,19 +156,10 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:layout_gravity="center"
                     android:text="Closing Seal"
-                    android:textSize="25dp" />
+                    android:textSize="20dp"/>
             </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_margin="10dp"
-                android:layout_weight="1">
-            </LinearLayout>
-
         </TableRow>
         <TableRow
             android:layout_width="fill_parent"
@@ -192,8 +177,8 @@
                 android:padding="10dp">
 
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="25dp"
+                    android:layout_height="25dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_close_flight"
                     android:textSize="20dp" />
@@ -201,10 +186,9 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
                     android:layout_gravity="center"
                     android:text="Close Flight"
-                    android:textSize="25dp" />
+                    android:textSize="20dp" />
             </LinearLayout>
 
         </TableRow>
@@ -212,19 +196,21 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_marginBottom="55dp"
+        android:layout_marginBottom="25dp"
         android:layout_weight="1"
-        android:layout_marginRight="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="25dp"
         android:gravity="left|bottom"
         android:orientation="vertical">
 
         <ImageButton
             android:id="@+id/backPressBtn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
             android:layout_gravity="center_horizontal|left"
             android:background="@drawable/icon_left_arrow"
             android:clickable="true" />
     </LinearLayout>
 
 </LinearLayout>
+</ScrollView>

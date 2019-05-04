@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.pos.flightpos.objects.AcceptPreOrder;
+import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.CreditCard;
 import com.pos.flightpos.objects.Flight;
 import com.pos.flightpos.objects.FullFlight;
@@ -952,7 +953,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
-    public boolean insertCurrencyData(String xml){
+    public boolean insertCurrencyData(String xml,Context context){
 
         try {
             JSONObject jsonObj  = XML.toJSONObject(xml);
@@ -963,6 +964,9 @@ public class POSDBHandler extends SQLiteOpenHelper {
             SQLiteDatabase db = this.getWritableDatabase();
             for(Currency currency : currencyList){
                 if(currency.getCurrencyCode() != null && !currency.getCurrencyCode().isEmpty()) {
+                    if(currency.getPriorityOrder().equals("Base")){
+                        SaveSharedPreference.setStringValues(context, Constants.SHARED_PREFERENCE_BASE_CURRENCY,currency.getCurrencyCode());
+                    }
                     db.execSQL("INSERT INTO currency VALUES" +
                             "('" + currency.getCurrencyCode() + "','" + currency.getCurrencyDesc() + "','" + currency.getCurrencyRate() + "'," +
                             "'" + currency.getCurrencyType() + "','" + currency.getPriorityOrder() + "','" + currency.getEffectiveDate() + "');");

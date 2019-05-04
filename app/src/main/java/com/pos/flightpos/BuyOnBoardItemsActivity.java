@@ -106,20 +106,20 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         serviceType = intent.getExtras().get("serviceType").toString();
         loadItemCategoryImages();
-        scanRFIDLayout = findViewById(R.id.scanRFIDLayout);
+        /*scanRFIDLayout = findViewById(R.id.scanRFIDLayout);
         scanRFIDLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 //showNFCDetails();
-                /*Intent intent = new Intent(BuyOnBoardItemsActivity.this, Main2Activity.class);
-                startActivity(intent);*/
+                *//*Intent intent = new Intent(BuyOnBoardItemsActivity.this, Main2Activity.class);
+                startActivity(intent);*//*
                 //PrintUtils printUtils = new PrintUtils();
                //printUtils.printQr("akila sithum",10,0,BuyOnBoardItemsActivity.this);
                 Intent intent = new Intent(BuyOnBoardItemsActivity.this, ScannerMainActivity.class);
                 startActivity(intent);
 
             }
-        });
+        });*/
         //setItemCatClickListeners();
         ImageButton backButton = findViewById(R.id.backPressBtn);
         backButton.setOnClickListener(new View.OnClickListener() {
@@ -590,6 +590,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         TextView drawer = new TextView(this);
         Button removeItemBtn = new Button(this);
         removeItemBtn.setLayoutParams(cellParams3);
+        removeItemBtn.setPadding(0,4,0,0);
         removeItemBtn.setBackground(getResources().getDrawable(R.drawable.icon_cancel));
         removeItemBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -625,12 +626,12 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         tr.addView(itemIdHdn);
 
         itemDesc.setText(item.getItemDesc());
-        itemDesc.setTextSize(20);
+        itemDesc.setTextSize(13);
         itemDesc.setLayoutParams(cellParams1);
         tr.addView(itemDesc);
 
         qty.setText("1");
-        qty.setTextSize(20);
+        qty.setTextSize(13);
         qty.setLayoutParams(cellParams2);
         qty.setInputType(InputType.TYPE_CLASS_NUMBER);
         qty.addTextChangedListener(new TextWatcher() {
@@ -658,13 +659,13 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         tr.addView(qty);
 
         price.setText(POSCommonUtils.getTwoDecimalFloatFromString(item.getPrice()));
-        price.setTextSize(20);
+        price.setTextSize(13);
         price.setLayoutParams(cellParams2);
         tr.addView(price);
 
         float total = Float.parseFloat(qty.getText().toString()) * Float.parseFloat(price.getText().toString());
         totalTextField.setText(POSCommonUtils.getTwoDecimalFloatFromString(String.valueOf(total)));
-        totalTextField.setTextSize(20);
+        totalTextField.setTextSize(13);
         totalTextField.setLayoutParams(cellParams2);
         tr.addView(totalTextField);
 
@@ -711,7 +712,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
             LinearLayout layout = new LinearLayout(this);
             LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
                     LinearLayout.LayoutParams.WRAP_CONTENT);
-            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(200,200);
+            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(150,150);
             layout.setLayoutParams(params1);
             layout.setGravity(Gravity.CENTER);
             layout.setOrientation(LinearLayout.VERTICAL);
@@ -731,10 +732,12 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
 
             TextView textView = new TextView(this);
             textView.setLayoutParams(params);
+            textView.setTextSize(10);
             textView.setText(item.getItemDesc());
 
             TextView priceText = new TextView(this);
             priceText.setLayoutParams(params);
+            priceText.setTextSize(10);
             priceText.setText("$"+POSCommonUtils.getTwoDecimalFloatFromString(item.getPrice()));
 
             layout.addView(imageView);
