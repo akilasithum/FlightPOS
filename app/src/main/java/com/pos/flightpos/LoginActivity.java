@@ -3,13 +3,15 @@ package com.pos.flightpos;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Notification;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
+import android.os.RemoteException;
 import android.pt.msr.Msr;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -22,6 +24,8 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
+import android.view.Display;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -30,13 +34,19 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.utils.POSDBHandler;
+import com.pos.flightpos.utils.PrintJob;
 import com.pos.flightpos.utils.SaveSharedPreference;
+import com.sunmi.pay.hardware.aidl.AidlConstants;
+import com.sunmi.pay.hardware.aidlv2.AidlConstantsV2;
+import com.sunmi.pay.hardware.aidlv2.readcard.CheckCardCallbackV2;
+import com.sunmi.pay.hardware.aidlv2.readcard.ReadCardOptV2;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -44,6 +54,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
+
+import sunmi.paylib.SunmiPayKernel;
 
 /**
  * A login screen that offers login via email/password.
@@ -62,23 +74,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             "YYZ", "YUL", "YOW", "IAD"
     });
 
-    private AutoCompleteTextView mEmailView;
+    private EditText mEmailView;
     private EditText mPasswordView;
     private AutoCompleteTextView  baseStation;
-    private View mProgressView;
     private View mLoginFormView;
-    Button mEmailSignInButton;
+    ImageButton mEmailSignInButton;
     long mExitTime = 0;
     String parent = null;
-    private Msr msr = null;
+    int i = 0;
+
+    private ReadCardOptV2 mReadCardOptV2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        mEmailSignInButton =  findViewById(R.id.email_sign_in_button);
         parent = getIntent().getExtras().getString("parent");
         //showBootImage();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
         try {
             if(isAppExpired()){
                 return;
@@ -125,8 +140,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             startActivity(intent);
             return;
         }
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mEmailView =  findViewById(R.id.email);
+        mPasswordView =  findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -149,91 +164,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 attemptLogin();
             }
         });
-
         mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
-        msr = new Msr();
-        //readMSR();
-    }
-
-    /*private void showBootImage(){
-        MiniLcd minilcd = new MiniLcd ();
-        minilcd.open();
-        minilcd.downloadBootPicture(BitmapFactory.decodeResource(getResources(), R.drawable.pos_img),1);
-    }*/
-
-    private void closeMSR(){
-         if(msr != null)
-            msr.close();
-    }
-
-    private void readMSR(){
-        msr.open();
-        final Handler handler = new Handler(){
-            @Override
-            public void handleMessage(Message msg) {
-                // TODO Auto-generated method stub
-
-                if(msg.what == 1){
-                    for(int i = 1; i < 4; i++)
-                    {
-                        if(msr.getTrackError(i) == 0)
-                        {
-                            //Log.i("123", "i:"+i);
-                            byte[] out_data = new byte[msr.getTrackDataLength(i)];
-                            msr.getTrackData(i, out_data);
-                            readMsrData(i,out_data);
-                            return;
-                        }
-                    }
-                }
-                super.handleMessage(msg);
-            }
-        };
-
-        new Thread(){
-            public void run() {
-                int ret = -1;
-                while(true)
-                {
-                    ret = msr.poll(1000);
-                    if(ret == 0)
-                    {
-                        Message msg = new Message();
-                        msg.what    = 1;
-                        handler.sendMessage(msg);
-                        //break;
-                    }
-                }
-            }
-        }.start();
-    }
-
-    private void readMsrData(int i, byte[] out_data){
-        if(i == 1)
-        {
-            String track1Str = new String(out_data);
-            String[] credentials = track1Str.split(" ");
-            if(credentials.length > 3){
-                if(BASE_STATIONS.contains(credentials[1])) {
-                    if (isLoggingSuccessful(credentials[2].toLowerCase(), credentials[3].toLowerCase())) {
-                        setInitialData(credentials[2], credentials[1]);
-                        closeMSR();
-                        return;
-                    } else {
-                        Toast.makeText(this, "Not a valid card.", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                else{
-                    baseStation.setError("Base station not found");
-                    baseStation.requestFocus();
-                }
-            }
-            else {
-                Toast.makeText(this, "Not a valid card.", Toast.LENGTH_SHORT).show();
-            }
-            //readMSR();
-        }
+        initPaySDK();
+        checkCard();
     }
 
     private boolean isAppExpired() throws ParseException {
@@ -304,9 +237,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void setInitialData(String email,String baseStation){
-        if(msr != null){
-            msr.close();
-        }
         SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_ADMIN_USER_NAME,email);
         SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_BASE_STATION,baseStation);
         SaveSharedPreference.setStringValues(this,
@@ -339,6 +269,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             String[] pieces = credential.split(":");
             if (pieces[0].equals(userName)) {
                 // Account exists, return true if the password matches.
+                cancelCheckCard();
                 return pieces[1].equals(password);
             }
         }
@@ -365,18 +296,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }
             });
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
         } else {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
@@ -419,7 +341,96 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         };
 
         int ADDRESS = 0;
-        int IS_PRIMARY = 1;
+    }
+
+    private void initPaySDK(){
+        mReadCardOptV2 = BootUpReceiver.mReadCardOptV2;
+    }
+
+    private void checkCard() {
+        try {
+            mReadCardOptV2.checkCard(AidlConstantsV2.CardType.MAGNETIC.getValue(), mCheckCardCallback, 60);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private CheckCardCallbackV2 mCheckCardCallback = new CheckCardCallbackV2.Stub() {
+
+        @Override
+        public void findMagCard(Bundle bundle) throws RemoteException {
+            handleResult(bundle);
+        }
+        @Override
+        public void findICCard(String s) throws RemoteException {
+
+        }
+        @Override
+        public void findRFCard(String s) throws RemoteException {
+
+        }
+        @Override
+        public void onError(int code, String message) throws RemoteException {
+            handleResult(null);
+        }
+    };
+
+    private void handleResult(final Bundle bundle) {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (bundle == null) {
+                    if(i > 10){
+                        new AlertDialog.Builder(LoginActivity.this)
+                                .setTitle("Card Reader")
+                                .setMessage("Card reader is in idle state. Please close and open app before swipe the card.")
+                                .setIcon(android.R.drawable.ic_dialog_alert)
+                                .setNegativeButton(android.R.string.ok, null).show();
+                    }
+                    else {
+                        i++;
+                        checkCard();
+                    }
+                } else {
+                    String track1 = bundle.getString("TRACK1");
+                    boolean isEmpty = TextUtils.isEmpty(track1);
+                    if (isEmpty) {
+                        Toast.makeText(LoginActivity.this, "Not a valid card.", Toast.LENGTH_SHORT).show();
+                        checkCard();
+                    } else {
+                        String[] credentials = track1.split(" ");
+                        if(credentials.length > 3){
+                            if(BASE_STATIONS.contains(credentials[1])) {
+                                if (isLoggingSuccessful(credentials[2].toLowerCase(), credentials[3].toLowerCase())) {
+                                    setInitialData(credentials[2], credentials[1]);
+                                    return;
+                                } else {
+                                    Toast.makeText(LoginActivity.this, "Not a valid card.", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            else{
+                                baseStation.setError("Base station not found");
+                                baseStation.requestFocus();
+                                checkCard();
+                            }
+                        }
+                        else {
+                            Toast.makeText(LoginActivity.this, "Not a valid card.", Toast.LENGTH_SHORT).show();
+                            checkCard();
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    private void cancelCheckCard() {
+        try {
+            mReadCardOptV2.cancelCheckCard();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -430,9 +441,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             Intent intent = new Intent(Intent.ACTION_MAIN);
             intent.addCategory(Intent.CATEGORY_HOME);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            if(msr != null){
-                msr.close();
-            }
+            cancelCheckCard();
             startActivity(intent);
         }
         else

@@ -1,6 +1,7 @@
 package com.pos.flightpos;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -47,6 +48,7 @@ public class ConfigureFlightActivity extends AppCompatActivity {
         flightFrom = (TextView) findViewById(R.id.fromTextField);
         flightTo = (TextView) findViewById(R.id.toTextField);
         flightDateSpinner = (Spinner) findViewById(R.id.flightDateSpinner);
+        flightDateSpinner.setPrompt("Flight Date");
         flightListTextView =  findViewById(R.id.flightList);
         flightFrom.setEnabled(false);
         flightTo.setEnabled(false);
@@ -59,6 +61,8 @@ public class ConfigureFlightActivity extends AppCompatActivity {
         });
         populateDateField();
         loadEquipmentNumbers();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
         flightListTextView.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -104,7 +108,7 @@ public class ConfigureFlightActivity extends AppCompatActivity {
     private void populateDateField(){
 
         ArrayList<String> options=new ArrayList<String>();
-        options.add("");
+        options.add("Flight Date");
         options.add(getDateWithoutTimeUsingFormat(0));
         options.add(getDateWithoutTimeUsingFormat(1));
         options.add(getDateWithoutTimeUsingFormat(2));
@@ -137,7 +141,7 @@ public class ConfigureFlightActivity extends AppCompatActivity {
     }
 
     private void clickSubmitBtn(){
-        if(flightDateSpinner.getSelectedItem() != null && !flightDateSpinner.getSelectedItem().equals("") &&
+        if(flightDateSpinner.getSelectedItem() != null && !flightDateSpinner.getSelectedItem().equals("Flight Date") &&
                 flightListTextView.getText() != null && flightListTextView.getText().toString() != null
                 && !flightListTextView.getText().toString().equals("") && flightFrom.getText() != null &&
                 !flightFrom.getText().toString().equals("") && equipmentSpinner.getSelectedItem() != null &&

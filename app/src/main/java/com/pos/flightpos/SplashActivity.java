@@ -8,7 +8,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.sunmi.pay.hardware.aidlv2.readcard.ReadCardOptV2;
+
+import sunmi.paylib.SunmiPayKernel;
+
 public class SplashActivity extends AppCompatActivity {
+
+
+    private boolean isDisConnectService = true;
+    private SunmiPayKernel mSMPayKernel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -16,6 +24,7 @@ public class SplashActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         setContentView(R.layout.activity_splash);
+        connectPayService();
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
@@ -27,4 +36,28 @@ public class SplashActivity extends AppCompatActivity {
             }
         }, 1000);
     }
+
+    private void connectPayService() {
+        mSMPayKernel = SunmiPayKernel.getInstance();
+        mSMPayKernel.initPaySDK(this, mConnectCallback);
+    }
+
+    private SunmiPayKernel.ConnectCallback mConnectCallback = new SunmiPayKernel.ConnectCallback() {
+
+        @Override
+        public void onConnectPaySDK() {
+            try {
+                BootUpReceiver.mReadCardOptV2 = mSMPayKernel.mReadCardOptV2;
+                isDisConnectService = false;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onDisconnectPaySDK() {
+            isDisConnectService = true;
+        }
+
+    };
 }

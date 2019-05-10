@@ -1,86 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    tools:context=".LoginActivity">
-
-    <!-- Login progress -->
-    <ProgressBar
-        android:id="@+id/login_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
-
     <ScrollView
         android:id="@+id/login_form"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/layoutbackgroundborder">
+        android:orientation="vertical"
+        tools:context=".LoginActivity"
+        >
 
 
         <LinearLayout
             android:id="@+id/email_login_form"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:orientation="vertical">
-            <ImageView
-                android:layout_width="720px"
-                android:layout_height="250px"
-                android:background="@drawable/sky_icon"/>
-            <LinearLayout
+
+            <FrameLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@color/splashbg"
-                android:orientation="vertical">
+                android:layout_height="wrap_content">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/main_logo" />
-            </LinearLayout>
+                    android:src="@drawable/sky_icon"/>
+
+                <ImageView
+                    android:layout_width="150px"
+                    android:layout_height="250px"
+                    android:src="@drawable/logo_icon"
+                    android:layout_gravity="center_vertical|center"/>
+
+            </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:paddingTop="20dp"
+        android:orientation="vertical">
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
+                android:textColorHint="@color/white"
                 android:layout_height="wrap_content">
 
-                <AutoCompleteTextView
+                <EditText
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/icon_user"
+                    android:drawableLeft="@drawable/user_icon"
                     android:hint="@string/prompt_email"
                     android:textSize="15dp"
+                    android:textColor="@color/white"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
+                    android:backgroundTint="@color/white"
                     android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
+                android:textColorHint="@color/white"
                 android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/icon_password"
+                    android:drawableLeft="@drawable/password_icon"
                     android:hint="@string/prompt_password"
                     android:imeActionId="6"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
+                    android:textColor="@color/white"
                     android:maxLines="1"
+                    android:backgroundTint="@color/white"
                     android:textSize="15dp"
                     android:singleLine="true" />
 
@@ -88,39 +89,37 @@
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
+                android:textColorHint="@color/white"
                 android:layout_height="wrap_content">
 
                 <AutoCompleteTextView
                     android:id="@+id/baseStation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:drawableLeft="@drawable/icon_flight"
+                    android:drawableLeft="@drawable/base_station_icon"
                     android:hint="Base station"
                     android:imeOptions="actionUnspecified"
                     android:maxLines="1"
+                    android:textColor="@color/white"
                     android:textSize="15dp"
+                    android:backgroundTint="@color/white"
+                    android:layout_marginBottom="25dp"
                     android:singleLine="true"/>
 
             </android.support.design.widget.TextInputLayout>
 
-            <Button
+            <ImageButton
                 android:id="@+id/email_sign_in_button"
-                style="?android:textAppearanceSmall"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/action_sign_in"
-                android:textStyle="bold" />
+                android:paddingTop="25dp"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:background="@drawable/login_button_icon"/>
 
             <TextView
                 android:id="@+id/warningTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="20dp" />
-            <!--<ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/loginbg"/>-->
+    </LinearLayout>
         </LinearLayout>
     </ScrollView>
-</LinearLayout>

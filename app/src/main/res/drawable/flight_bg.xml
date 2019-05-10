@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <bitmap android:src="@drawable/configure_flight_bg"
+            android:gravity="right" />
+    </item>
+    <item >
+        <bitmap android:src="@drawable/configure_flight_bg"
+            android:gravity="right" />
+    </item>
+
+</layer-list>

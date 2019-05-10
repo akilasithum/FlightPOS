@@ -31,4 +31,5 @@
     <color name="tableDark">#E8E8E7</color>
     <color name="splashbg">#003D66</color>
     <color name="bgColor">#122E54</color>
+    <color name="buttonbg">#D97436</color>
 </resources>
