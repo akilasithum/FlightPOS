@@ -1,9 +1,14 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@drawable/background_bottom_style"
     android:layout_height="match_parent"
-    tools:context=".AddSeal">
+    >
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/flight_bg">
 
     <LinearLayout
         android:id="@+id/sealMainLayout"
@@ -13,31 +18,28 @@
         android:focusableInTouchMode="true"
         android:orientation="vertical">
 
-    <LinearLayout
-        android:id="@+id/serviceTypeLayout"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
-        android:layout_marginTop="9dp"
-        android:background="@drawable/layoutbackgroundborder"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:paddingBottom="9dp"
-        android:paddingLeft="9dp"
-        android:paddingRight="9dp"
-        android:paddingTop="9dp">
-        <TextView
-            android:id="@+id/sealServiceTypeId"
-            android:layout_width="wrap_content"
+        <TableLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Seal info - Buy on Board"
-            android:textSize="18dp"
-            android:gravity="center"/>
-    </LinearLayout>
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp">
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:paddingBottom="10dp">
+                <TextView
+                    android:id="@+id/sealServiceTypeId"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Seal info - Buy on Board"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:textStyle="bold"
+                    android:textSize="20dp"/>
+            </TableRow>
+        </TableLayout>
 
         <LinearLayout
             android:id="@+id/layout_addSeal1"
@@ -67,15 +69,18 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:maxLength="18"
-                    android:ems="10"
+                    android:textSize="15dp"
                     android:inputType="number" />
 
                 <Button
                     android:id="@+id/bt_addSeal"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="30dp"
                     android:layout_weight="1"
                     android:onClick="addSeal"
+                    android:textColor="@color/white"
+                    android:textSize="13dp"
+                    android:background="@drawable/button_style"
                     android:text="Save Outbound seals" />
             </LinearLayout>
 
@@ -105,10 +110,12 @@
                     <Button
                         android:id="@+id/bt_addSeal1"
                         android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="30dp"
                         android:layout_weight="1"
                         android:onClick="addSeal"
+                        android:textColor="@color/white"
                         android:textSize="15dp"
+                        android:background="@drawable/button_style"
                         android:text="Save" />
 
             </LinearLayout>
@@ -143,18 +150,21 @@
             <Button
                 android:id="@+id/bt_addAnotherSeal"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
                 android:layout_weight="1"
                 android:textSize="15dp"
                 android:layout_marginLeft="20dp"
                 android:layout_marginRight="20dp"
+                android:textColor="@color/white"
+                android:background="@drawable/button_style_blue"
                 android:text="Add Another Seal" />
             <Button
                 android:id="@+id/bt_addInboudSeal"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="20dp"
                 android:layout_weight="1"
-                android:textSize="15dp"
+                android:textSize="10dp"
+                android:background="@drawable/button_style"
                 android:onClick="addInboundSeal"
                 android:text="Save Inbound seals" />
         </LinearLayout>
@@ -184,11 +194,22 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:textSize="15dp"
+            android:textColor="@color/white"
+            android:background="@drawable/button_style"
             android:text="Add a Remark" />
     </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
+   <!-- <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/verifiy_admin_sky">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dip"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="left|bottom"
             android:layout_marginRight="25dp"
@@ -204,5 +225,6 @@
                 android:layout_gravity="center_horizontal|right"
                 android:clickable="true" />
         </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+    </LinearLayout>-->
+
+</RelativeLayout>

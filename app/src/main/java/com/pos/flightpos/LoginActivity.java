@@ -91,7 +91,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         setContentView(R.layout.activity_login);
         mEmailSignInButton =  findViewById(R.id.email_sign_in_button);
         parent = getIntent().getExtras().getString("parent");
-        //showBootImage();
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
         try {

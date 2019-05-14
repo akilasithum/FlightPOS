@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -61,9 +62,11 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         kitCode = POSCommonUtils.availableKitCodes(this);
         serviceType = POSCommonUtils.getServiceTypeKitCodeMap(this).keySet();
         registerLayoutClickEvents();
-        disablePackPreOrderLayout(false);
+        //disablePackPreOrderLayout(false);
         String deviceId = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_DEVICE_ID);
         handler.updateSIFDetails("packedDateTime",POSCommonUtils.getDateTimeString(),deviceId);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 
     private void disablePackPreOrderLayout(boolean isEnable){
@@ -183,7 +186,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             SaveSharedPreference.setStringValues(VerifyFlightByAdminActivity.this,Constants.SHARED_PREFERENCE_SYNC_PRE_ORDERS,"yes");
-            disablePackPreOrderLayout(true);
+            //disablePackPreOrderLayout(true);
         }
     }
 
