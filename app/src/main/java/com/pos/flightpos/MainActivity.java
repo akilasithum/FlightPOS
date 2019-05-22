@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,8 @@ import com.pos.flightpos.utils.HttpHandler;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
+import com.sunmi.pay.hardware.aidlv2.AidlConstantsV2;
+import com.sunmi.pay.hardware.aidlv2.system.BasicOptV2;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
@@ -158,11 +161,17 @@ public class MainActivity extends AppCompatActivity {
 
     private String getSIFRequest() {
 
-        String deviceId = POSCommonUtils.getDeviceId(this);
-        SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_DEVICE_ID,deviceId);
+
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("sifDetails");
-        root.addElement("deviceId").addText("10");
+        BasicOptV2 basicOptV2 = BootUpReceiver.mBasicOptV2;
+        try {
+            String deviceId = basicOptV2.getSysParam(AidlConstantsV2.SysParam.SN);
+            SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_DEVICE_ID,deviceId);
+            root.addElement("deviceId").addText(deviceId);
+        } catch (RemoteException e) {
+            Toast.makeText(this,"Error while reading system data",Toast.LENGTH_SHORT);
+        }
         return document.asXML();
     }
 

@@ -45,6 +45,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     long mExitTime = 0;
     Set<String> serviceType;
     LinearLayout preOrderPackLayout;
+    private ProgressDialog dialog;
     ProgressDialog dia;
 
     @Override
@@ -210,26 +211,31 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     }
 
     private class GetContacts extends AsyncTask<Void, Void, Void> {
-        private ProgressDialog dialog;
-        public GetContacts(VerifyFlightByAdminActivity activity) {
-            //dialog = new ProgressDialog(activity);
+
+        public GetContacts(Context context) {
+            dialog = new ProgressDialog(context);
         }
+
+        protected void onPreExecute() {
+            dialog.setMessage("Sync in progress. Please wait ...");
+            dialog.show();
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
-            //dialog.setTitle("Upload");
-           // dialog.setMessage("Sync in progress. Please wait...");
-            //dialog.show();
             HttpHandler handler = new HttpHandler();
             handler.postRequest(getSIFDetailsXML(),"sifDetails");
-           // handler.postRequest(getCartNumbers(),"cartNumbers");
+            handler.postRequest(getCartNumbers(),"cartNumbers");
             handler.postRequest(getSealDetails(),"sealDetails");
-            //handler.postRequest(getOpeningInventory(),"openingInventory");
+            handler.postRequest(getOpeningInventory(),"openingInventory");
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-           // dialog.cancel();
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
             SaveSharedPreference.removeValue(VerifyFlightByAdminActivity.this, Constants.SHARED_PREFERENCE_ADMIN_USER);
             SaveSharedPreference.setStringValues(VerifyFlightByAdminActivity.this,
                                 Constants.SHARED_PREFERENCE_CAN_ATT_LOGIN,"yes");
@@ -247,9 +253,10 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         org.dom4j.Document document = DocumentHelper.createDocument();
         Element root = document.addElement("sifDetails");
         root.addElement("sifNo").addText(sifNo);
-        root.addElement("deviceId").addText("10");
+        root.addElement("deviceId").addText(deviceId);
         root.addElement("packedFor").addText(sif.getPackedFor());
         root.addElement("packedTime").addText(sif.getPackedTime());
+        root.addElement("programs").addText(sif.getPrograms());
         root.addElement("flightDate").addText(SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_DATE));
         root.addElement("packedUser").addText(SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_ADMIN_USER_NAME));
         return document.asXML();

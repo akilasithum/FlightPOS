@@ -117,7 +117,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS posFlights (flightId VARCHAR,flightName VARCHAR,flightDate VARCHAR," +
                 "flightFrom VARCHAR,flightTo VARCHAR,paxCount VARCHAR,businessClassPaxCount VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS SIFDetails (sifNo VARCHAR,deviceId VARCHAR,packedFor VARCHAR," +
-                "packedDateTime VARCHAR,crewOpenedDateTime VARCHAR,crewClosedDateTime VARCHAR);");
+                "packedDateTime VARCHAR,crewOpenedDateTime VARCHAR,crewClosedDateTime VARCHAR, programs VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS cartNumbers (equipmentType VARCHAR,cartNumber VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS sectors (flightNo VARCHAR,sectorFrom VARCHAR" +
                 ",sectorTo VARCHAR,sectorType VARCHAR,flightType VARCHAR);");
@@ -248,6 +248,13 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
+    public void updateSIFDetailsFromConfigureFlight(String packedFor,String programs,String deviceId){
+        SQLiteDatabase db = this.getReadableDatabase();
+        db.execSQL("update SIFDetails set packedFor = '"+packedFor+"' , programs = '"+programs+"'" +
+                "where deviceId = '"+deviceId+"';");
+        db.close();
+    }
+
     public SIFDetails getSIFDetails(String sifNo){
         SIFDetails sif = new SIFDetails();
         SQLiteDatabase db = this.getWritableDatabase();
@@ -256,6 +263,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
             while(!cursor.isAfterLast()){
                 sif.setSifNo(cursor.getString(cursor.getColumnIndex("sifNo")));
                 sif.setDeviceId(cursor.getString(cursor.getColumnIndex("deviceId")));
+                sif.setPrograms(cursor.getString(cursor.getColumnIndex("programs")));
                 sif.setPackedFor(cursor.getString(cursor.getColumnIndex("packedFor")));
                 sif.setPackedTime(cursor.getString(cursor.getColumnIndex("packedDateTime")));
                 sif.setCrewOpenedTime(cursor.getString(cursor.getColumnIndex("crewOpenedDateTime")));

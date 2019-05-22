@@ -48,6 +48,7 @@ public class SplashActivity extends AppCompatActivity {
         public void onConnectPaySDK() {
             try {
                 BootUpReceiver.mReadCardOptV2 = mSMPayKernel.mReadCardOptV2;
+                BootUpReceiver.mBasicOptV2 = mSMPayKernel.mBasicOptV2;
                 isDisConnectService = false;
             } catch (Exception e) {
                 e.printStackTrace();

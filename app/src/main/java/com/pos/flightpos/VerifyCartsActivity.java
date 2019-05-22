@@ -1,10 +1,12 @@
 package com.pos.flightpos;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -26,6 +28,8 @@ import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +39,8 @@ public class VerifyCartsActivity extends AppCompatActivity {
     TableLayout cartsTable;
     String parent;
     String serviceType;
+    EditText currentTextField;
+    String currentEquipmentType;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +58,8 @@ public class VerifyCartsActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 
     private void showAvailableCarts() {
@@ -60,8 +68,8 @@ public class VerifyCartsActivity extends AppCompatActivity {
         Map<String, Map<String, List<KITItem>>> drawerKitItemMap = posdbHandler.
                 getDrawerKitItemMapFromServiceType(POSCommonUtils.getCommaSeparateStrFromList(kitCodesList));
 
-        TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT,
-                TableRow.LayoutParams.WRAP_CONTENT);
+        TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
+                TableRow.LayoutParams.WRAP_CONTENT,1);
 
         cellParams1.setMargins(0,0,0,10);
         int cartCount = 0;
@@ -123,7 +131,10 @@ public class VerifyCartsActivity extends AppCompatActivity {
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    setBarcodeValue(myEditText,map.getKey().toString());
+                    currentTextField = myEditText;
+                    currentEquipmentType = map.getKey().toString();
+                    scan();
+                    //setBarcodeValue(map.getKey().toString());
                 }
             });
             myEditText.setText(posdbHandler.getBarcodeFromEquipmentType(map.getKey().toString()));
@@ -147,20 +158,52 @@ public class VerifyCartsActivity extends AppCompatActivity {
         }
     }
 
-    private void setBarcodeValue(TextView textView,String equipmentType){
-        String barcode = POSCommonUtils.scanBarCode(this);
+    private void setBarcodeValue(String barcode){
         if(posdbHandler.isCartNumberEntered(barcode)) {
-            if(posdbHandler.getBarcodeFromEquipmentType(equipmentType).isEmpty()) {
-                posdbHandler.insertCartNumbers(equipmentType, barcode);
+            if(posdbHandler.getBarcodeFromEquipmentType(currentEquipmentType).isEmpty()) {
+                posdbHandler.insertCartNumbers(currentEquipmentType, barcode);
             }
             else{
-                posdbHandler.updateCartNumber(equipmentType, barcode);
+                posdbHandler.updateCartNumber(currentEquipmentType, barcode);
             }
-            textView.setText(barcode);
+            currentTextField.setText(barcode);
         }
         else{
             Toast.makeText(getApplicationContext(), "Cart number already scanned.",
                     Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void scan(){
+        Intent intent = new Intent();
+        intent.setAction("com.summi.scan");
+        intent.setPackage("com.sunmi.sunmiqrcodescanner");
+        intent.putExtra("IS_SHOW_SETTING", false);      // whether to display the setting button, default true
+        intent.putExtra("IDENTIFY_MORE_CODE", true);    // identify multiple qr code in the screen
+        intent.putExtra("IS_AZTEC_ENABLE", true);       // allow read of AZTEC code
+        intent.putExtra("IS_PDF417_ENABLE", true);      // allow read of PDF417 code
+        intent.putExtra("IS_DATA_MATRIX_ENABLE", true); // allow read of DataMatrix code
+        PackageManager packageManager = getPackageManager();
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivityForResult(intent, 100);
+        } else {
+            Toast.makeText(this,"Error",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 100 && data != null) {
+            Bundle bundle = data.getExtras();
+            ArrayList<HashMap<String, String>> result = (ArrayList< HashMap<String, String> >) bundle.getSerializable("data");
+            if (result != null && result.size() > 0) {
+                String value = result.get(0).get("VALUE");
+                setBarcodeValue(value);
+            } else {
+                Toast.makeText(this,"Scan Failed",Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 

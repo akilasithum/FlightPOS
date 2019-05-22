@@ -28,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 public class ConfigureFlightActivity extends AppCompatActivity {
 
@@ -162,7 +163,13 @@ public class ConfigureFlightActivity extends AppCompatActivity {
             SaveSharedPreference.setStringValues(this,Constants.SHARED_ADMIN_CONFIGURE_FLIGHT,"yes");
             startActivity(intent);
             String deviceId = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_DEVICE_ID);
-            handler.updateSIFDetails("packedFor",flightListTextView.getText().toString(),deviceId);
+            //handler.updateSIFDetails("packedFor",flightListTextView.getText().toString(),deviceId);
+            Set<String> serviceTypes = POSCommonUtils.getServiceTypeKitCodeMap(this).keySet();
+            String serviceTypesStr = "";
+            for(String str : serviceTypes){
+                serviceTypesStr += str + ",";
+            }
+            handler.updateSIFDetailsFromConfigureFlight(flightListTextView.getText().toString(),serviceTypesStr.substring(0,serviceTypesStr.length()-1) ,deviceId);
         }
         else{
             Toast.makeText(getApplicationContext(), "Please fill required details.",

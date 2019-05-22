@@ -5,10 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.sunmi.pay.hardware.aidlv2.readcard.ReadCardOptV2;
+import com.sunmi.pay.hardware.aidlv2.system.BasicOptV2;
 
 public class BootUpReceiver extends BroadcastReceiver {
 
     public static ReadCardOptV2 mReadCardOptV2;
+    public static BasicOptV2 mBasicOptV2;
 
     @Override
     public void onReceive(Context context, Intent intent) {

@@ -62,6 +62,7 @@ public class AddSeal extends AppCompatActivity {
             List<String> kitCodes = POSCommonUtils.getServiceTypeKitCodeMap(this).get(serviceType);
             noOfSeals = handler.getNoOfSealsFromKitCodes(kitCodes);
             TextView serviceTypeView = findViewById(R.id.sealServiceTypeId);
+
             serviceTypeView.setText("Seal info - "+POSCommonUtils.getServiceTypeFromServiceType(serviceType));
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
@@ -123,12 +124,12 @@ public class AddSeal extends AppCompatActivity {
         }
 
         ImageButton backButton = findViewById(R.id.backPressBtn);
-        /*backButton.setOnClickListener(new View.OnClickListener() {
+        backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
             }
-        });*/
+        });
 
         Button addRemarkBtn = findViewById(R.id.addSealRemark);
         addRemarkBtn.setOnClickListener(new View.OnClickListener() {
@@ -173,6 +174,7 @@ public class AddSeal extends AppCompatActivity {
         InputFilter[] filterArray = new InputFilter[1];
         filterArray[0] = new InputFilter.LengthFilter(18);
         inboundSealText.setFilters(filterArray);
+        inboundSealText.setTextSize(15);
         EditText previousText = (EditText)inboundLayout.getChildAt(inboundSealCount-1);
         if(text != null){
             inboundSealText.setText(text);
@@ -201,6 +203,7 @@ public class AddSeal extends AppCompatActivity {
             myEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
             InputFilter[] filterArray = new InputFilter[1];
             filterArray[0] = new InputFilter.LengthFilter(18);
+            myEditText.setTextSize(15);
             myEditText.setFilters(filterArray);
             if(sealList != null){
                 myEditText.setText(sealList.get(i));

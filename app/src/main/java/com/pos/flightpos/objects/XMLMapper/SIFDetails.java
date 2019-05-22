@@ -9,6 +9,7 @@ public class SIFDetails {
     private String packedTime;
     private String crewOpenedTime;
     private String crewClosedTime;
+    private String programs;
 
     public String getSifNo() {
         return sifNo;
@@ -56,5 +57,13 @@ public class SIFDetails {
 
     public void setCrewClosedTime(String crewClosedTime) {
         this.crewClosedTime = crewClosedTime;
+    }
+
+    public String getPrograms() {
+        return programs;
+    }
+
+    public void setPrograms(String programs) {
+        this.programs = programs;
     }
 }

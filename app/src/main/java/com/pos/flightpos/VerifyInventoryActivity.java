@@ -2,6 +2,7 @@ package com.pos.flightpos;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -31,13 +32,15 @@ public class VerifyInventoryActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 
     private void registerLayoutClickEvents(){
 
         LinearLayout printBOBInventory = (LinearLayout) findViewById(R.id.verifyBuyOnBoard);
         if(!serviceTypes.contains("BOB")){
-            printBOBInventory.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+            //printBOBInventory.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
         }
         printBOBInventory.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,7 +55,7 @@ public class VerifyInventoryActivity extends AppCompatActivity {
         });
         LinearLayout printDTPInventory = (LinearLayout) findViewById(R.id.verifyDutyPaid);
         if(!serviceTypes.contains("DTP")){
-            printDTPInventory.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+            //printDTPInventory.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
         }
         printDTPInventory.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -67,7 +70,7 @@ public class VerifyInventoryActivity extends AppCompatActivity {
         });
         LinearLayout printDTFInventory = (LinearLayout) findViewById(R.id.verifyDutyFree);
         if(!serviceTypes.contains("DTF")){
-            printDTFInventory.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+            //printDTFInventory.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
         }
         printDTFInventory.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +85,7 @@ public class VerifyInventoryActivity extends AppCompatActivity {
         });
         LinearLayout printVRTInventory = (LinearLayout) findViewById(R.id.verifyVirtualInventory);
         if(!serviceTypes.contains("VRT")){
-            printVRTInventory.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+            //printVRTInventory.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
         }
         printVRTInventory.setOnClickListener(new View.OnClickListener() {
             @Override
