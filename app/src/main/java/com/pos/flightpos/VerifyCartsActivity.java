@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -87,7 +88,7 @@ public class VerifyCartsActivity extends AppCompatActivity {
             linearLayout.setOrientation(LinearLayout.VERTICAL);
             linearLayout.setPadding(0, 8, 0, 8);
             linearLayout.setClickable(true);
-            linearLayout.setBackground(getResources().getDrawable(R.drawable.textinputborder));
+            linearLayout.setBackground(ContextCompat.getDrawable(this, R.color.white));
             linearLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -139,7 +140,7 @@ public class VerifyCartsActivity extends AppCompatActivity {
             });
             myEditText.setText(posdbHandler.getBarcodeFromEquipmentType(map.getKey().toString()));
             myEditText.getBackground().setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP);
-            myEditText.setTextSize(25);
+            myEditText.setTextSize(20);
 
             TableLayout tableLayout = new TableLayout(this);
 

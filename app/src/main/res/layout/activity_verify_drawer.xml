@@ -1,25 +1,57 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:focusable="true"
-    android:focusableInTouchMode="true">
+    android:layout_width="match_parent"
+    android:background="@drawable/background_bottom_style"
+    android:layout_height="match_parent"
+    tools:context=".VerifyCartsActivity"
+    >
     <ScrollView
-        android:id="@+id/hsv"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0"
-        android:fillViewport="true"
-        android:measureAllChildren="false"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/layoutbackgroundborder"
-        android:scrollbars="vertical" >
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/flight_bg"
+        >
         <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:orientation="vertical">
+
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp">
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:paddingBottom="10dp">
+                    <ImageButton
+                        android:id="@+id/backPressBtn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:background="@drawable/back_arrow_icon"
+                        android:layout_weight="1"
+                        android:clickable="true" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Verify Carts"
+                        android:textColor="@color/white"
+                        android:gravity="center"
+                        android:layout_weight="8"
+                        android:textStyle="bold"
+                        android:textSize="20dp"/>
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"/>
+                </TableRow>
+            </TableLayout>
 
             <TableLayout
                 android:id="@+id/verifyDrawerTable"
@@ -27,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="25dp"
                 android:paddingRight="25dp"
-                android:paddingTop="25dp">
+                android:paddingTop="15dp">
 
                 <TableRow
                     android:layout_width="fill_parent"
@@ -39,40 +71,9 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
-                        android:paddingBottom="25dp"
-                        android:textStyle="bold"
-                        android:textSize="24dp" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:background="#D5D3D3"
-                        android:text="Item No"
-                        android:textSize="17dp"
-                        android:gravity="center"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="6"
-                        android:background="#CAC7C7"
-                        android:text="Item Name"
-                        android:textSize="17dp"
-                        android:gravity="center"/>
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:background="#D5D3D3"
-                        android:text="Count"
-                        android:gravity="center"
-                        android:textSize="17dp"/>
+                        android:textColor="@color/white"
+                        android:paddingBottom="15dp"
+                        android:textSize="16dp" />
                 </TableRow>
             </TableLayout>
 
@@ -90,7 +91,7 @@
                 android:minLines="3"
                 android:gravity="top|left"
                 android:lines="10"
-                android:tooltipText="Add a remark here"
+                android:tooltipText="Add a remark"
                 android:inputType="textMultiLine"
                 android:scrollHorizontally="false"
                 android:background="@drawable/textinputborderlight"
@@ -98,48 +99,21 @@
             <Button
                 android:id="@+id/addInventoryRemark"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="30dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/button_style_blue"
                 android:text="Add a Remark" />
 
             <Button
                 android:id="@+id/verifyDrawerBtn"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:text="Click here to verify" />
+                android:layout_height="30dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/button_style"
+                android:text="Verify Cart" />
 
-            <!--<LinearLayout
-                android:id="@+id/verifyDrawerBtn"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="20dp"
-                android:clickable="true"
-                android:background="@drawable/textinputborderlight"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
-                    android:background="@drawable/icon_verify_drawer"/>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="10dp"
-                    android:text="Click here to verify"
-                    android:textSize="25dp" />
-            </LinearLayout>-->
-
-            <ImageButton
-                android:id="@+id/backPressBtn"
-                android:paddingTop="20dp"
-                android:paddingLeft="30dp"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:background="@drawable/icon_left_arrow"
-                android:clickable="true" />
         </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+</RelativeLayout>

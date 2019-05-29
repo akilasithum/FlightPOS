@@ -97,25 +97,17 @@ public class CheckInventoryActivity extends AppCompatActivity {
 
     private void showDataInTable(){
         POSDBHandler handler = new POSDBHandler(this);
-        String kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
-        //Map<String,Map<String,List<KITItem>>> drawerKitItemMap = posdbHandler.getDrawerKitItemMapFromServiceType(kitCode);
 
         TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
                 TableRow.LayoutParams.WRAP_CONTENT, 3f);
         TableRow.LayoutParams cellParams2 = new TableRow.LayoutParams(0,
                 TableRow.LayoutParams.WRAP_CONTENT, 2f);
 
-        //for(Map.Entry<String,Map<String,List<KITItem>>> eqEntry : drawerKitItemMap.entrySet()) {
-
-            //String equipmentName = eqEntry.getKey();
-
             TextView header = findViewById(R.id.headerId);
             header.setText("Equipment No : " + equipmentName);
             header.setTextSize(20);
             header.setLayoutParams(cellParams2);
             header.setPadding(0,0,0,20);
-
-            //addTableHeader(cellParams1,cellParams2);
 
             Map<String,List<KITItem>> treeMap = new TreeMap<>(cartItems);
             int i = 0;

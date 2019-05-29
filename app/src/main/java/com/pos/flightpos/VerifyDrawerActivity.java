@@ -2,6 +2,8 @@ package com.pos.flightpos;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -45,7 +47,7 @@ public class VerifyDrawerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_verify_drawer);
-        verifyDrawerTable = (TableLayout) findViewById(R.id.verifyDrawerTable);
+        verifyDrawerTable =  findViewById(R.id.verifyDrawerTable);
         handler = new POSDBHandler(this);
         Intent intent = getIntent();
         Bundle args = intent.getBundleExtra("BUNDLE");
@@ -56,17 +58,12 @@ public class VerifyDrawerActivity extends AppCompatActivity {
         TextView drawerNameText = (TextView) findViewById(R.id.drawerNameText);
         drawerNameText.setText("Verify " +drawerName);
         Button verifyDrawerBtn =  findViewById(R.id.verifyDrawerBtn);
-        //if(!parent.equals("VerifyFlightByAdminActivity")) {
-            verifyDrawerBtn.setOnClickListener(new View.OnClickListener() {
+        verifyDrawerBtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     verifyDrawer();
                 }
             });
-        /*}
-        else{
-            verifyDrawerBtn.setVisibility(View.INVISIBLE);
-        }*/
         updatedMap = new HashMap<>();
         equipmentNo = drawerItems.get(0).getEquipmentNo();
         showDataInTable(drawerItems);
@@ -84,6 +81,8 @@ public class VerifyDrawerActivity extends AppCompatActivity {
                 addRemark();
             }
         });
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 
     private void addRemark(){
@@ -122,18 +121,24 @@ public class VerifyDrawerActivity extends AppCompatActivity {
 
     private void showDataInTable(List<KITItem> kitItems){
 
+        TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
+                TableRow.LayoutParams.WRAP_CONTENT, 2f);
+        TableRow.LayoutParams cellParams2 = new TableRow.LayoutParams(0,
+                TableRow.LayoutParams.WRAP_CONTENT, 3f);
+        TableRow.LayoutParams cellParams3 = new TableRow.LayoutParams(0,
+                TableRow.LayoutParams.WRAP_CONTENT, 2f);
+        cellParams3.setMargins(5,0,5,0);
+
         for(KITItem item : kitItems){
             TableRow tr = new TableRow(this);
-            tr.setLayoutParams(new TableRow.LayoutParams(
+            TableRow.LayoutParams rowParam = new TableRow.LayoutParams(
                     TableRow.LayoutParams.MATCH_PARENT,
-                    TableRow.LayoutParams.WRAP_CONTENT));
+                    TableRow.LayoutParams.WRAP_CONTENT);
 
-            TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
-                    TableRow.LayoutParams.WRAP_CONTENT, 2f);
-            TableRow.LayoutParams cellParams2 = new TableRow.LayoutParams(0,
-                    TableRow.LayoutParams.WRAP_CONTENT, 6f);
-            TableRow.LayoutParams cellParams3 = new TableRow.LayoutParams(0,
-                    TableRow.LayoutParams.WRAP_CONTENT, 2f);
+            tr.setPadding(0,15,0,15);
+            tr.setLayoutParams(rowParam);
+            tr.setBackground(ContextCompat.getDrawable(this, R.color.white));
+
             final String itemNoStr = item.getItemNo();
             final String equipmentNo = item.getEquipmentNo();
             TextView itemNO = new TextView(this);
@@ -141,29 +146,33 @@ public class VerifyDrawerActivity extends AppCompatActivity {
             itemNO.setTextSize(16);
             itemNO.setLayoutParams(cellParams1);
             itemNO.setPadding(0,10,0,0);
+            itemNO.setGravity(Gravity.CENTER);
             tr.addView(itemNO);
+
+            View view  = new View(this);
+            view.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+            view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            tr.addView(view);
 
             TextView itemDesc = new TextView(this);
             itemDesc.setText(String.valueOf(item.getItemDescription()));
             itemDesc.setTextSize(16);
             itemDesc.setLayoutParams(cellParams2);
+            itemDesc.setGravity(Gravity.CENTER);
             tr.addView(itemDesc);
 
-            /*if(parent.equals("VerifyFlightByAdminActivity")){
-                TextView qtyTextView = new TextView(this);
-                qtyTextView.setText(item.getQuantity());
-                qtyTextView.setTextSize(16);
-                qtyTextView.setLayoutParams(cellParams3);
-                qtyTextView.setGravity(Gravity.CENTER);
-                tr.addView(qtyTextView);
-            }
-            else {*/
+            View view1  = new View(this);
+            view1.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+            view1.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            tr.addView(view1);
+
                 EditText qtyTextBox = new EditText(this);
                 qtyTextBox.setText(item.getQuantity());
                 qtyTextBox.setTextSize(16);
                 qtyTextBox.setLayoutParams(cellParams3);
                 qtyTextBox.setPadding(20, 0, 20, 0);
                 qtyTextBox.setInputType(InputType.TYPE_CLASS_NUMBER);
+            qtyTextBox.setBackground(ContextCompat.getDrawable(this, R.drawable.textinputborderlight));
                 qtyTextBox.addTextChangedListener(new TextWatcher() {
                     @Override
                     public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -180,20 +189,24 @@ public class VerifyDrawerActivity extends AppCompatActivity {
                     }
                 });
                 tr.addView(qtyTextBox);
-            //}
+            TableRow tr1 = new TableRow(this);
+            tr1.setPadding(0,15,0,15);
+            tr1.setLayoutParams(rowParam);
             verifyDrawerTable.addView(tr);
+            verifyDrawerTable.addView(tr1);
         }
     }
 
     private String getTotalCount(){
         int childCount = verifyDrawerTable.getChildCount();
         int total = 0;
-        for(int i=2;i<childCount;i++){
+        for(int i=1;i<childCount;i++){
             TableRow row = (TableRow)verifyDrawerTable.getChildAt(i);
-            EditText text = (EditText)row.getChildAt(2);
-            if(text.getText() != null && !text.getText().toString().equals("")){
+            EditText text = (EditText)row.getChildAt(4);
+            if(text != null && text.getText() != null && !text.getText().toString().equals("")){
                 total += Integer.parseInt(text.getText().toString());
             }
+            i++;
         }
         return total+"";
     }
