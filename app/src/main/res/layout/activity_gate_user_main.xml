@@ -1,19 +1,59 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
+    android:background="@drawable/background_bottom_style"
+    android:layout_height="match_parent"
+    >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/flight_bg"
+        >
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:paddingTop="30dp"
         android:weightSum="1">
+        
+        <TableLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp">
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:paddingBottom="10dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Select Category"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:layout_weight="8"
+                    android:textStyle="bold"
+                    android:textSize="25dp"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"/>
+            </TableRow>
+        </TableLayout>
 
         <TableLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:paddingTop="50dp"
+            android:paddingRight="5dp">
 
             <TableRow
                 android:layout_width="fill_parent"
@@ -23,27 +63,26 @@
                     android:id="@+id/bagsCategoryLayout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="35dp"
                     android:layout_weight="1"
-                    android:background="@drawable/textinputborder"
+                    android:layout_margin="2dp"
                     android:clickable="true"
                     android:orientation="vertical"
                     android:padding="5dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/icon_bag"
+                        android:background="@drawable/bags_icon"
                         android:textSize="20dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:textColor="@color/white"
                         android:text="Bags"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
 
                 </LinearLayout>
 
@@ -51,27 +90,51 @@
                     android:id="@+id/upgradesCatLayout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="35dp"
+                    android:layout_margin="2dp"
                     android:layout_weight="1"
-                    android:background="@drawable/textinputborder"
                     android:clickable="true"
                     android:orientation="vertical"
                     android:padding="5dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/icon_upgrade"
+                        android:background="@drawable/upgrades_icon"
                         android:textSize="20dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:textColor="@color/white"
                         android:text="Upgrades"
+                        android:textSize="15dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/compensationCatLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/compensation_icon"
                         android:textSize="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textColor="@color/white"
+                        android:text="Compensation"
+                        android:textSize="15dp" />
                 </LinearLayout>
             </TableRow>
 
@@ -79,118 +142,83 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent">
 
-                <LinearLayout
-                    android:id="@+id/compensationCatLayout"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_margin="35dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/textinputborder"
-                    android:clickable="true"
-                    android:orientation="vertical"
-                    android:padding="5dp">
-
-                    <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/icon_compensation"
-                        android:textSize="20dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="10dp"
-                        android:text="Compensation"
-                        android:textSize="20dp" />
-                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/transaportCatLayout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="35dp"
+                    android:layout_margin="2dp"
                     android:layout_weight="1"
-                    android:background="@drawable/textinputborder"
                     android:clickable="true"
                     android:orientation="vertical"
                     android:padding="5dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/icon_transport"
+                        android:background="@drawable/transport_icon"
                         android:textSize="20dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:textColor="@color/white"
                         android:text="Transport"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
                 </LinearLayout>
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
                 <LinearLayout
                     android:id="@+id/mealCatLayout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="35dp"
+                    android:layout_margin="2dp"
                     android:layout_weight="1"
-                    android:background="@drawable/textinputborder"
                     android:clickable="true"
                     android:orientation="vertical"
                     android:padding="5dp"
                     android:paddingTop="20dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/icon_bob_main"
+                        android:background="@drawable/meals_icon"
                         android:textSize="20dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:textColor="@color/white"
                         android:text="Meals"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/hotelCatLayout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="35dp"
+                    android:layout_margin="2dp"
                     android:layout_weight="1"
-                    android:background="@drawable/textinputborder"
                     android:clickable="true"
                     android:orientation="vertical"
                     android:padding="5dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/icon_hotel"
+                        android:background="@drawable/hotels_icon"
                         android:textSize="20dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:textColor="@color/white"
                         android:text="Hotels"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
                 </LinearLayout>
             </TableRow>
 
@@ -202,56 +230,82 @@
                     android:id="@+id/excurtionCatLayout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="35dp"
+                    android:layout_margin="2dp"
                     android:layout_weight="1"
-                    android:background="@drawable/textinputborder"
                     android:clickable="true"
                     android:orientation="vertical"
                     android:padding="5dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/icon_excursion"
+                        android:background="@drawable/excursion_icon"
                         android:textSize="20dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:textColor="@color/white"
                         android:text="Excursion"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/refundsCatLayout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="35dp"
+                    android:layout_margin="2dp"
                     android:layout_weight="1"
-                    android:background="@drawable/textinputborder"
                     android:clickable="true"
                     android:orientation="vertical"
                     android:padding="5dp">
 
                     <ImageView
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/icon_refund"
+                        android:background="@drawable/order_action_icon"
                         android:textSize="20dp" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:layout_margin="2dp"
+                        android:textColor="@color/white"
                         android:text="Order Actions"
+                        android:textSize="15dp" />
+                </LinearLayout>
+                <LinearLayout
+                    android:id="@+id/worldTracerLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/world_tracer_icon"
                         android:textSize="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="2dp"
+                        android:textColor="@color/white"
+                        android:text="World Tracer"
+                        android:textSize="15dp" />
                 </LinearLayout>
             </TableRow>
         </TableLayout>
     </LinearLayout>
 </ScrollView>
+</RelativeLayout>

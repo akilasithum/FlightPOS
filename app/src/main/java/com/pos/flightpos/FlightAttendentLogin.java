@@ -1,8 +1,11 @@
 package com.pos.flightpos;
 
+import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -13,14 +16,18 @@ import android.net.Uri;
 
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.v7.widget.AppCompatEditText;
+import android.support.v7.widget.AppCompatImageButton;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.pt.msr.Msr;
@@ -44,11 +51,10 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
      */
 
     // UI references.
-    private AutoCompleteTextView mEmailView;
+    private EditText mEmailView;
     private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
     private Msr msr = null;
+    final AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.8F);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,9 +68,11 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
             reDirectToMainPage(SaveSharedPreference.getStringValues(FlightAttendentLogin.this,Constants.SHARED_PREFERENCE_FA_NAME));
         }
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.att_email);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+        mEmailView =  findViewById(R.id.email);
 
-        mPasswordView = (EditText) findViewById(R.id.password);
+        mPasswordView =  findViewById(R.id.password);
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
@@ -76,34 +84,43 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.att_email_sign_in_button);
+        Button mEmailSignInButton =  findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
+                view.startAnimation(buttonClick);
                 attemptLogin();
             }
         });
-
-        mLoginFormView = findViewById(R.id.login_form_att);
-        mProgressView = findViewById(R.id.login_progress_att);
-
-        msr = new Msr();
-        readMSR();
-    }
-
-    private void closeMSR(){
-        if(msr != null)
-            msr.close();
+        ImageButton smartCardBtn = findViewById(R.id.magneticCardBtn);
+        smartCardBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                readMSR();
+            }
+        });
     }
 
     private void readMSR(){
+        final Msr msr = new Msr();
         msr.open();
+        final ProgressDialog dia = new ProgressDialog(this);
+        dia.setTitle("MSR");
+        dia.setMessage("please swipe Smart card...");
+        dia.show();
+        dia.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                msr.close();
+            }
+        });
         final Handler handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 // TODO Auto-generated method stub
 
                 if(msg.what == 1){
+                    dia.cancel();
                     for(int i = 1; i < 4; i++)
                     {
                         if(msr.getTrackError(i) == 0)
@@ -131,7 +148,7 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
                         Message msg = new Message();
                         msg.what    = 1;
                         handler.sendMessage(msg);
-                        //break;
+                        break;
                     }
                 }
             }
@@ -145,17 +162,17 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
             String[] credentials = track1Str.split(" ");
             if(credentials.length > 3){
                 if(isLoggingSuccessful(credentials[1].toLowerCase(),credentials[2].toLowerCase())){
-                    closeMSR();
                     reDirectToMainPage(credentials[1].toLowerCase());
                 }
                 else{
                     Toast.makeText(this, "Not a valid card.", Toast.LENGTH_SHORT).show();
+                    readMSR();
                 }
             }
             else {
                 Toast.makeText(this, "Not a valid card.", Toast.LENGTH_SHORT).show();
+                readMSR();
             }
-            readMSR();
         }
     }
 
@@ -209,7 +226,8 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
     }
 
     private boolean isLoggingSuccessful(String userName, String password){
-        return handler.isLoginSuccess(userName,password,"9");
+        boolean isLoginSuccess = handler.isLoginSuccess(userName,password,"9");
+        return isLoginSuccess;
     }
 
     @Override

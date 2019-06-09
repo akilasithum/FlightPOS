@@ -1,9 +1,15 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@drawable/background_bottom_style"
     android:layout_height="match_parent"
-    tools:context=".AttendendMainActivity">
+    >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/flight_bg"
+        >
 
     <TableLayout
         android:layout_width="fill_parent"
@@ -17,26 +23,42 @@
         android:paddingRight="75dp"
         android:paddingTop="15dp">
 
-        <TableRow
+
+
+        <TableLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_weight="1"
-                android:text="Flight date"
-                android:textSize="20dp" />
-
-            <EditText
-                android:id="@+id/flightDateSpinner"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:textColor="@color/black"
-                android:textSize="20dp" />
-        </TableRow>
+            android:layout_height="wrap_content"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:paddingRight="10dp">
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:paddingBottom="10dp">
+                <ImageButton
+                    android:id="@+id/backPressBtn"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:background="@drawable/back_arrow_icon"
+                    android:layout_weight="1"
+                    android:clickable="true" />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="Flight Details"
+                    android:textColor="@color/white"
+                    android:gravity="center"
+                    android:layout_weight="8"
+                    android:textStyle="bold"
+                    android:textSize="20dp"/>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"/>
+            </TableRow>
+        </TableLayout>
 
         <TableRow
             android:layout_width="fill_parent"
@@ -209,5 +231,6 @@
         </TableRow>
     </TableLayout>
 </ScrollView>
+</RelativeLayout>
 
 

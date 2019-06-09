@@ -1,6 +1,7 @@
 package com.pos.flightpos;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -53,11 +54,16 @@ public class ConfigureFlightActivity extends AppCompatActivity {
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(Constants.buttonClickAnimation);
                 clickSubmitBtn();
             }
         });
-        category = getIntent().getStringExtra("category").toString();
+        category = getIntent().getStringExtra("category");
+        TextView headerText = findViewById(R.id.headerId);
+        headerText.setText("Flight Details - " + category.substring(0, 1).toUpperCase() + category.substring(1));
         populateDateField();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
         flightListTextView.addTextChangedListener(new TextWatcher() {
 
             @Override

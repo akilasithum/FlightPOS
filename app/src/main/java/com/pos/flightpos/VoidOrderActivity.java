@@ -2,6 +2,7 @@ package com.pos.flightpos;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.OrderDetails;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.utils.POSCommonUtils;
@@ -41,6 +43,7 @@ public class VoidOrderActivity extends AppCompatActivity {
     String orderIdStr;
     Map<String,TableRow> voidItemsList;
     TableLayout mainOrderDetailsTable;
+    Button filterBtn;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +59,14 @@ public class VoidOrderActivity extends AppCompatActivity {
         selectItemsBtnTable.setVisibility(View.INVISIBLE);
         handler = new POSDBHandler(this);
         voidItemsList = new HashMap<>();
+        filterBtn = findViewById(R.id.filterBtn);
+        filterBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.startAnimation(Constants.buttonClickAnimation);
+                showFilteredOrders();
+            }
+        });
         Button selectItemsVoidBtn = findViewById(R.id.selectItemsVoidBtn);
         selectItemsVoidBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,11 +90,21 @@ public class VoidOrderActivity extends AppCompatActivity {
             }
         });
         showAvailableOrders();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 
-    private void showAvailableOrders(){
+    private void showFilteredOrders(){
+        EditText filterTextFld = findViewById(R.id.orderNumberField);
+        String filterText = String.valueOf(filterTextFld.getText());
+        if(filterText != null && !filterText.isEmpty()){
+            showOrdersInTable(handler.getOrders(filterText));
+        }
 
-        List<OrderDetails> orderDetails = handler.getOrders();
+    }
+
+    private void showOrdersInTable(List<OrderDetails> orderDetails){
+        mainOrderDetailsTable.removeAllViews();
         TableRow.LayoutParams cellParams = new TableRow.LayoutParams(0,
                 TableRow.LayoutParams.WRAP_CONTENT, 4f);
         TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
@@ -96,11 +117,11 @@ public class VoidOrderActivity extends AppCompatActivity {
             orderNo.setTextSize(20);
             orderNo.setGravity(Gravity.CENTER);
 
-            TextView seatNo = new TextView(this);
-            seatNo.setText(detail.getSeatNo());
-            seatNo.setLayoutParams(cellParams);
-            seatNo.setTextSize(20);
-            seatNo.setGravity(Gravity.CENTER);
+            TextView saleType = new TextView(this);
+            saleType.setText(detail.getType());
+            saleType.setLayoutParams(cellParams);
+            saleType.setTextSize(20);
+            saleType.setGravity(Gravity.CENTER);
 
             TextView total = new TextView(this);
             total.setText(detail.getSubTotal());
@@ -128,28 +149,10 @@ public class VoidOrderActivity extends AppCompatActivity {
                 }
             });
 
-            Button printBtn = new Button(this);
-            printBtn.setLayoutParams(cellParams1);
-            printBtn.setBackground(getResources().getDrawable(R.drawable.icon_printer));
-            printBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    new AlertDialog.Builder(VoidOrderActivity.this)
-                            .setTitle("Re-print Receipt")
-                            .setMessage("Do you want to re print the receipt?")
-                            .setIcon(android.R.drawable.ic_dialog_alert)
-                            .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                                public void onClick(DialogInterface dialog, int whichButton) {
-                                    rePrintReceipt(detail.getOrderNumber());
-                                }})
-                            .setNegativeButton(android.R.string.no, null).show();
-                }
-            });
             row.addView(orderNo);
-            row.addView(seatNo);
+            row.addView(saleType);
             row.addView(total);
-            row.addView(printBtn);
+            //row.addView(printBtn);
             row.addView(removeItemBtn);
             row.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -163,12 +166,18 @@ public class VoidOrderActivity extends AppCompatActivity {
         }
     }
 
+    private void showAvailableOrders(){
+
+        showOrdersInTable(handler.getOrders());
+
+    }
+
     private void rePrintReceipt(String orderId){
 
         OrderDetails details = handler.getOrderDetailsFromOrderNumber(orderId);
         PrintJob.printOrderDetails(this,orderId,details.getSeatNo(),items,
                 handler.getPaymentMethodsMapFromOrderNumber(orderId),handler.getCreditCardDetailsFromOrderNumber(orderId),
-                true,details.getDiscount(),details.getTax());
+                true,details.getDiscount(),details.getTax(),null);
     }
 
     private void cancelOrder(final String orderId){

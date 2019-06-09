@@ -1,13 +1,17 @@
 package com.pos.flightpos;
 
+import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 
 import com.pos.flightpos.objects.Constants;
@@ -15,23 +19,62 @@ import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.util.concurrent.TimeUnit;
 
-public class OptionsActivity extends AppCompatActivity {
+        public class OptionsActivity extends AppCompatActivity {
 
-    FrameLayout progressBarHolder;
-    AlphaAnimation inAnimation;
-    AlphaAnimation outAnimation;
+            FrameLayout progressBarHolder;
+            AlphaAnimation inAnimation;
+            AlphaAnimation outAnimation;
+            private ProgressDialog dialog;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+            @Override
+            protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_options);
         progressBarHolder = findViewById(R.id.progressBarHolder);
         setClickListeners();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+                ImageButton backButton = findViewById(R.id.backPressBtn);
+                backButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        onBackPressed();
+                    }
+                });
     }
+
+            private class SyncData extends AsyncTask<Void, Void, Void> {
+
+                public SyncData(Context context) {
+                    dialog = new ProgressDialog(context);
+                }
+
+                protected void onPreExecute() {
+                    dialog.setMessage("Data upload in progress. Please wait ...");
+                    dialog.show();
+                }
+
+                @Override
+                protected Void doInBackground(Void... voids) {
+                    try {
+                        Thread.sleep(4000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    return null;
+                }
+
+                @Override
+                protected void onPostExecute(Void aVoid) {
+                    if (dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                }
+            }
 
     private void setClickListeners(){
 
-        LinearLayout logoutLayout = findViewById(R.id.logoutLayout);
+        ImageButton logoutLayout = findViewById(R.id.logoutLayout);
         logoutLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,6 +102,32 @@ public class OptionsActivity extends AppCompatActivity {
                 Intent intent = new Intent(OptionsActivity.this, SyncActivity.class);
                 intent.putExtra("parent","optionActivity");
                 startActivity(intent);
+            }
+        });
+
+        LinearLayout voidOrderLayout = findViewById(R.id.voidOrderLayout);
+        voidOrderLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(OptionsActivity.this, VoidOrderActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        LinearLayout printTransactionsLayout = findViewById(R.id.printTransactionsLayout);
+        printTransactionsLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(OptionsActivity.this, PrintTransactionActivity.class);
+                startActivity(intent);
+            }
+        });
+
+        LinearLayout uploadSalesDataLayout = findViewById(R.id.uploadSalesData);
+        uploadSalesDataLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new SyncData(OptionsActivity.this).execute();
             }
         });
     }

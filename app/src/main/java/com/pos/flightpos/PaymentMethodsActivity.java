@@ -7,16 +7,24 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.pt.msr.Msr;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.InputType;
+import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
+import android.view.animation.AlphaAnimation;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
@@ -73,6 +81,12 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     float discountFromVoucher = 0;
     TextView subTotalTextView;
     String category;
+    LinearLayout contentLayout;
+    final AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.8F);
+    List<Currency> availableCurrencies;
+    Currency usdCurrency;
+    String seatNumber;
+    String paxName;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +100,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         confirmPaymentBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(buttonClick);
                 if(confirmPaymentBtn.getText().equals("Confirm Payment")) {
                     Float dispDueBalance = Float.parseFloat(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
                     if (dispDueBalance <= 0.1) {
@@ -150,15 +165,22 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                 POSCommonUtils.getTwoDecimalFloatFromString(discount));
         creditCardList = new ArrayList<>();
         paymentMethodsMap = new HashMap<>();
+        contentLayout = findViewById(R.id.contentLayout);
         registerLayoutClickEvents();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+        availableCurrencies = handler.getCurrencyList();
+        for(Currency currency : availableCurrencies){
+            if(currency.getCurrencyCode().equals("USD")) usdCurrency = currency;
+        }
     }
 
     private void registerLayoutClickEvents() {
-
         LinearLayout cashSettleLayout = (LinearLayout) findViewById(R.id.cashSettleLayout);
         cashSettleLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                view.startAnimation(buttonClick);
                 addCashSettlement();
             }
         });
@@ -166,20 +188,15 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         creditCardLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                view.startAnimation(buttonClick);
                 addCreditCardSettlementDetails();
             }
         });
-        /*LinearLayout loyaltyLayout = (LinearLayout) findViewById(R.id.loyaltyPaymentLayout);
-        loyaltyLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                addLoyaltyCardDetails();
-            }
-        });*/
         LinearLayout voucherLayout = (LinearLayout) findViewById(R.id.voucherPaymentLayout);
         voucherLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                view.startAnimation(buttonClick);
                 showVoucherDetails();
             }
         });
@@ -195,6 +212,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         cancelSaleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                view.startAnimation(buttonClick);
                 new android.support.v7.app.AlertDialog.Builder(PaymentMethodsActivity.this)
                         .setTitle("Cancel Sale")
                         .setMessage("Are you sure you want to cancel the sale?")
@@ -218,10 +236,12 @@ public class PaymentMethodsActivity extends AppCompatActivity {
 
     private void showVoucherDetails(){
         dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.voucher_layout);
         Window window = dialog.getWindow();
         window.setLayout(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
         dialog.setTitle("Vouchers");
+        dialog.setCanceledOnTouchOutside(false);
         final EditText voucherDiscountText = dialog.findViewById(R.id.discountText);
         final Spinner sectorSelectionSpinner = dialog.findViewById(R.id.voucherTypeSpinner);
         sectorSelectionSpinner.setAdapter(getVoucherTypes());
@@ -243,6 +263,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(buttonClick);
                 if (voucherDiscountText.getText() != null && voucherDiscountText.getText().toString() != null &&
                         !voucherDiscountText.getText().toString().equals("0.0")) {
                     if (dueBalance == totalBeforeTax || discountFromVoucher != 0) {
@@ -268,6 +289,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(buttonClick);
                 dialog.dismiss();
             }
         });
@@ -288,7 +310,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                         ratioMap.put(Float.parseFloat(ratioArr[0]), Float.parseFloat(ratioArr[1]));
                     }
                 } else {
-                    String[] ratioArr = discountStr.split(">");
+                    String[] ratioArr = discountStr.split("\\+");
                     ratioMap.put(Float.parseFloat(ratioArr[0]), Float.parseFloat(ratioArr[1]));
                 }
                 float discountVal = 0;
@@ -369,23 +391,26 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     private void addCreditCardSettlementDetails(){
 
         dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.credit_card_accept_layout);
         Window window = dialog.getWindow();
         window.setLayout(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
         dialog.setTitle("Settle by Credit Card");
+        dialog.setCanceledOnTouchOutside(false);
 
-        cardNumber = (EditText) dialog.findViewById(R.id.cardNumber);
-        cardHolderName = (EditText) dialog.findViewById(R.id.cardHolderNameText);
-        expiryDate = (EditText) dialog.findViewById(R.id.expireDateField);
-        cardType = (EditText) dialog.findViewById(R.id.cardTypeText);
-        final EditText amount = (EditText) dialog.findViewById(R.id.amountText);
-        amount.setText(String.valueOf(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance)));
+        cardNumber = dialog.findViewById(R.id.cardNumber);
+        cardHolderName =  dialog.findViewById(R.id.cardHolderNameText);
+        expiryDate =  dialog.findViewById(R.id.expireDateField);
+        cardType =  dialog.findViewById(R.id.cardTypeText);
+        final EditText amount = dialog.findViewById(R.id.amountText);
+        amount.setText(String.valueOf(dueBalance));
 
         Button okBtn = (Button) dialog.findViewById(R.id.cardSubmitBtn);
         final Button cancelBtn = (Button) dialog.findViewById(R.id.cancelBtn);
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(buttonClick);
                 if(amount.getText() == null || amount.getText().toString().isEmpty()){
                     showToastMsg("Enter paid amount.");
                 }
@@ -401,7 +426,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                     creditCard.setExpireDate(expiryDate.getText().toString());
                     creditCard.setPaidAmount(Float.parseFloat(amount.getText().toString()));
                     creditCardList.add(creditCard);
-                    addPaymentMethodToTable("Credit Card", "USD", "1", amount.getText().toString(), amount.getText().toString());
+                    addPaymentMethodToTable("Credit Card", "CAD", "1", amount.getText().toString(), amount.getText().toString());
                     closeMSR();
                     dialog.dismiss();
                     cancelSaleBtn.setVisibility(View.GONE);
@@ -412,6 +437,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(buttonClick);
                 closeMSR();
                 dialog.dismiss();
             }
@@ -429,9 +455,9 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                 String[] track1Details = track1Str.split("\\^");
                 String expireDateStr = track1Details[2].substring(2, 4) + "/" + track1Details[2].substring(0, 2);
                 if (!isExpired(expireDateStr)) {
-                    cardNumber = (EditText) dialog.findViewById(R.id.cardNumber);
-                    cardHolderName = (EditText) dialog.findViewById(R.id.cardHolderNameText);
-                    expiryDate = (EditText) dialog.findViewById(R.id.expireDateField);
+                    cardNumber =  dialog.findViewById(R.id.cardNumber);
+                    cardHolderName =  dialog.findViewById(R.id.cardHolderNameText);
+                    expiryDate =  dialog.findViewById(R.id.expireDateField);
                     cardNumber.setText(track1Details[0].substring(1));
                     cardHolderName.setText(track1Details[1]);
                     expiryDate.setText(expireDateStr);
@@ -493,18 +519,23 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         dia.setTitle("MSR");
         dia.setMessage("please swipe MSR card...");
         dia.show();
+        dia.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                msr.close();
+            }
+        });
         final Handler handler = new Handler(){
             @Override
             public void handleMessage(Message msg) {
                 // TODO Auto-generated method stub
 
                 if(msg.what == 1){
-                    dia.dismiss();
+                    dia.cancel();
                     for(int i = 1; i < 4; i++)
                     {
                         if(msr.getTrackError(i) == 0)
                         {
-                            //Log.i("123", "i:"+i);
                             byte[] out_data = new byte[msr.getTrackDataLength(i)];
                             msr.getTrackData(i, out_data);
                             setmsg(i,out_data,cardType.equals("credit"));
@@ -537,16 +568,24 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     private void addCashSettlement(){
 
         final Dialog cashSettleDialog = new Dialog(this);
-        cashSettleDialog.setContentView(R.layout.cash_settle_layout);
+        cashSettleDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        cashSettleDialog.setContentView(R.layout.cash_settle_style_layout);
         Window window = cashSettleDialog.getWindow();
         window.setLayout(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
-        cashSettleDialog.setTitle("Settle by Cash");
+        cashSettleDialog.setCanceledOnTouchOutside(false);
 
         final EditText amount = cashSettleDialog.findViewById(R.id.cashSettleAmountTextField);
         final Spinner currency = cashSettleDialog.findViewById(R.id.currencyText);
         final TextView errorMsgText = cashSettleDialog.findViewById(R.id.errorMsgText);
         final TextView initialAmount = cashSettleDialog.findViewById(R.id.initialAmount);
         currency.setAdapter(loadCurrencies());
+        handler = new POSDBHandler(this);;
+        currency.setAdapter(new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,availableCurrencies));
+        Currency baseCurrency = null;
+        for(Currency currency1 : availableCurrencies){
+            if(currency1.getCurrencyCode().equals(getBaseCurrency())) baseCurrency = currency1;
+        }
+        currency.setSelection(availableCurrencies.indexOf(baseCurrency));
         currency.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
@@ -567,6 +606,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(buttonClick);
                 errorMsgText.setText("");
                 if(amount.getText() == null || amount.getText().toString().isEmpty()){
                     errorMsgText.setText("Please Enter amount.");
@@ -586,10 +626,15 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(buttonClick);
                 cashSettleDialog.dismiss();
             }
         });
         cashSettleDialog.show();
+    }
+
+    private String getBaseCurrency(){
+        return "CAD";
     }
 
     private String getAmountInUSD(Currency currency, String amount){
@@ -599,63 +644,186 @@ public class PaymentMethodsActivity extends AppCompatActivity {
     }
 
     private String updateAmountBasedOnCurrency(Currency currency,String currentAmount){
-        currentAmount.replace(",","");
+        currentAmount = currentAmount.replace(",","");
         return POSCommonUtils.getTwoDecimalFloatFromFloat(Float.parseFloat(currentAmount) *
                 Float.parseFloat(currency.getCurrencyRate()));
     }
     private ArrayAdapter<Currency> loadCurrencies(){
         handler = new POSDBHandler(this);
         List<Currency> options=new ArrayList<>();
+        options.indexOf("CAD");
         List<Currency> equipmentList = handler.getCurrencyList();
         options.addAll(equipmentList);
         return new ArrayAdapter<>(this,android.R.layout.simple_spinner_item,options);
     }
 
-    private void addPaymentMethodToTable(String type, String currency, String rate, String amount, String USD){
+    private void addPaymentMethodToTable(final String type, final String currency, String rate, String amount,final String USD){
+
+        final FrameLayout frameLayout = new FrameLayout(this);
+        LinearLayout.LayoutParams frameLayoutParams = new LinearLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,1);
+        frameLayoutParams.setMargins(8,0,0,8);
+        frameLayout.setLayoutParams(frameLayoutParams);
+
+        ImageView closeBtn = new ImageView(this);
+        closeBtn.setClickable(true);
+        FrameLayout.LayoutParams closeBtnParam = new FrameLayout.LayoutParams(45, 45);
+        closeBtnParam.gravity = Gravity.TOP|Gravity.RIGHT;
+        closeBtn.setBackground(getResources().getDrawable(R.drawable.icon_cancel));
+        closeBtn.setLayoutParams(closeBtnParam);
+
+        LinearLayout linearLayout = new LinearLayout(this);
+        FrameLayout.LayoutParams linearLayoutParams = new FrameLayout.LayoutParams(700,
+                TableRow.LayoutParams.WRAP_CONTENT);
+        linearLayout.setGravity(Gravity.CENTER);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setBackgroundColor(getResources().getColor(R.color.sellitembg));
+        linearLayoutParams.setMargins(0,23,23,0);
+        linearLayout.setLayoutParams(linearLayoutParams);
 
         TableRow tr = new TableRow(this);
+        TableRow tr1 = new TableRow(this);
+
         tr.setLayoutParams(new TableRow.LayoutParams(
-                TableRow.LayoutParams.MATCH_PARENT,
+                TableRow.LayoutParams.FILL_PARENT,
                 TableRow.LayoutParams.WRAP_CONTENT));
+        tr.setPadding(0,10,0,0);
+        tr1.setLayoutParams(new TableRow.LayoutParams(
+                TableRow.LayoutParams.FILL_PARENT,
+                TableRow.LayoutParams.WRAP_CONTENT));
+        tr1.setPadding(0,0,0,10);
 
-        TableRow.LayoutParams cellParams = new TableRow.LayoutParams(0,
-                TableRow.LayoutParams.WRAP_CONTENT, 1f);
 
+        TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
+                TableRow.LayoutParams.WRAP_CONTENT, 6f);
+        TableRow.LayoutParams cellParams2 = new TableRow.LayoutParams(0,
+                TableRow.LayoutParams.WRAP_CONTENT, 3f);
+        TableRow.LayoutParams cellParams3 = new TableRow.LayoutParams(0,
+                35, 1f);
+
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(PaymentMethodsActivity.this)
+                        .setTitle("Remove selection")
+                        .setMessage("Do you want to remove this item from selection?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                dueBalance += Float.parseFloat(USD);
+                                String dueBalanceStr = POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance);
+
+                                balanceDueTextView.setText(dueBalanceStr);
+                                paymentMethodsCount++;
+                                paymentMethodsMap.remove(type+" "+currency);
+                                contentLayout.removeView(frameLayout);
+                            }})
+                        .setNegativeButton(android.R.string.no, null).show();
+            }
+        });
         TextView typeText = new TextView(this);
         typeText.setText(type);
-        typeText.setTextSize(15);
+        typeText.setTextSize(20);
         typeText.setGravity(Gravity.CENTER);
-        typeText.setLayoutParams(cellParams);
-        tr.addView(typeText);
+        typeText.setLayoutParams(cellParams3);
 
         TextView currencyTextView = new TextView(this);
         currencyTextView.setText(currency);
-        currencyTextView.setTextSize(15);
+        currencyTextView.setTextSize(20);
         currencyTextView.setGravity(Gravity.CENTER);
-        currencyTextView.setLayoutParams(cellParams);
-        tr.addView(currencyTextView);
+        currencyTextView.setLayoutParams(cellParams3);
 
         TextView exchangeRate = new TextView(this);
         exchangeRate.setText(rate);
-        exchangeRate.setTextSize(15);
+        exchangeRate.setTextSize(20);
         exchangeRate.setGravity(Gravity.CENTER);
-        exchangeRate.setLayoutParams(cellParams);
-        tr.addView(exchangeRate);
+        exchangeRate.setLayoutParams(cellParams3);
 
         TextView value = new TextView(this);
         String amountText = POSCommonUtils.getTwoDecimalFloatFromFloat(Float.valueOf(amount.replace(",","")));
         value.setText(amountText);
-        value.setTextSize(15);
+        value.setTextSize(20);
         value.setGravity(Gravity.CENTER);
-        value.setLayoutParams(cellParams);
-        tr.addView(value);
+        value.setLayoutParams(cellParams3);
 
         TextView usdVal = new TextView(this);
         usdVal.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(Float.valueOf(USD)));
-        usdVal.setTextSize(15);
+        usdVal.setTextSize(20);
         usdVal.setGravity(Gravity.CENTER);
-        usdVal.setLayoutParams(cellParams);
-        tr.addView(usdVal);
+        usdVal.setLayoutParams(cellParams3);
+
+        tr.addView(typeText);
+
+        TextView itemDescStr = new TextView(this);
+        itemDescStr.setText("Type");
+        itemDescStr.setTextSize(15);
+        itemDescStr.setLayoutParams(cellParams3);
+        itemDescStr.setGravity(Gravity.CENTER);
+        tr1.addView(itemDescStr);
+
+        View view  = new View(this);
+        view.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+        view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        tr.addView(view);
+
+        View viewDesc  = new View(this);
+        viewDesc.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+        viewDesc.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        tr1.addView(viewDesc);
+
+        tr.addView(currencyTextView);
+
+        TextView qtyDesc = new TextView(this);
+        qtyDesc.setText("Currency");
+        qtyDesc.setTextSize(15);
+        qtyDesc.setLayoutParams(cellParams3);
+        qtyDesc.setGravity(Gravity.CENTER);
+        tr1.addView(qtyDesc);
+
+        View view1  = new View(this);
+        view1.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+        view1.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        tr.addView(view1);
+
+        View view1Desc  = new View(this);
+        view1Desc.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+        view1Desc.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        tr1.addView(view1Desc);
+
+        tr.addView(exchangeRate);
+
+        TextView priceDesc = new TextView(this);
+        priceDesc.setText("Exchange Rate");
+        priceDesc.setTextSize(15);
+        priceDesc.setLayoutParams(cellParams3);
+        priceDesc.setGravity(Gravity.CENTER);
+        tr1.addView(priceDesc);
+
+        View view2  = new View(this);
+        view2.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+        view2.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        tr.addView(view2);
+
+        View view2Desc  = new View(this);
+        view2Desc.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+        view2Desc.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        tr1.addView(view2Desc);
+
+        tr.addView(value);
+
+        TextView totalDesc = new TextView(this);
+        totalDesc.setText("Value");
+        totalDesc.setTextSize(15);
+        totalDesc.setLayoutParams(cellParams3);
+        totalDesc.setGravity(Gravity.CENTER);
+        tr1.addView(totalDesc);
+
+        linearLayout.addView(tr);
+        linearLayout.addView(tr1);
+        frameLayout.addView(linearLayout);
+        frameLayout.addView(closeBtn);
+        contentLayout.addView(frameLayout);
 
         dueBalance -= Float.parseFloat(USD);
         String dueBalanceStr = POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance);
@@ -665,7 +833,6 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         balanceDueTextView.setText(dueBalanceStr);
         paymentMethodsCount++;
         paymentMethodsMap.put(type+" "+currency,amountText);
-        paymentTable.addView(tr,paymentMethodsCount);
     }
 
     private void updateSale(){
@@ -675,7 +842,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         for(SoldItem soldItem : soldItems) {
             String userID = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FA_NAME);
             handler.insertDailySalesEntry(orderNumber, soldItem.getItemId(), soldItem.getQuantity(),
-                    soldItem.getTotal(), "Passenger", userID,currentDateStr);
+                    soldItem.getTotal(), "Passenger", userID,currentDateStr,category);
             handler.updateSoldItemQty(soldItem.getItemId(), soldItem.getQuantity(),soldItem.getEquipmentNo(),
                     soldItem.getDrawer());
         }
@@ -684,7 +851,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             handler.insertPaymentMethods(orderNumber,entry.getKey(),entry.getValue());
         }
         String flightId = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME);
-        handler.insertOrderMainDetails(orderNumber,taxPercentage,discount,subTotalAfterTax+"",flightId);
+        handler.insertOrderMainDetails(orderNumber,taxPercentage,discount,subTotalAfterTax+"",flightId,category);
         if(creditCardList != null && !creditCardList.isEmpty()){
             for(CreditCard creditCard : creditCardList){
                 handler.insertCreditCardDetails(orderNumber,creditCard.getCreditCardNumber(),creditCard.getCardHolderName(),
@@ -693,27 +860,24 @@ public class PaymentMethodsActivity extends AppCompatActivity {
 
         }
         String[] passengerDetails = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_USER_DETAILS).split("==");
+        seatNumber = passengerDetails[2];
+        paxName = passengerDetails[0];
         handler.insertPassengerDetails(orderNumber,passengerDetails[0],passengerDetails[1],passengerDetails[2],passengerDetails[3],
                 flightId,SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_DATE));
-        /*if(loyaltyCard != null){
-            handler.insertLoyaltyCardDetails(orderNumber,loyaltyCard.getLoyaltyCardNumber(),
-                    loyaltyCard.getCardHolderName(),String.valueOf(loyaltyCard.getAmount()));
-        }*/
     }
 
     private void printReceipt(){
-        String seatNumber = "12C";
             if(confirmPaymentBtn.getText().equals("Print Card Holder copy")){
                 PrintJob.printOrderDetails(PaymentMethodsActivity.this,orderNumber,
                         seatNumber,soldItems,paymentMethodsMap,
-                        creditCardList.isEmpty() ? null : creditCardList.get(0),true,discount,taxPercentage);
+                        creditCardList.isEmpty() ? null : creditCardList.get(0),true,discount,taxPercentage,paxName);
                 redirectToMainPage();
             }
             else{
                 generateOrderNumber();
                 updateSale();
                 PrintJob.printOrderDetails(this,orderNumber,seatNumber,soldItems,paymentMethodsMap,
-                        creditCardList.isEmpty() ? null : creditCardList.get(0),false,discount,taxPercentage);
+                        creditCardList.isEmpty() ? null : creditCardList.get(0),false,discount,taxPercentage,paxName);
                 if(!creditCardList.isEmpty()) {
                     confirmPaymentBtn.setText("Print Card Holder copy");
                 }
@@ -727,7 +891,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         if(category.equalsIgnoreCase("Bags")){
             new android.support.v7.app.AlertDialog.Builder(PaymentMethodsActivity.this)
                     .setTitle("Print baggage tag")
-                    .setMessage("Do you wants print baggage tag?")
+                    .setMessage("Do you want to print baggage tag?")
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
@@ -743,7 +907,22 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                     }).show();
         }
         else{
-            redirect();
+            new android.support.v7.app.AlertDialog.Builder(PaymentMethodsActivity.this)
+                    .setTitle("Print vouchers")
+                    .setMessage("Do you want to print vouchers?")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            printVoucher();
+                        }
+                    })
+                    .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            redirect();
+                        }
+                    }).show();
         }
 
 
@@ -762,9 +941,10 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                         startActivity(intent);
                     }
                 })
-                .setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                .setNegativeButton(android.R.string.no, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        SaveSharedPreference.setStringValues(PaymentMethodsActivity.this,Constants.SHARED_PREFERENCE_KEEP_SAME_FLIGHT,"no");
                         Intent intent = new Intent(PaymentMethodsActivity.this, GateUserMainActivity.class);
                         startActivity(intent);
                     }
@@ -781,9 +961,46 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             flightTo = flightTo.substring(0,3);
         }
         for(int i = 0 ;i<soldItems.size();i++) {
-            PrintJob.printBaggageTag(this, flightTo, detailsArr[0], detailsArr[1], flightNo);
+            PrintJob.printBaggageTag(this, flightTo, detailsArr[0], detailsArr[1], flightNo,i);
         }
         redirect();
+    }
+
+    private void printVoucher() {
+
+        List<SoldItem> items = new ArrayList<>();
+        for(SoldItem item : soldItems){
+            int qty = Integer.parseInt(item.getQuantity());
+            for(int i = 1; i <= qty ; i++){
+                SoldItem item1 = item;
+                item1.setQuantity("1");
+                items.add(item1);
+            }
+        }
+        final List<SoldItem> finalItemsList = items;
+        int i = 0;
+        for (final SoldItem soldItem : items) {
+            if (i != 0) {
+                final int finalI = i;
+                new android.support.v7.app.AlertDialog.Builder(PaymentMethodsActivity.this)
+                        .setTitle("Print next voucher")
+                        .setMessage("Do you wants print next voucher?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                PrintJob.printVoluntaryRemovalReceipt(PaymentMethodsActivity.this, orderNumber, soldItem);
+                                if (finalI == finalItemsList.size() - 1) {
+                                    redirect();
+                                }
+                            }
+                        })
+                        .show();
+            } else {
+                PrintJob.printVoluntaryRemovalReceipt(this, orderNumber, soldItem);
+            }
+            i++;
+        }
     }
 
     private void generateOrderNumber(){

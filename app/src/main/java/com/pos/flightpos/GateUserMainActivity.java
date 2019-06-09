@@ -1,10 +1,12 @@
 package com.pos.flightpos;
 
 import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.pt.msr.Msr;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -35,6 +37,8 @@ public class GateUserMainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gate_user_main);
         handler = new POSDBHandler(this);
         registerLayoutClickEvents();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 
     private void registerLayoutClickEvents() {
@@ -96,16 +100,26 @@ public class GateUserMainActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        LinearLayout worldTracerLayout = findViewById(R.id.worldTracerLayout);
+        worldTracerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(GateUserMainActivity.this, WorldTracerActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void showUserPasswordView(){
-        msr = new Msr();
-        readMSR();
+        //msr = new Msr();
+        //readMSR();
         final Dialog managerLoginDialog = new Dialog(this);
+        managerLoginDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         managerLoginDialog.setContentView(R.layout.activity_manager_login);
         Window window = managerLoginDialog.getWindow();
         window.setLayout(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.WRAP_CONTENT);
         managerLoginDialog.setTitle("Manager Login");
+        managerLoginDialog.setCanceledOnTouchOutside(false);
 
         final EditText userName = managerLoginDialog.findViewById(R.id.userNameFld);
         final EditText password = managerLoginDialog.findViewById(R.id.passwordFld);
@@ -113,6 +127,12 @@ public class GateUserMainActivity extends AppCompatActivity {
 
         Button okBtn =  managerLoginDialog.findViewById(R.id.submitBtn);
         Button cancelBtn =  managerLoginDialog.findViewById(R.id.cancelBtn);
+        managerLoginDialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialog) {
+                //closeMSR();
+            }
+        });
 
         okBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,6 +148,7 @@ public class GateUserMainActivity extends AppCompatActivity {
                     if(handler.isLoginSuccess(userName.getText().toString(),password.getText().toString(),"10")){
                         Intent intent = new Intent(GateUserMainActivity.this, ConfigureFlightActivity.class);
                         intent.putExtra("category","compensation");
+                        //closeMSR();
                         startActivity(intent);
                         managerLoginDialog.dismiss();
                     }
@@ -141,6 +162,7 @@ public class GateUserMainActivity extends AppCompatActivity {
         cancelBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //closeMSR();
                 managerLoginDialog.dismiss();
             }
         });
@@ -208,12 +230,13 @@ public class GateUserMainActivity extends AppCompatActivity {
                 }
                 else{
                     Toast.makeText(this, "Not a valid card.", Toast.LENGTH_SHORT).show();
+                    readMSR();
                 }
             }
             else {
                 Toast.makeText(this, "Not a valid card.", Toast.LENGTH_SHORT).show();
+                readMSR();
             }
-            readMSR();
         }
     }
 

@@ -1,5 +1,6 @@
 package com.pos.flightpos.objects;
 
+import android.view.animation.AlphaAnimation;
 import android.widget.LinearLayout;
 import android.widget.TableRow;
 
@@ -43,5 +44,7 @@ public class Constants {
     //public static final String webServiceURL = "http://192.168.1.177:8080/back-office-ws/";
     //public static final String webServiceURL = "http://192.186.116.61:8080/back-office-ws/";
     public static final String webServiceURL = "http://163.172.156.224:8080/aerosky-ground-ws/";
+
+    public static final AlphaAnimation buttonClickAnimation = new AlphaAnimation(1F, 0.8F);
 
 }

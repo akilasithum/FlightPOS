@@ -1,12 +1,10 @@
 package com.pos.flightpos;
 
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -17,27 +15,10 @@ import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.amazonaws.mobile.client.AWSMobileClient;
-import com.amazonaws.mobile.client.AWSStartupHandler;
-import com.amazonaws.mobile.client.AWSStartupResult;
-import com.amazonaws.mobileconnectors.s3.transferutility.*;
-import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.util.StringUtils;
-import com.pos.flightpos.objects.Constants;
-import com.pos.flightpos.objects.SoldItem;
-import com.pos.flightpos.objects.XMLMapper.Item;
 import com.pos.flightpos.utils.HttpHandler;
-import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.Element;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,13 +26,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.xml.transform.Result;
 
 public class SyncActivity extends AppCompatActivity {
 
     LinearLayout syncLayout;
     POSDBHandler handler;
-    //ProgressDialog dia;
     List<String> completedFiles;
     AlphaAnimation inAnimation;
     AlphaAnimation outAnimation;
@@ -77,10 +56,6 @@ public class SyncActivity extends AppCompatActivity {
                 File directory = cw.getDir("imageDir", Context.MODE_PRIVATE);
                 directory.delete();
                 SaveSharedPreference.setStringValues(this,"syncKeyPressed","true");
-                /*dia = new ProgressDialog(this);
-                dia.setTitle("Sync");
-                dia.setMessage("POS sync is in progress. Please wait...");
-                dia.show();*/
                 completedFiles = new ArrayList<>();
                 AsyncTask<Void, Void, Void> task = new GetContacts().execute();
             }
@@ -127,16 +102,6 @@ public class SyncActivity extends AppCompatActivity {
         return false;
     }
 
-    private String getSIFRequest() {
-
-        String deviceId = POSCommonUtils.getDeviceId(this);
-        SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_DEVICE_ID,deviceId);
-        Document document = DocumentHelper.createDocument();
-        Element root = document.addElement("sifDetails");
-        root.addElement("deviceId").addText(deviceId);
-        return document.asXML();
-    }
-
     private class GetContacts extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -151,6 +116,8 @@ public class SyncActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             HttpHandler sh = new HttpHandler();
+            handler.insertComboDiscount(sh.makeServiceCall("promotions"));
+            completedFiles.add("promotions");
             handler.insertFlightData(sh.makeServiceCall("flights"));
             completedFiles.add("flights");
             handler.insertItemData(sh.makeServiceCall("items"));
@@ -159,8 +126,6 @@ public class SyncActivity extends AppCompatActivity {
             completedFiles.add("currencies");
             handler.insertVoucherDetails(sh.makeServiceCall("vouchers"));
             completedFiles.add("vouchers");
-            handler.insertComboDiscount(sh.makeServiceCall("promotions"));
-            completedFiles.add("promotions");
             handler.insertUserData(sh.makeServiceCall("users"));
             completedFiles.add("users");
             return null;

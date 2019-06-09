@@ -260,7 +260,7 @@ public class PrintJob {
         return true;
     }
 
-    public static boolean printVoluntaryRemovalReceipt(Context context,String orderNumber,List<SoldItem> soldItems){
+    public static boolean printVoluntaryRemovalReceipt(Context context,String orderNumber,SoldItem item){
         Printer printer = new Printer();
         printer.open();
         int printerStatus = printer.queState();
@@ -292,7 +292,7 @@ public class PrintJob {
         printer.printString("Voucher No : " + orderNumber);
         printer.printString(" ");
         float total = 0;
-        for(SoldItem item : soldItems){
+
             total += Float.parseFloat(item.getPrice())* Integer.parseInt(item.getQuantity());
             int itemNameLength = item.getItemDesc().length();
             String totalAmount = POSCommonUtils.getTwoDecimalFloatFromFloat(
@@ -302,7 +302,7 @@ public class PrintJob {
             printer.printString(item.getItemDesc()
                     + new String(new char[spaceLength]).replace("\0", " ") + totalAmount);
             printer.printString(item.getItemId() + " Each $" + item.getPrice() +" Complementary");
-        }
+
         printer.printString(" ");
         printer.setAlignment(2);
         printer.printString("Total : " + POSCommonUtils.getTwoDecimalFloatFromFloat(total));
@@ -324,7 +324,7 @@ public class PrintJob {
 
     public static boolean printOrderDetails(Context context,String orderNumber,String seatNumber, List<SoldItem> soldItems
                        ,Map<String,String> paymentMethodsMap,CreditCard card,boolean isCustomerCopy,
-                                            String discount,String taxPercentage){
+                                            String discount,String taxPercentage,String paxName){
 
         Printer printer = new Printer();
         printer.open();
@@ -356,6 +356,9 @@ public class PrintJob {
         printer.printString("Sale transaction");
         printer.setAlignment(0);
         printer.printString("Order No : " + orderNumber);
+        if(paxName != null) {
+            printer.printString("Pax Name : " + paxName);
+        }
         printer.printString("Seat Number : " + seatNumber);
         float total = 0;
         for(SoldItem item : soldItems){
@@ -364,24 +367,24 @@ public class PrintJob {
             String totalAmount = POSCommonUtils.getTwoDecimalFloatFromFloat(
                     Float.parseFloat(item.getPrice())*Integer.parseInt(item.getQuantity()));
             int totalAmountLength = totalAmount.length();
-            int spaceLength = 32 - (itemNameLength+totalAmountLength);
-            printer.printString(item.getItemDesc()
+            int spaceLength = 31 - (itemNameLength+totalAmountLength+item.getQuantity().length());
+            printer.printString(item.getItemDesc() + " " + item.getQuantity()
                     + new String(new char[spaceLength]).replace("\0", " ") + totalAmount);
             printer.printString(item.getItemId() + " Each $" + item.getPrice() );
         }
         printer.printString(" ");
         printer.setAlignment(2);
-        printer.printString("Total USD " + POSCommonUtils.getTwoDecimalFloatFromFloat(total));
+        printer.printString("Total CAD " + POSCommonUtils.getTwoDecimalFloatFromFloat(total));
         if(discount != null && !discount.isEmpty()) {
             total -= Float.parseFloat(discount);
-            printer.printString("Discount USD " + POSCommonUtils.getTwoDecimalFloatFromString(discount));
+            printer.printString("Discount CAD " + POSCommonUtils.getTwoDecimalFloatFromString(discount));
         }
         Float dueBalance = total;
         if(taxPercentage != null && !"null".equals(taxPercentage) && !taxPercentage.isEmpty()){
             printer.printString("Service Tax " + taxPercentage + "%");
             dueBalance = total * ((100 + Float.parseFloat(taxPercentage)) / 100);
         }
-        printer.printString("Sub Total USD " + POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
+        printer.printString("Sub Total CAD " + POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
         printer.setBold(false);
         printer.setAlignment(0);
         Iterator it = paymentMethodsMap.entrySet().iterator();
@@ -389,7 +392,7 @@ public class PrintJob {
             Map.Entry pair = (Map.Entry)it.next();
             printer.printString(pair.getKey() + " " + pair.getValue());
         }
-        if(paymentMethodsMap.get("Credit Card USD") != null){
+        if(paymentMethodsMap.get("Credit Card CAD") != null){
 
             int numOfDigits = card.getCreditCardNumber().length();
             printer.printString(" ");
@@ -431,7 +434,7 @@ public class PrintJob {
         return flightNo + " " + flight.getFlightFrom() +"-"+flight.getFlightTo();
     }
 
-    public static boolean printBaggageTag(Context context,String destination,String name,String PNR, String flightNo){
+    public static boolean printBaggageTag(Context context,String destination,String name,String PNR, String flightNo,int i){
         Printer printer = new Printer();
         printer.open();
         int printerStatus = printer.queState();
@@ -465,7 +468,7 @@ public class PrintJob {
         printer.printString(" ");
         printer.setBold(false);
         printer.printString(name);
-        printer.printString(PNR);
+        printer.printString(PNR + " " + i);
         Date date = new Date();
         DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
         printer.printString(df.format(date));

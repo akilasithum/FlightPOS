@@ -9,6 +9,7 @@ public class OrderDetails {
     private String subTotal;
     private String serviceType;
     private String flightId;
+    private String type;
 
     public String getOrderNumber() {
         return orderNumber;
@@ -64,5 +65,13 @@ public class OrderDetails {
 
     public void setFlightId(String flightId) {
         this.flightId = flightId;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
     }
 }

@@ -81,7 +81,7 @@ public class POSCommonUtils {
                 return dividedStr[0] + "." + dividedStr[1] + "0";
             }
         }
-        return floatStr;
+        return floatStr.replace(",","");
     }
 
     public static String getServiceTypeDescFromServiceType(String serviceType) {
@@ -169,9 +169,9 @@ public class POSCommonUtils {
                 seatNo = seatNo.substring(1, 4);
             }
             Map<String, String> returnMap = new HashMap<>();
-            returnMap.put("name", name);
+            returnMap.put("Name", name);
             returnMap.put("PNR", PNR);
-            returnMap.put("seatNo", seatNo);
+            returnMap.put("Seat No", seatNo);
             return returnMap;
         } catch (Exception e) {
             Toast.makeText(context, "Not a proper boarding pass.", Toast.LENGTH_SHORT).show();

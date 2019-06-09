@@ -1,111 +1,104 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:focusable="true"
-    android:focusableInTouchMode="true"
-    tools:context=".FlightAttendentLogin">
-
-    <!-- Login progress -->
-    <ProgressBar
-        android:id="@+id/login_progress_att"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
-
-    <ScrollView
-        android:id="@+id/login_form_att"
+ <LinearLayout
+        android:id="@+id/email_login_form"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/layoutbackgroundborder"
-        android:paddingLeft="50dp"
-        android:paddingRight="50dp"
-        android:paddingTop="80dp">
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:orientation="vertical">
 
-        <LinearLayout
-            android:id="@+id/email_login_form"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        <FrameLayout
+            android:layout_width="540dp"
+            android:layout_height="375dp">
 
-            <LinearLayout
+            <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:background="@color/splashbg"
-                android:orientation="vertical">
+                android:src="@drawable/sky_icon"/>
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_margin="10dp"
-                    android:src="@drawable/main_logo" />
-            </LinearLayout>
+            <ImageView
+                android:layout_width="150px"
+                android:layout_height="250px"
+                android:src="@drawable/logo_icon"
+                android:layout_gravity="center_vertical|center"/>
+
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="500dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingLeft="60dp"
+            android:paddingRight="60dp"
+            android:paddingTop="50dp"
+            android:orientation="vertical">
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
+                android:textColorHint="@color/white"
                 android:layout_height="wrap_content">
 
-                <AutoCompleteTextView
-                    android:id="@+id/att_email"
+                <EditText
+                    android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/user_icon"
                     android:hint="@string/prompt_email"
+                    android:textSize="20dp"
+                    android:textColor="@color/white"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
-                    android:singleLine="true"
-                    android:drawableLeft="@drawable/icon_user"/>
+                    android:backgroundTint="@color/white"
+                    android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
 
             <android.support.design.widget.TextInputLayout
                 android:layout_width="match_parent"
+                android:textColorHint="@color/white"
                 android:layout_height="wrap_content">
 
                 <EditText
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/password_icon"
                     android:hint="@string/prompt_password"
                     android:imeActionId="6"
                     android:imeActionLabel="@string/action_sign_in_short"
                     android:imeOptions="actionUnspecified"
                     android:inputType="textPassword"
+                    android:textColor="@color/white"
                     android:maxLines="1"
-                    android:singleLine="true"
-                    android:drawableLeft="@drawable/icon_passowrd"/>
+                    android:backgroundTint="@color/white"
+                    android:textSize="20dp"
+                    android:singleLine="true" />
 
             </android.support.design.widget.TextInputLayout>
 
+
             <Button
-                android:id="@+id/att_email_sign_in_button"
-                style="?android:textAppearanceSmall"
+                android:id="@+id/email_sign_in_button"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/action_sign_in"
-                android:textStyle="bold" />
+                android:layout_height="40dp"
+                android:layout_marginTop="20dp"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:background="@drawable/button_style"
+                android:text="Login" />
 
             <TextView
                 android:id="@+id/warningTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:paddingTop="20dp" />
-            <ImageView
+        </LinearLayout>
+
+     <ImageButton
+                android:id="@+id/magneticCardBtn"
+                android:layout_marginTop="50dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:background="@drawable/loginbg"/>
-
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+                android:layout_gravity="bottom|left"
+                android:background="@drawable/smart_card_icon"/>
+    </LinearLayout>

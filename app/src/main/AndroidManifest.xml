@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.pos.flightpos">
-
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -24,6 +23,8 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Background">
+        <activity android:name=".WorldTracerActivity"></activity>
+        <activity android:name=".PrintTransactionActivity" />
         <activity
             android:name=".SplashActivity"
             android:noHistory="true">
@@ -172,8 +173,9 @@
         <activity
             android:name=".VoucherDetailsActivity"
             android:label="Voucher Details" />
-        <activity android:name=".RemovalComponsationActivity"
-            android:label="Compensation"></activity>
+        <activity
+            android:name=".RemovalComponsationActivity"
+            android:label="Compensation" />
     </application>
 
 </manifest>

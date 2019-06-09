@@ -1,19 +1,68 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:layout_marginTop="30dp"
-    android:weightSum="1">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_bottom_style">
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/flight_bg">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="1">
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingTop="10dp"
+                android:paddingRight="10dp">
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:paddingBottom="10dp">
+
+                    <ImageButton
+                        android:id="@+id/backPressBtn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:background="@drawable/back_arrow_icon"
+                        android:clickable="true" />
+
+                    <TextView
+                        android:id="@+id/headerId"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="9"
+                        android:gravity="center"
+                        android:text="Order Actions"
+                        android:textColor="@color/white"
+                        android:textSize="25dp"
+                        android:textStyle="bold" />
+
+                    <ImageButton
+                        android:id="@+id/logoutLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:background="@drawable/icon_logout"
+                        android:clickable="true" />
+                </TableRow>
+            </TableLayout>
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
-            <LinearLayout
+            <!--<LinearLayout
                 android:id="@+id/refundLayout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
@@ -37,59 +86,55 @@
                     android:text="Refunds"
                     android:textSize="20dp" />
 
-            </LinearLayout>
+            </LinearLayout>-->
 
             <LinearLayout
                 android:id="@+id/voidOrderLayout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="35dp"
+                android:layout_margin="2dp"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborder"
                 android:clickable="true"
                 android:padding="5dp">
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/icon_cancel_order"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:background="@drawable/void_options_icon"
                     android:layout_gravity="center"
                     android:textSize="20dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:textColor="@color/white"
                     android:text="Void Options"
                     android:layout_gravity="center"
-                    android:textSize="20dp" />
+                    android:textSize="15dp" />
             </LinearLayout>
-        </TableRow>
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
             <LinearLayout
                 android:id="@+id/printTransactionsLayout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="35dp"
+                android:layout_margin="2dp"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborder"
                 android:clickable="true"
                 android:padding="5dp">
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/icon_printer"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:background="@drawable/print_transactions_icon"
                     android:layout_gravity="center"
                     android:textSize="20dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:textColor="@color/white"
                     android:layout_gravity="center"
                     android:text="Print Transactions"
-                    android:textSize="20dp" />
+                    android:textSize="15dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -97,24 +142,24 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="35dp"
+                android:layout_margin="2dp"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborder"
                 android:clickable="true"
                 android:padding="5dp">
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_report"
+                    android:background="@drawable/sales_reports_icon"
                     android:textSize="20dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
+                    android:textColor="@color/white"
                     android:layout_gravity="center"
                     android:text="Sales Reports"
-                    android:textSize="20dp" />
+                    android:textSize="15dp" />
             </LinearLayout>
         </TableRow>
 
@@ -126,15 +171,14 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="35dp"
+                android:layout_margin="2dp"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborder"
                 android:clickable="true"
                 android:padding="5dp">
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/icon_synchronize"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:background="@drawable/sync_data_icon"
                     android:layout_gravity="center"
                     android:textSize="20dp" />
                 <TextView
@@ -142,8 +186,9 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:layout_gravity="center"
+                    android:textColor="@color/white"
                     android:text="Sync Data"
-                    android:textSize="20dp" />
+                    android:textSize="15dp" />
             </LinearLayout>
 
             <LinearLayout
@@ -151,28 +196,35 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="35dp"
+                android:layout_margin="2dp"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborder"
                 android:clickable="true"
                 android:padding="5dp">
                 <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_upload"
+                    android:background="@drawable/upload_sales_data_icon"
                     android:textSize="20dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:layout_gravity="center"
+                    android:textColor="@color/white"
                     android:text="Upload Sales Data"
-                    android:textSize="20dp" />
+                    android:textSize="15dp" />
             </LinearLayout>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_margin="10dp"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:textSize="20dp" />
         </TableRow>
 
-        <TableRow
+        <!--<TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
             <LinearLayout
@@ -219,22 +271,8 @@
                     android:layout_gravity="center"
                     android:textSize="20dp" />
             </LinearLayout>
-        </TableRow>
+        </TableRow>-->
     </TableLayout>
-    <FrameLayout
-        android:id="@+id/progressBarHolder"
-        android:animateLayoutChanges="true"
-        android:visibility="gone"
-        android:alpha="0.4"
-        android:background="#000000"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ProgressBar
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:layout_gravity="center" />
-    </FrameLayout>
+        </LinearLayout>
+    </ScrollView>
 </RelativeLayout>

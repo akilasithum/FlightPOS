@@ -2,6 +2,7 @@ package com.pos.flightpos;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
@@ -23,7 +25,7 @@ import java.util.Map;
 
 public class UserDetailsActivity extends AppCompatActivity {
 
-    Button scanBoardingPassBtn;
+    ImageButton scanBoardingPassBtn;
     EditText passengerName;
     EditText pnrNo;
     EditText seatNo;
@@ -35,7 +37,7 @@ public class UserDetailsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user_details);
-        scanBoardingPassBtn = (Button) findViewById(R.id.scanBoardingPass);
+        scanBoardingPassBtn = findViewById(R.id.scanBoardingPass);
         scanBoardingPassBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -50,10 +52,13 @@ public class UserDetailsActivity extends AppCompatActivity {
         submitBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                v.startAnimation(Constants.buttonClickAnimation);
                 clickSubmitBtn();
             }
         });
         category = getIntent().getStringExtra("category");
+        TextView headerText = findViewById(R.id.headerId);
+        headerText.setText("Passenger Details - " + category.substring(0, 1).toUpperCase() + category.substring(1));
         ImageButton backButton = findViewById(R.id.backPressBtn);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -62,15 +67,20 @@ public class UserDetailsActivity extends AppCompatActivity {
             }
         });
         suggestEmailAddress();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 
     private void clickSubmitBtn(){
         if(passengerName.getText() != null && !passengerName.getText().equals("") &&
                 pnrNo.getText() != null && pnrNo.getText().toString() != null
-                 && seatNo.getText() != null && !seatNo.getText().toString().equals("") && emailId.getText() != null && !emailId.getText().toString().equals("")) {
+                 && seatNo.getText() != null && !seatNo.getText().toString().equals("")) {
+            String email;
+            if(emailId.getText().toString() == null || emailId.getText().toString().isEmpty())  email = "empty";
+            else email = emailId.getText().toString();
 
             String userDetailsStr = passengerName.getText().toString() + "==" + pnrNo.getText().toString() +"==" +
-                    seatNo.getText().toString() +"=="+emailId.getText().toString();
+                    seatNo.getText().toString() +"=="+email;
             SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_USER_DETAILS,userDetailsStr);
             if(category.equalsIgnoreCase("compensation")){
                 Intent intent = new Intent(this, ConpensationSelectionActivity.class);
@@ -140,9 +150,9 @@ public class UserDetailsActivity extends AppCompatActivity {
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            passengerName.setText(qrCodeDetails.get("name"));
+                            passengerName.setText(qrCodeDetails.get("Name"));
                             pnrNo.setText(qrCodeDetails.get("PNR"));
-                            seatNo.setText(qrCodeDetails.get("seatNo"));
+                            seatNo.setText(qrCodeDetails.get("Seat No"));
                         }})
                     .setNegativeButton(android.R.string.cancel, null).show();
         }
