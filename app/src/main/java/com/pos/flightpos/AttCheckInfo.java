@@ -2,10 +2,12 @@ package com.pos.flightpos;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -24,6 +26,15 @@ public class AttCheckInfo extends AppCompatActivity {
         setContentView(R.layout.activity_att_check_info);
         handler = new POSDBHandler(this);
         registerLayoutClickEvents();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+        ImageButton backButton = findViewById(R.id.backPressBtn);
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
     }
 
     private void registerLayoutClickEvents(){

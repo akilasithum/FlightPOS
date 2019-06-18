@@ -1,11 +1,20 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
+    android:background="@drawable/background_bottom_style"
     android:layout_height="match_parent"
-    tools:context=".ConfigureFlightActivity"
+    >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@drawable/flight_bg"
-        android:orientation="vertical">
+        >
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
 
     <TableLayout
@@ -107,29 +116,31 @@
         </TableRow>
 
     </TableLayout>
-        <LinearLayout
+
+       <!-- <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
             android:layout_marginTop="50dp"
-            android:background="@drawable/configure_flight_sky">
+            android:background="@drawable/configure_flight_sky">-->
 
             <Button
                 android:id="@+id/submitBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
                 android:layout_weight="1"
                 android:layout_marginLeft="25dp"
                 android:layout_marginRight="25dp"
-                android:layout_marginTop="110dp"
-                android:paddingTop="15dp"
+                android:layout_marginTop="220dp"
+                android:paddingTop="5dp"
                 android:textStyle="bold"
                 android:gravity="center_horizontal"
                 android:background="@drawable/button_style"
                 android:text="Submit" />
 
-        </LinearLayout>
+        <!--</LinearLayout>-->
     </LinearLayout>
-
+    </ScrollView>
+</RelativeLayout>
 
 

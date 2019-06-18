@@ -1,5 +1,6 @@
 package com.pos.flightpos;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -28,5 +29,7 @@ public class MessageToBondActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             }
         });
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 }

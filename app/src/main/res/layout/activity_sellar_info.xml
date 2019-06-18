@@ -1,18 +1,62 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:id="@+id/userMainLayout"
-    android:orientation="vertical"
-    tools:context=".SellarInfoActivity" >
+    android:background="@drawable/background_bottom_style"
+    tools:context=".SellarInfoActivity">
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp">
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingBottom="10dp">
+
+            <ImageButton
+                android:id="@+id/backPressBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                android:background="@drawable/back_arrow_icon"
+                android:clickable="true" />
+
+            <TextView
+                android:id="@+id/headerId"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:gravity="center"
+                android:text="Seller Info"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center" />
+        </TableRow>
+    </TableLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/flight_bg">
 
     <LinearLayout
         android:id="@+id/layout_user"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="55dp"
-        android:layout_marginRight="55dp"
-        android:layout_marginTop="55dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginTop="70dp"
         android:padding="15dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
@@ -31,27 +75,23 @@
         <Button
             android:id="@+id/bt_addUser"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="30dp"
+            android:background="@drawable/button_style"
             android:layout_weight="1"
+            android:layout_marginTop="10dp"
             android:onClick="addUser"
             android:text="Add Seller" />
 
+        <Button
+            android:id="@+id/bt_saveSeller"
+            android:layout_width="fill_parent"
+            android:layout_height="30dp"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/button_style"
+            android:layout_weight="1"
+            android:text="Save Sellers" />
     </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1"
-        android:gravity="left|bottom"
-        android:layout_marginLeft="55dp"
-        android:layout_marginBottom="55dp"
-        android:orientation="vertical" >
 
-        <ImageButton
-            android:id="@+id/backPressBtn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/icon_left_arrow"
-            android:layout_gravity="center_horizontal|left"
-            android:clickable="true" />
-    </LinearLayout>
-</LinearLayout>
+
+    </ScrollView>
+</RelativeLayout>

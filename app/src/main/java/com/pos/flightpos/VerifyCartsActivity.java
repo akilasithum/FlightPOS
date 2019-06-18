@@ -168,6 +168,7 @@ public class VerifyCartsActivity extends AppCompatActivity {
                 posdbHandler.updateCartNumber(currentEquipmentType, barcode);
             }
             currentTextField.setText(barcode);
+            SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_CART_SCAN,"yes");
         }
         else{
             Toast.makeText(getApplicationContext(), "Cart number already scanned.",

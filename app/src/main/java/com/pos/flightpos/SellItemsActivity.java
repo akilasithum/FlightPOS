@@ -8,6 +8,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v4.app.NotificationCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -41,6 +42,8 @@ public class SellItemsActivity extends AppCompatActivity {
                 Constants.SHARED_PREFERENCE_TAX_PERCENTAGE);
         availableServiceType();
         registerLayoutClickEvents();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 
     private void showBOBNotification(){
@@ -94,7 +97,7 @@ public class SellItemsActivity extends AppCompatActivity {
 
         LinearLayout buyOnBoardLayout = (LinearLayout) findViewById(R.id.buyOnBoardItems);
         if(!serviceType.contains("BOB")){
-            buyOnBoardLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+            buyOnBoardLayout.getChildAt(0).setBackgroundResource(R.drawable.buy_on_board_icon_grey);
         }
         buyOnBoardLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -109,7 +112,7 @@ public class SellItemsActivity extends AppCompatActivity {
         });
         LinearLayout dutyPaidLayout = (LinearLayout) findViewById(R.id.dutyPaidItems);
         if(!serviceType.contains("DTP") || taxPercentage == null){
-            dutyPaidLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+            dutyPaidLayout.getChildAt(0).setBackgroundResource(R.drawable.duty_paid_icon_grey);
         }
         dutyPaidLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +126,7 @@ public class SellItemsActivity extends AppCompatActivity {
         });
         LinearLayout dutyFreeLayout = (LinearLayout) findViewById(R.id.dutyFreeItems);
         if(!serviceType.contains("DTF") || taxPercentage != null){
-            dutyFreeLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+            dutyFreeLayout.getChildAt(0).setBackgroundResource(R.drawable.duty_free_icon_grey);
         }
         dutyFreeLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -137,7 +140,7 @@ public class SellItemsActivity extends AppCompatActivity {
         });
         LinearLayout virtualInventoryLayout = (LinearLayout) findViewById(R.id.virtualInventory);
         if(!serviceType.contains("VRT")){
-            virtualInventoryLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+            virtualInventoryLayout.getChildAt(0).setBackgroundResource(R.drawable.virtual_inventory_icon_grey);
         }
         virtualInventoryLayout.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -11,6 +11,7 @@ import android.os.Bundle;
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.CreditCard;
 import com.pos.flightpos.objects.OrderDetails;
+import com.pos.flightpos.objects.XMLMapper.FADetails;
 import com.pos.flightpos.objects.XMLMapper.ItemSale;
 import com.pos.flightpos.objects.XMLMapper.POSFlight;
 import com.pos.flightpos.objects.XMLMapper.PaymentMethods;
@@ -55,13 +56,13 @@ public class UploadSalesDataActivity extends AppCompatActivity {
             resultList.add(handler.postRequest(getItemSaleXML(),"itemSales"));
             resultList.add(handler.postRequest(getCreditCardXML(),"creditCardDetails"));
             resultList.add(handler.postRequest(getFlightDetailsXML(),"posFlightDetails"));
-
+            resultList.add(handler.postRequest(getFADetailsXML(),"faDetails"));
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(resultList.size() == 6){
+            if(resultList.size() == 7){
                 dia.cancel();
                 posdbHandler.clearDailySalesTable();
                 showMsgAndExit("Sync Completed","POS data update completed. Click ok to continue",true);
@@ -229,6 +230,27 @@ public class UploadSalesDataActivity extends AppCompatActivity {
             orderMainDetail.addElement("eClassPaxCount").addText("");
             orderMainDetail.addElement("bClassPaxCount").addText("");
             orderMainDetail.addElement("sifNo").addText("");
+        }
+        return document.asXML();
+    }
+
+    private String getFADetailsXML(){
+        List<FADetails> posFlightList = posdbHandler.getFADetails();
+        Document document = DocumentHelper.createDocument();
+        Element root = document.addElement("faDetails");
+        for(FADetails posFlight : posFlightList){
+            Element orderMainDetail = root.addElement("fa");
+            orderMainDetail.addElement("flightNo").addText(posFlight.getFlightNo());
+            orderMainDetail.addElement("sector").addText(posFlight.getSector());
+            orderMainDetail.addElement("flightDate").addText(posFlight.getFlightDate());
+            orderMainDetail.addElement("faName").addText(posFlight.getFaName());
+        }
+        if(posFlightList.size() == 1){
+            Element orderMainDetail = root.addElement("flight");
+            orderMainDetail.addElement("flightNo").addText("");
+            orderMainDetail.addElement("sector").addText("");
+            orderMainDetail.addElement("flightDate").addText("");
+            orderMainDetail.addElement("faName").addText("");
         }
         return document.asXML();
     }

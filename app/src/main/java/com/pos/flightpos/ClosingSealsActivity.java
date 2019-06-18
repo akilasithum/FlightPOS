@@ -1,6 +1,7 @@
 package com.pos.flightpos;
 
 import android.os.Handler;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.InputType;
@@ -55,6 +56,8 @@ public class ClosingSealsActivity extends AppCompatActivity {
         });
         TextView serviceTypeView = findViewById(R.id.sealServiceTypeId);
         serviceTypeView.setText("Closing Seals - "+POSCommonUtils.getServiceTypeFromServiceType(serviceType));
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 
     private void addSealSpinner(){
@@ -62,7 +65,7 @@ public class ClosingSealsActivity extends AppCompatActivity {
         LinearLayout.LayoutParams mRparams = new LinearLayout.LayoutParams
                 (RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         for(int i=1 ; i< sealCount;i++){
-            Spinner newSpinner = new Spinner(new ContextThemeWrapper(this, R.style.Widget_AppCompat_Spinner_Underlined), null, 0);
+            Spinner newSpinner = new Spinner(this);
             newSpinner.setLayoutParams(mRparams);
             newSpinner.setPadding(0,0,30,0);
             closeSealLayout.addView(newSpinner,0);

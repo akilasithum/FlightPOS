@@ -208,7 +208,8 @@
         <Button
             android:id="@+id/addSealRemark"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_height="30dp"
             android:textSize="15dp"
             android:textColor="@color/white"
             android:background="@drawable/button_style"

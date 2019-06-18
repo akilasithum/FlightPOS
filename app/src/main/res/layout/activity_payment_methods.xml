@@ -1,9 +1,13 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".PaymentMethodsActivity">
+    android:background="@drawable/background_bottom_style">
+
+<ScrollView
+    android:background="@drawable/flight_bg"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,101 +16,140 @@
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:paddingRight="10dp"
         android:paddingLeft="10dp"
-        android:layout_marginTop="10dp"
-        android:focusable="true"
-        android:background="@drawable/layoutbackgroundborder"
-        android:focusableInTouchMode="true">
+        android:paddingTop="10dp"
+        android:paddingRight="10dp">
 
         <TableRow
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_margin="10dp"
-            android:text="select Payment Method"
-            android:textSize="20dp" />
+            android:layout_height="fill_parent"
+            android:paddingBottom="5dp">
+
+            <ImageButton
+                android:id="@+id/backPressBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                android:background="@drawable/back_arrow_icon"
+                android:clickable="true" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:gravity="center"
+                android:text="Payments"
+                android:textColor="@color/white"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center" />
         </TableRow>
+    </TableLayout>
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp">
 
         <TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text=""
+                android:textSize="13dp" />
+
             <LinearLayout
                 android:id="@+id/cashSettleLayout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborderlight"
                 android:padding="3dp">
+
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
                     android:background="@drawable/icon_cash_payment" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:textColor="@color/white"
                     android:text="Cash"
-                    android:textSize="13dp" />
+                    android:textSize="12dp" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/creditCardPaymentLayout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborderlight"
                 android:padding="3dp">
+
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_credit_card_payment"/>
+                    android:background="@drawable/icon_credit_card_payment" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:textColor="@color/white"
                     android:text="Credit Card"
-                    android:textSize="13dp" />
+                    android:textSize="12dp" />
             </LinearLayout>
+
             <LinearLayout
                 android:id="@+id/voucherPaymentLayout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborderlight"
                 android:padding="3dp">
+
                 <ImageView
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_voucher_payment"/>
+                    android:background="@drawable/icon_voucher_payment" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:textColor="@color/white"
                     android:text="Voucher"
-                    android:textSize="13dp" />
+                    android:textSize="12dp" />
             </LinearLayout>
             <LinearLayout
                 android:id="@+id/loyaltyPaymentLayout"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborderlight"
                 android:padding="3dp">
                 <ImageView
                     android:layout_width="50dp"
@@ -117,102 +160,62 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:textColor="@color/white"
                     android:text="Loyalty"
-                    android:textSize="13dp" />
+                    android:textSize="12dp" />
             </LinearLayout>
-        </TableRow>
-
-        <!--<TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="3"
-                android:layout_margin="10dp"
-                android:text="select Payment Method"
-                android:textSize="20dp" />
-
-            <Spinner
-                android:id="@+id/paymentMethodSpinner"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:paddingRight="30dp"
-                android:textSize="40dp"/>
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:text="" />
         </TableRow>
+    </TableLayout>
 
-        <TableRow
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="220dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="vertical">
+
+        <ScrollView
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <Button
-                android:id="@+id/addPaymentMethodBtn"
+            android:layout_height="220dp"
+            android:background="@drawable/white_boarder_style"
+            android:paddingTop="10dp">
+
+            <LinearLayout
+                android:id="@+id/contentLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Add Payment method" />
-        </TableRow>-->
-    </TableLayout>
+                android:gravity="center"
+                android:orientation="vertical">
+
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:textSize="15dp"/>
 
     <TableLayout
         android:id="@+id/paymentMethodTable"
-        android:layout_width="fill_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:paddingLeft="10dp"
+        android:layout_weight="4"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:background="@drawable/layoutbackgroundborder"
-        android:paddingRight="10dp"
-        android:layout_marginTop="10dp"
-        android:paddingTop="40dp">
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="#D5D3D3"
-                android:text="Type"
-                android:textSize="15dp"
-                android:gravity="center"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="#CAC7C7"
-                android:text="Currency"
-                android:textSize="15dp"
-                android:gravity="center"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="#D5D3D3"
-                android:text="Rate"
-                android:textSize="15dp"
-                android:gravity="center"/>
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="#CAC7C7"
-                android:text="Value"
-                android:textSize="15dp"
-                android:gravity="center"/>
-            <!--<TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:background="#D5D3D3"
-                android:text="USD"
-                android:textSize="22dp"
-                android:gravity="center"/>-->
-        </TableRow>
+        android:paddingRight="10dp">
         <TableRow
             android:id="@+id/totalTextRow"
             android:layout_width="fill_parent"
@@ -220,8 +223,9 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="2"
                 android:paddingTop="20dp"
+                android:textColor="@color/white"
                 android:text="Total : "
                 android:textSize="15dp"/>
 
@@ -229,7 +233,9 @@
                 android:id="@+id/totalTextView"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:textColor="@color/white"
                 android:layout_weight="1"
+                android:gravity="right"
                 android:text="0"
                 android:textSize="15dp"/>
         </TableRow>
@@ -240,7 +246,8 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:textColor="@color/white"
+                android:layout_weight="2"
                 android:text="Service Tax : "
                 android:textSize="15dp"/>
 
@@ -249,6 +256,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="right"
+                android:textColor="@color/white"
                 android:text="0"
                 android:textSize="15dp"/>
         </TableRow>
@@ -258,7 +267,8 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="2"
+                android:textColor="@color/white"
                 android:text="Balance Due : "
                 android:textSize="15dp"/>
 
@@ -267,6 +277,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="right"
+                android:textColor="@color/white"
                 android:text="0"
                 android:textSize="15dp"/>
         </TableRow>
@@ -276,7 +288,8 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="2"
+                android:textColor="@color/white"
                 android:text="Discount : "
                 android:textSize="15dp"/>
 
@@ -285,6 +298,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="right"
+                android:textColor="@color/white"
                 android:text="0"
                 android:textSize="15dp"/>
         </TableRow>
@@ -294,7 +309,8 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_weight="2"
+                android:textColor="@color/white"
                 android:text="Sub Total : "
                 android:textSize="15dp"/>
 
@@ -303,6 +319,8 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
+                android:gravity="right"
+                android:textColor="@color/white"
                 android:text="0"
                 android:textSize="15dp"/>
         </TableRow>
@@ -313,64 +331,49 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:paddingTop="20dp"
-                android:text=""/>
-        </TableRow>
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingTop="30dp"
-                android:paddingBottom="30dp"
-                android:text=""/>
-            <Button
-                android:id="@+id/printReceipt"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
                 android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:textSize="15dp"
-                android:text="Confirm Payment" />
-            <Button
-                android:id="@+id/cancelSale"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="2"
-                android:paddingTop="10dp"
-                android:paddingBottom="10dp"
-                android:textSize="15dp"
-                android:text="Cancel Sale" />
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:paddingTop="30dp"
-                android:paddingBottom="30dp"
                 android:text=""/>
         </TableRow>
     </TableLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_weight="1"
-        android:gravity="left|bottom"
-        android:layout_marginLeft="20dp"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="55dp"
-        android:orientation="vertical" >
-
-        <ImageButton
-            android:id="@+id/backPressBtn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@drawable/icon_left_arrow"
-            android:layout_gravity="center_horizontal|left"
-            android:clickable="true" />
     </LinearLayout>
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="20dp"
+            android:paddingBottom="30dp"
+            android:text="" />
+
+        <Button
+            android:id="@+id/printReceipt"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_weight="2"
+            android:background="@drawable/button_style_left_corner_round"
+            android:text="Confirm Payment"
+            android:textSize="15dp" />
+
+        <Button
+            android:id="@+id/cancelSale"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_weight="2"
+            android:background="@drawable/button_style_right_corner"
+            android:text="Cancel Sale"
+            android:textSize="15dp" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:text="" />
+    </TableRow>
 </LinearLayout>
 </ScrollView>
+</RelativeLayout>

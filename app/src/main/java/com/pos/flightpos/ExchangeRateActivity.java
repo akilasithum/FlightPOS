@@ -1,5 +1,6 @@
 package com.pos.flightpos;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -30,6 +31,8 @@ public class ExchangeRateActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 
     private void showCurrencyInTable(){

@@ -19,6 +19,7 @@ import com.pos.flightpos.objects.User;
 import com.pos.flightpos.objects.XMLMapper.ComboDiscount;
 import com.pos.flightpos.objects.XMLMapper.Currency;
 import com.pos.flightpos.objects.XMLMapper.Equipment;
+import com.pos.flightpos.objects.XMLMapper.FADetails;
 import com.pos.flightpos.objects.XMLMapper.Item;
 import com.pos.flightpos.objects.XMLMapper.ItemSale;
 import com.pos.flightpos.objects.XMLMapper.KITItem;
@@ -121,6 +122,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS cartNumbers (equipmentType VARCHAR,cartNumber VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS sectors (flightNo VARCHAR,sectorFrom VARCHAR" +
                 ",sectorTo VARCHAR,sectorType VARCHAR,flightType VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS faDetails (flightNo VARCHAR,sector VARCHAR" +
+                ",flightDate VARCHAR,faName VARCHAR);");
     }
 
     public void clearTable(){
@@ -156,6 +159,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.execSQL("delete from sealDetails");
         db.execSQL("delete from posFlights");
         db.execSQL("delete from cartNumbers");
+        db.execSQL("delete from faDetails");
         db.close();
         resetDrawerValidation();
     }
@@ -163,6 +167,14 @@ public class POSDBHandler extends SQLiteOpenHelper {
     public void insertSIFDetails(String sifNo,String deviceId){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("INSERT INTO SIFDetails (sifNo,deviceId) VALUES('"+sifNo+"','"+deviceId+"');");
+        db.close();
+    }
+
+    public void insertFADetails(String flightNo,String sector,String flightDate, List<String> users){
+        SQLiteDatabase db = this.getWritableDatabase();
+        for(String user : users) {
+            db.execSQL("INSERT INTO faDetails VALUES('" + flightNo + "','" + sector + "','"+flightDate+"','"+user+"');");
+        }
         db.close();
     }
 
@@ -559,6 +571,37 @@ public class POSDBHandler extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return posFlightList;
+    }
+
+    public List<FADetails> getFADetails(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<FADetails> faDetailsList = new ArrayList<>();
+        Cursor cursor = db.rawQuery("select * from faDetails"
+                , null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                FADetails faDetails = new FADetails();
+                faDetails.setFlightNo(cursor.getString(cursor.getColumnIndex("flightNo")));
+                faDetails.setSector(cursor.getString(cursor.getColumnIndex("sector")));
+                faDetails.setFlightDate(cursor.getString(cursor.getColumnIndex("flightDate")));
+                faDetails.setFaName(cursor.getString(cursor.getColumnIndex("faName")));
+                faDetailsList.add(faDetails);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return faDetailsList;
+    }
+
+    public void deleteFADetails(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select * from faDetails", null);
+        if(res.getCount() > 0) {
+            db.execSQL("delete from faDetails");
+        }
+        res.close();
+        db.close();
     }
 
     public void insertCreditCardDetails(String orderNumber,String creditCardNumber,String cardHolderName,

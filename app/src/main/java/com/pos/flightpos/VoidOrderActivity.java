@@ -2,6 +2,7 @@ package com.pos.flightpos;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -79,6 +80,8 @@ public class VoidOrderActivity extends AppCompatActivity {
             }
         });
         showAvailableOrders();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 
     private void showAvailableOrders(){

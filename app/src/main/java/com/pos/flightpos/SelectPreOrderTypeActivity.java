@@ -1,6 +1,7 @@
 package com.pos.flightpos;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -22,10 +23,13 @@ public class SelectPreOrderTypeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_select_pre_order_type);
         LinearLayout deliverLayout = findViewById(R.id.deliverPreOrderLayout);
         LinearLayout acceptOrderLayout = findViewById(R.id.acceptPreOrderLayout);
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
 
         final Map<String,List<PreOrder>> preOrders = getPreOrderList();
         if(preOrders == null || preOrders.isEmpty()) {
-            deliverLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+            //deliverLayout.setBackground(getResources().getDrawable(R.drawable.deliver_pre_order_icon_grey));
+            deliverLayout.getChildAt(0).setBackgroundResource(R.drawable.deliver_pre_order_icon_grey);
         }
 
         deliverLayout.setOnClickListener(new View.OnClickListener() {

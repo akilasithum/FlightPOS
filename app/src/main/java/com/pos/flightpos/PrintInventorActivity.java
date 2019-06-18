@@ -46,7 +46,7 @@ public class PrintInventorActivity extends AppCompatActivity {
 
         LinearLayout printBOBInventory = (LinearLayout) findViewById(R.id.verifyBuyOnBoard);
         if(!serviceTypes.contains("BOB")){
-            //printBOBInventory.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+            printBOBInventory.getChildAt(0).setBackgroundResource(R.drawable.buy_on_board_icon_grey);
         }
         printBOBInventory.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -58,7 +58,7 @@ public class PrintInventorActivity extends AppCompatActivity {
         });
         LinearLayout printDTPInventory = (LinearLayout) findViewById(R.id.verifyDutyPaid);
         if(!serviceTypes.contains("DTP")){
-            //printDTPInventory.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+            printDTPInventory.getChildAt(0).setBackgroundResource(R.drawable.duty_paid_icon_grey);
         }
         printDTPInventory.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +70,7 @@ public class PrintInventorActivity extends AppCompatActivity {
         });
         LinearLayout printDTFInventory = (LinearLayout) findViewById(R.id.verifyDutyFree);
         if(!serviceTypes.contains("DTF")){
-            //printDTFInventory.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+            printDTFInventory.getChildAt(0).setBackgroundResource(R.drawable.duty_free_icon_grey);
         }
         printDTFInventory.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,7 +82,7 @@ public class PrintInventorActivity extends AppCompatActivity {
         });
         LinearLayout printVRTInventory = (LinearLayout) findViewById(R.id.verifyVirtualInventory);
         if(!serviceTypes.contains("VRT")){
-            //printVRTInventory.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+            printVRTInventory.getChildAt(0).setBackgroundResource(R.drawable.virtual_inventory_icon_grey);
         }
         printVRTInventory.setOnClickListener(new View.OnClickListener() {
             @Override

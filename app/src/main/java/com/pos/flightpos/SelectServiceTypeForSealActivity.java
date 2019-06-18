@@ -48,7 +48,7 @@ public class SelectServiceTypeForSealActivity extends AppCompatActivity {
     private void registerLayoutClickEvents(){
         LinearLayout addBOBSeals = (LinearLayout) findViewById(R.id.verifyBuyOnBoard);
         if(!serviceTypeKitCodeMap.containsKey("BOB")){
-            //addBOBSeals.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+            addBOBSeals.getChildAt(0).setBackgroundResource(R.drawable.buy_on_board_icon_grey);
             addBOBSeals.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -69,7 +69,7 @@ public class SelectServiceTypeForSealActivity extends AppCompatActivity {
         }
         LinearLayout addDTPSeals = (LinearLayout) findViewById(R.id.verifyDutyPaid);
         if(!serviceTypeKitCodeMap.containsKey("DTP")){
-            //addDTPSeals.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+            addDTPSeals.getChildAt(0).setBackgroundResource(R.drawable.duty_paid_icon_grey);
             addDTPSeals.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -90,7 +90,7 @@ public class SelectServiceTypeForSealActivity extends AppCompatActivity {
         }
         LinearLayout addDTFSeals = (LinearLayout) findViewById(R.id.verifyDutyFree);
         if(!serviceTypeKitCodeMap.containsKey("DTF")){
-            //addDTFSeals.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+            addDTFSeals.getChildAt(0).setBackgroundResource(R.drawable.duty_free_icon_grey);
             addDTFSeals.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -111,7 +111,7 @@ public class SelectServiceTypeForSealActivity extends AppCompatActivity {
         }
         LinearLayout addVRTSeals = (LinearLayout) findViewById(R.id.verifyVirtualInventory);
         if(!serviceTypeKitCodeMap.containsKey("VRT")){
-            //addVRTSeals.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+            addVRTSeals.getChildAt(0).setBackgroundResource(R.drawable.virtual_inventory_icon_grey);
             addVRTSeals.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

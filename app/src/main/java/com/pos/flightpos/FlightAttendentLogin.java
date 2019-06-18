@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
 import android.pt.msr.Msr;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
 
@@ -22,6 +23,7 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,10 +46,8 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
      */
 
     // UI references.
-    private AutoCompleteTextView mEmailView;
+    private EditText mEmailView;
     private EditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
     private Msr msr = null;
 
     @Override
@@ -62,7 +62,7 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
             reDirectToMainPage(SaveSharedPreference.getStringValues(FlightAttendentLogin.this,Constants.SHARED_PREFERENCE_FA_NAME));
         }
         // Set up the login form.
-        mEmailView = (AutoCompleteTextView) findViewById(R.id.att_email);
+        mEmailView =  findViewById(R.id.email);
         //populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -77,17 +77,16 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.att_email_sign_in_button);
+        ImageButton mEmailSignInButton =  findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
             }
         });
-
-        mLoginFormView = findViewById(R.id.login_form_att);
-        mProgressView = findViewById(R.id.login_progress_att);
         msr = new Msr();
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
         //readMSR();
     }
 

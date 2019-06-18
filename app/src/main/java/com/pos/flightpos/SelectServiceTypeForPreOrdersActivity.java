@@ -1,6 +1,7 @@
 package com.pos.flightpos;
 
 import android.content.Intent;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,13 +15,15 @@ public class SelectServiceTypeForPreOrdersActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_service_type_for_pre_orders);
         registerLayoutClickEvents();
-        ImageButton backButton = findViewById(R.id.forwardPressBtn);
+        ImageButton backButton = findViewById(R.id.backPressBtn);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 onBackPressed();
             }
         });
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 
     private void registerLayoutClickEvents() {

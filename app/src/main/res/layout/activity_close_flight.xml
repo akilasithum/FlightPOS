@@ -1,19 +1,65 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".CloseFlightActivity">
+    android:background="@drawable/background_bottom_style"
+    tools:context=".SellarInfoActivity">
+
+
+<ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/flight_bg">
+
 <LinearLayout
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:paddingLeft="30dp"
-    android:paddingRight="30dp"
-    android:paddingTop="25dp"
     android:weightSum="1">
 
     <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp">
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingBottom="10dp">
+
+            <ImageButton
+                android:id="@+id/backPressBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                android:background="@drawable/back_arrow_icon"
+                android:clickable="true" />
+
+            <TextView
+                android:id="@+id/headerId"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="8"
+                android:gravity="center"
+                android:text="Close Flight"
+                android:textColor="@color/white"
+                android:textSize="20dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center" />
+        </TableRow>
+    </TableLayout>
+
+    <TableLayout
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="25dp"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
         <TableRow
@@ -25,81 +71,70 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="10dp"
+                android:layout_margin="2dp"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:padding="10dp">
+                android:padding="2dp">
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_verify"
-                    android:textSize="20dp" />
+                    android:background="@drawable/verify_inventory_icon" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Verify Inventory"
-                    android:textSize="20dp" />
+                    android:textColor="@color/white"
+                    android:textSize="12dp" />
 
             </LinearLayout>
-        </TableRow>
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
             <LinearLayout
                 android:id="@+id/closeInventoryReport"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="10dp"
+                android:layout_margin="2dp"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:padding="10dp">
+                android:padding="2dp">
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_report"
-                    android:textSize="20dp" />
+                    android:background="@drawable/inventory_report_icon" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Inventory Report"
-                    android:textSize="20dp" />
+                    android:textColor="@color/white"
+                    android:textSize="12dp" />
 
             </LinearLayout>
-
-        </TableRow>
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
 
             <LinearLayout
                 android:id="@+id/closeFlightSalesReport"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="10dp"
+                android:layout_margin="2dp"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:padding="10dp">
+                android:padding="2dp">
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_sales_report"
+                    android:background="@drawable/sales_report_icon"
                     android:textSize="20dp" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:textColor="@color/white"
                     android:text="Sales Report"
-                    android:textSize="20dp" />
+                    android:textSize="12dp" />
             </LinearLayout>
         </TableRow>
         <TableRow
@@ -110,107 +145,77 @@
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="10dp"
+                android:layout_margin="2dp"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:padding="10dp">
+                android:padding="2dp">
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_message"
-                    android:textSize="20dp" />
+                    android:background="@drawable/message_icon" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:text="Message to Bond"
-                    android:textSize="20dp" />
+                    android:textColor="@color/white"
+                    android:textSize="12dp" />
             </LinearLayout>
 
-        </TableRow>
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
 
             <LinearLayout
                 android:id="@+id/closingSeals"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="10dp"
+                android:layout_margin="2dp"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:padding="10dp">
+                android:padding="2dp">
 
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_seal_info"
-                    android:textSize="20dp" />
+                    android:background="@drawable/add_seals_icon" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:textColor="@color/white"
                     android:text="Closing Seal"
-                    android:textSize="20dp"/>
+                    android:textSize="12dp"/>
             </LinearLayout>
-        </TableRow>
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
             <LinearLayout
                 android:id="@+id/closeFlightFinal"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-                android:layout_margin="10dp"
+                android:layout_margin="2dp"
                 android:clickable="true"
                 android:orientation="vertical"
-                android:background="@drawable/textinputborder"
-                android:padding="10dp">
+                android:padding="2dp">
 
                 <ImageView
-                    android:layout_width="25dp"
-                    android:layout_height="25dp"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_gravity="center"
-                    android:background="@drawable/icon_close_flight"
+                    android:background="@drawable/close_icon"
                     android:textSize="20dp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
+                    android:textColor="@color/white"
                     android:text="Close Flight"
-                    android:textSize="20dp" />
+                    android:textSize="12dp" />
             </LinearLayout>
 
         </TableRow>
     </TableLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_marginBottom="25dp"
-        android:layout_weight="1"
-        android:layout_marginTop="20dp"
-        android:layout_marginRight="25dp"
-        android:gravity="left|bottom"
-        android:orientation="vertical">
-
-        <ImageButton
-            android:id="@+id/backPressBtn"
-            android:layout_width="35dp"
-            android:layout_height="35dp"
-            android:layout_gravity="center_horizontal|left"
-            android:background="@drawable/icon_left_arrow"
-            android:clickable="true" />
-    </LinearLayout>
-
 </LinearLayout>
 </ScrollView>
+</RelativeLayout>

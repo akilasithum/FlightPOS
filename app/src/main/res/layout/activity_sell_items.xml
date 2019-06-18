@@ -1,6 +1,46 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_bottom_style"
+    tools:context=".SellarInfoActivity">
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp">
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/headerId"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="8"
+            android:gravity="center"
+            android:text="Sell Items"
+            android:textColor="@color/white"
+            android:textSize="20dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center" />
+    </TableRow>
+</TableLayout>
+<ScrollView
+    android:background="@drawable/flight_bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".AttendendMainActivity">
@@ -9,7 +49,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:paddingTop="15dp"
+        android:paddingTop="50dp"
         android:weightSum="1">
 
         <TableLayout
@@ -24,27 +64,25 @@
                     android:id="@+id/buyOnBoardItems"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
+                    android:layout_margin="2dp"
                     android:layout_weight="1"
-                    android:background="@drawable/textinputborder"
                     android:clickable="true"
                     android:orientation="vertical"
-                    android:padding="5dp">
+                    android:padding="2dp">
 
                     <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/icon_buy_onboard"
-                        android:textSize="15dp" />
+                        android:background="@drawable/buy_on_board_icon" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:textColor="@color/white"
                         android:text="Buy On Board"
-                        android:textSize="15dp" />
+                        android:textSize="12dp" />
 
                 </LinearLayout>
 
@@ -52,88 +90,50 @@
                     android:id="@+id/dutyPaidItems"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
+                    android:layout_margin="2dp"
                     android:layout_weight="1"
-                    android:background="@drawable/textinputborder"
                     android:clickable="true"
                     android:orientation="vertical"
-                    android:padding="5dp">
+                    android:padding="2dp">
 
                     <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/icon_duty_paid"
-                        android:textSize="15dp" />
+                        android:background="@drawable/duty_paid_icon" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:textColor="@color/white"
                         android:text="Duty Paid"
-                        android:textSize="15dp" />
+                        android:textSize="12dp" />
                 </LinearLayout>
-
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
 
                 <LinearLayout
                     android:id="@+id/dutyFreeItems"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
+                    android:layout_margin="2dp"
                     android:layout_weight="1"
-                    android:background="@drawable/textinputborder"
                     android:clickable="true"
                     android:orientation="vertical"
-                    android:padding="5dp">
+                    android:padding="2dp">
 
                     <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/icon_duty_free"
-                        android:textSize="15dp" />
+                        android:background="@drawable/duty_free_icon" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:textColor="@color/white"
                         android:text="Duty Free"
-                        android:textSize="15dp" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/virtualInventory"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/textinputborder"
-                    android:clickable="true"
-                    android:orientation="vertical"
-                    android:padding="5dp">
-
-                    <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
-                        android:layout_gravity="center"
-                        android:background="@drawable/icon_virtual_inventory"
-                        android:textSize="15dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_margin="10dp"
-                        android:text="Virtual Inventory"
-                        android:textSize="15dp" />
+                        android:textSize="12dp" />
                 </LinearLayout>
             </TableRow>
 
@@ -142,57 +142,78 @@
                 android:layout_height="fill_parent">
 
                 <LinearLayout
-                    android:id="@+id/preOrderDelivery"
+                    android:id="@+id/virtualInventory"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
                     android:layout_weight="1"
-                    android:background="@drawable/textinputborder"
                     android:clickable="true"
                     android:orientation="vertical"
-                    android:padding="5dp">
+                    android:padding="2dp">
 
                     <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/icon_pre_order"
-                        android:textSize="15dp" />
+                        android:background="@drawable/virtual_inventory_icon" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:textColor="@color/white"
+                        android:text="Virtual Inventory"
+                        android:textSize="12dp" />
+                </LinearLayout>
+
+
+                <LinearLayout
+                    android:id="@+id/preOrderDelivery"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="2dp">
+
+                    <ImageView
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/pack_pre_order_icon" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textColor="@color/white"
                         android:text="Manage Pre Order"
-                        android:textSize="15dp" />
+                        android:textSize="12dp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/voidOrder"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
+                    android:layout_margin="2dp"
                     android:layout_weight="1"
-                    android:background="@drawable/textinputborder"
                     android:clickable="true"
                     android:orientation="vertical"
-                    android:padding="5dp">
+                    android:padding="2dp">
 
                     <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/icon_cancel_order"
-                        android:textSize="15dp" />
+                        android:background="@drawable/void_options" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:textColor="@color/white"
                         android:text="Change Order"
-                        android:textSize="15dp" />
+                        android:textSize="12dp" />
                 </LinearLayout>
             </TableRow>
         </TableLayout>
@@ -209,89 +230,76 @@
                     android:id="@+id/exchangeRates"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
+                    android:layout_margin="2dp"
                     android:layout_weight="1"
-                    android:background="@drawable/textinputborder"
                     android:clickable="true"
                     android:orientation="vertical"
-                    android:padding="5dp"
-                    android:paddingTop="15dp">
+                    android:padding="2dp">
 
                     <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/icon_exchange_rates"
-                        android:textSize="15dp" />
+                        android:background="@drawable/pack_carts" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:textColor="@color/white"
                         android:text="Exchange Rates"
-                        android:textSize="15dp" />
+                        android:textSize="12dp" />
                 </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/announcements"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
+                    android:layout_margin="2dp"
                     android:layout_weight="1"
-                    android:background="@drawable/textinputborder"
                     android:clickable="true"
                     android:orientation="vertical"
-                    android:padding="5dp">
+                    android:padding="2dp">
 
                     <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/icon_announcements"
-                        android:textSize="15dp" />
+                        android:background="@drawable/announcement_icon" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:textColor="@color/white"
                         android:text="Announcements"
-                        android:textSize="15dp" />
+                        android:textSize="12dp" />
                 </LinearLayout>
 
-
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
 
                 <LinearLayout
                     android:id="@+id/closeFlight"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_margin="10dp"
+                    android:layout_margin="2dp"
                     android:layout_weight="1"
-                    android:background="@drawable/textinputborder"
                     android:clickable="true"
                     android:orientation="vertical"
-                    android:padding="5dp">
+                    android:padding="2dp">
 
                     <ImageView
-                        android:layout_width="25dp"
-                        android:layout_height="25dp"
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/icon_close_flight"
-                        android:textSize="15dp" />
+                        android:background="@drawable/close_icon" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="10dp"
+                        android:textColor="@color/white"
                         android:text="Close Flight"
-                        android:textSize="15dp" />
+                        android:textSize="12dp" />
                 </LinearLayout>
 
 
@@ -299,3 +307,4 @@
         </TableLayout>
     </LinearLayout>
 </ScrollView>
+</RelativeLayout>

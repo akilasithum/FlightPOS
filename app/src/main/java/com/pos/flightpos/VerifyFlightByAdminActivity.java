@@ -73,10 +73,11 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     private void disablePackPreOrderLayout(boolean isEnable){
         String isPreOrderSynced = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_SYNC_PRE_ORDERS);
         if((isPreOrderSynced == null || !isPreOrderSynced.equals("yes")) && !isEnable) {
-            preOrderPackLayout.setBackground(getResources().getDrawable(R.drawable.layout_grey_out_backgroud));
+            preOrderPackLayout.getChildAt(0).setBackgroundResource(R.drawable.pack_pre_order_grey);
+
         }
         else{
-            preOrderPackLayout.setBackground(getResources().getDrawable(R.drawable.textinputborder));
+            preOrderPackLayout.getChildAt(0).setBackgroundResource(R.drawable.pack_pre_order_icon);
         }
     }
 
@@ -92,7 +93,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         syncPreOrderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //syncPreOrders();
+                syncPreOrders();
                 AsyncTask<Void, Void, Void> task = new SyncPreOrders().execute();
             }
         });
@@ -105,14 +106,6 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-
-        /*defineCartNumbersLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(VerifyFlightByAdminActivity.this, DefineCartNumbersActivity.class);
-                startActivity(intent);
-            }
-        });*/
 
         printReport.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,8 +141,14 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
 
     private void showConfirmation() {
         String openSeals = handler.getSealList(null,"outbound");
+        String cartScan = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_CART_SCAN);
         if (openSeals == null || openSeals.length() == 0) {
-            Toast.makeText(getApplicationContext(), "Add opening seals before login.",
+            Toast.makeText(getApplicationContext(), "Add opening seals before continue.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        else if(cartScan == null || cartScan.isEmpty()){
+            Toast.makeText(getApplicationContext(), "Scan carts before continue",
                     Toast.LENGTH_SHORT).show();
             return;
         }
@@ -172,7 +171,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
                 Toast.LENGTH_SHORT).show();
         POSSyncUtils syncActivity = new POSSyncUtils(this);
         syncActivity.downloadData("pre_orders","pre_order_items");
-        disablePackPreOrderLayout(true);
+        //disablePackPreOrderLayout(true);
     }
 
     private class SyncPreOrders extends AsyncTask<Void, Void, Void> {
@@ -187,7 +186,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             SaveSharedPreference.setStringValues(VerifyFlightByAdminActivity.this,Constants.SHARED_PREFERENCE_SYNC_PRE_ORDERS,"yes");
-            //disablePackPreOrderLayout(true);
+            disablePackPreOrderLayout(true);
         }
     }
 
