@@ -5,14 +5,19 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.media.AudioManager;
 import android.media.ToneGenerator;
+import android.support.v4.content.ContextCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputType;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -21,7 +26,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -38,6 +46,8 @@ import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -72,30 +82,33 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
     TableRow taxPercentageRow;
     boolean hasSectors = false;
     EditText taxPercentage;
+    View currentSelection;
+    LinearLayout contentLayout;
+    EditText seatNumber;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_accept_pre_orders);
         itemCatSpinner = (Spinner) findViewById(R.id.itemCategorySpinner);
-        //serviceTypeSpinner = findViewById(R.id.serviceTypeSpinner);
-        itemSpinner = (Spinner) findViewById(R.id.itemSpinner);
-        submitBtn = (Button) findViewById(R.id.addItemBtn);
         contentTable = (TableLayout) findViewById(R.id.contentTable);
-        subTotalView = (TextView) findViewById(R.id.subTotalTextView);
+        subTotalView = (TextView)  findViewById(R.id.subTotalTextView);
+        seatNumber = (EditText) findViewById(R.id.seatNumber);
         purchaseItemsBtn = (Button) findViewById(R.id.purchaseItems);
-        taxPercentageRow = findViewById(R.id.taxPercentageRow);
-        submitBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                clickSubmitBtn();
-            }
-        });
         purchaseItemsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 purchaseItems();
             }
         });
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
+        discountItemList = new ArrayList<>();
+        soldItemList = new ArrayList<>();
+        handler = new POSDBHandler(getApplicationContext());
+        Intent intent = getIntent();
+        contentLayout = findViewById(R.id.contentLayout);
+        serviceType = intent.getExtras().get("serviceType").toString();
+        loadItemCategoryImages();
         ImageButton backButton = findViewById(R.id.backPressBtn);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -103,40 +116,12 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        discountItemList = new ArrayList<>();
-        soldItemList = new ArrayList<>();
-        handler = new POSDBHandler(getApplicationContext());
-        //populateServiceTypes();
-        taxPercentage = findViewById(R.id.taxPercentage);
-        serviceType = getIntent().getExtras().getString("serviceType");
-        populateItemCatField(serviceType);
-
-        itemCatSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override/*serviceTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                populateItemCatField(serviceTypeSpinner.getSelectedItem().toString());
-                serviceType = serviceTypeSpinner.getSelectedItem().toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> adapterView) {
-
-            }
-        });*/
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
-                populateItemsFromCat(itemCatSpinner.getSelectedItem().toString());
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parentView) {
-                // your code here
-            }
-        });
         flightDateText = findViewById(R.id.flightDate);
         flightNumberText = findViewById(R.id.flightNumber);
         flightSectorSpinner = findViewById(R.id.flightSector);
         paxName = findViewById(R.id.paxName);
+        taxPercentage = findViewById(R.id.taxPercentage);
+        taxPercentageRow = findViewById(R.id.taxPercentageRow);
         setDatePicker();
         configureFlightNumber();
         showHideTaxPercentage(true);
@@ -154,6 +139,392 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
 
             }
         });
+        contentLayout = findViewById(R.id.contentLayout);
+    }
+    private void loadItemCategoryImages(){
+        LinearLayout itemCatRow = findViewById(R.id.itemCatTableRow);
+        itemCatRow.removeAllViews();
+        Map<String, String> itemCategories = new HashMap<>();
+        if(serviceType.equals("BOB")) {
+            itemCategories = POSCommonUtils.getBOBItemCategories();
+        }
+        else if(serviceType.equals("DTF")){
+            itemCategories = POSCommonUtils.getDTFItemCategories();
+        }
+        else if(serviceType.equals("VRT")){
+            itemCategories = POSCommonUtils.getVRTItemCategories();
+        }
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
+                LinearLayout.LayoutParams.MATCH_PARENT,1);
+        params.setMargins(5,0,5,0);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(70,70);
+        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(110,110);
+        params3.setMargins(0,5,0,25);
+
+        for(final Map.Entry<String,String> categories : itemCategories.entrySet()){
+            final LinearLayout layout = new LinearLayout(this);
+            layout.setLayoutParams(params);
+            layout.setGravity(Gravity.CENTER);
+            layout.setOrientation(LinearLayout.VERTICAL);
+            layout.setPadding(10,3,10,3);
+            layout.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    populateItemImages(categories.getKey());
+                }
+            });
+
+            ImageView imageView = new ImageView(this);
+            imageView.setLayoutParams(params1);
+            imageView.setImageResource(this.getResources().getIdentifier(categories.getValue(), "drawable", "com.pos.flightpos"));
+
+            LinearLayout imageLayout = new LinearLayout(this);
+            imageLayout.setGravity(Gravity.CENTER);
+            imageLayout.setLayoutParams(params3);
+            imageLayout.setOrientation(LinearLayout.VERTICAL);
+            imageLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.sellitemimagebg));
+            imageLayout.addView(imageView);
+
+            TextView textView = new TextView(this);
+            textView.setLayoutParams(params2);
+            textView.setTextColor(getResources().getColor(R.color.white));
+            String textVal = categories.getKey();
+            if(textVal.contains("and")){
+                textVal = textVal.replace("and","and \n");
+            }
+            textView.setText(textVal);
+            layout.addView(textView);
+            layout.addView(imageLayout);
+            itemCatRow.addView(layout);
+        }
+    }
+
+    private String getKitCodes(){
+        List<String> kitCodes = POSCommonUtils.getServiceTypeKitCodeMap(this).get(serviceType);
+        return POSCommonUtils.getCommaSeparateStrFromList(kitCodes);
+    }
+
+    private void populateItemImages(String selectedCat){
+        List<SoldItem> itemList = handler.getItemListFromItemCategory(selectedCat,getKitCodes());
+        LinearLayout innerLayout =  findViewById(R.id.itemCatTableRow);
+
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
+                LinearLayout.LayoutParams.MATCH_PARENT,2);
+        LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(70,70);
+        LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        LinearLayout.LayoutParams params3 = new LinearLayout.LayoutParams(0,
+                LinearLayout.LayoutParams.MATCH_PARENT,1);
+
+        LinearLayout.LayoutParams params4 = new LinearLayout.LayoutParams(110,110);
+        params4.setMargins(0,5,0,5);
+
+        innerLayout.removeAllViews();
+
+        final LinearLayout backBtnLayout = new LinearLayout(this);
+        backBtnLayout.setLayoutParams(params3);
+        backBtnLayout.setGravity(Gravity.CENTER);
+        backBtnLayout.setOrientation(LinearLayout.VERTICAL);
+        backBtnLayout.setPadding(5,3,5,3);
+        backBtnLayout.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                loadItemCategoryImages();
+
+            }
+        });
+
+        ImageView backArrow = new ImageView(this);
+        backArrow.setLayoutParams(new LinearLayout.LayoutParams(40,40));
+        backArrow.setBackground(getResources().getDrawable(R.drawable.back_arrow_icon));
+
+
+        backBtnLayout.addView(backArrow);
+        innerLayout.addView(backBtnLayout);
+
+        for(final SoldItem item : itemList){
+            LinearLayout layout = new LinearLayout(this);
+            layout.setGravity(Gravity.CENTER);
+            params.setMargins(5,0,5,0);
+            layout.setLayoutParams(params);
+            layout.setOrientation(LinearLayout.VERTICAL);
+            layout.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View view) {
+                    clickSubmitBtn(item,false);
+                }
+            });
+
+            ImageView imageView = new ImageView(this);
+            imageView.setLayoutParams(params1);
+            imageView.setPadding(4,4,4,0);
+            imageView.setImageBitmap(getImageFromItemCode(item.getItemId()));
+
+            LinearLayout imageLayout = new LinearLayout(this);
+            imageLayout.setGravity(Gravity.CENTER);
+            imageLayout.setLayoutParams(params4);
+            imageLayout.setOrientation(LinearLayout.VERTICAL);
+            imageLayout.setBackground(ContextCompat.getDrawable(this, R.drawable.sellitemimagebg));
+
+            imageLayout.addView(imageView);
+
+            TextView textView = new TextView(this);
+            textView.setTextColor(getResources().getColor(R.color.white));
+            textView.setLayoutParams(params2);
+            textView.setText(item.getItemDesc());
+
+            TextView priceText = new TextView(this);
+            priceText.setLayoutParams(params2);
+            priceText.setTextColor(getResources().getColor(R.color.white));
+            priceText.setText("$"+POSCommonUtils.getTwoDecimalFloatFromString(item.getPrice()));
+
+            layout.addView(textView);
+            layout.addView(imageLayout);
+            layout.addView(priceText);
+            innerLayout.addView(layout);
+        }
+    }
+
+    private Bitmap getImageFromItemCode(String itemCode)
+    {
+        try {
+            File f=new File("/data/data/com.pos.flightpos/app_imageDir", itemCode+".png");
+            Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
+            return b;
+        }
+        catch (Exception e)
+        {
+            return null;
+        }
+    }
+
+    private void clickSubmitBtn(final SoldItem item,boolean isNFC){
+        if(item == null || item.equals("")){
+            Toast.makeText(getApplicationContext(), "select item first.",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+        itemCount++;
+        final FrameLayout frameLayout = new FrameLayout(this);
+        LinearLayout.LayoutParams frameLayoutParams = new LinearLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,1);
+        frameLayoutParams.setMargins(8,0,0,4);
+        frameLayout.setLayoutParams(frameLayoutParams);
+
+        ImageView closeBtn = new ImageView(this);
+        closeBtn.setClickable(true);
+        FrameLayout.LayoutParams closeBtnParam = new FrameLayout.LayoutParams(45, 45);
+        closeBtnParam.gravity = Gravity.TOP|Gravity.RIGHT;
+        closeBtn.setBackground(getResources().getDrawable(R.drawable.icon_cancel));
+        closeBtn.setLayoutParams(closeBtnParam);
+
+        final LinearLayout linearLayout = new LinearLayout(this);
+        FrameLayout.LayoutParams linearLayoutParams = new FrameLayout.LayoutParams(710,
+                TableRow.LayoutParams.WRAP_CONTENT);
+        linearLayout.setGravity(Gravity.CENTER);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setBackgroundColor(getResources().getColor(R.color.sellitembg));
+        linearLayoutParams.setMargins(0,10,10,0);
+        linearLayout.setLayoutParams(linearLayoutParams);
+
+        linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setBackgroundColor(getResources().getColor(R.color.white));
+                if(currentSelection == null) {
+                    currentSelection = v;
+                }
+                else {
+                    currentSelection.setBackgroundColor(getResources().getColor(R.color.sellitembg));
+                    currentSelection = v;
+                }
+            }
+        });
+
+        TableRow tr = new TableRow(this);
+        TableRow tr1 = new TableRow(this);
+        tr.setId(itemCount);
+        tr.setLayoutParams(new TableRow.LayoutParams(
+                TableRow.LayoutParams.FILL_PARENT,
+                TableRow.LayoutParams.WRAP_CONTENT));
+        tr.setPadding(0,5,0,0);
+        tr1.setLayoutParams(new TableRow.LayoutParams(
+                TableRow.LayoutParams.FILL_PARENT,
+                TableRow.LayoutParams.WRAP_CONTENT));
+        tr1.setPadding(0,0,0,5);
+
+
+        TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
+                TableRow.LayoutParams.WRAP_CONTENT, 6f);
+        TableRow.LayoutParams cellParams2 = new TableRow.LayoutParams(0,
+                TableRow.LayoutParams.WRAP_CONTENT, 3f);
+        TableRow.LayoutParams cellParams3 = new TableRow.LayoutParams(0,
+                35, 1f);
+
+        TextView itemIdHdn = new TextView(this);
+        TextView itemDesc = new TextView(this);
+        EditText qty = new EditText(this);
+        final TextView price = new TextView(this);
+        final TextView totalTextField = new TextView(this);
+        Button removeItemBtn = new Button(this);
+        removeItemBtn.setLayoutParams(cellParams3);
+        removeItemBtn.setBackground(getResources().getDrawable(R.drawable.icon_cancel));
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(AcceptPreOrdersActivity.this)
+                        .setTitle("Remove selection")
+                        .setMessage("Do you want to remove this item from selection?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                subtotal -= Float.parseFloat(totalTextField.getText().toString());
+                                subTotalView.setText(String.valueOf(subtotal));
+                                itemCount--;
+                                contentLayout.removeView(frameLayout);
+
+                            }})
+                        .setNegativeButton(android.R.string.no, null).show();
+            }
+        });
+
+        itemIdHdn.setText(item.getItemId());
+        itemIdHdn.setVisibility(View.GONE);
+        tr.addView(itemIdHdn);
+
+        itemDesc.setText(item.getItemDesc());
+        itemDesc.setTextSize(20);
+        itemDesc.setLayoutParams(cellParams1);
+        itemDesc.setGravity(Gravity.CENTER);
+        tr.addView(itemDesc);
+
+        TextView itemDescStr = new TextView(this);
+        itemDescStr.setText("Item Desc");
+        itemDescStr.setTextSize(15);
+        itemDescStr.setLayoutParams(cellParams1);
+        itemDescStr.setGravity(Gravity.CENTER);
+        tr1.addView(itemDescStr);
+
+        View view  = new View(this);
+        view.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+        view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        tr.addView(view);
+
+        View viewDesc  = new View(this);
+        viewDesc.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+        viewDesc.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        tr1.addView(viewDesc);
+
+        qty.setText("1");
+        qty.setTextSize(20);
+        qty.setLayoutParams(cellParams2);
+        qty.setGravity(Gravity.CENTER);
+        qty.setInputType(InputType.TYPE_CLASS_NUMBER);
+        qty.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start,
+                                          int count, int after) {
+                linearLayout.setBackgroundColor(getResources().getColor(R.color.white));
+                if(currentSelection == null) {
+                    currentSelection = linearLayout;
+                }
+                else {
+                    if(currentSelection != linearLayout) {
+                        currentSelection.setBackgroundColor(getResources().getColor(R.color.sellitembg));
+                        currentSelection = linearLayout;
+                    }
+                }
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start,
+                                      int before, int count) {
+
+                if(s != null && !s.toString().equals("")) {
+                    Float currentItemTotal = Float.parseFloat(totalTextField.getText().toString());
+                    Float newItemTotal = Float.parseFloat(s.toString())* Float.parseFloat(price.getText().toString());
+                    totalTextField.setText(String.valueOf(newItemTotal));
+                    updateTotalWhenChangeItemQty(newItemTotal - currentItemTotal);
+                }
+            }
+        });
+        tr.addView(qty);
+
+        TextView qtyDesc = new TextView(this);
+        qtyDesc.setText("Qty");
+        qtyDesc.setTextSize(15);
+        qtyDesc.setLayoutParams(cellParams2);
+        qtyDesc.setGravity(Gravity.CENTER);
+        tr1.addView(qtyDesc);
+
+        View view1  = new View(this);
+        view1.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+        view1.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        tr.addView(view1);
+
+        View view1Desc  = new View(this);
+        view1Desc.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+        view1Desc.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        tr1.addView(view1Desc);
+
+        price.setText(POSCommonUtils.getTwoDecimalFloatFromString(item.getPrice()));
+        price.setTextSize(20);
+        price.setLayoutParams(cellParams2);
+        price.setGravity(Gravity.CENTER);
+        tr.addView(price);
+
+        TextView priceDesc = new TextView(this);
+        priceDesc.setText("Unit Price");
+        priceDesc.setTextSize(15);
+        priceDesc.setLayoutParams(cellParams2);
+        priceDesc.setGravity(Gravity.CENTER);
+        tr1.addView(priceDesc);
+
+        View view2  = new View(this);
+        view2.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+        view2.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        tr.addView(view2);
+
+        View view2Desc  = new View(this);
+        view2Desc.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+        view2Desc.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        tr1.addView(view2Desc);
+
+        float total = Float.parseFloat(qty.getText().toString()) * Float.parseFloat(price.getText().toString());
+        totalTextField.setText(POSCommonUtils.getTwoDecimalFloatFromString(String.valueOf(total)));
+        totalTextField.setTextSize(20);
+        totalTextField.setLayoutParams(cellParams2);
+        totalTextField.setGravity(Gravity.CENTER);
+        tr.addView(totalTextField);
+
+        TextView totalDesc = new TextView(this);
+        totalDesc.setText("Total");
+        totalDesc.setTextSize(15);
+        totalDesc.setLayoutParams(cellParams2);
+        totalDesc.setGravity(Gravity.CENTER);
+        tr1.addView(totalDesc);
+
+        subtotal += total;
+        SoldItem soldItem = new SoldItem();
+        soldItem.setItemDesc(item.getItemDesc());
+        soldItem.setQuantity("1");
+        soldItem.setPrice(item.getPrice());
+        soldItemList.add(soldItem);
+        subTotalView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(subtotal));
+        linearLayout.addView(tr);
+        linearLayout.addView(tr1);
+        frameLayout.addView(linearLayout);
+        frameLayout.addView(closeBtn);
+        contentLayout.addView(frameLayout);
+
+
     }
 
     private void showHideTaxPercentage(boolean isNotVisible){

@@ -158,7 +158,8 @@
             android:label="Select pre order type" />
         <activity
             android:name=".AcceptPreOrdersActivity"
-            android:label="Accept pre orders" />
+            android:label="Accept pre orders"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".PreOrderPaymentsActivity"
             android:label="Pre order payments" />

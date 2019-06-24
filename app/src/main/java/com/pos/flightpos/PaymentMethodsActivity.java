@@ -644,7 +644,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         closeBtn.setLayoutParams(closeBtnParam);
 
         LinearLayout linearLayout = new LinearLayout(this);
-        FrameLayout.LayoutParams linearLayoutParams = new FrameLayout.LayoutParams(600,
+        FrameLayout.LayoutParams linearLayoutParams = new FrameLayout.LayoutParams(710,
                 TableRow.LayoutParams.WRAP_CONTENT);
         linearLayout.setGravity(Gravity.CENTER);
         linearLayout.setOrientation(LinearLayout.VERTICAL);
@@ -696,26 +696,26 @@ public class PaymentMethodsActivity extends AppCompatActivity {
 
         TextView currencyTextView = new TextView(this);
         currencyTextView.setText(currency);
-        currencyTextView.setTextSize(15);
+        currencyTextView.setTextSize(20);
         currencyTextView.setGravity(Gravity.CENTER);
         currencyTextView.setLayoutParams(cellParams3);
 
         TextView exchangeRate = new TextView(this);
         exchangeRate.setText(rate);
-        exchangeRate.setTextSize(15);
+        exchangeRate.setTextSize(20);
         exchangeRate.setGravity(Gravity.CENTER);
         exchangeRate.setLayoutParams(cellParams3);
 
         TextView value = new TextView(this);
         String amountText = POSCommonUtils.getTwoDecimalFloatFromFloat(Float.valueOf(amount.replace(",","")));
         value.setText(amountText);
-        value.setTextSize(15);
+        value.setTextSize(20);
         value.setGravity(Gravity.CENTER);
         value.setLayoutParams(cellParams3);
 
         TextView usdVal = new TextView(this);
         usdVal.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(Float.valueOf(USD)));
-        usdVal.setTextSize(15);
+        usdVal.setTextSize(20);
         usdVal.setGravity(Gravity.CENTER);
         usdVal.setLayoutParams(cellParams3);
 
@@ -723,7 +723,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
 
         TextView itemDescStr = new TextView(this);
         itemDescStr.setText("Type");
-        itemDescStr.setTextSize(10);
+        itemDescStr.setTextSize(15);
         itemDescStr.setLayoutParams(cellParams3);
         itemDescStr.setGravity(Gravity.CENTER);
         tr1.addView(itemDescStr);
@@ -742,7 +742,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
 
         TextView qtyDesc = new TextView(this);
         qtyDesc.setText("Currency");
-        qtyDesc.setTextSize(10);
+        qtyDesc.setTextSize(15);
         qtyDesc.setLayoutParams(cellParams3);
         qtyDesc.setGravity(Gravity.CENTER);
         tr1.addView(qtyDesc);
@@ -761,7 +761,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
 
         TextView priceDesc = new TextView(this);
         priceDesc.setText("Exchange Rate");
-        priceDesc.setTextSize(10);
+        priceDesc.setTextSize(15);
         priceDesc.setLayoutParams(cellParams3);
         priceDesc.setGravity(Gravity.CENTER);
         tr1.addView(priceDesc);
@@ -780,7 +780,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
 
         TextView totalDesc = new TextView(this);
         totalDesc.setText("Value");
-        totalDesc.setTextSize(10);
+        totalDesc.setTextSize(15);
         totalDesc.setLayoutParams(cellParams3);
         totalDesc.setGravity(Gravity.CENTER);
         tr1.addView(totalDesc);
@@ -800,64 +800,6 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         paymentMethodsCount++;
         paymentMethodsMap.put(type+" "+currency,amountText);
     }
-
-    /*private void addPaymentMethodToTable(String type, String currency, String rate, String amount, String USD){
-
-        TableRow tr = new TableRow(this);
-        tr.setLayoutParams(new TableRow.LayoutParams(
-                TableRow.LayoutParams.MATCH_PARENT,
-                TableRow.LayoutParams.WRAP_CONTENT));
-
-        TableRow.LayoutParams cellParams = new TableRow.LayoutParams(0,
-                TableRow.LayoutParams.WRAP_CONTENT, 1f);
-
-        TextView typeText = new TextView(this);
-        typeText.setText(type);
-        typeText.setTextSize(15);
-        typeText.setGravity(Gravity.CENTER);
-        typeText.setLayoutParams(cellParams);
-        tr.addView(typeText);
-
-        TextView currencyTextView = new TextView(this);
-        currencyTextView.setText(currency);
-        currencyTextView.setTextSize(15);
-        currencyTextView.setGravity(Gravity.CENTER);
-        currencyTextView.setLayoutParams(cellParams);
-        tr.addView(currencyTextView);
-
-        TextView exchangeRate = new TextView(this);
-        exchangeRate.setText(rate);
-        exchangeRate.setTextSize(15);
-        exchangeRate.setGravity(Gravity.CENTER);
-        exchangeRate.setLayoutParams(cellParams);
-        tr.addView(exchangeRate);
-
-        TextView value = new TextView(this);
-        String amountText = POSCommonUtils.getTwoDecimalFloatFromFloat(Float.valueOf(amount.replace(",","")));
-        value.setText(amountText);
-        value.setTextSize(15);
-        value.setGravity(Gravity.CENTER);
-        value.setLayoutParams(cellParams);
-        tr.addView(value);
-
-        *//*TextView usdVal = new TextView(this);
-        usdVal.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(Float.valueOf(USD)));
-        usdVal.setTextSize(15);
-        usdVal.setGravity(Gravity.CENTER);
-        usdVal.setLayoutParams(cellParams);
-        tr.addView(usdVal);*//*
-
-        dueBalance -= Float.parseFloat(USD);
-        if(dueBalance <= 0.01) dueBalance = 0.00f;
-        String dueBalanceStr = POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance);
-        if(dueBalanceStr.equals("-0.00")){
-            dueBalanceStr = "0.00";
-        }
-        balanceDueTextView.setText(dueBalanceStr);
-        paymentMethodsCount++;
-        paymentMethodsMap.put(type+" "+currency,amountText);
-        paymentTable.addView(tr,paymentMethodsCount);
-    }*/
 
     private void updateSale(){
         Date date = new Date();

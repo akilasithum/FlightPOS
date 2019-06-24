@@ -1,189 +1,223 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical"
-    android:paddingTop="15dp"
-    android:background="@drawable/flight_bg"
-    android:weightSum="1">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 
-    <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingRight="20dp">
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:paddingBottom="40dp">
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Welcome Admin"
-            android:textColor="@color/white"
-            android:layout_weight="8"
-            android:gravity="center"
-            android:textSize="20dp"/>
-        <ImageButton
-            android:id="@+id/adminLogutLayout"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:background="@drawable/logout_icon"/>
-        </TableRow>
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="30dp"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:background="@drawable/admin_left_sky" />
-            <ImageView
-                android:layout_width="150px"
-                android:layout_height="250px"
-                android:src="@drawable/admin_logo"
-                android:layout_weight="6"
-                android:layout_gravity="center"/>
-            <ImageView
-                android:layout_width="30dp"
-                android:layout_height="20dp"
-                android:layout_gravity="center"
-                android:layout_marginTop="20dp"
-                android:layout_weight="1"
-                android:background="@drawable/admin_right_sky" />
-        </TableRow>
-    </TableLayout>
-
-    <LinearLayout
+    <!--<ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="100dp"
-        android:layout_marginTop="100dp"
-        android:orientation="horizontal"
-        android:background="@drawable/admin_bottom_sky">
+        android:background="@drawable/flight_bg">-->
 
-        <TableLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="20dp">
-        <TableRow
+        <LinearLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:paddingBottom="30dp">
+            android:orientation="vertical"
+            android:paddingTop="15dp"
+            android:weightSum="1">
 
-            <LinearLayout
-                android:id="@+id/configureFlightLayout"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:clickable="true"
-                android:orientation="vertical">
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingRight="20dp">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@drawable/configure_flight_icon" />
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:paddingBottom="40dp">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:paddingTop="8dp"
-                android:orientation="horizontal">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="Configure Flight"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="16dp" />
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_marginLeft="6dp"
-                    android:background="@drawable/left_arrow_icon" />
-            </LinearLayout>
-            </LinearLayout>
-            <LinearLayout
-                android:id="@+id/syncLayout"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:clickable="true"
-                android:layout_weight="1"
-                android:orientation="vertical">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@drawable/sync_icon" />
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:paddingTop="8dp"
-                    android:orientation="horizontal">
                     <TextView
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="Sync"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="16dp" />
+                        android:layout_weight="10"
+                        android:gravity="center"
+                        android:text="Welcome Admin"
+                        android:textColor="@color/white"
+                        android:textSize="25dp" />
+
+                    <ImageButton
+                        android:id="@+id/adminLogutLayout"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:background="@drawable/logout_icon"
+                        android:gravity="center" />
+                </TableRow>
+            </TableLayout>
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="80dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="30dp">
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
                     <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="40dp"
+                        android:layout_height="30dp"
                         android:layout_gravity="center"
-                        android:layout_marginLeft="6dp"
-                        android:background="@drawable/left_arrow_icon" />
-                </LinearLayout>
-            </LinearLayout>
+                        android:layout_weight="1"
+                        android:background="@drawable/admin_left_sky" />
+
+                    <ImageView
+                        android:layout_width="150px"
+                        android:layout_height="250px"
+                        android:layout_gravity="center"
+                        android:layout_weight="6"
+                        android:src="@drawable/admin_logo" />
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="20dp"
+                        android:layout_gravity="center"
+                        android:layout_marginTop="20dp"
+                        android:layout_weight="1"
+                        android:background="@drawable/admin_right_sky" />
+                </TableRow>
+            </TableLayout>
 
             <LinearLayout
-                android:id="@+id/uploadDataLayout"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:clickable="true"
-                android:layout_weight="1"
-                android:orientation="vertical">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@drawable/sync_icon" />
+                android:layout_marginTop="100dp"
+                android:background="@drawable/admin_bottom_sky"
+                android:orientation="horizontal"
+                android:paddingTop="250dp">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:paddingTop="8dp"
-                    android:orientation="horizontal">
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:text="Upload Sales Data"
-                        android:textColor="@color/colorPrimary"
-                        android:textSize="16dp" />
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:layout_marginLeft="6dp"
-                        android:background="@drawable/left_arrow_icon" />
-                </LinearLayout>
+                <TableLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="20dp">
+
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:paddingBottom="30dp">
+
+                        <LinearLayout
+                            android:id="@+id/configureFlightLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:background="@drawable/configure_flight_icon" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:orientation="horizontal"
+                                android:paddingTop="8dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Configure Flight"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="16dp" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="6dp"
+                                    android:background="@drawable/left_arrow_icon" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/syncLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:background="@drawable/sync_icon" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:orientation="horizontal"
+                                android:paddingTop="8dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Sync"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="16dp" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="6dp"
+                                    android:background="@drawable/left_arrow_icon" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                        <LinearLayout
+                            android:id="@+id/uploadDataLayout"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:clickable="true"
+                            android:orientation="vertical">
+
+                            <ImageView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_gravity="center"
+                                android:background="@drawable/sync_icon" />
+
+                            <LinearLayout
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:layout_gravity="center"
+                                android:orientation="horizontal"
+                                android:paddingTop="8dp">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:text="Upload Sales Data"
+                                    android:textColor="@color/colorPrimary"
+                                    android:textSize="16dp" />
+
+                                <ImageView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_gravity="center"
+                                    android:layout_marginLeft="6dp"
+                                    android:background="@drawable/left_arrow_icon" />
+                            </LinearLayout>
+                        </LinearLayout>
+
+                    </TableRow>
+                </TableLayout>
+
             </LinearLayout>
 
-        </TableRow>
-        </TableLayout>
-
-    </LinearLayout>
-
-</LinearLayout>
+        </LinearLayout>
+    <!--</ScrollView>-->
+</RelativeLayout>

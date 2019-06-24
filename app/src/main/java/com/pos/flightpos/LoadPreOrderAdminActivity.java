@@ -2,6 +2,7 @@ package com.pos.flightpos;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -10,6 +11,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
@@ -36,8 +39,10 @@ public class LoadPreOrderAdminActivity extends AppCompatActivity {
     POSDBHandler posdbHandler;
     Map<String,List<PreOrder>> preOrders;
     TableLayout preOrderTable;
+    LinearLayout contentLayout;
     TableLayout preOrderItemsTable;
     int i = 0;
+    View currentSelection;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,6 +50,7 @@ public class LoadPreOrderAdminActivity extends AppCompatActivity {
         posdbHandler = new POSDBHandler(this);
         //serviceType = getIntent().getExtras().getString("serviceType");
         preOrderTable = (TableLayout) findViewById(R.id.preOrdersTable);
+        contentLayout = findViewById(R.id.contentLayout);
         preOrderItemsTable = findViewById(R.id.preOrderDetails);
         preOrderItemsTable.setVisibility(View.INVISIBLE);
         preOrders = posdbHandler.getAvailablePreOrders("admin");
@@ -56,13 +62,9 @@ public class LoadPreOrderAdminActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        ImageButton forwardBtn = findViewById(R.id.forwardPressBtn);
-        forwardBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 
     private void showPreOrdersByPriority(){
@@ -80,6 +82,151 @@ public class LoadPreOrderAdminActivity extends AppCompatActivity {
     }
 
     private void showAvailablePreOrders(List<PreOrder> preOrders,String service){
+
+        TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
+                TableRow.LayoutParams.WRAP_CONTENT, 9f);
+        TableRow.LayoutParams cellParams2 = new TableRow.LayoutParams(0,
+                TableRow.LayoutParams.WRAP_CONTENT, 4f);
+        TableRow.LayoutParams cellParams3 = new TableRow.LayoutParams(0,
+                35, 3f);
+        FrameLayout.LayoutParams linearLayoutParams = new FrameLayout.LayoutParams(710,
+                TableRow.LayoutParams.WRAP_CONTENT);
+
+        for(final PreOrder preOrder : preOrders) {
+
+            final FrameLayout frameLayout = new FrameLayout(this);
+            LinearLayout.LayoutParams frameLayoutParams = new LinearLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+                    FrameLayout.LayoutParams.WRAP_CONTENT,1);
+            frameLayoutParams.setMargins(8,0,0,4);
+            frameLayout.setLayoutParams(frameLayoutParams);
+
+            final LinearLayout layout = new LinearLayout(this);
+            layout.setLayoutParams(linearLayoutParams);
+            layout.setOrientation(LinearLayout.VERTICAL);
+            layout.setGravity(Gravity.CENTER);
+            layout.setBackgroundColor(getResources().getColor(R.color.sellitembg));
+
+            frameLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showOrder(preOrder.getPreOrderId());
+                    layout.setBackgroundColor(getResources().getColor(R.color.white));
+                    if(currentSelection == null) {
+                        currentSelection = layout;
+                    }
+                    else {
+                        layout.setBackgroundColor(getResources().getColor(R.color.sellitembg));
+                        currentSelection = layout;
+                    }
+                }
+            });
+
+            TableRow tr = new TableRow(this);
+            TableRow tr1 = new TableRow(this);
+            tr.setLayoutParams(new TableRow.LayoutParams(
+                    TableRow.LayoutParams.FILL_PARENT,
+                    TableRow.LayoutParams.WRAP_CONTENT));
+            tr.setPadding(0,5,0,0);
+            tr1.setLayoutParams(new TableRow.LayoutParams(
+                    TableRow.LayoutParams.FILL_PARENT,
+                    TableRow.LayoutParams.WRAP_CONTENT));
+            tr1.setPadding(0,0,0,5);
+
+            TextView orderNo = new TextView(this);
+            TextView pnr = new TextView(this);
+            TextView customerName = new TextView(this);
+            TextView serviceTypeTxt = new TextView(this);
+
+            orderNo.setText(preOrder.getPreOrderId());
+            orderNo.setTextSize(20);
+            orderNo.setLayoutParams(cellParams3);
+            orderNo.setGravity(Gravity.CENTER);
+            tr.addView(orderNo);
+
+            TextView itemDescStr = new TextView(this);
+            itemDescStr.setText("Order No");
+            itemDescStr.setTextSize(15);
+            itemDescStr.setLayoutParams(cellParams3);
+            itemDescStr.setGravity(Gravity.CENTER);
+            tr1.addView(itemDescStr);
+
+            View view  = new View(this);
+            view.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+            view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            tr.addView(view);
+
+            View viewDesc  = new View(this);
+            viewDesc.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+            viewDesc.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            tr1.addView(viewDesc);
+
+            pnr.setText(preOrder.getPNR());
+            pnr.setTextSize(20);
+            pnr.setLayoutParams(cellParams2);
+            pnr.setGravity(Gravity.CENTER);
+            tr.addView(pnr);
+
+            TextView pnrDesc = new TextView(this);
+            pnrDesc.setText("PNR");
+            pnrDesc.setTextSize(15);
+            pnrDesc.setLayoutParams(cellParams2);
+            pnrDesc.setGravity(Gravity.CENTER);
+            tr1.addView(pnrDesc);
+
+            View view2  = new View(this);
+            view2.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+            view2.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            tr.addView(view2);
+
+            View viewDesc2  = new View(this);
+            viewDesc2.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+            viewDesc2.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            tr1.addView(viewDesc2);
+
+            customerName.setText(preOrder.getCustomerName());
+            customerName.setTextSize(20);
+            customerName.setLayoutParams(cellParams1);
+            customerName.setGravity(Gravity.CENTER);
+            tr.addView(customerName);
+
+            TextView customerNameDesc = new TextView(this);
+            customerNameDesc.setText("Customer Name");
+            customerNameDesc.setTextSize(15);
+            customerNameDesc.setLayoutParams(cellParams1);
+            customerNameDesc.setGravity(Gravity.CENTER);
+            tr1.addView(customerNameDesc);
+
+            View view3  = new View(this);
+            view3.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+            view3.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            tr.addView(view3);
+
+            View viewDesc3  = new View(this);
+            viewDesc3.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+            viewDesc3.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+            tr1.addView(viewDesc3);
+
+            serviceTypeTxt.setText(service);
+            serviceTypeTxt.setTextSize(20);
+            serviceTypeTxt.setLayoutParams(cellParams2);
+            serviceTypeTxt.setGravity(Gravity.CENTER);
+            tr.addView(serviceTypeTxt);
+
+            TextView serviceTypeTxtDesc = new TextView(this);
+            serviceTypeTxtDesc.setText("Service Type");
+            serviceTypeTxtDesc.setTextSize(15);
+            serviceTypeTxtDesc.setLayoutParams(cellParams2);
+            serviceTypeTxtDesc.setGravity(Gravity.CENTER);
+            tr1.addView(serviceTypeTxtDesc);
+
+            layout.addView(tr);
+            layout.addView(tr1);
+            frameLayout.addView(layout);
+            contentLayout.addView(frameLayout);
+        }
+    }
+
+    private void showAvailablePreOrder(List<PreOrder> preOrders,String service){
         for(final PreOrder preOrder : preOrders) {
             final TableRow tr = new TableRow(this);
             tr.setLayoutParams(new TableRow.LayoutParams(

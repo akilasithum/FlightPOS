@@ -1,362 +1,298 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".AcceptPreOrdersActivity">
+    android:background="@drawable/background_bottom_style">
 
-    <LinearLayout
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:background="@drawable/flight_bg">
 
-        <TableLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
-            android:background="@drawable/layoutbackgroundborder"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:paddingLeft="20dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="40dp"
-            android:layout_marginBottom="10dp"
-            android:paddingRight="35dp"
-            >
-
-            <!--<TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:text="Service Type"
-                    android:textSize="25dp" />
-                <Spinner
-                    android:id="@+id/serviceTypeSpinner"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:paddingRight="30dp"
-                    android:textSize="25dp" />
-            </TableRow>-->
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:text="Item Category"
-                    android:textSize="25dp" />
-
-                <Spinner
-                    android:id="@+id/itemCategorySpinner"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:paddingRight="30dp"
-                    android:textSize="25dp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:paddingTop="10dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:text="Item"
-                    android:textSize="25dp" />
-
-                <Spinner
-                    android:id="@+id/itemSpinner"
-                    style="@style/Widget.AppCompat.Spinner.Underlined"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:paddingRight="30dp"
-                    android:textSize="25dp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
-                <Button
-                    android:id="@+id/addItemBtn"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="Add Item" />
-            </TableRow>
-        </TableLayout>
-
-        <TableLayout
-            android:id="@+id/contentTable"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/layoutbackgroundborder"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:paddingTop="25dp"
-            android:layout_marginLeft="4dp"
-            android:layout_marginRight="4dp"
-            android:layout_marginBottom="10dp">
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="6"
-                    android:background="#D5D3D3"
-                    android:gravity="center"
-                    android:text="Item Desc"
-                    android:textSize="25dp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:background="#CAC7C7"
-                    android:gravity="center"
-                    android:text="Qty"
-                    android:textSize="25dp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:background="#D5D3D3"
-                    android:gravity="center"
-                    android:text="Price"
-                    android:textSize="25dp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:background="#CAC7C7"
-                    android:gravity="center"
-                    android:text="Total"
-                    android:textSize="25dp" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="3"
-                    android:paddingTop="20dp"
-                    android:text="" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="sub Total : "
-                    android:textSize="20dp" />
-
-                <TextView
-                    android:id="@+id/subTotalTextView"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="0"
-                    android:textSize="20dp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:paddingTop="20dp"
-                    android:text="" />
-            </TableRow>
-        </TableLayout>
-        <TableLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/layoutbackgroundborder"
-            android:paddingTop="20dp"
-            android:paddingLeft="20dp"
-            android:layout_marginLeft="30dp"
-            android:layout_marginRight="40dp"
-            android:layout_marginBottom="10dp"
-            android:paddingRight="35dp">
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:layout_weight="1"
-                    android:text="Pax Name :"
-                    android:paddingBottom="6dp"
-                    android:textSize="22dp" />
-
-                <EditText
-                    android:id="@+id/paxName"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:paddingLeft="5dp"
-                    android:background="@drawable/textbox_background"
-                    android:textSize="17dp" />
-            </TableRow>
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:layout_weight="1"
-                    android:paddingBottom="6dp"
-                    android:text="Flight Number :"
-                    android:textSize="22dp" />
-
-                <EditText
-                    android:id="@+id/flightNumber"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:inputType="number"
-                    android:paddingLeft="5dp"
-                    android:background="@drawable/textbox_background"
-                    android:textSize="17dp" />
-            </TableRow>
-            <TableRow
-                android:id="@+id/sectorRow"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:layout_weight="1"
-                    android:paddingBottom="6dp"
-                    android:text="Sector :"
-                    android:textSize="22dp" />
-                <Spinner
-                    android:id="@+id/flightSector"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="40dp"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1" />
-            </TableRow>
-
-            <TableRow
-                android:id="@+id/taxPercentageRow"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:paddingTop="10dp">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:text="Tax Percentage"
-                    android:textSize="20dp" />
-
-                <EditText
-                    android:id="@+id/taxPercentage"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:ems="10"
-                    android:text="13"
-                    android:inputType="number" />
-            </TableRow>
-
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
-                    android:layout_weight="1"
-                    android:paddingBottom="6dp"
-                    android:text="Date :"
-                    android:textSize="22dp" />
-
-                <EditText
-                    android:id="@+id/flightDate"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:layout_weight="1"
-                    android:paddingLeft="5dp"
-                    android:background="@drawable/textbox_background"
-                    android:focusable="false"
-                    android:textSize="17dp" />
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
-
-                <Button
-                    android:id="@+id/purchaseItems"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="30dp"
-                    android:layout_weight="1"
-                    android:text="Place A Pre Order" />
-            </TableRow>
-        </TableLayout>
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dip"
-            android:layout_marginBottom="55dp"
-            android:layout_marginLeft="30dp"
-            android:layout_weight="1"
-            android:gravity="left|bottom"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/backPressBtn"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center_horizontal|left"
-                android:background="@drawable/icon_left_arrow"
-                android:clickable="true" />
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bgColor"
+                android:paddingLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingRight="10dp">
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:paddingBottom="10dp">
+
+                    <ImageButton
+                        android:id="@+id/backPressBtn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:background="@drawable/back_arrow_icon"
+                        android:clickable="true" />
+
+                    <TextView
+                        android:id="@+id/headerId"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        android:gravity="center"
+                        android:text="Take Pre Orders"
+                        android:textColor="@color/white"
+                        android:textSize="25dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center" />
+                </TableRow>
+            </TableLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical"
+                android:paddingTop="10dp">
+
+
+                <HorizontalScrollView
+                    android:layout_width="fill_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_weight="0"
+                    android:fillViewport="true"
+                    android:measureAllChildren="false"
+                    android:paddingTop="20dp"
+                    android:scrollbars="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/itemCatTableRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"></LinearLayout>
+                </HorizontalScrollView>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="340dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:orientation="vertical">
+
+                    <ScrollView
+                        android:layout_width="fill_parent"
+                        android:layout_height="340dp"
+                        android:background="@drawable/white_boarder_style"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp">
+
+                        <LinearLayout
+                            android:id="@+id/contentLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                        </LinearLayout>
+                    </ScrollView>
+
+                </LinearLayout>
+
+                <TableLayout
+                    android:id="@+id/contentTable"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp">
+
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_weight="2"
+                            android:text="" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:text="sub Total CAD : "
+                            android:textColor="@color/white"
+                            android:textSize="20dp" />
+
+                        <TextView
+                            android:id="@+id/subTotalTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="0"
+                            android:textColor="@color/white"
+                            android:textSize="20dp" />
+                    </TableRow>
+
+                </TableLayout>
+                <TableLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/layoutbackgroundborder"
+                    android:paddingTop="20dp"
+                    android:paddingLeft="20dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_marginBottom="10dp"
+                    android:paddingRight="35dp">
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="30dp"
+                            android:layout_weight="1"
+                            android:text="Pax Name :"
+                            android:paddingBottom="6dp"
+                            android:textSize="22dp" />
+
+                        <EditText
+                            android:id="@+id/paxName"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1"
+                            android:paddingLeft="5dp"
+                            android:background="@drawable/textbox_background"
+                            android:textSize="17dp" />
+                    </TableRow>
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="30dp"
+                            android:layout_weight="1"
+                            android:paddingBottom="6dp"
+                            android:text="Flight Number :"
+                            android:textSize="22dp" />
+
+                        <EditText
+                            android:id="@+id/flightNumber"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1"
+                            android:inputType="number"
+                            android:paddingLeft="5dp"
+                            android:background="@drawable/textbox_background"
+                            android:textSize="17dp" />
+                    </TableRow>
+                    <TableRow
+                        android:id="@+id/sectorRow"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="30dp"
+                            android:layout_weight="1"
+                            android:paddingBottom="6dp"
+                            android:text="Sector :"
+                            android:textSize="22dp" />
+                        <Spinner
+                            android:id="@+id/flightSector"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:textSize="40dp"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1" />
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/taxPercentageRow"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:paddingTop="10dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:layout_weight="1"
+                            android:text="Tax Percentage"
+                            android:textSize="20dp" />
+
+                        <EditText
+                            android:id="@+id/taxPercentage"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:ems="10"
+                            android:text="13"
+                            android:inputType="number" />
+                    </TableRow>
+
+
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="30dp"
+                            android:layout_weight="1"
+                            android:paddingBottom="6dp"
+                            android:text="Date :"
+                            android:textSize="22dp" />
+
+                        <EditText
+                            android:id="@+id/flightDate"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="5dp"
+                            android:layout_weight="1"
+                            android:paddingLeft="5dp"
+                            android:background="@drawable/textbox_background"
+                            android:focusable="false"
+                            android:textSize="17dp" />
+                    </TableRow>
+                </TableLayout>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/purchaseItems"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_weight="1"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginBottom="30dp"
+        android:paddingTop="10dp"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:background="@drawable/button_style"
+        android:layout_alignParentBottom="true"
+        android:text="Purchase Items" />
+</RelativeLayout>

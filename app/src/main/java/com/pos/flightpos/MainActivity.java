@@ -1,6 +1,5 @@
 package com.pos.flightpos;
 
-import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -13,9 +12,8 @@ import android.os.RemoteException;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.Button;
+import android.provider.Settings.Secure;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
@@ -166,10 +164,12 @@ public class MainActivity extends AppCompatActivity {
         Element root = document.addElement("sifDetails");
         BasicOptV2 basicOptV2 = BootUpReceiver.mBasicOptV2;
         try {
-            String deviceId = basicOptV2.getSysParam(AidlConstantsV2.SysParam.SN);
+           // String deviceId = basicOptV2.getSysParam(AidlConstantsV2.SysParam.SN);
+            String deviceId = Secure.getString(this.getContentResolver(),
+                    Secure.ANDROID_ID);
             SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_DEVICE_ID,deviceId);
             root.addElement("deviceId").addText(deviceId);
-        } catch (RemoteException e) {
+        } catch (Exception e) {
             Toast.makeText(this,"Error while reading system data",Toast.LENGTH_SHORT);
         }
         return document.asXML();

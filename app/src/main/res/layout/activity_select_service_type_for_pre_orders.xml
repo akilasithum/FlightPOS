@@ -38,10 +38,10 @@
                         android:layout_height="wrap_content"
                         android:text="Select Service Type"
                         android:textColor="@color/white"
-                        android:layout_weight="8"
+                        android:layout_weight="10"
                         android:gravity="center"
                         android:textStyle="bold"
-                        android:textSize="20dp"/>
+                        android:textSize="25dp"/>
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
@@ -53,9 +53,12 @@
             <TableLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="30dp"
-                android:paddingTop="20dp"
-                android:paddingRight="30dp">
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:paddingTop="15dp"
+                android:layout_marginTop="60dp">
                 <TableRow
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent">
@@ -69,8 +72,8 @@
                         android:clickable="true"
                         android:orientation="vertical">
                         <ImageView
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
                             android:layout_gravity="center"
                             android:background="@drawable/buy_on_board_icon"/>
                         <TextView
@@ -94,8 +97,8 @@
                         android:clickable="true"
                         android:orientation="vertical">
                         <ImageView
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
                             android:layout_gravity="center"
                             android:background="@drawable/duty_paid_icon"/>
                         <TextView
@@ -121,8 +124,8 @@
                         android:clickable="true"
                         android:orientation="vertical">
                         <ImageView
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
                             android:layout_gravity="center"
                             android:background="@drawable/duty_free_icon" />
                         <TextView
@@ -144,8 +147,8 @@
                         android:clickable="true"
                         android:orientation="vertical">
                         <ImageView
-                            android:layout_width="100dp"
-                            android:layout_height="100dp"
+                            android:layout_width="150dp"
+                            android:layout_height="150dp"
                             android:layout_gravity="center"
                             android:background="@drawable/virtual_inventory_icon"/>
                         <TextView

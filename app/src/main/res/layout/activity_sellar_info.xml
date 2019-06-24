@@ -5,93 +5,101 @@
     android:background="@drawable/background_bottom_style"
     tools:context=".SellarInfoActivity">
 
-    <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp">
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:paddingBottom="10dp">
-
-            <ImageButton
-                android:id="@+id/backPressBtn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_weight="1"
-                android:background="@drawable/back_arrow_icon"
-                android:clickable="true" />
-
-            <TextView
-                android:id="@+id/headerId"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="8"
-                android:gravity="center"
-                android:text="Seller Info"
-                android:textColor="@color/white"
-                android:textSize="20dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center" />
-        </TableRow>
-    </TableLayout>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/flight_bg">
 
-    <LinearLayout
-        android:id="@+id/layout_user"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="70dp"
-        android:padding="15dp"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
-        android:background="@drawable/layoutbackgroundborder"
-        android:gravity="center_horizontal"
-        android:orientation="vertical">
-
-        <EditText
-            android:id="@+id/currentUser"
-            android:layout_width="match_parent"
+        <LinearLayout
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:ems="10"
-            android:inputType="textPersonName" />
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:orientation="vertical">
 
-        <Button
-            android:id="@+id/bt_addUser"
-            android:layout_width="fill_parent"
-            android:layout_height="30dp"
-            android:background="@drawable/button_style"
-            android:layout_weight="1"
-            android:layout_marginTop="10dp"
-            android:onClick="addUser"
-            android:text="Add Seller" />
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingRight="10dp">
 
-        <Button
-            android:id="@+id/bt_saveSeller"
-            android:layout_width="fill_parent"
-            android:layout_height="30dp"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/button_style"
-            android:layout_weight="1"
-            android:text="Save Sellers" />
-    </LinearLayout>
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:paddingBottom="10dp">
+
+                    <ImageButton
+                        android:id="@+id/backPressBtn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:background="@drawable/back_arrow_icon"
+                        android:clickable="true" />
+
+                    <TextView
+                        android:id="@+id/headerId"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="10"
+                        android:gravity="center"
+                        android:text="Seller Info"
+                        android:textColor="@color/white"
+                        android:textSize="25dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center" />
+                </TableRow>
+            </TableLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_user"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="50dp"
+                android:layout_marginRight="20dp"
+                android:background="@drawable/layoutbackgroundborder"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="15dp">
+
+                <EditText
+                    android:id="@+id/currentUser"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:ems="10"
+                    android:inputType="textPersonName" />
+
+                <Button
+                    android:id="@+id/bt_addUser"
+                    android:layout_width="fill_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_style"
+                    android:onClick="addUser"
+                    android:text="Add Seller" />
+
+                <Button
+                    android:id="@+id/bt_saveSeller"
+                    android:layout_width="fill_parent"
+                    android:layout_height="30dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/button_style"
+                    android:text="Save Sellers" />
+            </LinearLayout>
 
 
+        </LinearLayout>
     </ScrollView>
 </RelativeLayout>

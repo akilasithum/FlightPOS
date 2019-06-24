@@ -164,8 +164,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
         mLoginFormView = findViewById(R.id.login_form);
-        initPaySDK();
-        checkCard();
+        //initPaySDK();
+        //checkCard();
     }
 
     private boolean isAppExpired() throws ParseException {

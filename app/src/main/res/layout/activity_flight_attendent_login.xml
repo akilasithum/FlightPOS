@@ -39,9 +39,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:paddingLeft="40dp"
-            android:paddingRight="40dp"
-            android:paddingTop="20dp"
+            android:paddingLeft="60dp"
+            android:paddingRight="60dp"
+            android:paddingTop="100dp"
             android:orientation="vertical">
 
             <android.support.design.widget.TextInputLayout
@@ -90,6 +90,7 @@
             <ImageButton
                 android:id="@+id/email_sign_in_button"
                 android:paddingTop="25dp"
+                android:layout_marginTop="20dp"
                 android:layout_width="wrap_content"
                 android:layout_height="35dp"
                 android:background="@drawable/login_button_icon"/>

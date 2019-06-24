@@ -29,7 +29,7 @@
             android:gravity="center"
             android:text="Sell Items"
             android:textColor="@color/white"
-            android:textSize="20dp"
+            android:textSize="25dp"
             android:textStyle="bold" />
 
         <TextView
@@ -54,7 +54,9 @@
 
         <TableLayout
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp">
 
             <TableRow
                 android:layout_width="fill_parent"
@@ -71,8 +73,8 @@
                     android:padding="2dp">
 
                     <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
                         android:layout_gravity="center"
                         android:background="@drawable/buy_on_board_icon" />
 
@@ -82,7 +84,7 @@
                         android:layout_gravity="center"
                         android:textColor="@color/white"
                         android:text="Buy On Board"
-                        android:textSize="12dp" />
+                        android:textSize="18dp" />
 
                 </LinearLayout>
 
@@ -97,8 +99,8 @@
                     android:padding="2dp">
 
                     <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
                         android:layout_gravity="center"
                         android:background="@drawable/duty_paid_icon" />
 
@@ -108,7 +110,7 @@
                         android:layout_gravity="center"
                         android:textColor="@color/white"
                         android:text="Duty Paid"
-                        android:textSize="12dp" />
+                        android:textSize="18dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -122,8 +124,8 @@
                     android:padding="2dp">
 
                     <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
                         android:layout_gravity="center"
                         android:background="@drawable/duty_free_icon" />
 
@@ -133,7 +135,7 @@
                         android:layout_gravity="center"
                         android:textColor="@color/white"
                         android:text="Duty Free"
-                        android:textSize="12dp" />
+                        android:textSize="18dp" />
                 </LinearLayout>
             </TableRow>
 
@@ -151,8 +153,8 @@
                     android:padding="2dp">
 
                     <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
                         android:layout_gravity="center"
                         android:background="@drawable/virtual_inventory_icon" />
 
@@ -162,7 +164,7 @@
                         android:layout_gravity="center"
                         android:textColor="@color/white"
                         android:text="Virtual Inventory"
-                        android:textSize="12dp" />
+                        android:textSize="18dp" />
                 </LinearLayout>
 
 
@@ -177,8 +179,8 @@
                     android:padding="2dp">
 
                     <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
                         android:layout_gravity="center"
                         android:background="@drawable/pack_pre_order_icon" />
 
@@ -188,7 +190,7 @@
                         android:layout_gravity="center"
                         android:textColor="@color/white"
                         android:text="Manage Pre Order"
-                        android:textSize="12dp" />
+                        android:textSize="18dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -202,8 +204,8 @@
                     android:padding="2dp">
 
                     <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
                         android:layout_gravity="center"
                         android:background="@drawable/void_options" />
 
@@ -213,7 +215,7 @@
                         android:layout_gravity="center"
                         android:textColor="@color/white"
                         android:text="Change Order"
-                        android:textSize="12dp" />
+                        android:textSize="18dp" />
                 </LinearLayout>
             </TableRow>
         </TableLayout>
@@ -237,8 +239,8 @@
                     android:padding="2dp">
 
                     <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
                         android:layout_gravity="center"
                         android:background="@drawable/pack_carts" />
 
@@ -248,7 +250,7 @@
                         android:layout_gravity="center"
                         android:textColor="@color/white"
                         android:text="Exchange Rates"
-                        android:textSize="12dp" />
+                        android:textSize="18dp" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -262,8 +264,8 @@
                     android:padding="2dp">
 
                     <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
                         android:layout_gravity="center"
                         android:background="@drawable/announcement_icon" />
 
@@ -273,7 +275,7 @@
                         android:layout_gravity="center"
                         android:textColor="@color/white"
                         android:text="Announcements"
-                        android:textSize="12dp" />
+                        android:textSize="18dp" />
                 </LinearLayout>
 
 
@@ -288,8 +290,8 @@
                     android:padding="2dp">
 
                     <ImageView
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
+                        android:layout_width="130dp"
+                        android:layout_height="130dp"
                         android:layout_gravity="center"
                         android:background="@drawable/close_icon" />
 
@@ -299,7 +301,7 @@
                         android:layout_gravity="center"
                         android:textColor="@color/white"
                         android:text="Close Flight"
-                        android:textSize="12dp" />
+                        android:textSize="18dp" />
                 </LinearLayout>
 
 

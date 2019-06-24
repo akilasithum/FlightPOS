@@ -1,13 +1,59 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoadPreOrderAdminActivity">
+    android:background="@drawable/background_bottom_style">
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/flight_bg">
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/bgColor"
+        android:paddingLeft="10dp"
+        android:paddingTop="5dp"
+        android:paddingRight="10dp">
+
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingBottom="10dp">
+
+            <ImageButton
+                android:id="@+id/backPressBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_weight="1"
+                android:background="@drawable/back_arrow_icon"
+                android:clickable="true" />
+
+            <TextView
+                android:id="@+id/headerId"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="10"
+                android:gravity="center"
+                android:text="Pack Pre Orders"
+                android:textColor="@color/white"
+                android:textSize="25dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center" />
+        </TableRow>
+    </TableLayout>
 
     <TableLayout
         android:id="@+id/preOrdersTable"
@@ -16,7 +62,6 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
-        android:background="@drawable/layoutbackgroundborder"
         android:paddingBottom="20dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
@@ -31,11 +76,12 @@
                 android:layout_weight="2"
                 android:gravity="center"
                 android:paddingBottom="20dp"
+                android:textColor="@color/white"
                 android:text="Click on customer name to view pre order items."
                 android:textSize="17dp"
                 android:textStyle="bold" />
         </TableRow>
-        <TableRow
+        <!--<TableRow
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
 
@@ -78,8 +124,34 @@
                 android:textStyle="bold"
                 android:text="Type"
                 android:textSize="14dp" />
-        </TableRow>
+        </TableRow>-->
     </TableLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="340dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="vertical">
+
+        <ScrollView
+            android:layout_width="fill_parent"
+            android:layout_height="340dp"
+            android:background="@drawable/white_boarder_style"
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp">
+
+            <LinearLayout
+                android:id="@+id/contentLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
 
     <TableLayout
         android:id="@+id/preOrderDetails"
@@ -96,96 +168,6 @@
         android:paddingRight="10dp">
 
     </TableLayout>
-
-    <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/layoutbackgroundborder"
-        android:paddingBottom="20dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingTop="10dp">
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:background="@drawable/icon_delivered"
-                android:textSize="20dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text=" - Loaded"
-                android:textSize="20dp" />
-        </TableRow>
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_gravity="center"
-                android:background="@drawable/icon_reject"
-                android:textSize="20dp" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:text=" - Rejected"
-                android:textSize="20dp" />
-        </TableRow>
-    </TableLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_marginTop="50dp"
-        android:layout_weight="1"
-        android:layout_marginRight="20dp"
-        android:layout_marginLeft="20dp"
-        android:gravity="left|bottom"
-        android:orientation="vertical">
-        <TableLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
-        <ImageButton
-            android:id="@+id/forwardPressBtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_horizontal|left"
-            android:background="@drawable/icon_left_arrow"
-            android:layout_weight="1"
-            android:clickable="true" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:layout_weight="20"
-                android:text=""
-                android:textSize="20dp" />
-        <ImageButton
-            android:id="@+id/backPressBtn"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:layout_gravity="center_horizontal|right"
-            android:background="@drawable/icon_right_arrow"
-            android:layout_weight="1"
-            android:clickable="true" />
-        </TableRow>
-        </TableLayout>
-    </LinearLayout>
 </LinearLayout>
 </ScrollView>
+</RelativeLayout>

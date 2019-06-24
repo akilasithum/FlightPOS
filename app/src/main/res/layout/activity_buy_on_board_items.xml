@@ -4,213 +4,202 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_bottom_style">
 
-    <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/bgColor"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp">
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:paddingBottom="10dp">
-
-            <ImageButton
-                android:id="@+id/backPressBtn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_weight="1"
-                android:background="@drawable/back_arrow_icon"
-                android:clickable="true" />
-
-            <TextView
-                android:id="@+id/headerId"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="8"
-                android:gravity="center"
-                android:text="Sell Items"
-                android:textColor="@color/white"
-                android:textSize="25dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center" />
-        </TableRow>
-    </TableLayout>
 
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/flight_bg">
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:orientation="vertical"
-            android:paddingTop="30dp">
-
-
-            <HorizontalScrollView
-                android:layout_width="fill_parent"
-                android:layout_height="130dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_weight="0"
-                android:fillViewport="true"
-                android:measureAllChildren="false"
-                android:paddingTop="20dp"
-                android:scrollbars="horizontal">
-
-                <LinearLayout
-                    android:id="@+id/itemCatTableRow"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"></LinearLayout>
-            </HorizontalScrollView>
-
-            <!--<HorizontalScrollView
-                android:id="@+id/hsv"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="40dp"
-                android:layout_marginRight="40dp"
-                android:layout_weight="0"
-                android:fillViewport="true"
-                android:measureAllChildren="false"
-                android:paddingTop="20dp"
-                android:scrollbars="horizontal">
-
-                <LinearLayout
-                    android:id="@+id/innerLay"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                </LinearLayout>
-            </HorizontalScrollView>-->
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="230dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:orientation="vertical">
-
-                <ScrollView
-                    android:layout_width="fill_parent"
-                    android:layout_height="230dp"
-                    android:background="@drawable/white_boarder_style"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp">
-
-                    <LinearLayout
-                        android:id="@+id/contentLayout"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical">
-
-                    </LinearLayout>
-                </ScrollView>
-
-            </LinearLayout>
+            android:orientation="vertical">
 
             <TableLayout
-                android:id="@+id/contentTable"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:background="@color/bgColor"
                 android:paddingLeft="10dp"
-                android:paddingTop="10dp"
+                android:paddingTop="5dp"
                 android:paddingRight="10dp">
 
                 <TableRow
                     android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
+                    android:layout_height="fill_parent"
+                    android:paddingBottom="10dp">
 
-                    <TextView
+                    <ImageButton
+                        android:id="@+id/backPressBtn"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:layout_marginBottom="10dp"
-                        android:text="" />
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:background="@drawable/back_arrow_icon"
+                        android:clickable="true" />
 
                     <TextView
+                        android:id="@+id/headerId"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="2"
+                        android:layout_weight="10"
+                        android:gravity="center"
+                        android:text="Sell Items"
                         android:textColor="@color/white"
-                        android:text="sub Total CAD : "
-                        android:textSize="15dp" />
-
-                    <TextView
-                        android:id="@+id/subTotalTextView"
-                        android:textColor="@color/white"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="0"
-                        android:textSize="15dp" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
+                        android:textSize="25dp"
+                        android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:paddingTop="5dp"
-                        android:textColor="@color/white"
-                        android:text="Seat No:"
-                        android:textSize="15dp" />
-
-                    <EditText
-                        android:id="@+id/seatNumber"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:background="@drawable/textbox_background"
-                        android:inputType="textPersonName"
-                        android:textSize="15dp" />
-
-                    <Button
-                        android:id="@+id/scanBoardingPass"
-                        android:layout_width="0dp"
-                        android:layout_height="25dp"
-                        android:layout_marginLeft="2dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/button_style"
-                        android:text="Scan"
-                        android:textSize="10dp" />
-                </TableRow>
-
-                <TableRow
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
-
-                    <Button
-                        android:id="@+id/purchaseItems"
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_marginTop="60dp"
-                        android:background="@drawable/button_style"
-                        android:layout_weight="1"
-                        android:text="Purchase Items" />
+                        android:gravity="center" />
                 </TableRow>
             </TableLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="vertical"
+                android:paddingTop="10dp">
+
+
+                <HorizontalScrollView
+                    android:layout_width="fill_parent"
+                    android:layout_height="150dp"
+                    android:layout_marginLeft="40dp"
+                    android:layout_marginRight="40dp"
+                    android:layout_weight="0"
+                    android:fillViewport="true"
+                    android:measureAllChildren="false"
+                    android:paddingTop="20dp"
+                    android:scrollbars="horizontal">
+
+                    <LinearLayout
+                        android:id="@+id/itemCatTableRow"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"></LinearLayout>
+                </HorizontalScrollView>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="340dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:orientation="vertical">
+
+                    <ScrollView
+                        android:layout_width="fill_parent"
+                        android:layout_height="340dp"
+                        android:background="@drawable/white_boarder_style"
+                        android:paddingTop="10dp"
+                        android:paddingBottom="10dp">
+
+                        <LinearLayout
+                            android:id="@+id/contentLayout"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:orientation="vertical">
+
+                        </LinearLayout>
+                    </ScrollView>
+
+                </LinearLayout>
+
+                <TableLayout
+                    android:id="@+id/contentTable"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp">
+
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_weight="2"
+                            android:text="" />
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="2"
+                            android:text="sub Total CAD : "
+                            android:textColor="@color/white"
+                            android:textSize="20dp" />
+
+                        <TextView
+                            android:id="@+id/subTotalTextView"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="0"
+                            android:textColor="@color/white"
+                            android:textSize="20dp" />
+                    </TableRow>
+
+                    <TableRow
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginTop="30dp">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:paddingTop="5dp"
+                            android:text="Seat No:"
+                            android:textColor="@color/white"
+                            android:textSize="20dp" />
+
+                        <EditText
+                            android:id="@+id/seatNumber"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:background="@drawable/textbox_background"
+                            android:inputType="textPersonName"
+                            android:textSize="20dp" />
+
+                        <Button
+                            android:id="@+id/scanBoardingPass"
+                            android:layout_width="0dp"
+                            android:layout_height="40dp"
+                            android:layout_marginLeft="2dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/button_style"
+                            android:text="Scan"
+                            android:textSize="15dp" />
+                    </TableRow>
+
+
+                </TableLayout>
+            </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/purchaseItems"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:layout_weight="1"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginBottom="30dp"
+        android:paddingTop="10dp"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:background="@drawable/button_style"
+        android:layout_alignParentBottom="true"
+        android:text="Purchase Items" />
 </RelativeLayout>

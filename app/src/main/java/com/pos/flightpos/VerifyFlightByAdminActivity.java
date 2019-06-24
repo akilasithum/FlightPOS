@@ -93,7 +93,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         syncPreOrderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                syncPreOrders();
+                //syncPreOrders();
                 AsyncTask<Void, Void, Void> task = new SyncPreOrders().execute();
             }
         });
@@ -147,11 +147,11 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
                     Toast.LENGTH_SHORT).show();
             return;
         }
-        else if(cartScan == null || cartScan.isEmpty()){
+        /*else if(cartScan == null || cartScan.isEmpty()){
             Toast.makeText(getApplicationContext(), "Scan carts before continue",
                     Toast.LENGTH_SHORT).show();
             return;
-        }
+        }*/
         new AlertDialog.Builder(this)
                 .setTitle("Logging out")
                 .setMessage("You are about to log out from admin mode. Do you wish to continue?")
@@ -224,7 +224,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             HttpHandler handler = new HttpHandler();
             handler.postRequest(getSIFDetailsXML(),"sifDetails");
-            handler.postRequest(getCartNumbers(),"cartNumbers");
+            //handler.postRequest(getCartNumbers(),"cartNumbers");
             handler.postRequest(getSealDetails(),"sealDetails");
             handler.postRequest(getOpeningInventory(),"openingInventory");
             return null;
@@ -312,7 +312,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
             Element orderMainDetail = root.addElement("inventory");
             orderMainDetail.addElement("itemId").addText(item.getItemNo());
             orderMainDetail.addElement("quantity").addText(item.getQuantity());
-            orderMainDetail.addElement("cartNo").addText(eqNoBarcodeMap.get(item.getEquipmentNo()));
+           // orderMainDetail.addElement("cartNo").addText(eqNoBarcodeMap.get(item.getEquipmentNo()));
             orderMainDetail.addElement("drawer").addText(item.getDrawer());
             orderMainDetail.addElement("sifNo").addText(sifNo);
         }
