@@ -6,12 +6,12 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:background="@color/colorPrimary">
 
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_centerInParent="true"
             android:background="@drawable/icon_cash_payment" />
 
@@ -21,14 +21,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="10dp">
 
         <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingTop="20dp"
-            android:paddingLeft="30dp"
-            android:paddingRight="30dp"
+            android:paddingTop="10dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
             android:focusable="true"
             android:focusableInTouchMode="true">
 
@@ -40,7 +40,7 @@
                     android:layout_height="wrap_content"
                     android:text="Amount"
                     android:layout_weight="1"
-                    android:textSize="18dp" />
+                    android:textSize="15dp" />
 
                 <EditText
                     android:id="@+id/cashSettleAmountTextField"
@@ -48,6 +48,7 @@
                     android:layout_height="wrap_content"
                     android:singleLine="true"
                     android:inputType="number"
+                    android:textSize="15dp"
                     android:layout_weight="1" />
             </TableRow>
 
@@ -60,7 +61,7 @@
                     android:layout_height="wrap_content"
                     android:text="Currency"
                     android:layout_weight="1"
-                    android:textSize="18dp" />
+                    android:textSize="15dp" />
 
                 <Spinner
                     android:id="@+id/currencyText"
@@ -80,7 +81,7 @@
                     android:layout_height="wrap_content"
                     android:text=""
                     android:layout_weight="1"
-                    android:textSize="18dp" />
+                    android:textSize="15dp" />
             </TableRow>
             <TableRow
                 android:layout_width="fill_parent"
@@ -92,7 +93,7 @@
                     android:text=""
                     android:visibility="invisible"
                     android:layout_weight="1"
-                    android:textSize="18dp" />
+                    android:textSize="15dp" />
             </TableRow>
 
             <TableRow
@@ -103,11 +104,11 @@
                     android:layout_height="wrap_content"
                     android:text=""
                     android:layout_weight="1"
-                    android:textSize="18dp" />
+                    android:textSize="15dp" />
                 <Button
                     android:id="@+id/cardSubmitBtn"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="30dp"
                     android:background="@drawable/button_style"
                     android:layout_weight="1"
                     android:layout_marginRight="10dp"
@@ -116,7 +117,7 @@
                     android:id="@+id/cancelBtn"
                     android:layout_marginLeft="10dp"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="30dp"
                     android:background="@drawable/button_style"
                     android:layout_weight="1"
                     android:text="Cancel" />

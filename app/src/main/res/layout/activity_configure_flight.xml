@@ -42,9 +42,9 @@
                     android:text="Flight Details"
                     android:textColor="@color/white"
                     android:gravity="center"
-                    android:layout_weight="9"
+                    android:layout_weight="8"
                     android:textStyle="bold"
-                    android:textSize="25dp"/>
+                    android:textSize="20dp"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="35dp"
+        android:layout_marginTop="20dp"
         android:layout_marginLeft="25dp"
         android:layout_marginRight="25dp"
         android:background="@drawable/layoutbackgroundborderlowtr"
@@ -64,8 +64,8 @@
         android:focusableInTouchMode="true"
         android:paddingBottom="15dp"
         android:paddingLeft="10dp"
-        android:paddingRight="15dp"
-        android:paddingTop="35dp">
+        android:paddingRight="10dp"
+        android:paddingTop="15dp">
 
         <TableRow
             android:layout_width="fill_parent"
@@ -76,14 +76,14 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text="Flight date"
-                android:textSize="25dp" />
+                android:textSize="15dp" />
 
             <Spinner
                 android:id="@+id/flightDateSpinner"
                 style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="60dp" />
+                android:textSize="40dp" />
         </TableRow>
 
         <TableRow
@@ -96,7 +96,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text="Flight Number"
-                android:textSize="25dp" />
+                android:textSize="15dp" />
 
             <EditText
                 android:id="@+id/flightList"
@@ -117,7 +117,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text="From"
-                android:textSize="25dp" />
+                android:textSize="15dp" />
 
             <EditText
                 android:id="@+id/fromTextField"
@@ -138,7 +138,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text="To"
-                android:textSize="25dp" />
+                android:textSize="15dp" />
 
             <EditText
                 android:id="@+id/toTextField"
@@ -150,28 +150,22 @@
         </TableRow>
 
     </TableLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/submitBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginTop="50dp"
-                android:paddingTop="15dp"
-                android:textStyle="bold"
-                android:gravity="center_horizontal"
-                android:background="@drawable/button_style"
-                android:text="Submit" />
-
-        </LinearLayout>
     </LinearLayout>
 </ScrollView>
+    <Button
+        android:id="@+id/submitBtn"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:layout_weight="1"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginBottom="20dp"
+        android:paddingTop="5dp"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/button_style"
+        android:text="Submit" />
 </RelativeLayout>
 
 

@@ -20,7 +20,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="10dp"
-                android:paddingTop="10dp"
+                android:paddingTop="5dp"
                 android:paddingRight="10dp">
 
                 <TableRow
@@ -41,11 +41,11 @@
                         android:id="@+id/headerId"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="10"
+                        android:layout_weight="8"
                         android:gravity="center"
                         android:text="Sell Items"
                         android:textColor="@color/white"
-                        android:textSize="25dp"
+                        android:textSize="20dp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -58,14 +58,14 @@
 
             <HorizontalScrollView
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="110dp"
                 android:layout_marginLeft="40dp"
                 android:layout_marginRight="40dp"
-                android:layout_marginBottom="20dp"
+                android:layout_marginBottom="5dp"
                 android:layout_weight="0"
                 android:fillViewport="true"
                 android:measureAllChildren="false"
-                android:paddingTop="20dp"
+                android:paddingTop="5dp"
                 android:scrollbars="horizontal">
 
                 <LinearLayout
@@ -77,16 +77,16 @@
 
             <LinearLayout
                 android:layout_width="fill_parent"
-                android:layout_height="460dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
+                android:layout_height="250dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:orientation="vertical">
 
                 <ScrollView
                     android:layout_width="fill_parent"
-                    android:layout_height="400dp"
+                    android:layout_height="220dp"
                     android:background="@drawable/white_boarder_style"
-                    android:paddingTop="10dp">
+                    android:paddingTop="5dp">
 
                     <LinearLayout
                         android:id="@+id/contentLayout"
@@ -107,7 +107,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="2"
-                        android:paddingTop="20dp"
+                        android:paddingTop="10dp"
                         android:text="" />
 
                     <TextView
@@ -117,7 +117,7 @@
                         android:textStyle="bold"
                         android:text="sub Total : $ "
                         android:textColor="@color/white"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
 
                     <TextView
                         android:id="@+id/subTotalTextView"
@@ -127,37 +127,21 @@
                         android:textStyle="bold"
                         android:text="0"
                         android:textColor="@color/white"
-                        android:textSize="20dp" />
+                        android:textSize="15dp" />
 
                 </TableRow>
             </LinearLayout>
-
-            <TableLayout
-                android:id="@+id/contentTable"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="25dp"
-                android:paddingLeft="10dp"
-                android:paddingTop="30dp"
-                android:paddingRight="10dp">
-
-
-                <TableRow
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
-
-                    <Button
-                        android:id="@+id/purchaseItems"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="20dp"
-                        android:layout_weight="1"
-                        android:background="@drawable/button_style"
-                        android:text="Purchase Items" />
-                </TableRow>
-            </TableLayout>
         </LinearLayout>
     </ScrollView>
+
+    <Button
+        android:id="@+id/purchaseItems"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:paddingTop="2dp"
+        android:layout_margin="20dp"
+        android:layout_weight="1"
+        android:background="@drawable/button_style"
+        android:layout_alignParentBottom="true"
+        android:text="Purchase Items" />
 </RelativeLayout>

@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.pos.flightpos"
+        applicationId "com.pos.airport"
         minSdkVersion 22
         targetSdkVersion 28
         versionCode 1
@@ -32,6 +32,7 @@ dependencies {
     implementation('com.amazonaws:aws-android-sdk-mobile-client:2.6.+@aar') { transitive = true }
     implementation 'com.amazonaws:aws-android-sdk-s3:2.6.+'
     implementation 'com.amazonaws:aws-android-sdk-cognito:2.6.+'
+    implementation 'com.sunmi:sunmiui:latest.release'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
@@ -43,4 +44,7 @@ dependencies {
     implementation files('libs/Scan7003.jar')
     implementation files('libs/nfc7003.jar')
     implementation files('libs/dom4j-1.6.jar')
+    implementation files('libs/core-3.3.0.jar')
+    implementation files('libs/PayLib-release-1.4.24.aar')
+    implementation files('libs/sunmiscan.jar')
 }

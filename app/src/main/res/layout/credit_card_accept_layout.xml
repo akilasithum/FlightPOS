@@ -6,12 +6,12 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="60dp"
         android:background="@color/colorPrimary">
 
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_centerInParent="true"
             android:background="@drawable/icon_credit_card_payment" />
 
@@ -21,15 +21,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="10dp">
 
         <TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:focusable="true"
             android:focusableInTouchMode="true"
-            android:paddingLeft="20dp"
-            android:paddingRight="20dp">
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp">
 
             <TableRow
                 android:layout_width="fill_parent"
@@ -40,7 +40,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Card Number"
-                    android:textSize="18dp" />
+                    android:textSize="15dp" />
 
                 <EditText
                     android:id="@+id/cardNumber"
@@ -59,7 +59,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Card holder's Name"
-                    android:textSize="18dp" />
+                    android:textSize="15dp" />
 
                 <AutoCompleteTextView
                     android:id="@+id/cardHolderNameText"
@@ -78,7 +78,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Expire Date"
-                    android:textSize="18dp" />
+                    android:textSize="15dp" />
 
                 <EditText
                     android:id="@+id/expireDateField"
@@ -96,7 +96,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Card Type"
-                    android:textSize="18dp" />
+                    android:textSize="15dp" />
 
                 <EditText
                     android:id="@+id/cardTypeText"
@@ -114,7 +114,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Amount (CAD)"
-                    android:textSize="18dp" />
+                    android:textSize="15dp" />
 
                 <EditText
                     android:id="@+id/amountText"
@@ -132,12 +132,12 @@
                     android:layout_height="wrap_content"
                     android:text=""
                     android:layout_weight="1"
-                    android:textSize="18dp" />
+                    android:textSize="15dp" />
 
                 <Button
                     android:id="@+id/cardSubmitBtn"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="30dp"
                     android:background="@drawable/button_style"
                     android:layout_weight="1"
                     android:layout_marginRight="10dp"
@@ -146,7 +146,7 @@
                 <Button
                     android:id="@+id/cancelBtn"
                     android:layout_width="wrap_content"
-                    android:layout_height="40dp"
+                    android:layout_height="30dp"
                     android:background="@drawable/button_style"
                     android:layout_weight="1"
                     android:layout_marginLeft="10dp"

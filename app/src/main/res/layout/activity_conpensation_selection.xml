@@ -40,11 +40,11 @@
                         android:id="@+id/headerId"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="9"
+                        android:layout_weight="8"
                         android:gravity="center"
                         android:text="Compensation Type"
                         android:textColor="@color/white"
-                        android:textSize="25dp"
+                        android:textSize="20dp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -59,7 +59,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:paddingLeft="5dp"
-                android:paddingTop="50dp"
+                android:paddingTop="30dp"
                 android:paddingRight="5dp">
 
                 <TableRow
@@ -77,8 +77,8 @@
                         android:paddingTop="8dp">
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
                             android:layout_gravity="center"
                             android:background="@drawable/flight_delay_icon" />
 
@@ -103,8 +103,8 @@
                         android:paddingTop="8dp">
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
                             android:layout_gravity="center"
                             android:background="@drawable/involuntary_removal_icon" />
 
@@ -128,8 +128,8 @@
                         android:paddingTop="8dp">
 
                         <ImageView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
                             android:layout_gravity="center"
                             android:background="@drawable/voluntary_removal_icon" />
 

@@ -43,7 +43,7 @@
                     android:gravity="center"
                     android:layout_weight="9"
                     android:textStyle="bold"
-                    android:textSize="25dp"/>
+                    android:textSize="17dp"/>
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -55,16 +55,16 @@
     <TableLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:layout_marginLeft="25dp"
-        android:layout_marginRight="25dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:background="@drawable/layoutbackgroundborderlowtr"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:paddingBottom="15dp"
         android:paddingLeft="10dp"
-        android:paddingRight="15dp"
-        android:paddingTop="15dp">
+        android:paddingRight="10dp"
+        android:paddingTop="10dp">
 
         <TableRow
             android:layout_width="fill_parent"
@@ -94,7 +94,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text="Passenger Name"
-                android:textSize="25dp" />
+                android:textSize="15dp" />
 
             <EditText
                 android:id="@+id/passengerNameFld"
@@ -115,7 +115,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text="PNR Number"
-                android:textSize="25dp" />
+                android:textSize="15dp" />
 
             <EditText
                 android:id="@+id/pnrNumberFld"
@@ -136,7 +136,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text="Seat No"
-                android:textSize="25dp" />
+                android:textSize="15dp" />
 
             <EditText
                 android:id="@+id/seatNoFld"
@@ -157,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text="Email"
-                android:textSize="25dp" />
+                android:textSize="15dp" />
 
             <EditText
                 android:id="@+id/emailFld"
@@ -168,30 +168,22 @@
                 android:inputType="textPersonName" />
         </TableRow>
     </TableLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/submitBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginTop="50dp"
-                android:paddingTop="15dp"
-                android:textStyle="bold"
-                android:gravity="center_horizontal"
-                android:background="@drawable/button_style"
-                android:text="Submit" />
-
-        </LinearLayout>
-
     </LinearLayout>
 </ScrollView>
+    <Button
+        android:id="@+id/submitBtn"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:layout_weight="1"
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginBottom="20dp"
+        android:paddingTop="5dp"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/button_style"
+        android:text="Submit" />
 </RelativeLayout>
 
 

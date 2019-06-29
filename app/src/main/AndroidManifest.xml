@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.pos.flightpos">
+    package="com.pos.airport">
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -23,8 +23,20 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Background">
-        <activity android:name=".WorldTracerActivity"></activity>
-        <activity android:name=".PrintTransactionActivity" />
+        <receiver
+            android:name=".BootUpReceiver"
+            android:enabled="true"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+        <activity android:name=".WorldTracerActivity"
+            android:windowSoftInputMode="adjustPan"></activity>
+        <activity android:name=".PrintTransactionActivity"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".SplashActivity"
             android:noHistory="true">
@@ -47,7 +59,8 @@
             android:theme="@style/Background" />
         <activity
             android:name=".AttendendMainActivity"
-            android:label="Select Flight Details" />
+            android:label="Select Flight Details"
+            />
         <activity
             android:name=".SyncActivity"
             android:label="Sync Data From Server" />
@@ -97,7 +110,8 @@
             android:label="Sell Items" />
         <activity
             android:name=".ConfigureFlightActivity"
-            android:label="Flight Details" />
+            android:label="Flight Details"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".VerifyFlightByAdminActivity"
             android:label="POS Admin verifications" />
@@ -119,6 +133,7 @@
         <activity android:name=".SelectModeActivity" />
         <activity
             android:name=".VoidOrderActivity"
+            android:windowSoftInputMode="adjustPan"
             android:label="Change Order" />
         <activity
             android:name=".ClosingSealsActivity"
@@ -159,10 +174,12 @@
             android:label="Select Category" />
         <activity
             android:name=".UserDetailsActivity"
-            android:label="Passenger Details" />
+            android:label="Passenger Details"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".GateItemSelectionActivity"
-            android:label="Sell Items" />
+            android:label="Sell Items"
+            android:windowSoftInputMode="adjustPan"/>
         <activity android:name=".OptionsActivity" />
         <activity
             android:name=".BaseStationActivity"
@@ -175,7 +192,8 @@
             android:label="Voucher Details" />
         <activity
             android:name=".RemovalComponsationActivity"
-            android:label="Compensation" />
+            android:label="Compensation"
+            android:windowSoftInputMode="adjustPan"/>
     </application>
 
 </manifest>
