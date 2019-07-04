@@ -232,7 +232,7 @@ public class RemovalComponsationActivity extends AppCompatActivity {
 
             ImageView imageView = new ImageView(this);
             imageView.setLayoutParams(params1);
-            imageView.setImageResource(this.getResources().getIdentifier(categories.getValue(), "drawable", "com.pos.flightpos"));
+            imageView.setImageResource(this.getResources().getIdentifier(categories.getValue(), "drawable", "com.pos.airport"));
 
             LinearLayout imageLayout = new LinearLayout(this);
             imageLayout.setGravity(Gravity.CENTER);
@@ -248,6 +248,7 @@ public class RemovalComponsationActivity extends AppCompatActivity {
             if(textVal.contains("and")){
                 textVal = textVal.replace("and","and \n");
             }
+            textView.setTextSize(10);
             textView.setText(textVal);
             layout.addView(textView);
             layout.addView(imageLayout);
@@ -322,12 +323,14 @@ public class RemovalComponsationActivity extends AppCompatActivity {
             TextView textView = new TextView(this);
             textView.setTextColor(getResources().getColor(R.color.white));
             textView.setLayoutParams(params2);
+            textView.setTextSize(10);
             textView.setText(item.getItemDesc());
 
             TextView priceText = new TextView(this);
             priceText.setLayoutParams(params2);
             priceText.setTextColor(getResources().getColor(R.color.white));
             priceText.setText("$"+POSCommonUtils.getTwoDecimalFloatFromString(item.getPrice()));
+            priceText.setTextSize(10);
 
             layout.addView(textView);
             layout.addView(imageLayout);
@@ -585,7 +588,7 @@ public class RemovalComponsationActivity extends AppCompatActivity {
     private Bitmap getImageFromItemCode(String itemCode)
     {
         try {
-            File f=new File("/data/data/com.pos.flightpos/app_imageDir", itemCode+".png");
+            File f=new File("/data/data/com.pos.airport/app_imageDir", itemCode+".png");
             Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
             return b;
         }

@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.pos.airport.objects.Constants;
 import com.pos.airport.objects.Flight;
+import com.pos.airport.utils.POSCommonUtils;
 import com.pos.airport.utils.POSDBHandler;
 import com.pos.airport.utils.SaveSharedPreference;
 
@@ -110,6 +111,7 @@ public class ConfigureFlightActivity extends AppCompatActivity {
             flightListTextView.setText(flight.getFlightName());
             flightFrom.setText(flight.getFlightFrom());
             flightTo.setText(flight.getFlightTo());
+            POSCommonUtils.hideKeyboard(this);
         }
         else{
             Toast.makeText(getApplicationContext(), "Invalid flight number",

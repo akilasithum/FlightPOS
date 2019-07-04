@@ -199,7 +199,7 @@ public class GateItemSelectionActivity extends AppCompatActivity {
     private Bitmap getImageFromItemCode(String itemCode)
     {
         try {
-            File f=new File("/data/data/com.pos.flightpos/app_imageDir", itemCode+".png");
+            File f=new File("/data/data/com.pos.airport/app_imageDir", itemCode+".png");
             Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
             return b;
         }
@@ -233,7 +233,7 @@ public class GateItemSelectionActivity extends AppCompatActivity {
 
             ImageView imageView = new ImageView(this);
             imageView.setLayoutParams(params1);
-            imageView.setImageResource(this.getResources().getIdentifier(categories.getValue(), "drawable", "com.pos.flightpos"));
+            imageView.setImageResource(this.getResources().getIdentifier(categories.getValue(), "drawable", "com.pos.airport"));
 
             TextView textView = new TextView(this);
             textView.setLayoutParams(params2);
