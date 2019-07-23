@@ -18,6 +18,12 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.camera.autofocus" />
+    <uses-permission android:name="com.sunmi.perm.LED" />
+    <uses-permission android:name="com.sunmi.perm.MSR" />
+    <uses-permission android:name="com.sunmi.perm.ICC" />
+    <uses-permission android:name="com.sunmi.perm.PINPAD" />
+    <uses-permission android:name="com.sunmi.perm.SECURITY" />
+    <uses-permission android:name="com.sunmi.perm.CONTACTLESS_CARD" />
 
     <uses-feature
         android:name="android.hardware.nfc"
@@ -63,7 +69,8 @@
             android:theme="@style/Background" />
         <activity
             android:name=".AttendendMainActivity"
-            android:label="Select Flight Details" />
+            android:label="Select Flight Details"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".SyncActivity"
             android:label="Sync Data From Server" />
@@ -79,7 +86,8 @@
         <activity android:name=".MSReader" />
         <activity
             android:name=".AddSeal"
-            android:label="Seal Info" />
+            android:label="Seal Info"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".SellarInfoActivity"
             android:label="Seller Info" />
@@ -88,10 +96,12 @@
             android:label="Sell Items" />
         <activity
             android:name=".BuyOnBoardItemsActivity"
-            android:label="Sell Items" />
+            android:label="Sell Items"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".PaymentMethodsActivity"
-            android:label="Payments" />
+            android:label="Payments"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".InventoryReportActivity"
             android:label="Print Inventory Reports" />
@@ -112,13 +122,15 @@
             android:label="Sell Items" />
         <activity
             android:name=".ConfigureFlightActivity"
-            android:label="Configure Flight" />
+            android:label="Configure Flight"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".VerifyFlightByAdminActivity"
             android:label="POS Admin verifications" />
         <activity
             android:name=".MessageToBondActivity"
-            android:label="Send a Message to Bond" />
+            android:label="Send a Message to Bond"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".ExchangeRateActivity"
             android:label="Available Exchange Rates" />
@@ -134,10 +146,12 @@
         <activity android:name=".SelectModeActivity" />
         <activity
             android:name=".VoidOrderActivity"
-            android:label="Change Order" />
+            android:label="Change Order"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".ClosingSealsActivity"
-            android:label="Closing Seals" />
+            android:label="Closing Seals"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".AnnouncementActivity"
             android:label="Announcements" />
@@ -152,16 +166,19 @@
         </activity>
         <activity
             android:name=".LoadPreOrderAdminActivity"
-            android:label="Pack Pre Orders" />
+            android:label="Pack Pre Orders"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".SelectPreOrderTypeActivity"
             android:label="Select pre order type" />
         <activity
             android:name=".AcceptPreOrdersActivity"
-            android:label="Accept pre orders" />
+            android:label="Accept pre orders"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".PreOrderPaymentsActivity"
-            android:label="Pre order payments" />
+            android:label="Pre order payments"
+            android:windowSoftInputMode="adjustPan"/>
         <activity
             android:name=".PrintInventorActivity"
             android:label="Print Inventory" />

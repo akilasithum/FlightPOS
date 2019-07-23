@@ -3,61 +3,57 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_bottom_style">
-
-    <TableLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/bgColor"
-        android:paddingLeft="10dp"
-        android:paddingTop="5dp"
-        android:paddingRight="10dp">
-
-        <TableRow
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:paddingBottom="10dp">
-
-            <ImageButton
-                android:id="@+id/backPressBtn"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="left"
-                android:layout_weight="1"
-                android:background="@drawable/back_arrow_icon"
-                android:clickable="true" />
-
-            <TextView
-                android:id="@+id/headerId"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="8"
-                android:gravity="center"
-                android:text="Sell Items"
-                android:textColor="@color/white"
-                android:textSize="25dp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center" />
-        </TableRow>
-    </TableLayout>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/flight_bg">
-
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:orientation="vertical"
-            android:paddingTop="30dp">
+            >
+
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/bgColor"
+                android:paddingLeft="10dp"
+                android:paddingTop="5dp"
+                android:paddingRight="10dp">
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent">
+
+                    <ImageButton
+                        android:id="@+id/backPressBtn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="left"
+                        android:layout_weight="1"
+                        android:background="@drawable/back_arrow_icon"
+                        android:clickable="true" />
+
+                    <TextView
+                        android:id="@+id/headerId"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="8"
+                        android:gravity="center"
+                        android:text="Sell Items"
+                        android:textColor="@color/white"
+                        android:textSize="25dp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center" />
+                </TableRow>
+            </TableLayout>
 
 
             <HorizontalScrollView
@@ -68,7 +64,6 @@
                 android:layout_weight="0"
                 android:fillViewport="true"
                 android:measureAllChildren="false"
-                android:paddingTop="20dp"
                 android:scrollbars="horizontal">
 
                 <LinearLayout
@@ -170,7 +165,7 @@
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                        android:layout_weight="2"
                         android:paddingTop="5dp"
                         android:textColor="@color/white"
                         android:text="Seat No:"
@@ -181,6 +176,7 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:textColor="@color/white"
                         android:background="@drawable/textbox_background"
                         android:inputType="textPersonName"
                         android:textSize="15dp" />
@@ -188,7 +184,7 @@
                     <Button
                         android:id="@+id/scanBoardingPass"
                         android:layout_width="0dp"
-                        android:layout_height="25dp"
+                        android:layout_height="30dp"
                         android:layout_marginLeft="2dp"
                         android:layout_marginRight="10dp"
                         android:layout_weight="1"
@@ -196,21 +192,17 @@
                         android:text="Scan"
                         android:textSize="10dp" />
                 </TableRow>
-
-                <TableRow
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent">
-
-                    <Button
-                        android:id="@+id/purchaseItems"
-                        android:layout_width="wrap_content"
-                        android:layout_height="30dp"
-                        android:layout_marginTop="60dp"
-                        android:background="@drawable/button_style"
-                        android:layout_weight="1"
-                        android:text="Purchase Items" />
-                </TableRow>
             </TableLayout>
         </LinearLayout>
     </ScrollView>
+    <Button
+        android:id="@+id/purchaseItems"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:paddingTop="2dp"
+        android:layout_margin="20dp"
+        android:background="@drawable/button_style"
+        android:layout_weight="1"
+        android:layout_alignParentBottom="true"
+        android:text="Purchase Items" />
 </RelativeLayout>

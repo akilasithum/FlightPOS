@@ -99,6 +99,7 @@ public class AddSeal extends AppCompatActivity {
             addAnotherSeal.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    POSCommonUtils.hideKeyboard(AddSeal.this);
                     addAdditionalSealsByAdmin(null);
                 }
             });
@@ -331,6 +332,7 @@ public class AddSeal extends AppCompatActivity {
             }
 
             if(!isSealUsed) {
+                handler.deleteSealsByAdmin(sealType);
                 for (String seal : sealList) {
                     handler.insertSealData(sealType, serviceType, String.valueOf(sealList.size()), seal, currentDateStr, flightName, flightDate);
                 }

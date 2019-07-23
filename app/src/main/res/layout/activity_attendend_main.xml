@@ -55,16 +55,16 @@
             <TableLayout
                 android:layout_width="fill_parent"
                 android:layout_height="370dp"
-                android:layout_marginLeft="25dp"
+                android:layout_marginLeft="15dp"
                 android:layout_marginTop="60dp"
-                android:layout_marginRight="25dp"
+                android:layout_marginRight="15dp"
                 android:background="@drawable/layoutbackgroundborderlowtr"
                 android:focusable="true"
                 android:focusableInTouchMode="true"
-                android:paddingLeft="20dp"
+                android:paddingLeft="10dp"
                 android:paddingTop="15dp"
-                android:paddingRight="20dp"
-                android:paddingBottom="15dp">
+                android:paddingRight="10dp"
+                android:paddingBottom="10dp">
 
                 <TableRow
                     android:layout_width="fill_parent"
@@ -202,19 +202,18 @@
                         android:text="13" />
                 </TableRow>
             </TableLayout>
-
-            <Button
-                android:id="@+id/submitBtn"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:layout_marginLeft="25dp"
-                android:layout_marginTop="80dp"
-                android:layout_marginRight="25dp"
-                android:layout_weight="1"
-                android:background="@drawable/button_style"
-                android:text="Submit" />
         </LinearLayout>
     </ScrollView>
+    <Button
+        android:id="@+id/submitBtn"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:paddingTop="2dp"
+        android:layout_margin="20dp"
+        android:layout_weight="1"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/button_style"
+        android:text="Submit" />
 </RelativeLayout>
 
 

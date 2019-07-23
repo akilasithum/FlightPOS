@@ -16,7 +16,7 @@ public class PreOrder implements Serializable {
     private String quantity;
     private String delivered;
     private String adminStatus;
-    private List<Item> items;
+    private List<PreOrderItem> items;
 
     public String getPreOrderId() {
         return preOrderId;
@@ -90,11 +90,11 @@ public class PreOrder implements Serializable {
         this.adminStatus = adminStatus;
     }
 
-    public List<Item> getItems() {
+    public List<PreOrderItem> getItems() {
         return items;
     }
 
-    public void setItems(List<Item> items) {
+    public void setItems(List<PreOrderItem> items) {
         this.items = items;
     }
 }

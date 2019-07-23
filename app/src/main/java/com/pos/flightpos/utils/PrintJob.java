@@ -327,7 +327,7 @@ public class PrintJob {
             Map.Entry pair = (Map.Entry)it.next();
             printer.printString(pair.getKey() + " " + pair.getValue());
         }
-        if(paymentMethodsMap.get("Credit Card USD") != null){
+        if(paymentMethodsMap.get("Credit Card CAD") != null){
 
             int numOfDigits = card.getCreditCardNumber().length();
             printer.printString(" ");

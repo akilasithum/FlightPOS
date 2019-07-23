@@ -16,6 +16,36 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingRight="20dp">
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:paddingBottom="10dp">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Configure Flight"
+            android:textColor="@color/white"
+            android:layout_weight="8"
+            android:gravity="center"
+            android:textSize="20dp"/>
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"/>
+    </TableRow>
+    </TableLayout>
+
 
     <TableLayout
         android:layout_width="fill_parent"
@@ -116,31 +146,20 @@
         </TableRow>
 
     </TableLayout>
-
-       <!-- <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:layout_marginTop="50dp"
-            android:background="@drawable/configure_flight_sky">-->
-
-            <Button
-                android:id="@+id/submitBtn"
-                android:layout_width="match_parent"
-                android:layout_height="35dp"
-                android:layout_weight="1"
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginTop="220dp"
-                android:paddingTop="5dp"
-                android:textStyle="bold"
-                android:gravity="center_horizontal"
-                android:background="@drawable/button_style"
-                android:text="Submit" />
-
-        <!--</LinearLayout>-->
     </LinearLayout>
     </ScrollView>
+    <Button
+        android:id="@+id/submitBtn"
+        android:layout_width="match_parent"
+        android:layout_weight="1"
+        android:layout_height="35dp"
+        android:layout_margin="20dp"
+        android:paddingTop="5dp"
+        android:textStyle="bold"
+        android:gravity="center_horizontal"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/button_style"
+        android:text="Submit" />
 </RelativeLayout>
 
 

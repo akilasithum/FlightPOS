@@ -162,7 +162,7 @@ public class VerifyCartsActivity extends AppCompatActivity {
     private void setBarcodeValue(String barcode){
         if(posdbHandler.isCartNumberEntered(barcode)) {
             if(posdbHandler.getBarcodeFromEquipmentType(currentEquipmentType).isEmpty()) {
-                posdbHandler.insertCartNumbers(currentEquipmentType, barcode);
+                posdbHandler.insertCartNumbers(currentEquipmentType, barcode,serviceType,currentEquipmentType);
             }
             else{
                 posdbHandler.updateCartNumber(currentEquipmentType, barcode);

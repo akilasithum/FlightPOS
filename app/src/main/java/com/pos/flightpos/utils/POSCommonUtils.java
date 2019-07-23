@@ -167,7 +167,7 @@ public class POSCommonUtils {
         return "";
     }
 
-    private static Map<String, String> readBarcodeDetails(String code, Context context) {
+    public static Map<String, String> readBarcodeDetails(String code, Context context) {
         try {
             String[] spaceArr = code.split(" ");
             String name = "";

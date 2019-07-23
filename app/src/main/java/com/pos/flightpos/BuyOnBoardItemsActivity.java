@@ -5,6 +5,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.AudioManager;
@@ -89,7 +90,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         scanBoardingPassBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                populateSeatNumberFromBoardingPass();
+                scan();
             }
         });
         ActionBar actionBar = getSupportActionBar();
@@ -289,50 +290,6 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         }
 
     }
-
-    /*private void setItemCatClickListeners(){
-
-        final LinearLayout mainMealLayout = findViewById(R.id.mainBOBItemsLayout);
-        mainMealLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                populateItemImages("Main");
-                if(currentSelection != null)currentSelection.setBackground(getResources().getDrawable(R.drawable.textinputborderlight));
-                currentSelection = mainMealLayout;
-                mainMealLayout.setBackground(getResources().getDrawable(R.drawable.textinputborder));
-            }
-        });
-        final LinearLayout otherMealLayout = findViewById(R.id.otherBOBLayout);
-        otherMealLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                populateItemImages("Other");
-                if(currentSelection != null)currentSelection.setBackground(getResources().getDrawable(R.drawable.textinputborderlight));
-                currentSelection = otherMealLayout;
-                otherMealLayout.setBackground(getResources().getDrawable(R.drawable.textinputborder));
-            }
-        });
-        final LinearLayout snackLayout = findViewById(R.id.snackBOBLayour);
-        snackLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                populateItemImages("Snack");
-                if(currentSelection != null)currentSelection.setBackground(getResources().getDrawable(R.drawable.textinputborderlight));
-                currentSelection = snackLayout;
-                snackLayout.setBackground(getResources().getDrawable(R.drawable.textinputborder));
-            }
-        });
-        final LinearLayout beverageLayout = findViewById(R.id.beverageBOBLayout);
-        beverageLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                populateItemImages("Beverages");
-                if(currentSelection != null)currentSelection.setBackground(getResources().getDrawable(R.drawable.textinputborderlight));
-                beverageLayout.setBackground(getResources().getDrawable(R.drawable.textinputborder));
-                currentSelection = beverageLayout;
-            }
-        });
-    }*/
 
     private void purchaseItems(){
         String seatNumberVal = seatNumber.getText() == null ? null : seatNumber.getText().toString();
@@ -572,6 +529,10 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         TableRow.LayoutParams cellParams3 = new TableRow.LayoutParams(0,
                 35, 1f);
 
+        TableRow.LayoutParams cellParams4 = new TableRow.LayoutParams(0,
+                45, 1f);
+        cellParams4.setMargins(0,40,0,0);
+
         TextView itemIdHdn = new TextView(this);
         TextView itemDesc = new TextView(this);
         EditText qty = new EditText(this);
@@ -719,6 +680,25 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         totalDesc.setLayoutParams(cellParams2);
         totalDesc.setGravity(Gravity.CENTER);
         tr1.addView(totalDesc);
+
+        Button lookupBtn = new Button(this);
+        lookupBtn.setLayoutParams(cellParams4);
+        lookupBtn.setBackground(getResources().getDrawable(R.drawable.icon_llokup));
+        lookupBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                POSCommonUtils.showDrawerAndEquipment(item,BuyOnBoardItemsActivity.this);
+            }
+        });
+        lookupBtn.setGravity(Gravity.CENTER);
+        tr.addView(lookupBtn);
+
+        TextView empty = new TextView(this);
+        empty.setText("");
+        empty.setTextSize(10);
+        empty.setLayoutParams(cellParams3);
+        empty.setGravity(Gravity.CENTER);
+        tr1.addView(empty);
 
         subtotal += total;
         SoldItem soldItem = new SoldItem();
@@ -1049,8 +1029,8 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         }
     }
 
-    private void populateSeatNumberFromBoardingPass(){
-        final Map<String,String> qrCodeDetails = POSCommonUtils.scanQRCode(this);
+    private void populateSeatNumberFromBoardingPass(String qrCode){
+        final Map<String,String> qrCodeDetails = POSCommonUtils.readBarcodeDetails(qrCode,this);
         if(qrCodeDetails != null) {
             String fileNames = "";
             for(Map.Entry entry : qrCodeDetails.entrySet()){
@@ -1066,6 +1046,39 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
                             seatNumber.setText(qrCodeDetails.get("seatNo"));
                         }})
                     .setNegativeButton(android.R.string.cancel, null).show();
+        }
+    }
+
+    private void scan(){
+        Intent intent = new Intent();
+        intent.setAction("com.summi.scan");
+        intent.setPackage("com.sunmi.sunmiqrcodescanner");
+        intent.putExtra("IS_SHOW_SETTING", false);      // whether to display the setting button, default true
+        intent.putExtra("IDENTIFY_MORE_CODE", true);    // identify multiple qr code in the screen
+        intent.putExtra("IS_AZTEC_ENABLE", true);       // allow read of AZTEC code
+        intent.putExtra("IS_PDF417_ENABLE", true);      // allow read of PDF417 code
+        intent.putExtra("IS_DATA_MATRIX_ENABLE", true); // allow read of DataMatrix code
+        PackageManager packageManager = getPackageManager();
+        if (intent.resolveActivity(packageManager) != null) {
+            startActivityForResult(intent, 100);
+        } else {
+            Toast.makeText(this,"Error",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 100 && data != null) {
+            Bundle bundle = data.getExtras();
+            ArrayList<HashMap<String, String>> result = (ArrayList< HashMap<String, String> >) bundle.getSerializable("data");
+            if (result != null && result.size() > 0) {
+                String value = result.get(0).get("VALUE");
+                populateSeatNumberFromBoardingPass(value);
+            } else {
+                Toast.makeText(this,"Scan Failed",Toast.LENGTH_SHORT).show();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 }

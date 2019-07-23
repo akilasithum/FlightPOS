@@ -6,7 +6,10 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Handler;
 import android.os.Message;
+import android.os.RemoteException;
 import android.pt.msr.Msr;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -14,7 +17,9 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -29,7 +34,11 @@ import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.PrintJob;
+import com.pos.flightpos.utils.PrintUtils;
 import com.pos.flightpos.utils.SaveSharedPreference;
+import com.sunmi.pay.hardware.aidlv2.AidlConstantsV2;
+import com.sunmi.pay.hardware.aidlv2.readcard.CheckCardCallbackV2;
+import com.sunmi.pay.hardware.aidlv2.readcard.ReadCardOptV2;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -67,6 +76,10 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
     String flightName;
     String flightDate;
     String flightSector;
+    LinearLayout contentLayout;
+    PrintUtils printUtils;
+    private ReadCardOptV2 mReadCardOptV2;
+    ProgressDialog dia;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +89,7 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
         paymentTable = (TableLayout) findViewById(R.id.paymentMethodTable);
         confirmOrderBtn = (Button) findViewById(R.id.printReceipt);
         balanceDueTextView = (TextView)  findViewById(R.id.balanceDueTextView);
+        printUtils = new PrintUtils(this);
         confirmOrderBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -103,6 +117,8 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
                 }
             }
         });
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
         Intent intent = getIntent();
         Bundle args = intent.getBundleExtra("BUNDLE");
         soldItems = (ArrayList<SoldItem>) args.getSerializable("soldItemList");
@@ -143,6 +159,7 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
                 POSCommonUtils.getTwoDecimalFloatFromString(discount));
         creditCardList = new ArrayList<>();
         paymentMethodsMap = new HashMap<>();
+        contentLayout = findViewById(R.id.contentLayout);
         registerLayoutClickEvents();
     }
 
@@ -224,7 +241,7 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
                     creditCard.setExpireDate(expiryDate.getText().toString());
                     creditCard.setPaidAmount(Float.parseFloat(amount.getText().toString()));
                     creditCardList.add(creditCard);
-                    addPaymentMethodToTable("Credit Card", "USD", "1", amount.getText().toString(), amount.getText().toString());
+                    addPaymentMethodToTable("Credit Card", "CAD", "1", amount.getText().toString(), amount.getText().toString());
                     closeMSR();
                     dialog.dismiss();
                     cancelSaleBtn.setVisibility(View.GONE);
@@ -241,13 +258,67 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
         });
 
         dialog.show();
-        readMSR("credit");
+        initPaySDK();
+        checkCard();
     }
 
-    public void setmsg(int i, byte[] out_data,boolean isCreditCard) {
+    private void initPaySDK(){
+        mReadCardOptV2 = BootUpReceiver.mReadCardOptV2;
+    }
+
+    private void checkCard() {
+
+        dia = new ProgressDialog(this);
+        dia.setTitle("MSR");
+        dia.setMessage("please swipe MSR card...");
+        dia.show();
+        try {
+            mReadCardOptV2.checkCard(AidlConstantsV2.CardType.MAGNETIC.getValue(), mCheckCardCallback, 60);
+        } catch (Exception e) {
+            showToastMsg("Card reader failed.");
+            e.printStackTrace();
+        }
+    }
+
+    private CheckCardCallbackV2 mCheckCardCallback = new CheckCardCallbackV2.Stub() {
+
+        @Override
+        public void findMagCard(Bundle bundle) throws RemoteException {
+            handleResult(bundle);
+        }
+        @Override
+        public void findICCard(String s) throws RemoteException {
+
+        }
+        @Override
+        public void findRFCard(String s) throws RemoteException {
+
+        }
+        @Override
+        public void onError(int code, String message) throws RemoteException {
+            handleResult(null);
+            if(dia != null){
+                dia.cancel();
+            }
+        }
+    };
+
+    private void handleResult(final Bundle bundle) {
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (bundle != null) {
+                    String track1 = bundle.getString("TRACK1");
+                    setmsg(1,track1,true);
+                }
+            }
+        });
+    }
+
+    public void setmsg(int i, String track1Str,boolean isCreditCard) {
         if(i == 1)
         {
-            String track1Str = new String(out_data);
             if(isCreditCard) {
                 String[] track1Details = track1Str.split("\\^");
                 String expireDateStr = track1Details[2].substring(2, 4) + "/" + track1Details[2].substring(0, 2);
@@ -259,10 +330,10 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
                     cardHolderName.setText(track1Details[1]);
                     expiryDate.setText(expireDateStr);
                     cardType.setText(POSCommonUtils.getCreditCardTypeFromFirstDigit(track1Details[0].substring(1, 2)));
+                    cancelCheckCard();
+                    dia.cancel();
                 } else {
                     showToastMsg("Given credit card is expired.");
-                    closeMSR();
-                    readMSR("credit");
                 }
             }
             else{
@@ -274,6 +345,14 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
                 cardHolderName.setText(track1Details[1]);
                 closeMSR();
             }
+        }
+    }
+
+    private void cancelCheckCard() {
+        try {
+            mReadCardOptV2.cancelCheckCard();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
@@ -330,7 +409,7 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
                             //Log.i("123", "i:"+i);
                             byte[] out_data = new byte[msr.getTrackDataLength(i)];
                             msr.getTrackData(i, out_data);
-                            setmsg(i,out_data,cardType.equals("credit"));
+                            //setmsg(i,out_data,cardType.equals("credit"));
                             return;
                         }
                     }
@@ -357,51 +436,168 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
         }.start();
     }
 
-    private void addPaymentMethodToTable(String type, String currency, String rate, String amount, String USD){
+    private void addPaymentMethodToTable(final String type, final String currency, String rate, String amount,final String USD){
+
+        final FrameLayout frameLayout = new FrameLayout(this);
+        LinearLayout.LayoutParams frameLayoutParams = new LinearLayout.LayoutParams(FrameLayout.LayoutParams.WRAP_CONTENT,
+                FrameLayout.LayoutParams.WRAP_CONTENT,1);
+        frameLayoutParams.setMargins(8,0,0,5);
+        frameLayout.setLayoutParams(frameLayoutParams);
+
+        ImageView closeBtn = new ImageView(this);
+        closeBtn.setClickable(true);
+        FrameLayout.LayoutParams closeBtnParam = new FrameLayout.LayoutParams(45, 45);
+        closeBtnParam.gravity = Gravity.TOP|Gravity.RIGHT;
+        closeBtn.setBackground(getResources().getDrawable(R.drawable.icon_cancel));
+        closeBtn.setLayoutParams(closeBtnParam);
+
+        LinearLayout linearLayout = new LinearLayout(this);
+        FrameLayout.LayoutParams linearLayoutParams = new FrameLayout.LayoutParams(600,
+                TableRow.LayoutParams.WRAP_CONTENT);
+        linearLayout.setGravity(Gravity.CENTER);
+        linearLayout.setOrientation(LinearLayout.VERTICAL);
+        linearLayout.setBackgroundColor(getResources().getColor(R.color.sellitembg));
+        linearLayoutParams.setMargins(0,15,15,0);
+        linearLayout.setLayoutParams(linearLayoutParams);
 
         TableRow tr = new TableRow(this);
+        TableRow tr1 = new TableRow(this);
+
         tr.setLayoutParams(new TableRow.LayoutParams(
-                TableRow.LayoutParams.MATCH_PARENT,
+                TableRow.LayoutParams.FILL_PARENT,
                 TableRow.LayoutParams.WRAP_CONTENT));
+        tr.setPadding(0,10,0,0);
+        tr1.setLayoutParams(new TableRow.LayoutParams(
+                TableRow.LayoutParams.FILL_PARENT,
+                TableRow.LayoutParams.WRAP_CONTENT));
+        tr1.setPadding(0,0,0,10);
 
-        TableRow.LayoutParams cellParams = new TableRow.LayoutParams(0,
-                TableRow.LayoutParams.WRAP_CONTENT, 1f);
+        TableRow.LayoutParams cellParams3 = new TableRow.LayoutParams(0,
+                50, 1f);
 
+        closeBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new AlertDialog.Builder(PreOrderPaymentsActivity.this)
+                        .setTitle("Remove selection")
+                        .setMessage("Do you want to remove this item from selection?")
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                dueBalance += Float.parseFloat(USD);
+                                String dueBalanceStr = POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance);
+
+                                balanceDueTextView.setText(dueBalanceStr);
+                                paymentMethodsCount++;
+                                paymentMethodsMap.remove(type+" "+currency);
+                                contentLayout.removeView(frameLayout);
+                            }})
+                        .setNegativeButton(android.R.string.no, null).show();
+            }
+        });
         TextView typeText = new TextView(this);
         typeText.setText(type);
-        typeText.setTextSize(15);
+        typeText.setTextSize(20);
         typeText.setGravity(Gravity.CENTER);
-        typeText.setLayoutParams(cellParams);
-        tr.addView(typeText);
+        typeText.setLayoutParams(cellParams3);
 
         TextView currencyTextView = new TextView(this);
         currencyTextView.setText(currency);
         currencyTextView.setTextSize(15);
         currencyTextView.setGravity(Gravity.CENTER);
-        currencyTextView.setLayoutParams(cellParams);
-        tr.addView(currencyTextView);
+        currencyTextView.setLayoutParams(cellParams3);
 
         TextView exchangeRate = new TextView(this);
         exchangeRate.setText(rate);
         exchangeRate.setTextSize(15);
         exchangeRate.setGravity(Gravity.CENTER);
-        exchangeRate.setLayoutParams(cellParams);
-        tr.addView(exchangeRate);
+        exchangeRate.setLayoutParams(cellParams3);
 
         TextView value = new TextView(this);
         String amountText = POSCommonUtils.getTwoDecimalFloatFromFloat(Float.valueOf(amount.replace(",","")));
         value.setText(amountText);
         value.setTextSize(15);
         value.setGravity(Gravity.CENTER);
-        value.setLayoutParams(cellParams);
-        tr.addView(value);
+        value.setLayoutParams(cellParams3);
 
         TextView usdVal = new TextView(this);
         usdVal.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(Float.valueOf(USD)));
         usdVal.setTextSize(15);
         usdVal.setGravity(Gravity.CENTER);
-        usdVal.setLayoutParams(cellParams);
-        tr.addView(usdVal);
+        usdVal.setLayoutParams(cellParams3);
+
+        tr.addView(typeText);
+
+        TextView itemDescStr = new TextView(this);
+        itemDescStr.setText("Type");
+        itemDescStr.setTextSize(10);
+        itemDescStr.setLayoutParams(cellParams3);
+        itemDescStr.setGravity(Gravity.CENTER);
+        tr1.addView(itemDescStr);
+
+        View view  = new View(this);
+        view.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+        view.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        tr.addView(view);
+
+        View viewDesc  = new View(this);
+        viewDesc.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+        viewDesc.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        tr1.addView(viewDesc);
+
+        tr.addView(currencyTextView);
+
+        TextView qtyDesc = new TextView(this);
+        qtyDesc.setText("Currency");
+        qtyDesc.setTextSize(10);
+        qtyDesc.setLayoutParams(cellParams3);
+        qtyDesc.setGravity(Gravity.CENTER);
+        tr1.addView(qtyDesc);
+
+        View view1  = new View(this);
+        view1.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+        view1.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        tr.addView(view1);
+
+        View view1Desc  = new View(this);
+        view1Desc.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+        view1Desc.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        tr1.addView(view1Desc);
+
+        tr.addView(exchangeRate);
+
+        TextView priceDesc = new TextView(this);
+        priceDesc.setText("Exchange Rate");
+        priceDesc.setTextSize(10);
+        priceDesc.setLayoutParams(cellParams3);
+        priceDesc.setGravity(Gravity.CENTER);
+        tr1.addView(priceDesc);
+
+        View view2  = new View(this);
+        view2.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+        view2.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        tr.addView(view2);
+
+        View view2Desc  = new View(this);
+        view2Desc.setLayoutParams(new TableRow.LayoutParams(3, TableRow.LayoutParams.MATCH_PARENT));
+        view2Desc.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+        tr1.addView(view2Desc);
+
+        tr.addView(value);
+
+        TextView totalDesc = new TextView(this);
+        totalDesc.setText("Value");
+        totalDesc.setTextSize(10);
+        totalDesc.setLayoutParams(cellParams3);
+        totalDesc.setGravity(Gravity.CENTER);
+        tr1.addView(totalDesc);
+
+        linearLayout.addView(tr);
+        linearLayout.addView(tr1);
+        frameLayout.addView(linearLayout);
+        frameLayout.addView(closeBtn);
+        contentLayout.addView(frameLayout);
 
         dueBalance -= Float.parseFloat(USD);
         String dueBalanceStr = POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance);
@@ -411,7 +607,6 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
         balanceDueTextView.setText(dueBalanceStr);
         paymentMethodsCount++;
         paymentMethodsMap.put(type+" "+currency,amountText);
-        paymentTable.addView(tr,paymentMethodsCount);
     }
 
     private void updateSale(){
@@ -431,14 +626,14 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
         if(creditCardList != null && !creditCardList.isEmpty()){
             CreditCard creditCard = creditCardList.get(0);
             handler.insertCreditCardDetails(orderNumber,creditCard.getCreditCardNumber(),creditCard.getCardHolderName(),
-                    creditCard.getExpireDate(),paymentMethodsMap.get("Credit Card USD"));
+                    creditCard.getExpireDate(),paymentMethodsMap.get("Credit Card CAD"));
         }
     }
 
     private void printReceipt(){
 
         if(confirmOrderBtn.getText().equals("Print Card Holder copy")){
-            PrintJob.printOrderDetails(PreOrderPaymentsActivity.this,orderNumber,
+            printUtils.printOrderDetails(PreOrderPaymentsActivity.this,orderNumber,
                     paxName,soldItems,paymentMethodsMap,
                     creditCardList.isEmpty() ? null : creditCardList.get(0),true,discount,taxPercentage);
             Intent intent = new Intent(PreOrderPaymentsActivity.this, SellItemsActivity.class);
@@ -447,7 +642,7 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
         else{
             generateOrderNumber();
             updateSale();
-            PrintJob.printOrderDetails(this,orderNumber,paxName,soldItems,paymentMethodsMap,
+            printUtils.printOrderDetails(this,orderNumber,paxName,soldItems,paymentMethodsMap,
                     creditCardList.isEmpty() ? null : creditCardList.get(0),false,discount,taxPercentage);
             if(!creditCardList.isEmpty()) {
                 confirmOrderBtn.setText("Print Card Holder copy");

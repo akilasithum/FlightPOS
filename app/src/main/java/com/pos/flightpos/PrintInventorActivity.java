@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.PrintJob;
+import com.pos.flightpos.utils.PrintUtils;
 import com.pos.flightpos.utils.SaveSharedPreference;
 
 import java.util.ArrayList;
@@ -24,6 +25,7 @@ public class PrintInventorActivity extends AppCompatActivity {
 
     String parent;
     Set<String> serviceTypes;
+    PrintUtils job;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +40,7 @@ public class PrintInventorActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        job = new PrintUtils(this);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();
     }
@@ -95,7 +98,6 @@ public class PrintInventorActivity extends AppCompatActivity {
     }
 
     private void print(String serviceType){
-        PrintJob job = new PrintJob();
         String openCloseType;
         String userName;
         if(parent.equals("VerifyFlightByAdminActivity") || parent.equals("AttCheckInfo")){
@@ -132,6 +134,7 @@ public class PrintInventorActivity extends AppCompatActivity {
     @Override
     public void onBackPressed()
     {
+        if(job != null) job.disconnectwoyouServiceService();
         if("VerifyFlightByAdminActivity".equals(parent)) {
             Intent intent = new Intent(this, VerifyFlightByAdminActivity.class);
             startActivity(intent);

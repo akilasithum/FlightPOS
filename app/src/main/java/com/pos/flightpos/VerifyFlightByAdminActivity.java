@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.objects.XMLMapper.CartNumber;
 import com.pos.flightpos.objects.XMLMapper.KITItem;
 import com.pos.flightpos.objects.XMLMapper.SIFDetails;
 import com.pos.flightpos.utils.HttpHandler;
@@ -93,8 +94,7 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         syncPreOrderLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                syncPreOrders();
-                AsyncTask<Void, Void, Void> task = new SyncPreOrders().execute();
+                AsyncTask<Void, Void, Void> task = new SyncPreOrders(VerifyFlightByAdminActivity.this).execute();
             }
         });
 
@@ -126,9 +126,6 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
                         Constants.SHARED_PREFERENCE_SYNC_PRE_ORDERS);
                 if(isPreOrderSynced != null && isPreOrderSynced.equals("yes")) {
                     Intent intent = new Intent(VerifyFlightByAdminActivity.this, LoadPreOrderAdminActivity.class);
-                    /*Bundle args = new Bundle();
-                    args.putSerializable("cartItems", (Serializable) serviceType);
-                    intent.putExtra("serviceType", args)*/;
                     startActivity(intent);
                 }
                 else{
@@ -165,28 +162,31 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
                 .setNegativeButton(android.R.string.no, null).show();
     }
 
-
-    private void syncPreOrders() {
-        Toast.makeText(getApplicationContext(), "Pre orders sync started ",
-                Toast.LENGTH_SHORT).show();
-        POSSyncUtils syncActivity = new POSSyncUtils(this);
-        syncActivity.downloadData("pre_orders","pre_order_items");
-        //disablePackPreOrderLayout(true);
-    }
-
     private class SyncPreOrders extends AsyncTask<Void, Void, Void> {
 
+        public SyncPreOrders(Context context) {
+            dialog = new ProgressDialog(context);
+        }
+
+        protected void onPreExecute() {
+            dialog.setMessage("Sync in progress. Please wait ...");
+            dialog.show();
+        }
         @Override
         protected Void doInBackground(Void... voids) {
             HttpHandler sh = new HttpHandler();
-            handler.insertPreOrders(sh.makeServiceCall("preOrders"));
-            handler.insertPreOrderItems(sh.makeServiceCall("preOrderItems"));
+            handler.insertPreOrders(sh.makeGetCallWithParams("preOrders","flightNumber="+
+                    SaveSharedPreference.getStringValues(VerifyFlightByAdminActivity.this,Constants.SHARED_PREFERENCE_FLIGHT_NAME).replace(" ","--")+"&flightDate="+
+                    SaveSharedPreference.getStringValues(VerifyFlightByAdminActivity.this,Constants.SHARED_PREFERENCE_FLIGHT_DATE).replace("/","-")));
             return null;
         }
         @Override
         protected void onPostExecute(Void aVoid) {
             SaveSharedPreference.setStringValues(VerifyFlightByAdminActivity.this,Constants.SHARED_PREFERENCE_SYNC_PRE_ORDERS,"yes");
             disablePackPreOrderLayout(true);
+            if (dialog.isShowing()) {
+                dialog.dismiss();
+            }
         }
     }
 
@@ -262,19 +262,23 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
     }
 
     private String getCartNumbers(){
-        List<String> cartNumbers = handler.getCartNumbers();
+        List<CartNumber> cartNumbers = handler.getCartNumbers();
         String sifNo = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_SIF_NO);
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("cartNumbers");
-        for(String cartNumber : cartNumbers){
+        for(CartNumber cartNumber : cartNumbers){
             Element orderMainDetail = root.addElement("cartNumber");
-            orderMainDetail.addElement("cartNumber").addText(cartNumber);
+            orderMainDetail.addElement("cartNumber").addText(cartNumber.getCartNumber());
+            orderMainDetail.addElement("serviceType").addText(cartNumber.getServiceType());
             orderMainDetail.addElement("sifNo").addText(sifNo);
+            orderMainDetail.addElement("packType").addText(cartNumber.getEquipmentType());
         }
         if(cartNumbers.size() == 1){
             Element orderMainDetail = root.addElement("cartNumber");
             orderMainDetail.addElement("cartNumber").addText("");
+            orderMainDetail.addElement("serviceType").addText("");
             orderMainDetail.addElement("sifNo").addText("");
+            orderMainDetail.addElement("packType").addText("");
         }
         return document.asXML();
     }

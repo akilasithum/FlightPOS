@@ -16,6 +16,7 @@ import com.pos.flightpos.objects.OrderDetails;
 import com.pos.flightpos.objects.Sector;
 import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.objects.User;
+import com.pos.flightpos.objects.XMLMapper.CartNumber;
 import com.pos.flightpos.objects.XMLMapper.ComboDiscount;
 import com.pos.flightpos.objects.XMLMapper.Currency;
 import com.pos.flightpos.objects.XMLMapper.Equipment;
@@ -28,6 +29,7 @@ import com.pos.flightpos.objects.XMLMapper.POSFlight;
 import com.pos.flightpos.objects.XMLMapper.PaymentMethods;
 import com.pos.flightpos.objects.XMLMapper.PreOrder;
 import com.pos.flightpos.objects.XMLMapper.PreOrderItem;
+import com.pos.flightpos.objects.XMLMapper.PreOrderMain;
 import com.pos.flightpos.objects.XMLMapper.Promotion;
 import com.pos.flightpos.objects.XMLMapper.SIFDetails;
 import com.pos.flightpos.objects.XMLMapper.Voucher;
@@ -119,7 +121,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 "flightFrom VARCHAR,flightTo VARCHAR,paxCount VARCHAR,businessClassPaxCount VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS SIFDetails (sifNo VARCHAR,deviceId VARCHAR,packedFor VARCHAR," +
                 "packedDateTime VARCHAR,crewOpenedDateTime VARCHAR,crewClosedDateTime VARCHAR, programs VARCHAR);");
-        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS cartNumbers (equipmentType VARCHAR,cartNumber VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS cartNumbers (equipmentType VARCHAR,cartNumber VARCHAR," +
+                "serviceType VARCHAR,packType VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS sectors (flightNo VARCHAR,sectorFrom VARCHAR" +
                 ",sectorTo VARCHAR,sectorType VARCHAR,flightType VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS faDetails (flightNo VARCHAR,sector VARCHAR" +
@@ -178,9 +181,9 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void insertCartNumbers(String equipmentType,String cartNo){
+    public void insertCartNumbers(String equipmentType,String cartNo,String serviceType,String packType){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("INSERT INTO cartNumbers VALUES('"+equipmentType+"','"+cartNo+"');");
+        db.execSQL("INSERT INTO cartNumbers VALUES('"+equipmentType+"','"+cartNo+"','"+serviceType+"','"+packType+"');");
         db.close();
     }
 
@@ -238,13 +241,17 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return barcode;
     }
 
-    public List<String> getCartNumbers(){
+    public List<CartNumber> getCartNumbers(){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("select * from cartNumbers", null);
-        List<String> barcode = new ArrayList<>();
+        List<CartNumber> barcode = new ArrayList<>();
         if (cursor.moveToFirst()){
             while(!cursor.isAfterLast()){
-                barcode.add( cursor.getString(cursor.getColumnIndex("cartNumber")));
+                CartNumber cartNumber = new CartNumber();
+                cartNumber.setCartNumber(cursor.getString(cursor.getColumnIndex("cartNumber")));
+                cartNumber.setEquipmentType(cursor.getString(cursor.getColumnIndex("equipmentType")));
+                cartNumber.setServiceType(cursor.getString(cursor.getColumnIndex("serviceType")));
+                barcode.add(cartNumber);
                 cursor.moveToNext();
             }
         }
@@ -385,6 +392,12 @@ public class POSDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("INSERT INTO sealDetails VALUES ('"+sealType+"','"+serviceType+"','"+numOfSeals+"','"+seal+"'," +
                 "'"+date+"','"+flightName+"','"+flightDate+"','no')");
+        db.close();
+    }
+
+    public void deleteSealsByAdmin(String sealType){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("delete from sealDetails where sealType = '" + sealType+"'");
         db.close();
     }
 
@@ -1057,16 +1070,21 @@ public class POSDBHandler extends SQLiteOpenHelper {
 
     public boolean insertPreOrders(String xml){
         try {
-            JSONObject jsonObj  = XML.toJSONObject(xml);
+
             Gson gson = new Gson();
-            JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("preOrders");
-            JSONArray itemsArr = data.getJSONArray("preOrder");
-            List<PreOrder> preOrders = gson.fromJson(itemsArr.toString(), new TypeToken<List<PreOrder>>(){}.getType());
+            PreOrderMain preOrders = gson.fromJson(xml, PreOrderMain.class);
             SQLiteDatabase db = this.getWritableDatabase();
-            for(PreOrder item : preOrders){
+            db.execSQL("delete from preOrders");
+            db.execSQL("delete from preOrderItems");
+            for(PreOrder item : preOrders.getPreOrder()){
                 db.execSQL("INSERT INTO preOrders VALUES" +
                         "('"+item.getPreOrderId()+"','"+item.getPNR()+"','"+item.getCustomerName()+"'," +
                         "'"+item.getServiceType()+"','Not Delivered','');");
+                for(PreOrderItem preOrderItem : item.getItems()){
+                    db.execSQL("INSERT INTO preOrderItems VALUES" +
+                            "('"+preOrderItem.getPreOrderId()+"','"+preOrderItem.getItemNo()+"','"+preOrderItem.getCategory()+"'," +
+                            "'"+preOrderItem.getQuantity()+"','Not Delivered','');");
+                }
             }
 
             db.close();

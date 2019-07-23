@@ -25,6 +25,7 @@ import com.pos.flightpos.objects.SoldItem;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.PrintJob;
+import com.pos.flightpos.utils.PrintUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ public class VoidOrderActivity extends AppCompatActivity {
     String orderIdStr;
     Map<String,TableRow> voidItemsList;
     TableLayout mainOrderDetailsTable;
+    PrintUtils printUtils;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +58,7 @@ public class VoidOrderActivity extends AppCompatActivity {
         selectItemsBtnTable = findViewById(R.id.selectItemsBtnTable);
         selectItemsBtnTable.setVisibility(View.INVISIBLE);
         handler = new POSDBHandler(this);
+        printUtils = new PrintUtils(this);
         voidItemsList = new HashMap<>();
         Button selectItemsVoidBtn = findViewById(R.id.selectItemsVoidBtn);
         selectItemsVoidBtn.setOnClickListener(new View.OnClickListener() {
@@ -171,7 +174,7 @@ public class VoidOrderActivity extends AppCompatActivity {
     private void rePrintReceipt(String orderId){
 
         OrderDetails details = handler.getOrderDetailsFromOrderNumber(orderId);
-        PrintJob.printOrderDetails(this,orderId,details.getSeatNo(),items,
+        printUtils.printOrderDetails(this,orderId,details.getSeatNo(),items,
                 handler.getPaymentMethodsMapFromOrderNumber(orderId),handler.getCreditCardDetailsFromOrderNumber(orderId),
                 true,details.getDiscount(),details.getTax());
     }
@@ -188,7 +191,7 @@ public class VoidOrderActivity extends AppCompatActivity {
         }
         Toast.makeText(this, "Order successfully canceled.", Toast.LENGTH_SHORT).show();
         final OrderDetails details = handler.getOrderDetailsFromOrderNumber(orderId);
-        boolean isSuccess = PrintJob.printVoidOrderReceipt(this,orderId,details.getSeatNo(),items,handler.getPaymentMethodsMapFromOrderNumber(orderId)
+        boolean isSuccess = printUtils.printVoidOrderReceipt(this,orderId,details.getSeatNo(),items,handler.getPaymentMethodsMapFromOrderNumber(orderId)
         ,details.getDiscount(),details.getTax(),false);
         if(isSuccess){
             new AlertDialog.Builder(this)
@@ -198,7 +201,7 @@ public class VoidOrderActivity extends AppCompatActivity {
                     .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
 
                         public void onClick(DialogInterface dialog, int whichButton) {
-                            PrintJob.printVoidOrderReceipt(VoidOrderActivity.this,orderId,details.getSeatNo(),items,handler.getPaymentMethodsMapFromOrderNumber(orderId)
+                            printUtils.printVoidOrderReceipt(VoidOrderActivity.this,orderId,details.getSeatNo(),items,handler.getPaymentMethodsMapFromOrderNumber(orderId)
                                     ,details.getDiscount(),details.getTax(),true);
                         }})
                     .setNegativeButton(android.R.string.cancel, null).show();
@@ -405,7 +408,7 @@ public class VoidOrderActivity extends AppCompatActivity {
         updatePaymentMethods();
         handler.updateOrderMainDetails(orderIdStr,newTotal+"");
         final OrderDetails details = handler.getOrderDetailsFromOrderNumber(orderIdStr);
-        boolean isSuccess = PrintJob.printVoidOrderByReceipt(this,orderIdStr,details.getSeatNo(),refundItems,false);
+        boolean isSuccess = printUtils.printVoidOrderByReceipt(this,orderIdStr,details.getSeatNo(),refundItems,false);
 
         if(isSuccess){
             new AlertDialog.Builder(this)
@@ -427,7 +430,7 @@ public class VoidOrderActivity extends AppCompatActivity {
 
     private void printCustomerCopy(List<SoldItem> refundItems,OrderDetails details){
 
-        boolean isSuccess = PrintJob.printVoidOrderByReceipt(VoidOrderActivity.this,orderIdStr,details.getSeatNo(),refundItems,true);
+        boolean isSuccess = printUtils.printVoidOrderByReceipt(VoidOrderActivity.this,orderIdStr,details.getSeatNo(),refundItems,true);
         if(isSuccess) {
             Intent intent = new Intent(this, SellItemsActivity.class);
             startActivity(intent);
@@ -486,7 +489,7 @@ public class VoidOrderActivity extends AppCompatActivity {
                 float initialAmountFlt = Float.parseFloat(initialAmount.getText().toString());
                 float refundFlt = Float.parseFloat(refundAmount.getText().toString());
                     handler.updatePaymentMethods(orderIdStr,paymentMethod.getText().toString(),String.valueOf(initialAmountFlt-refundFlt));
-                if(paymentMethod.getText().toString().equals("Credit Card USD")){
+                if(paymentMethod.getText().toString().equals("Credit Card CAD")){
                     handler.updateCreditCardDetails(orderIdStr,String.valueOf(initialAmountFlt-refundFlt));
                 }
 
