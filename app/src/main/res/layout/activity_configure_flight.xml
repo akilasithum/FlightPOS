@@ -135,7 +135,7 @@
             android:paddingBottom="20dp"
             android:paddingTop="10dp">
 
-            <com.pos.flightpos.utils.MultiSelectionSpinner
+            <com.pos.swoop.utils.MultiSelectionSpinner
                 android:id="@+id/equipmentNumber"
                 style="@style/Widget.AppCompat.Spinner.Underlined"
                 android:layout_width="wrap_content"

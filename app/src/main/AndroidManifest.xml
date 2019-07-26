@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.pos.flightpos">
+    package="com.pos.swoop">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
@@ -37,7 +37,7 @@
         android:supportsRtl="true"
         android:theme="@style/Background">
         <receiver
-            android:name=".BootUpReceiver"
+            android:name="com.pos.swoop.BootUpReceiver"
             android:enabled="true"
             android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
             <intent-filter>
@@ -48,7 +48,7 @@
         </receiver>
 
         <activity
-            android:name=".SplashActivity"
+            android:name="com.pos.swoop.SplashActivity"
             android:noHistory="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -57,105 +57,105 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name="com.pos.swoop.LoginActivity"
             android:label="@string/app_name"
             android:theme="@style/Background" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.pos.swoop.MainActivity"
             android:label="@string/title_activity_main" />
         <activity
-            android:name=".FlightAttendentLogin"
+            android:name="com.pos.swoop.FlightAttendentLogin"
             android:label="@string/title_activity_flight_attendent_login"
             android:theme="@style/Background" />
         <activity
-            android:name=".AttendendMainActivity"
+            android:name="com.pos.swoop.AttendendMainActivity"
             android:label="Select Flight Details"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".SyncActivity"
+            android:name="com.pos.swoop.SyncActivity"
             android:label="Sync Data From Server" />
 
         <service
             android:name="com.amazonaws.mobileconnectors.s3.transferutility.TransferService"
             android:enabled="true" />
 
-        <activity android:name=".PrintActivity" />
-        <activity android:name=".AttCheckInfo"
+        <activity android:name="com.pos.swoop.PrintActivity" />
+        <activity android:name="com.pos.swoop.AttCheckInfo"
             android:label="Check Info"/>
-        <activity android:name=".ICCardReader" />
-        <activity android:name=".MSReader" />
+        <activity android:name="com.pos.swoop.ICCardReader" />
+        <activity android:name="com.pos.swoop.MSReader" />
         <activity
-            android:name=".AddSeal"
+            android:name="com.pos.swoop.AddSeal"
             android:label="Seal Info"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".SellarInfoActivity"
+            android:name="com.pos.swoop.SellarInfoActivity"
             android:label="Seller Info" />
         <activity
-            android:name=".SellItemsActivity"
+            android:name="com.pos.swoop.SellItemsActivity"
             android:label="Sell Items" />
         <activity
-            android:name=".BuyOnBoardItemsActivity"
+            android:name="com.pos.swoop.BuyOnBoardItemsActivity"
             android:label="Sell Items"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".PaymentMethodsActivity"
+            android:name="com.pos.swoop.PaymentMethodsActivity"
             android:label="Payments"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".InventoryReportActivity"
+            android:name="com.pos.swoop.InventoryReportActivity"
             android:label="Print Inventory Reports" />
         <activity
-            android:name=".VerifyInventoryActivity"
+            android:name="com.pos.swoop.VerifyInventoryActivity"
             android:label="Select Service Type" />
         <activity
-            android:name=".CheckInventoryActivity"
+            android:name="com.pos.swoop.CheckInventoryActivity"
             android:label="Verify Drawers" />
         <activity
-            android:name=".VerifyDrawerActivity"
+            android:name="com.pos.swoop.VerifyDrawerActivity"
             android:label="Verify Drawers" />
         <activity
-            android:name=".CloseFlightActivity"
+            android:name="com.pos.swoop.CloseFlightActivity"
             android:label="Close Flight" />
         <activity
-            android:name=".BuyItemFromCategoryActivity"
+            android:name="com.pos.swoop.BuyItemFromCategoryActivity"
             android:label="Sell Items" />
         <activity
-            android:name=".ConfigureFlightActivity"
+            android:name="com.pos.swoop.ConfigureFlightActivity"
             android:label="Configure Flight"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".VerifyFlightByAdminActivity"
+            android:name="com.pos.swoop.VerifyFlightByAdminActivity"
             android:label="POS Admin verifications" />
         <activity
-            android:name=".MessageToBondActivity"
+            android:name="com.pos.swoop.MessageToBondActivity"
             android:label="Send a Message to Bond"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".ExchangeRateActivity"
+            android:name="com.pos.swoop.ExchangeRateActivity"
             android:label="Available Exchange Rates" />
         <activity
-            android:name=".PreOrderDeliveryActivity"
+            android:name="com.pos.swoop.PreOrderDeliveryActivity"
             android:label="Pre Order Delivery" />
         <activity
-            android:name=".DefineCartNumbersActivity"
+            android:name="com.pos.swoop.DefineCartNumbersActivity"
             android:label="Save Cart Numbers" />
         <activity
-            android:name=".VerifyCartsActivity"
+            android:name="com.pos.swoop.VerifyCartsActivity"
             android:label="Verify Carts" />
-        <activity android:name=".SelectModeActivity" />
+        <activity android:name="com.pos.swoop.SelectModeActivity" />
         <activity
-            android:name=".VoidOrderActivity"
+            android:name="com.pos.swoop.VoidOrderActivity"
             android:label="Change Order"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".ClosingSealsActivity"
+            android:name="com.pos.swoop.ClosingSealsActivity"
             android:label="Closing Seals"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".AnnouncementActivity"
+            android:name="com.pos.swoop.AnnouncementActivity"
             android:label="Announcements" />
-        <activity android:name=".NFCReader">
+        <activity android:name="com.pos.swoop.NFCReader">
             <intent-filter>
                 <action android:name="android.nfc.action.NDEF_DISCOVERED" />
 
@@ -165,29 +165,29 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".LoadPreOrderAdminActivity"
+            android:name="com.pos.swoop.LoadPreOrderAdminActivity"
             android:label="Pack Pre Orders"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".SelectPreOrderTypeActivity"
+            android:name="com.pos.swoop.SelectPreOrderTypeActivity"
             android:label="Select pre order type" />
         <activity
-            android:name=".AcceptPreOrdersActivity"
+            android:name="com.pos.swoop.AcceptPreOrdersActivity"
             android:label="Accept pre orders"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".PreOrderPaymentsActivity"
+            android:name="com.pos.swoop.PreOrderPaymentsActivity"
             android:label="Pre order payments"
             android:windowSoftInputMode="adjustPan"/>
         <activity
-            android:name=".PrintInventorActivity"
+            android:name="com.pos.swoop.PrintInventorActivity"
             android:label="Print Inventory" />
         <activity
-            android:name=".SelectServiceTypeForSealActivity"
+            android:name="com.pos.swoop.SelectServiceTypeForSealActivity"
             android:label="Select Service type" />
-        <activity android:name=".UploadSalesDataActivity" />
-        <activity android:name=".SelectServiceTypeForPreOrdersActivity" />
-        <activity android:name=".ScannerMainActivity"></activity>
+        <activity android:name="com.pos.swoop.UploadSalesDataActivity" />
+        <activity android:name="com.pos.swoop.SelectServiceTypeForPreOrdersActivity" />
+        <activity android:name="com.pos.swoop.ScannerMainActivity"></activity>
     </application>
 
 </manifest>
