@@ -30,7 +30,7 @@
             <ImageView
                 android:layout_width="150px"
                 android:layout_height="250px"
-                android:src="@drawable/logo_icon"
+                android:src="@drawable/logo"
                 android:layout_gravity="center_vertical|center"/>
 
         </FrameLayout>
