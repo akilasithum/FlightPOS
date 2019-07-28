@@ -68,7 +68,7 @@
                         android:layout_height="250px"
                         android:layout_gravity="center"
                         android:layout_weight="6"
-                        android:src="@drawable/admin_logo" />
+                        android:src="@drawable/admin_logo_1" />
 
                     <ImageView
                         android:layout_width="30dp"
