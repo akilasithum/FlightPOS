@@ -178,7 +178,7 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
 
             ImageView imageView = new ImageView(this);
             imageView.setLayoutParams(params1);
-            imageView.setImageResource(this.getResources().getIdentifier(categories.getValue(), "drawable", "com.pos.flightpos"));
+            imageView.setImageResource(this.getResources().getIdentifier(categories.getValue(), "drawable", "com.pos.swoop"));
 
             LinearLayout imageLayout = new LinearLayout(this);
             imageLayout.setGravity(Gravity.CENTER);
@@ -293,7 +293,7 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
     private Bitmap getImageFromItemCode(String itemCode)
     {
         try {
-            File f=new File("/data/data/com.pos.flightpos/app_imageDir", itemCode+".png");
+            File f=new File("/data/data/com.pos.swoop/app_imageDir", itemCode+".png");
             Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
             return b;
         }
