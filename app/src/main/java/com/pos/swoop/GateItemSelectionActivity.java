@@ -199,7 +199,7 @@ public class GateItemSelectionActivity extends AppCompatActivity {
     private Bitmap getImageFromItemCode(String itemCode)
     {
         try {
-            File f=new File("/data/data/com.pos.airport/app_imageDir", itemCode+".png");
+            File f=new File("/data/data/com.pos.airport.swoop/app_imageDir", itemCode+".png");
             Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
             return b;
         }

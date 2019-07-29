@@ -197,7 +197,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
 
             ImageView imageView = new ImageView(this);
             imageView.setLayoutParams(params1);
-            imageView.setImageResource(this.getResources().getIdentifier(categories.getValue(), "drawable", "com.pos.flightpos"));
+            imageView.setImageResource(this.getResources().getIdentifier(categories.getValue(), "drawable", "com.pos.swoop"));
 
             TextView textView = new TextView(this);
             textView.setLayoutParams(params2);
@@ -587,14 +587,14 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         itemName = itemName.toLowerCase().replace("&","and").replace("’","")
                 .replace("(","").replace(")","").
                         replace(" ","_").replace("-","");
-        int resId = context.getResources().getIdentifier(itemName, "drawable", "com.pos.flightpos");
+        int resId = context.getResources().getIdentifier(itemName, "drawable", "com.pos.swoop");
         return resId;
     }
 
     private Bitmap getImageFromItemCode(String itemCode)
     {
         try {
-            File f=new File("/data/data/com.pos.flightpos/app_imageDir", itemCode+".png");
+            File f=new File("/data/data/com.pos.airport.swoop/app_imageDir", itemCode+".png");
             Bitmap b = BitmapFactory.decodeStream(new FileInputStream(f));
             return b;
         }
