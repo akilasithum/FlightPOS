@@ -1,6 +1,7 @@
 package com.pos.flightpos.objects;
 
 import java.io.Serializable;
+import java.util.List;
 
 public class SoldItem implements Serializable{
     private String itemId;
@@ -13,6 +14,7 @@ public class SoldItem implements Serializable{
     private String discount;
     private String total;
     private String itemCategory;
+    private List<ItemDrawer> itemDrawerList;
 
     public String getItemId() {
         return itemId;
@@ -92,6 +94,14 @@ public class SoldItem implements Serializable{
 
     public void setItemCategory(String itemCategory) {
         this.itemCategory = itemCategory;
+    }
+
+    public List<ItemDrawer> getItemDrawerList() {
+        return itemDrawerList;
+    }
+
+    public void setItemDrawerList(List<ItemDrawer> itemDrawerList) {
+        this.itemDrawerList = itemDrawerList;
     }
 
     @Override

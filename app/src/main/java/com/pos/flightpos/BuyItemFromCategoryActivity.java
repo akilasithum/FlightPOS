@@ -414,7 +414,7 @@ public class BuyItemFromCategoryActivity extends AppCompatActivity {
         itemSpinner.setAdapter(adapter);
         List<String> kitCodes = POSCommonUtils.getServiceTypeKitCodeMap(this).get(serviceType);
         String kitCodesStr = POSCommonUtils.getCommaSeparateStrFromList(kitCodes);
-        List<SoldItem> itemList = handler.getItemListFromItemCategory(selectedCat, kitCodesStr);
+        Collection<SoldItem> itemList = handler.getItemListFromItemCategory(selectedCat, kitCodesStr);
         SoldItem item = new SoldItem();
         options.add(item);
         options.addAll(itemList);

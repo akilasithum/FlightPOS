@@ -45,6 +45,7 @@ import java.io.FileInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -201,7 +202,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
 
     private void setData(final String str){
         Item item = handler.getItemFromNFCTag(str);
-        List<SoldItem> itemList = handler.getItemListFromItemCategory(item.getCategory(),getKitCodes());
+        Collection<SoldItem> itemList = handler.getItemListFromItemCategory(item.getCategory(),getKitCodes());
         SoldItem selectedItem = null;
         for(SoldItem soldItem : itemList){
             if(soldItem.getItemDesc().equals(item.getItemName())){
@@ -393,11 +394,15 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
             EditText qty = (EditText) tableRow.getChildAt(3);
             TextView price = (TextView) tableRow.getChildAt(5);
             TextView total = (TextView) tableRow.getChildAt(7);
+            TextView equipmentNo = (TextView) tableRow.getChildAt(8);
+            TextView drawer = (TextView) tableRow.getChildAt(9);
             SoldItem soldItem = new SoldItem();
             soldItem.setItemId(itemID.getText().toString());
             soldItem.setItemDesc(itemDesc.getText().toString());
             soldItem.setQuantity(qty.getText().toString());
             soldItem.setTotal(total.getText().toString());
+            soldItem.setEquipmentNo(equipmentNo.getText().toString());
+            soldItem.setDrawer(drawer.getText().toString());
 
             subtotal += Float.parseFloat(total.getText().toString());
             soldItem.setPrice(price.getText().toString());
@@ -681,6 +686,16 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         totalDesc.setGravity(Gravity.CENTER);
         tr1.addView(totalDesc);
 
+        TextView equNoText = new TextView(this);
+        equNoText.setText(item.getEquipmentNo());
+        equNoText.setVisibility(View.GONE);
+        tr.addView(equNoText);
+
+        TextView drawerText = new TextView(this);
+        drawerText.setText(item.getDrawer());
+        drawerText.setVisibility(View.GONE);
+        tr.addView(drawerText);
+
         Button lookupBtn = new Button(this);
         lookupBtn.setLayoutParams(cellParams4);
         lookupBtn.setBackground(getResources().getDrawable(R.drawable.icon_llokup));
@@ -904,7 +919,7 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
     }*/
 
     private void populateItemImages(String selectedCat){
-        List<SoldItem> itemList = handler.getItemListFromItemCategory(selectedCat,getKitCodes());
+        Collection<SoldItem> itemList = handler.getItemListFromItemCategory(selectedCat,getKitCodes());
         LinearLayout innerLayout =  findViewById(R.id.itemCatTableRow);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,

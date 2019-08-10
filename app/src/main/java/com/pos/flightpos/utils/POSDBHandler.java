@@ -12,6 +12,7 @@ import com.pos.flightpos.objects.Constants;
 import com.pos.flightpos.objects.CreditCard;
 import com.pos.flightpos.objects.Flight;
 import com.pos.flightpos.objects.FullFlight;
+import com.pos.flightpos.objects.ItemDrawer;
 import com.pos.flightpos.objects.OrderDetails;
 import com.pos.flightpos.objects.Sector;
 import com.pos.flightpos.objects.SoldItem;
@@ -51,6 +52,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -1672,27 +1674,47 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public List<SoldItem> getItemListFromItemCategory(String category,String kitCodes){
+    public Collection<SoldItem> getItemListFromItemCategory(String category, String kitCodes){
         String packTypes = getEquipmentsFromKitCode(kitCodes);
         SQLiteDatabase db = this.getReadableDatabase();
         List<SoldItem> itemList = new ArrayList<>();
+        Map<String,SoldItem> itemMap = new HashMap<>();
         try {
             Cursor cursor = db.rawQuery("SELECT items.itemNo as itemNo,items.itemName as itemName," +
                     "items.price as price,KITList.equipmentNo as equipmentNo," +
-                    "KITList.drawer as drawer FROM (SELECT * FROM items where category = '"+category+"') as items INNER JOIN " +
+                    "KITList.drawer as drawer,KITList.quantity as quantity FROM (SELECT * FROM items where category = '"+category+"') as items INNER JOIN " +
                     "(SELECT * FROM KITList WHERE equipmentNo in ("+packTypes+")) " +
                     "as KITList ON items.itemNo = KITList.itemNo", null);
 
             if (cursor.moveToFirst()){
                 while(!cursor.isAfterLast()){
                     SoldItem item = new SoldItem();
-                    item.setItemId(cursor.getString(cursor.getColumnIndex("itemNo")));
-                    item.setItemDesc(cursor.getString(cursor.getColumnIndex("itemName")));
-                    item.setPrice(cursor.getString(cursor.getColumnIndex("price")));
-                    item.setEquipmentNo(cursor.getString(cursor.getColumnIndex("equipmentNo")));
-                    item.setDrawer(cursor.getString(cursor.getColumnIndex("drawer")));
-                    itemList.add(item);
-                    cursor.moveToNext();
+                    String itemNo = cursor.getString(cursor.getColumnIndex("itemNo"));
+                    if(!itemMap.containsKey(itemNo)) {
+                        item.setItemId(itemNo);
+                        item.setItemDesc(cursor.getString(cursor.getColumnIndex("itemName")));
+                        item.setPrice(cursor.getString(cursor.getColumnIndex("price")));
+                        item.setEquipmentNo(cursor.getString(cursor.getColumnIndex("equipmentNo")));
+                        item.setDrawer(cursor.getString(cursor.getColumnIndex("drawer")));
+                        ItemDrawer itemDrawer = new ItemDrawer();
+                        itemDrawer.setDrawer(cursor.getString(cursor.getColumnIndex("drawer")));
+                        itemDrawer.setEquipmentNo(cursor.getString(cursor.getColumnIndex("equipmentNo")));
+                        itemDrawer.setRemainingQuantity(Integer.parseInt(cursor.getString(cursor.getColumnIndex("quantity"))));
+                        List<ItemDrawer> itemDrawerList = new ArrayList<>();
+                        itemDrawerList.add(itemDrawer);
+                        item.setItemDrawerList(itemDrawerList);
+                        itemMap.put(itemNo,item);
+                        itemList.add(item);
+                        cursor.moveToNext();
+                    }
+                    else{
+                        ItemDrawer itemDrawer = new ItemDrawer();
+                        itemDrawer.setDrawer(cursor.getString(cursor.getColumnIndex("drawer")));
+                        itemDrawer.setEquipmentNo(cursor.getString(cursor.getColumnIndex("equipmentNo")));
+                        itemDrawer.setRemainingQuantity(Integer.parseInt(cursor.getString(cursor.getColumnIndex("quantity"))));
+                        itemMap.get(itemNo).getItemDrawerList().add(itemDrawer);
+                        cursor.moveToNext();
+                    }
                 }
             }
             db.close();
@@ -1702,7 +1724,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
             e.printStackTrace();
             return null;
         }
-        return itemList;
+        return  itemMap.values();
     }
 
     public Map<String,List<String>> getServiceTypeKitCodesMap(List<String> kitCodes){

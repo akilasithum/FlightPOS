@@ -53,6 +53,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -210,7 +211,7 @@ public class AcceptPreOrdersActivity extends AppCompatActivity {
     }
 
     private void populateItemImages(String selectedCat){
-        List<SoldItem> itemList = handler.getItemListFromItemCategory(selectedCat,getKitCodes());
+        Collection<SoldItem> itemList = handler.getItemListFromItemCategory(selectedCat,getKitCodes());
         LinearLayout innerLayout =  findViewById(R.id.itemCatTableRow);
 
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0,
