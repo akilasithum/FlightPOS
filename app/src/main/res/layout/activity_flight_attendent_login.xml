@@ -87,6 +87,27 @@
 
             </android.support.design.widget.TextInputLayout>
 
+            <android.support.design.widget.TextInputLayout
+                android:layout_width="match_parent"
+                android:textColorHint="@color/white"
+                android:layout_height="wrap_content">
+
+                <AutoCompleteTextView
+                    android:id="@+id/baseStation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/base_station_icon"
+                    android:hint="Base station"
+                    android:imeOptions="actionUnspecified"
+                    android:maxLines="1"
+                    android:textColor="@color/white"
+                    android:textSize="15dp"
+                    android:backgroundTint="@color/white"
+                    android:layout_marginBottom="25dp"
+                    android:singleLine="true"/>
+
+            </android.support.design.widget.TextInputLayout>
+
             <ImageButton
                 android:id="@+id/email_sign_in_button"
                 android:paddingTop="25dp"

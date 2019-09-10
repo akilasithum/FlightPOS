@@ -68,7 +68,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS flights (flightName VARCHAR,flightFrom VARCHAR," +
                 "flightTo VARCHAR,sectors VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS items (itemNo VARCHAR,itemName VARCHAR,itemHHC VARCHAR,category VARCHAR," +
-                "catCode VARCHAR,catlogNo VARCHAR,price VARCHAR," +
+                "bobCategory VARCHAR,catCode VARCHAR,catlogNo VARCHAR,price VARCHAR," +
                 "paxDiscPrice VARCHAR,staffDiscPrice VARCHAR,delist VARCHAR,dfsrOrder VARCHAR,scPrice VARCHAR," +
                 "baseCurrency VARCHAR,basePrice VARCHAR,secondCurrency VARCHAR,secondPrice VARCHAR,activeDate VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS KITList (equipmentNo VARCHAR,itemNo VARCHAR," +
@@ -699,14 +699,14 @@ public class POSDBHandler extends SQLiteOpenHelper {
             JSONArray itemsArr = data.getJSONArray("Item");
             List<Item> list = gson.fromJson(itemsArr.toString(), new TypeToken<List<Item>>(){}.getType());
             SQLiteDatabase db = this.getWritableDatabase();
-            for(Item item : list){
-                db.execSQL("INSERT INTO items VALUES" +
-                        "('"+item.getItemCode()+"' ,'"+item.getItemName()+"','"+item.getItemHHC()+"'," +
-                        "'"+item.getCategory()+"','"+item.getCatCode()+"','"+item.getCatlogNo()+"','"+item.getPrice()+"'," +
-                        "'"+item.getPaxDiscPrice()+"','"+item.getStaffDiscPrice()+"','"+item.getDelist()+"'," +
-                        "'"+item.getDfsrOrder()+"','"+item.getScPrice()+"'," +
-                        "'"+item.getBaseCurrency()+"','"+item.getBasePrice()+"','"+item.getSecondCurrency()+"'," +
-                        "'"+item.getSecondPrice()+"','"+item.getActiveDate()+"');");
+            for(Item item : list) {
+                    db.execSQL("INSERT INTO items VALUES" +
+                            "('" + item.getItemCode() + "' ,'" + item.getItemName() + "','" + item.getItemHHC() + "'," +
+                            "'" + item.getCategory() + "','" + item.getBobCategory() + "',  '" + item.getCatCode() + "','" + item.getCatlogNo() + "','" + item.getPrice() + "'," +
+                            "'" + item.getPaxDiscPrice() + "','" + item.getStaffDiscPrice() + "','" + item.getDelist() + "'," +
+                            "'" + item.getDfsrOrder() + "','" + item.getScPrice() + "'," +
+                            "'" + item.getBaseCurrency() + "','" + item.getBasePrice() + "','" + item.getSecondCurrency() + "'," +
+                            "'" + item.getSecondPrice() + "','" + item.getActiveDate() + "');");
             }
             db.close();
         }
@@ -1440,6 +1440,32 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return itemList;
     }
 
+    public List<SoldItem> getItemListFromItemBOBCategory(String category){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        List<SoldItem> itemList = new ArrayList<>();
+        try {
+            Cursor cursor = db.rawQuery("SELECT * FROM items WHERE bobCategory = '"+category+"'" , null);
+
+            if (cursor.moveToFirst()){
+                while(!cursor.isAfterLast()){
+                    SoldItem item = new SoldItem();
+                    item.setItemId(cursor.getString(cursor.getColumnIndex("itemNo")));
+                    item.setItemDesc(cursor.getString(cursor.getColumnIndex("itemName")));
+                    item.setPrice(cursor.getString(cursor.getColumnIndex("price")));
+                    itemList.add(item);
+                    cursor.moveToNext();
+                }
+            }
+            db.close();
+            cursor.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return null;
+        }
+        return itemList;
+    }
     public Map<String,List<String>> getServiceTypeKitCodesMap(List<String> kitCodes){
 
         Map<String,List<String>> map = new HashMap<>();

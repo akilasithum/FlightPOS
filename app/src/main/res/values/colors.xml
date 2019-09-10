@@ -32,4 +32,8 @@
     <color name="buttonbg">#D97436</color>
     <color name="buttonbgRed">#C70039</color>
     <color name="sellitembg">#3391C4</color>
+
+    <color name="ontime">#a8e8a8</color>
+    <color name="cancel">#e49090</color>
+    <color name="delay">#ecc47a</color>
 </resources>

@@ -94,6 +94,29 @@ public class HttpHandler {
         return response.substring(0,response.length()-1);
     }
 
+    public String postJsonRequest(String urlParameters,String funcArea){
+        String response = null;
+        try {
+            String url = Constants.webServiceURL +funcArea;
+            URL obj = new URL(url);
+            HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+            con.setRequestMethod("POST");
+            con.setRequestProperty("Content-Type","application/json");
+            con.setDoOutput(true);
+            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
+            wr.writeBytes(urlParameters);
+            wr.flush();
+            wr.close();
+            InputStream in = new BufferedInputStream(con.getInputStream());
+            response = convertStreamToString(in);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return response.substring(0,response.length()-1);
+    }
+
     private String convertStreamToString(InputStream is) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(is));
         StringBuilder sb = new StringBuilder();

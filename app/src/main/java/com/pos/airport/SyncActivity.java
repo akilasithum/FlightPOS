@@ -116,18 +116,14 @@ public class SyncActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             HttpHandler sh = new HttpHandler();
-            handler.insertComboDiscount(sh.makeServiceCall("promotions"));
-            completedFiles.add("promotions");
-            handler.insertFlightData(sh.makeServiceCall("flights"));
-            completedFiles.add("flights");
             handler.insertItemData(sh.makeServiceCall("items"));
             completedFiles.add("items");
             handler.insertCurrencyData(sh.makeServiceCall("currencies"));
             completedFiles.add("currencies");
-            handler.insertVoucherDetails(sh.makeServiceCall("vouchers"));
-            completedFiles.add("vouchers");
             handler.insertUserData(sh.makeServiceCall("users"));
             completedFiles.add("users");
+            handler.insertFlightData(sh.makeServiceCall("flights"));
+            completedFiles.add("flights");
             return null;
         }
 

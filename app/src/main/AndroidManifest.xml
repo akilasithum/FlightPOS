@@ -29,6 +29,10 @@
         android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/Background">
+        <activity android:name=".FlightScheduleTabActivity2"></activity>
+        <activity android:name=".FlightScheduleActivity" />
+        <activity android:name=".VoucherSelectionActivity" />
+
         <receiver
             android:name=".BootUpReceiver"
             android:enabled="true"
@@ -39,10 +43,13 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-        <activity android:name=".WorldTracerActivity"
-            android:windowSoftInputMode="adjustPan"></activity>
-        <activity android:name=".PrintTransactionActivity"
-            android:windowSoftInputMode="adjustPan"/>
+
+        <activity
+            android:name=".WorldTracerActivity"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".PrintTransactionActivity"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".SplashActivity"
             android:noHistory="true">
@@ -65,8 +72,7 @@
             android:theme="@style/Background" />
         <activity
             android:name=".AttendendMainActivity"
-            android:label="Select Flight Details"
-            />
+            android:label="Select Flight Details" />
         <activity
             android:name=".SyncActivity"
             android:label="Sync Data From Server" />
@@ -117,7 +123,7 @@
         <activity
             android:name=".ConfigureFlightActivity"
             android:label="Flight Details"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".VerifyFlightByAdminActivity"
             android:label="POS Admin verifications" />
@@ -139,8 +145,8 @@
         <activity android:name=".SelectModeActivity" />
         <activity
             android:name=".VoidOrderActivity"
-            android:windowSoftInputMode="adjustPan"
-            android:label="Change Order" />
+            android:label="Change Order"
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".ClosingSealsActivity"
             android:label="Closing Seals" />
@@ -181,11 +187,11 @@
         <activity
             android:name=".UserDetailsActivity"
             android:label="Passenger Details"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".GateItemSelectionActivity"
             android:label="Sell Items"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
         <activity android:name=".OptionsActivity" />
         <activity
             android:name=".BaseStationActivity"
@@ -199,7 +205,7 @@
         <activity
             android:name=".RemovalComponsationActivity"
             android:label="Compensation"
-            android:windowSoftInputMode="adjustPan"/>
+            android:windowSoftInputMode="adjustPan" />
     </application>
 
 </manifest>

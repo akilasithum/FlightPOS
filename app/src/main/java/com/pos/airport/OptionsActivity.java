@@ -130,6 +130,15 @@ import java.util.concurrent.TimeUnit;
                 new SyncData(OptionsActivity.this).execute();
             }
         });
+
+        LinearLayout worldTracerLayout = findViewById(R.id.worldTracerLayout);
+        worldTracerLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(OptionsActivity.this, WorldTracerActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private class MyTask extends AsyncTask<Void, Void, Void> {

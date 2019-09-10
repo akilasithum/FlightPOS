@@ -1,12 +1,20 @@
 package com.pos.airport;
 
+import android.content.Context;
+import android.content.ContextWrapper;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.os.AsyncTask;
 import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.animation.AlphaAnimation;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,15 +23,29 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.pos.airport.objects.Constants;
 import com.pos.airport.objects.Flight;
+import com.pos.airport.objects.XMLMapper.DepartureFlight;
+import com.pos.airport.objects.XMLMapper.Item;
+import com.pos.airport.utils.HttpHandler;
 import com.pos.airport.utils.POSCommonUtils;
 import com.pos.airport.utils.POSDBHandler;
 import com.pos.airport.utils.SaveSharedPreference;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.XML;
+
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class ConfigureFlightActivity extends AppCompatActivity {
 
@@ -34,6 +56,7 @@ public class ConfigureFlightActivity extends AppCompatActivity {
     Spinner flightDateSpinner;
     EditText flightListTextView;
     String category;
+    Map<String,DepartureFlight> flightMap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,6 +104,22 @@ public class ConfigureFlightActivity extends AppCompatActivity {
 
             }
         });
+        flightMap = new HashMap<>();
+        if(isNetworkAvailable()){
+
+            AsyncTask<Void, Void, Void> task = new GetFlightList().execute();
+        }
+        else{
+            new AlertDialog.Builder(ConfigureFlightActivity.this)
+                    .setTitle("Network not available")
+                    .setMessage("Please switch on wifi.")
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+
+                        }}).show();
+        }
         ImageButton backButton = findViewById(R.id.backPressBtn);
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -88,6 +127,24 @@ public class ConfigureFlightActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+    }
+
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivity =(ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        if (connectivity == null) {
+            return false;
+        } else {
+            NetworkInfo[] info = connectivity.getAllNetworkInfo();
+            if (info != null) {
+                for (int i = 0; i < info.length; i++) {
+                    if (info[i].getState() == NetworkInfo.State.CONNECTED) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private void populateDateField(){
@@ -104,13 +161,46 @@ public class ConfigureFlightActivity extends AppCompatActivity {
         flightDateSpinner.setAdapter(adapter);
     }
 
+    private class GetFlightList extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            HttpHandler sh = new HttpHandler();
+            String xml =  sh.makeServiceCall("departureFlightSchedule");
+            JSONObject jsonObj  = null;
+            try {
+                jsonObj = XML.toJSONObject(xml);
+
+            Gson gson = new Gson();
+            JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("flights");
+            JSONArray itemsArr = data.getJSONArray("flight");
+            List<DepartureFlight> list = gson.fromJson(itemsArr.toString(), new TypeToken<List<DepartureFlight>>(){}.getType());
+            for(DepartureFlight flight : list){
+                String flightNo = flight.getFlightNo();
+                int length = flightNo.length();
+                String id = flightNo.substring(length-3,length);
+                flightMap.put(id,flight);
+            }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+        }
+    }
+
     private void populateFlightList(String flightNumber){
 
-        Flight flight = handler.getFlightFromFlightName(flightNumber);
+        DepartureFlight flight = flightMap.get(flightNumber);//handler.getFlightFromFlightName(flightNumber);
         if(flight != null) {
-            flightListTextView.setText(flight.getFlightName());
-            flightFrom.setText(flight.getFlightFrom());
-            flightTo.setText(flight.getFlightTo());
+            flightListTextView.setText(flight.getFlightNo());
+            String baseStationVal = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_BASE_STATION);
+            flightFrom.setText(baseStationVal);
+            flightTo.setText(flight.getDestination());
             POSCommonUtils.hideKeyboard(this);
         }
         else{

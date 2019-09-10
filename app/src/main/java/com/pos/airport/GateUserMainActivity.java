@@ -60,25 +60,12 @@ public class GateUserMainActivity extends AppCompatActivity {
                 showUserPasswordView();
             }
         });
-        LinearLayout transportCategoryLayout = findViewById(R.id.transaportCatLayout);
-        transportCategoryLayout.setOnClickListener(new View.OnClickListener() {
+        LinearLayout voucherLayout = findViewById(R.id.voucherLayout);
+        voucherLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoNextView("Transport");
-            }
-        });
-        LinearLayout mealCategoryLayout = findViewById(R.id.mealCatLayout);
-        mealCategoryLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                gotoNextView("Meals");
-            }
-        });
-        LinearLayout hotelCategoryLayout = findViewById(R.id.hotelCatLayout);
-        hotelCategoryLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                gotoNextView("Hotels");
+                Intent intent = new Intent(GateUserMainActivity.this, VoucherSelectionActivity.class);
+                startActivity(intent);
             }
         });
         LinearLayout excursionCategoryLayout = findViewById(R.id.excurtionCatLayout);
@@ -102,6 +89,21 @@ public class GateUserMainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(GateUserMainActivity.this, WorldTracerActivity.class);
                 startActivity(intent);
+            }
+        });
+        LinearLayout flightScheduleLayout = findViewById(R.id.flightScheduleLayout);
+        flightScheduleLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(GateUserMainActivity.this, FlightScheduleActivity.class);
+                startActivity(intent);
+            }
+        });
+        LinearLayout buyNowLayout = findViewById(R.id.buyNowLayout);
+        buyNowLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                gotoNextView("BOB");
             }
         });
     }

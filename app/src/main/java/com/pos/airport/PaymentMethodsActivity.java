@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
@@ -36,7 +37,9 @@ import com.pos.airport.objects.Flight;
 import com.pos.airport.objects.LoyaltyCard;
 import com.pos.airport.objects.SoldItem;
 import com.pos.airport.objects.XMLMapper.Currency;
+import com.pos.airport.objects.XMLMapper.PaymentMethods;
 import com.pos.airport.objects.XMLMapper.Voucher;
+import com.pos.airport.utils.HttpHandler;
 import com.pos.airport.utils.POSCommonUtils;
 import com.pos.airport.utils.POSDBHandler;
 import com.pos.airport.utils.PrintJob;
@@ -44,6 +47,10 @@ import com.pos.airport.utils.SaveSharedPreference;
 import com.sunmi.pay.hardware.aidlv2.AidlConstantsV2;
 import com.sunmi.pay.hardware.aidlv2.readcard.CheckCardCallbackV2;
 import com.sunmi.pay.hardware.aidlv2.readcard.ReadCardOptV2;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -844,6 +851,104 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         paymentMethodsMap.put(type+" "+currency,amountText);
     }
 
+    private class UpdateSale extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            updateSaleToBE();
+            return null;
+        }
+    }
+
+    private void updateSaleToBE(){
+        try {
+            JSONObject beData = new JSONObject();
+            Date date = new Date();
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String currentDateStr = df.format(date);
+            JSONObject dailySales = new JSONObject();
+            JSONArray salesArray = new JSONArray();
+            String userID = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FA_NAME);
+            for(SoldItem soldItem : soldItems) {
+                JSONObject saleObj = new JSONObject();
+                saleObj.put("orderId",orderNumber);
+                saleObj.put("itemId",soldItem.getItemId());
+                saleObj.put("quantity",Integer.parseInt(soldItem.getQuantity()));
+                saleObj.put("price",Float.parseFloat(soldItem.getTotal()));
+                salesArray.put(saleObj);
+                handler.insertDailySalesEntry(orderNumber, soldItem.getItemId(), soldItem.getQuantity(),
+                        soldItem.getTotal(), "Passenger", userID,currentDateStr,category);
+                handler.updateSoldItemQty(soldItem.getItemId(), soldItem.getQuantity(),soldItem.getEquipmentNo(),
+                        soldItem.getDrawer());
+            }
+            dailySales.put("sales",salesArray);
+            beData.put("dailySales",dailySales);
+
+            JSONObject payments = new JSONObject();
+            JSONArray paymentArr = new JSONArray();
+
+            for(Map.Entry<String,String> entry : paymentMethodsMap.entrySet()){
+                JSONObject paymentObj = new JSONObject();
+                paymentObj.put("orderId",orderNumber);
+                paymentObj.put("paymentType",entry.getKey());
+                paymentObj.put("amount",entry.getValue());
+                paymentArr.put(paymentObj);
+                handler.insertPaymentMethods(orderNumber,entry.getKey(),entry.getValue());
+            }
+            payments.put("payments",paymentArr);
+            beData.put("payments",payments);
+
+            String flightId = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME);
+            handler.insertOrderMainDetails(orderNumber,taxPercentage,discount,subTotalAfterTax+"",flightId,category);
+            JSONObject orderMainObj = new JSONObject();
+            orderMainObj.put("orderId",orderNumber);
+            orderMainObj.put("tax",taxPercentage);
+            orderMainObj.put("discount",discount);
+            orderMainObj.put("subTotal",subTotalAfterTax);
+            orderMainObj.put("flightId",flightId);
+            orderMainObj.put("category",category);
+            orderMainObj.put("sellerId",userID);
+            orderMainObj.put("flightDate",SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_DATE));
+            beData.put("mainDetails",orderMainObj);
+
+            String[] passengerDetails = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_USER_DETAILS).split("==");
+            seatNumber = passengerDetails[2];
+            paxName = passengerDetails[0];
+            String email = passengerDetails[3];
+            handler.insertPassengerDetails(orderNumber,passengerDetails[0],passengerDetails[1],passengerDetails[2],passengerDetails[3],
+                    flightId,SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_DATE));
+            JSONObject passengerObj = new JSONObject();
+            passengerObj.put("orderId",orderNumber);
+            passengerObj.put("paxName",paxName);
+            passengerObj.put("pnr",passengerDetails[1]);
+            passengerObj.put("seatNo",passengerDetails[2]);
+            if(email != null && !email.equalsIgnoreCase("empty")){
+                passengerObj.put("email",passengerDetails[3]);
+            }
+            beData.put("pax",passengerObj);
+            if(creditCardList != null && !creditCardList.isEmpty()){
+                JSONObject creditCardDetails = new JSONObject();
+                JSONArray cardArr = new JSONArray();
+                for(CreditCard creditCard : creditCardList){
+                    JSONObject card = new JSONObject();
+                    card.put("orderId",orderNumber);
+                    card.put("creditCardNumber",creditCard.getCreditCardNumber());
+                    card.put("cardHolderName",creditCard.getCardHolderName());
+                    card.put("expireDate",creditCard.getExpireDate());
+                    card.put("amount",paymentMethodsMap.get("Credit Card CAD"));
+                    cardArr.put(card);
+                    handler.insertCreditCardDetails(orderNumber,creditCard.getCreditCardNumber(),creditCard.getCardHolderName(),
+                            creditCard.getExpireDate(),paymentMethodsMap.get("Credit Card CAD"));
+                }
+                creditCardDetails.put("creditCards",cardArr);
+                beData.put("creditCard",creditCardDetails);
+            }
+            HttpHandler handler = new HttpHandler();
+            handler.postJsonRequest(beData.toString(),"singleSale");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
     private void updateSale(){
         Date date = new Date();
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -864,7 +969,7 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         if(creditCardList != null && !creditCardList.isEmpty()){
             for(CreditCard creditCard : creditCardList){
                 handler.insertCreditCardDetails(orderNumber,creditCard.getCreditCardNumber(),creditCard.getCardHolderName(),
-                        creditCard.getExpireDate(),paymentMethodsMap.get("Credit Card USD"));
+                        creditCard.getExpireDate(),paymentMethodsMap.get("Credit Card CAD"));
             }
 
         }
@@ -884,7 +989,8 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             }
             else{
                 generateOrderNumber();
-                updateSale();
+                new UpdateSale().execute();
+                //updateSaleToBE(); //updateSale();
                 printJob.printOrderDetails(this,orderNumber,seatNumber,soldItems,paymentMethodsMap,
                         creditCardList.isEmpty() ? null : creditCardList.get(0),false,discount,taxPercentage,paxName);
                 if(!creditCardList.isEmpty()) {
@@ -914,6 +1020,9 @@ public class PaymentMethodsActivity extends AppCompatActivity {
                             redirect();
                         }
                     }).show();
+        }
+        else if(category.equalsIgnoreCase("Order Now")){
+            redirect();
         }
         else{
             new android.support.v7.app.AlertDialog.Builder(PaymentMethodsActivity.this)

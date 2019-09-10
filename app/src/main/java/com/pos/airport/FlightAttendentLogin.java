@@ -22,6 +22,8 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.animation.AlphaAnimation;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -33,6 +35,7 @@ import com.pos.airport.utils.POSDBHandler;
 import com.pos.airport.utils.SaveSharedPreference;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -49,8 +52,12 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
     // UI references.
     private EditText mEmailView;
     private EditText mPasswordView;
+    private AutoCompleteTextView baseStation;
     private Msr msr = null;
     final AlphaAnimation buttonClick = new AlphaAnimation(1F, 0.8F);
+    private static final List<String> BASE_STATIONS = Arrays.asList( new String[] {
+            "YYZ", "YUL", "YOW", "IAD"
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,6 +86,12 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
                 return false;
             }
         });
+
+        baseStation = findViewById(R.id.baseStation);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
+                android.R.layout.simple_dropdown_item_1line, BASE_STATIONS);
+        adapter.setDropDownViewResource(R.layout.spinner_item);
+        baseStation.setAdapter(adapter);
 
         ImageButton mEmailSignInButton =  findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -185,6 +198,7 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
         // Store values at the time of the login attempt.
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
+        String baseStationVal = baseStation.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -196,6 +210,12 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
             cancel = true;
         }
 
+        if (TextUtils.isEmpty(baseStationVal)) {
+            baseStation.setError(getString(R.string.error_field_required));
+            focusView = baseStation;
+            cancel = true;
+        }
+
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
@@ -203,6 +223,20 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
+            if(BASE_STATIONS.contains(baseStationVal)) {
+                if (isLoggingSuccessful(email, password)) {
+                    SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_BASE_STATION,baseStationVal);
+                    reDirectToMainPage(email);
+                } else {
+                    mPasswordView.setError(getString(R.string.error_incorrect_password));
+                    mPasswordView.requestFocus();
+                }
+            }
+            else{
+                baseStation.setError("Base station not found");
+                baseStation.requestFocus();
+            }
+
             if(isLoggingSuccessful(email,password)){
                 reDirectToMainPage(email);
             }

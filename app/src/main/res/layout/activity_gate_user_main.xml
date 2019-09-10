@@ -111,6 +111,94 @@
                         android:text="Upgrades"
                         android:textSize="13dp" />
                 </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/buyNowLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/buy_on_board_icon"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_margin="2dp"
+                        android:textColor="@color/white"
+                        android:text="Order Now"
+                        android:textSize="13dp" />
+                </LinearLayout>
+
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <LinearLayout
+                    android:id="@+id/excurtionCatLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/excursion_icon"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textColor="@color/white"
+                        android:text="Excursion"
+                        android:textSize="13dp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/voucherLayout"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_margin="2dp"
+                    android:layout_weight="1"
+                    android:clickable="true"
+                    android:orientation="vertical"
+                    android:padding="5dp">
+
+                    <ImageView
+                        android:layout_width="90dp"
+                        android:layout_height="90dp"
+                        android:layout_gravity="center"
+                        android:background="@drawable/voucher_icon"
+                        android:textSize="20dp" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:textColor="@color/white"
+                        android:text="Vouchers"
+                        android:textSize="13dp" />
+                </LinearLayout>
+
+
                 <LinearLayout
                     android:id="@+id/compensationCatLayout"
                     android:layout_width="0dp"
@@ -136,14 +224,9 @@
                         android:text="Compensation"
                         android:textSize="13dp" />
                 </LinearLayout>
-            </TableRow>
-
-            <TableRow
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
 
 
-                <LinearLayout
+                <!--<LinearLayout
                     android:id="@+id/transaportCatLayout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
@@ -219,7 +302,7 @@
                         android:textColor="@color/white"
                         android:text="Hotels"
                         android:textSize="13dp" />
-                </LinearLayout>
+                </LinearLayout>-->
             </TableRow>
 
             <TableRow
@@ -227,7 +310,7 @@
                 android:layout_height="fill_parent">
 
                 <LinearLayout
-                    android:id="@+id/excurtionCatLayout"
+                    android:id="@+id/flightScheduleLayout"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_margin="2dp"
@@ -240,7 +323,7 @@
                         android:layout_width="90dp"
                         android:layout_height="90dp"
                         android:layout_gravity="center"
-                        android:background="@drawable/excursion_icon"
+                        android:background="@drawable/flight_schedule"
                         android:textSize="20dp" />
 
                     <TextView
@@ -248,7 +331,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:textColor="@color/white"
-                        android:text="Excursion"
+                        android:text="Flight Schedules"
                         android:textSize="13dp" />
                 </LinearLayout>
 
@@ -278,6 +361,7 @@
                         android:text="Order Actions"
                         android:textSize="13dp" />
                 </LinearLayout>
+
                 <LinearLayout
                     android:id="@+id/worldTracerLayout"
                     android:layout_width="0dp"
@@ -299,7 +383,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:layout_margin="2dp"
                         android:textColor="@color/white"
                         android:text="World Tracer"
                         android:textSize="13dp" />

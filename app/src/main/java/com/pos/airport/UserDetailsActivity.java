@@ -87,6 +87,10 @@ public class UserDetailsActivity extends AppCompatActivity {
                 Intent intent = new Intent(this, ConpensationSelectionActivity.class);
                 startActivity(intent);
             }
+            else if(category.equalsIgnoreCase("BOB")){
+                Intent intent = new Intent(this, BuyOnBoardItemsActivity.class);
+                startActivity(intent);
+            }
             else {
                 Intent intent = new Intent(this, GateItemSelectionActivity.class);
                 intent.putExtra("category",category);

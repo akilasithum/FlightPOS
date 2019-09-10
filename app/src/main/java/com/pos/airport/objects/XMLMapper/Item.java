@@ -7,6 +7,7 @@ public class Item {
     private String itemName;
     private String itemHHC;
     private String category;
+    private String bobCategory;
     private String catCode;
     private String catlogNo;
     private String price;
@@ -60,6 +61,14 @@ public class Item {
 
     public void setCategory(String category) {
         this.category = category;
+    }
+
+    public String getBobCategory() {
+        return bobCategory;
+    }
+
+    public void setBobCategory(String bobCategory) {
+        this.bobCategory = bobCategory;
     }
 
     public String getCatCode() {
