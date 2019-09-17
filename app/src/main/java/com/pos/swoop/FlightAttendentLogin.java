@@ -30,6 +30,7 @@ import com.pos.swoop.utils.POSDBHandler;
 import com.pos.swoop.utils.SaveSharedPreference;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -145,6 +146,10 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
             SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_TYPE,
                     "inBound");
         }
+
+        handler.insertFADetails(SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME),
+                SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_SECTOR),
+                SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_DATE), Arrays.asList(userName));
         startActivity(intent);
     }
 
