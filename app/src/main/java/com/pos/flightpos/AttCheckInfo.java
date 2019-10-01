@@ -12,10 +12,14 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.pos.flightpos.objects.Constants;
+import com.pos.flightpos.objects.XMLMapper.FADetails;
 import com.pos.flightpos.utils.POSCommonUtils;
 import com.pos.flightpos.utils.POSDBHandler;
 import com.pos.flightpos.utils.PrintJob;
 import com.pos.flightpos.utils.SaveSharedPreference;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class AttCheckInfo extends AppCompatActivity {
 
@@ -99,6 +103,7 @@ public class AttCheckInfo extends AppCompatActivity {
                 .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
 
                     public void onClick(DialogInterface dialog, int whichButton) {
+                        saveFaDetails();
                         String deviceId = SaveSharedPreference.getStringValues(AttCheckInfo.this,Constants.SHARED_PREFERENCE_DEVICE_ID);
                         handler.updateSIFDetails("crewOpenedDateTime",POSCommonUtils.getDateTimeString(),deviceId);
                         SaveSharedPreference.setStringValues(AttCheckInfo.this,"isOpenFlight","yes");
@@ -106,6 +111,17 @@ public class AttCheckInfo extends AppCompatActivity {
                         startActivity(intent);
                     }})
                 .setNegativeButton(android.R.string.no, null).show();
+    }
+
+    private void saveFaDetails(){
+        POSDBHandler posdbHandler = new POSDBHandler(this);
+        List<FADetails> posFlightList = posdbHandler.getFADetails();
+        if(posFlightList == null || posFlightList.isEmpty()){
+            handler.insertFADetails(SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME),
+                    SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_SECTOR),
+                    SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_DATE), Arrays.asList(Constants.SHARED_PREFERENCE_FA_NAME));
+        }
+
     }
 
     @Override

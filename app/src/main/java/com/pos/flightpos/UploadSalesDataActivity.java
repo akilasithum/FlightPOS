@@ -246,7 +246,7 @@ public class UploadSalesDataActivity extends AppCompatActivity {
             orderMainDetail.addElement("faName").addText(posFlight.getFaName());
         }
         if(posFlightList.size() == 1){
-            Element orderMainDetail = root.addElement("flight");
+            Element orderMainDetail = root.addElement("fa");
             orderMainDetail.addElement("flightNo").addText("");
             orderMainDetail.addElement("sector").addText("");
             orderMainDetail.addElement("flightDate").addText("");
