@@ -50,7 +50,7 @@ public class GateUserMainActivity extends AppCompatActivity {
         upgradesCategoryLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                gotoNextView("Upgrade");
+                gotoNextView("Upgrades");
             }
         });
         LinearLayout compensationCategoryLayout = findViewById(R.id.compensationCatLayout);

@@ -123,6 +123,15 @@ import java.util.concurrent.TimeUnit;
             }
         });
 
+        LinearLayout salesReportsLayout = findViewById(R.id.salesReportsLayout);
+        salesReportsLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(OptionsActivity.this, PrintTransactionActivity.class);
+                startActivity(intent);
+            }
+        });
+
         LinearLayout uploadSalesDataLayout = findViewById(R.id.uploadSalesData);
         uploadSalesDataLayout.setOnClickListener(new View.OnClickListener() {
             @Override

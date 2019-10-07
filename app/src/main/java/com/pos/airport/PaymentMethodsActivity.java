@@ -868,6 +868,8 @@ public class PaymentMethodsActivity extends AppCompatActivity {
             JSONObject dailySales = new JSONObject();
             JSONArray salesArray = new JSONArray();
             String userID = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FA_NAME);
+
+
             for(SoldItem soldItem : soldItems) {
                 JSONObject saleObj = new JSONObject();
                 saleObj.put("orderId",orderNumber);
@@ -1127,17 +1129,24 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         if(orderNumberStr != null){
             int newVal = Integer.parseInt(orderNumberStr) + 1;
             orderNumber = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME).replace(" ","_") +
-                    "_"+POSCommonUtils.getDateString()+"_" + String.valueOf(newVal);
+                    "_"+POSCommonUtils.getDateString()+"_"+ getRandomIntegerBetweenRange()+"_" + newVal;
             SaveSharedPreference.updateValue(this,"orderNumber",newVal+"");
         }
         else{
             SaveSharedPreference.setStringValues(this,"orderNumber","1");
             orderNumber = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME).replace(" ","_") +
-                    "_"+POSCommonUtils.getDateString()+"_" + "1";
+                    "_"+POSCommonUtils.getDateString()+"_"+ getRandomIntegerBetweenRange()+"_" + "1";
         }
     }
 
-    private void initPaySDK(){
+
+    public double getRandomIntegerBetweenRange() {
+        double x = (int) (Math.random() * ((10000 - 100) + 1)) + 100;
+        return x;
+
+    }
+
+        private void initPaySDK(){
         mReadCardOptV2 = BootUpReceiver.mReadCardOptV2;
     }
 
