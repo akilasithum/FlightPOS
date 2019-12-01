@@ -78,6 +78,7 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
     PrintUtils printUtils;
     private ReadCardOptV2 mReadCardOptV2;
     ProgressDialog dia;
+    String pnr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,9 +127,11 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
         flightName = intent.getExtras().get("flightNumber").toString();
         flightSector = intent.getExtras().get("sector").toString();
         discount = intent.getExtras().get("discount").toString();
-        String serviceType = POSCommonUtils.getServiceType(this);
+        pnr = intent.getExtras().getString("pnr");
+        serviceType = POSCommonUtils.getServiceType(this);
         TableRow totalTextRow = findViewById(R.id.totalTextRow);
         TableRow taxTextRow = findViewById(R.id.serviceTaxRow);
+        TextView subtotalText = findViewById(R.id.subTotalTextView);
         if(serviceType != null && (serviceType.equals("DTP")||serviceType.equals("BOB"))){
             taxPercentage = intent.getExtras().getString("serviceTax");
 
@@ -144,6 +147,7 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
             tax.setText(taxPercentage == null ? "0":taxPercentage + "%");
             TextView total = findViewById(R.id.totalTextView);
             total.setText(POSCommonUtils.getTwoDecimalFloatFromString(subTotal));
+
         }
         else {
             totalTextRow.setVisibility(View.GONE);
@@ -151,6 +155,7 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
             dueBalance = Float.parseFloat(subTotal);
             balanceDueTextView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
         }
+        subtotalText.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(dueBalance));
         subTotalAfterTax = String.valueOf(dueBalance);
         TextView discountText = findViewById(R.id.discountTextView);
         discountText.setText((discount == null || discount.isEmpty()) ? "0.00" :
@@ -617,6 +622,9 @@ public class PreOrderPaymentsActivity extends AppCompatActivity {
         acceptPreOrder.setFlightNumber(flightName);
         acceptPreOrder.setFlightDate(flightDate);
         acceptPreOrder.setFlightSector(flightSector);
+        acceptPreOrder.setPnr(pnr);
+        acceptPreOrder.setServiceType(serviceType);
+        acceptPreOrder.setAmount(subTotalAfterTax);
         handler.insertAcceptPreOrders(soldItems,acceptPreOrder);
         for(Map.Entry<String,String> entry : paymentMethodsMap.entrySet()){
             handler.insertPaymentMethods(orderNumber,entry.getKey(),entry.getValue());

@@ -59,7 +59,7 @@
             </TableRow>
         </TableLayout>
             <TableLayout
-                android:id="@+id/showAvaiableCurrency"
+                android:id="@+id/showAnnoucements"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="25dp"
@@ -67,7 +67,7 @@
                 android:layout_marginRight="25dp"
                 android:paddingBottom="30dp">
 
-                <TableRow
+                <!--<TableRow
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content">
 
@@ -108,7 +108,7 @@
                         android:textColor="@color/white"
                         android:text="* Buy two Vodka and get $5 off."
                         android:textSize="20dp" />
-                </TableRow>
+                </TableRow>-->
 
             </TableLayout>
         </LinearLayout>

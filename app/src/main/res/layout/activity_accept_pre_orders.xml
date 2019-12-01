@@ -146,134 +146,60 @@
                     </TableRow>
 
                 </TableLayout>
+
                 <TableLayout
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/layoutbackgroundborder"
                     android:paddingTop="10dp"
                     android:paddingLeft="10dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
                     android:paddingBottom="15dp"
                     android:paddingRight="10dp">
                     <TableRow
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent">
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
+                        <Button
+                            android:id="@+id/scanBoardingPass"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:textSize="11dp"
                             android:layout_weight="1"
-                            android:text="Pax Name :"
-                            android:paddingBottom="6dp"
-                            android:textSize="15dp" />
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginBottom="10dp"
+                            android:paddingTop="7dp"
+                            android:textStyle="bold"
+                            android:gravity="center_horizontal"
+                            android:background="@drawable/button_style"
+                            android:layout_alignParentBottom="true"
+                            android:text="Scan Boarding Pass" />
 
-                        <EditText
-                            android:id="@+id/paxName"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
+                        <Button
+                            android:id="@+id/enterUserDetails"
+                            android:layout_width="match_parent"
+                            android:layout_height="30dp"
+                            android:textSize="11dp"
                             android:layout_weight="1"
-                            android:paddingLeft="5dp"
-                            android:background="@drawable/textbox_background"
-                            android:textSize="15dp" />
-                    </TableRow>
-                    <TableRow
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="5dp"
+                            android:layout_marginBottom="10dp"
+                            android:paddingTop="7dp"
+                            android:textStyle="bold"
+                            android:gravity="center_horizontal"
+                            android:background="@drawable/button_style"
+                            android:layout_alignParentBottom="true"
+                            android:text="Enter User Details" />
 
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_weight="1"
-                            android:paddingBottom="6dp"
-                            android:text="Flight Number :"
-                            android:textSize="15dp" />
-
-                        <EditText
-                            android:id="@+id/flightNumber"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_weight="1"
-                            android:inputType="number"
-                            android:paddingLeft="5dp"
-                            android:background="@drawable/textbox_background"
-                            android:textSize="15dp" />
-                    </TableRow>
-                    <TableRow
-                        android:id="@+id/sectorRow"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_weight="1"
-                            android:paddingBottom="6dp"
-                            android:text="Sector :"
-                            android:textSize="15dp" />
-                        <Spinner
-                            android:id="@+id/flightSector"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:textSize="15dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_weight="1" />
-                    </TableRow>
-
-                    <TableRow
-                        android:id="@+id/taxPercentageRow"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
-                            android:layout_weight="1"
-                            android:text="Tax Percentage"
-                            android:textSize="15dp" />
-
-                        <EditText
-                            android:id="@+id/taxPercentage"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:width="0dp"
-                            android:textSize="15dp"
-                            android:text="13"
-                            android:inputType="number" />
-                    </TableRow>
-
-
-                    <TableRow
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="30dp"
-                            android:layout_weight="1"
-                            android:paddingBottom="6dp"
-                            android:text="Date :"
-                            android:textSize="15dp" />
-
-                        <EditText
-                            android:id="@+id/flightDate"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="5dp"
-                            android:layout_weight="1"
-                            android:paddingLeft="5dp"
-                            android:background="@drawable/textbox_background"
-                            android:focusable="false"
-                            android:textSize="17dp" />
                     </TableRow>
                 </TableLayout>
+
+
+
+
+
+
             </LinearLayout>
         </LinearLayout>
     </ScrollView>

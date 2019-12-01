@@ -8,24 +8,36 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.google.gson.JsonObject;
+import com.pos.swoop.objects.AcceptPreOrder;
+import com.pos.swoop.objects.AcceptPreOrderItem;
 import com.pos.swoop.objects.Constants;
 import com.pos.swoop.objects.CreditCard;
 import com.pos.swoop.objects.OrderDetails;
+import com.pos.swoop.objects.SoldItem;
 import com.pos.swoop.objects.XMLMapper.FADetails;
+import com.pos.swoop.objects.XMLMapper.FAMessage;
 import com.pos.swoop.objects.XMLMapper.ItemSale;
 import com.pos.swoop.objects.XMLMapper.POSFlight;
 import com.pos.swoop.objects.XMLMapper.PaymentMethods;
+import com.pos.swoop.objects.XMLMapper.PreOrder;
 import com.pos.swoop.objects.XMLMapper.SIFDetails;
 import com.pos.swoop.utils.HttpHandler;
+import com.pos.swoop.utils.POSCommonUtils;
 import com.pos.swoop.utils.POSDBHandler;
 import com.pos.swoop.utils.SaveSharedPreference;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class UploadSalesDataActivity extends AppCompatActivity {
     POSDBHandler posdbHandler;
@@ -56,19 +68,21 @@ public class UploadSalesDataActivity extends AppCompatActivity {
             resultList.add(handler.postRequest(getCreditCardXML(),"creditCardDetails"));
             resultList.add(handler.postRequest(getFlightDetailsXML(),"posFlightDetails"));
             resultList.add(handler.postRequest(getFADetailsXML(),"faDetails"));
+            resultList.add(handler.postRequest(getFAMsgsXML(),"faMessages"));
+            resultList.add(handler.postRequestJson(getPreOrderDetails(),"preOrder"));
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(resultList.size() == 7){
+            if(resultList.size() == 9){
                 dia.cancel();
-                posdbHandler.clearDailySalesTable();
+                //posdbHandler.clearDailySalesTable();
                 showMsgAndExit("Sync Completed","POS data update completed. Click ok to continue",true);
             }
             else{
                 dia.cancel();
-                showMsgAndExit("Something wrong","Some table may not updated correctly",false);
+                //showMsgAndExit("Something wrong","Some table may not updated correctly",false);
             }
         }
     }
@@ -93,6 +107,50 @@ public class UploadSalesDataActivity extends AppCompatActivity {
 
                     }})
                 .show();
+    }
+
+    private String getPreOrderDetails() {
+        List<AcceptPreOrder> preOrderList = posdbHandler.getAllAcceptPreOrders();
+        Map<String, List<AcceptPreOrderItem>> itemMap = posdbHandler.getAllPreOrderItems();
+        JSONArray preOrders = new JSONArray();
+        try {
+
+            for (AcceptPreOrder preOrder : preOrderList) {
+                JSONObject obj = new JSONObject();
+                obj.put("invoiceNumber", preOrder.getOrderNumber());
+                obj.put("userName", preOrder.getPaxName());
+                obj.put("flightNumber", preOrder.getFlightNumber());
+                obj.put("orderDate", POSCommonUtils.getDateString(new Date()));
+                obj.put("pnrNumber", preOrder.getPnr());
+                obj.put("flightDate", POSCommonUtils.getDateString(POSCommonUtils.getDateFromString(preOrder.getFlightDate().replace("/", "-"))));
+                String[] secotrArr = preOrder.getFlightSector().split(" ");
+                obj.put("flightFrom", secotrArr[2]);
+                obj.put("flightTo", secotrArr[4]);
+                obj.put("typeOfOrder", "In Flight");
+                obj.put("serviceType", preOrder.getServiceType());
+                obj.put("purchaseAmount", Float.valueOf(preOrder.getAmount()));
+                JSONArray items = new JSONArray();
+                List<AcceptPreOrderItem> itemList = itemMap.get(preOrder.getOrderNumber());
+                if (itemList != null && !itemList.isEmpty()) {
+                    for (AcceptPreOrderItem preOrderItem : itemList) {
+                        JSONObject itemObj = new JSONObject();
+                        itemObj.put("productNumber", preOrderItem.getItemNo());
+                        itemObj.put("qty", preOrderItem.getQuantity());
+                        items.put(itemObj);
+                    }
+                    obj.put("products", items);
+                }
+                preOrders.put(obj);
+
+            }
+
+        JSONObject preOrdersObj = new JSONObject();
+        preOrdersObj.put("preOrders", preOrders);
+
+        return preOrdersObj.toString();
+    }catch (Exception e){
+            return null;
+        }
     }
 
     private String getSIFDetailsXML(){
@@ -245,10 +303,31 @@ public class UploadSalesDataActivity extends AppCompatActivity {
             orderMainDetail.addElement("faName").addText(posFlight.getFaName());
         }
         if(posFlightList.size() == 1){
-            Element orderMainDetail = root.addElement("flight");
+            Element orderMainDetail = root.addElement("fa");
             orderMainDetail.addElement("flightNo").addText("");
             orderMainDetail.addElement("sector").addText("");
             orderMainDetail.addElement("flightDate").addText("");
+            orderMainDetail.addElement("faName").addText("");
+        }
+        return document.asXML();
+    }
+
+    private String getFAMsgsXML(){
+        List<FAMessage> faMsgs = posdbHandler.getFAMsgs();
+        Document document = DocumentHelper.createDocument();
+        Element root = document.addElement("faMsgs");
+        for(FAMessage message : faMsgs){
+            Element orderMainDetail = root.addElement("faMsg");
+            orderMainDetail.addElement("flightNumber").addText(message.getFlightNo());
+            orderMainDetail.addElement("comment").addText(message.getMessageBody());
+            orderMainDetail.addElement("flightDateStr").addText(message.getFlightDate());
+            orderMainDetail.addElement("faName").addText(message.getFaName());
+        }
+        if(faMsgs.size() == 1){
+            Element orderMainDetail = root.addElement("faMsg");
+            orderMainDetail.addElement("flightNumber").addText("");
+            orderMainDetail.addElement("comment").addText("");
+            orderMainDetail.addElement("flightDateStr").addText("");
             orderMainDetail.addElement("faName").addText("");
         }
         return document.asXML();

@@ -26,6 +26,7 @@ import org.xml.sax.InputSource;
 
 import java.io.StringReader;
 import java.text.DecimalFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -60,6 +61,20 @@ public class POSCommonUtils {
 
     public static String getDateString() {
         Date date = new Date();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        return format.format(date);
+    }
+
+    public static Date getDateFromString(String date) {
+        SimpleDateFormat formatter2=new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            return formatter2.parse(date);
+        } catch (ParseException e) {
+            return null;
+        }
+    }
+
+    public static String getDateString(Date date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         return format.format(date);
     }

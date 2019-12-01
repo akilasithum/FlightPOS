@@ -1,5 +1,6 @@
 package com.pos.swoop;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -46,13 +47,9 @@ public class LoadPreOrderAdminActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
-        ImageButton forwardBtn = findViewById(R.id.forwardPressBtn);
-        forwardBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 
     private void showPreOrdersByPriority(){

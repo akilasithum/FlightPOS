@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.pos.swoop.objects.AcceptPreOrder;
+import com.pos.swoop.objects.AcceptPreOrderItem;
 import com.pos.swoop.objects.Constants;
 import com.pos.swoop.objects.CreditCard;
 import com.pos.swoop.objects.Flight;
@@ -16,11 +17,13 @@ import com.pos.swoop.objects.OrderDetails;
 import com.pos.swoop.objects.Sector;
 import com.pos.swoop.objects.SoldItem;
 import com.pos.swoop.objects.User;
+import com.pos.swoop.objects.XMLMapper.BondMessage;
 import com.pos.swoop.objects.XMLMapper.CartNumber;
 import com.pos.swoop.objects.XMLMapper.ComboDiscount;
 import com.pos.swoop.objects.XMLMapper.Currency;
 import com.pos.swoop.objects.XMLMapper.Equipment;
 import com.pos.swoop.objects.XMLMapper.FADetails;
+import com.pos.swoop.objects.XMLMapper.FAMessage;
 import com.pos.swoop.objects.XMLMapper.Item;
 import com.pos.swoop.objects.XMLMapper.ItemSale;
 import com.pos.swoop.objects.XMLMapper.KITItem;
@@ -109,7 +112,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS loyaltyCardDetails (orderNumber VARCHAR,loyaltyCardNumber VARCHAR," +
                 "cardHolderName VARCHAR, amount VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS acceptPreOrder (orderNumber VARCHAR,paxName VARCHAR," +
-                "flightNumber VARCHAR, flightDate VARCHAR,flightSector VARCHAR);");
+                "flightNumber VARCHAR, flightDate VARCHAR,flightSector VARCHAR,pnr VARCHAR,serviceType VARCHAR,amount VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS acceptPreOrderItems (orderNumber VARCHAR,itemNo VARCHAR," +
                 "itemCategory VARCHAR, quantity VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS preOrderItems (preOrderId VARCHAR,itemNo VARCHAR,category VARCHAR," +
@@ -127,6 +130,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 ",sectorTo VARCHAR,sectorType VARCHAR,flightType VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS faDetails (flightNo VARCHAR,sector VARCHAR" +
                 ",flightDate VARCHAR,faName VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS bondMessages (messageId VARCHAR,messageBody VARCHAR);");
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS messageToBond (messageBody VARCHAR,flightId VARCHAR,flightDate VARCHAR,faName VARCHAR);");
     }
 
     public void clearTable(){
@@ -293,6 +298,60 @@ public class POSDBHandler extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return sif;
+    }
+
+    public List<AcceptPreOrder> getAllAcceptPreOrders(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from acceptPreOrder", null);
+        List<AcceptPreOrder> acceptPreOrders = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                AcceptPreOrder preOrder = new AcceptPreOrder();
+                preOrder.setOrderNumber(cursor.getString(cursor.getColumnIndex("orderNumber")));
+                preOrder.setPaxName(cursor.getString(cursor.getColumnIndex("paxName")));
+                preOrder.setFlightNumber(cursor.getString(cursor.getColumnIndex("flightNumber")));
+                preOrder.setFlightDate(cursor.getString(cursor.getColumnIndex("flightDate")));
+                preOrder.setFlightSector(cursor.getString(cursor.getColumnIndex("flightSector")));
+                preOrder.setPnr(cursor.getString(cursor.getColumnIndex("pnr")));
+                preOrder.setServiceType(cursor.getString(cursor.getColumnIndex("serviceType")));
+                preOrder.setAmount(cursor.getString(cursor.getColumnIndex("amount")));
+                acceptPreOrders.add(preOrder);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return acceptPreOrders;
+    }
+
+    public Map<String,List<AcceptPreOrderItem>> getAllPreOrderItems(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from acceptPreOrderItems", null);
+        Map<String,List<AcceptPreOrderItem>> acceptPreOrderMap = new HashMap<>();
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                AcceptPreOrderItem preOrder = new AcceptPreOrderItem();
+                String preOrderId = cursor.getString(cursor.getColumnIndex("orderNumber"));
+                preOrder.setOrderNumber(preOrderId);
+                preOrder.setItemNo(cursor.getString(cursor.getColumnIndex("itemNo")));
+                preOrder.setItemCategory(cursor.getString(cursor.getColumnIndex("itemCategory")));
+                preOrder.setQuantity(cursor.getString(cursor.getColumnIndex("quantity")));
+
+                if(acceptPreOrderMap.containsKey(preOrderId)){
+                    acceptPreOrderMap.get(preOrderId).add(preOrder);
+                }
+                else{
+                    List<AcceptPreOrderItem> preOrders = new ArrayList<>();
+                    preOrders.add(preOrder);
+                    acceptPreOrderMap.put(preOrderId,preOrders);
+                }
+
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return acceptPreOrderMap;
     }
 
     public void insertUserComments(String userId,String area,String comment){
@@ -586,6 +645,27 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return posFlightList;
     }
 
+    public List<FAMessage> getFAMsgs(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<FAMessage> faDetailsList = new ArrayList<>();
+        Cursor cursor = db.rawQuery("select * from messageToBond"
+                , null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                FAMessage faDetails = new FAMessage();
+                faDetails.setFlightNo(cursor.getString(cursor.getColumnIndex("flightId")));
+                faDetails.setMessageBody(cursor.getString(cursor.getColumnIndex("messageBody")));
+                faDetails.setFlightDate(cursor.getString(cursor.getColumnIndex("flightDate")));
+                faDetails.setFaName(cursor.getString(cursor.getColumnIndex("faName")));
+                faDetailsList.add(faDetails);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return faDetailsList;
+    }
+
     public List<FADetails> getFADetails(){
         SQLiteDatabase db = this.getWritableDatabase();
         List<FADetails> faDetailsList = new ArrayList<>();
@@ -849,6 +929,50 @@ public class POSDBHandler extends SQLiteOpenHelper {
         catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    public void insertBondMessages(String xml){
+        try {
+            JSONObject jsonObj  = XML.toJSONObject(xml);
+            Gson gson = new Gson();
+            JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("BondMsgs");
+            JSONArray itemsArr = data.getJSONArray("BondMsg");
+            List<BondMessage> kitList = gson.fromJson(itemsArr.toString(), new TypeToken<List<BondMessage>>(){}.getType());
+            SQLiteDatabase db = this.getWritableDatabase();
+            for(BondMessage item : kitList){
+                if(item.getMessageId() != null && !item.getMessageId().isEmpty()) {
+                    db.execSQL("INSERT INTO bondMessages VALUES" +
+                            "('" + item.getMessageId() + "','" + item.getMessageBody() + "');");
+                }
+            }
+            db.close();
+        }
+        catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    public void insertMsgToBond(String messageBody,String flightId,String flightDate,String faName){
+        SQLiteDatabase db = this.getWritableDatabase();
+        db.execSQL("INSERT INTO messageToBond VALUES" +
+                "('" + messageBody + "','" + flightId + "','"+flightDate+"','"+faName+"');");
+        db.close();
+    }
+
+    public List<String> getBondMessages(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from bondMessages", null);
+        List<String> msgs = new ArrayList<>();
+
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+            msgs.add(cursor.getString(cursor.getColumnIndex("messageBody")));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return msgs;
     }
 
     public Item getItemFromNFCTag(String nfcTag){
@@ -1971,7 +2095,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("INSERT INTO acceptPreOrder VALUES('" + preOrder.getOrderNumber() + "'" +
                 ",'" + preOrder.getPaxName() + "','" + preOrder.getFlightNumber() + "'," +
-                "'"+preOrder.getFlightDate()+"','"+preOrder.getFlightSector()+"');");
+                "'"+preOrder.getFlightDate()+"','"+preOrder.getFlightSector()+"','"+preOrder.getPnr()+"','"+preOrder.getServiceType()+"','"+preOrder.getAmount()+"');");
         for(SoldItem item : items) {
             db.execSQL("INSERT INTO acceptPreOrderItems VALUES('" + preOrder.getOrderNumber() + "'" +
                     ",'" + item.getItemId() + "','" + item.getItemCategory() + "','"+item.getQuantity()+"');");

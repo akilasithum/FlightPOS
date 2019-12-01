@@ -1,5 +1,6 @@
 package com.pos.swoop;
 
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -53,6 +54,8 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
                 onBackPressed();
             }
         });
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.hide();
     }
 
     private void showPreOrdersByPriority(){
@@ -89,7 +92,7 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
                     TableRow.LayoutParams.WRAP_CONTENT, 1f);
             TextView customerDetails = new TextView(this);
             customerDetails.setText(preOrder.getPNR() + " - " + preOrder.getCustomerName());
-            customerDetails.setTextSize(20);
+            customerDetails.setTextSize(12);
             customerDetails.setLayoutParams(cellParams1);
             customerDetails.setPadding(10,0,0,0);
             customerDetails.setOnClickListener(new View.OnClickListener() {
@@ -103,7 +106,7 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
             TextView serviceTypeText = new TextView(this);
             serviceTypeText.setText(service);
             serviceTypeText.setLayoutParams(cellParams2);
-            serviceTypeText.setTextSize(20);
+            serviceTypeText.setTextSize(12);
             tr.addView(serviceTypeText);
 
             Map<String,Integer> buttonMap = new HashMap<>();
@@ -218,7 +221,7 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
                 50, 2f);
         TextView headerText = new TextView(this);
         headerText.setText("Order No : " + orderId);
-        headerText.setTextSize(16);
+        headerText.setTextSize(14);
         headerText.setLayoutParams(cellParams);
         headerText.setPadding(0,10,0,15);
         headerRow.addView(headerText);
@@ -235,7 +238,7 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
             TextView itemDesc = new TextView(this);
             String itemName = posdbHandler.getItemDescFromItemNo(item.getItemNo());
             itemDesc.setText(itemName);
-            itemDesc.setTextSize(16);
+            itemDesc.setTextSize(13);
             itemDesc.setLayoutParams(cellParams);
             itemDesc.setPadding(0,10,0,0);
             itemDesc.setGravity(Gravity.CENTER);
@@ -243,7 +246,7 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
 
             TextView category = new TextView(this);
             category.setText(item.getCategory());
-            category.setTextSize(16);
+            category.setTextSize(13);
             category.setGravity(Gravity.CENTER);
             category.setLayoutParams(cellParams);
             category.setPadding(0,10,0,0);
@@ -251,7 +254,7 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
 
             TextView quantity = new TextView(this);
             quantity.setText(item.getQuantity());
-            quantity.setTextSize(16);
+            quantity.setTextSize(13);
             quantity.setLayoutParams(cellParams);
             quantity.setGravity(Gravity.CENTER);
             quantity.setPadding(0,10,0,0);
@@ -275,7 +278,7 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
                 TableRow.LayoutParams.WRAP_CONTENT,4f);
         TextView itemDesc = new TextView(this);
         itemDesc.setText("Item Desc");
-        itemDesc.setTextSize(20);
+        itemDesc.setTextSize(16);
         itemDesc.setGravity(Gravity.CENTER);
         itemDesc.setLayoutParams(cellParams);
         itemDesc.setPadding(5,5,5,5);
@@ -284,7 +287,7 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
 
         TextView totalPrice = new TextView(this);
         totalPrice.setText("Category");
-        totalPrice.setTextSize(20);
+        totalPrice.setTextSize(16);
         totalPrice.setGravity(Gravity.CENTER);
         totalPrice.setLayoutParams(cellParams);
         totalPrice.setPadding(5,5,5,5);
@@ -293,7 +296,7 @@ public class PreOrderDeliveryActivity extends AppCompatActivity {
 
         TextView quantity = new TextView(this);
         quantity.setText("Quantity");
-        quantity.setTextSize(20);
+        quantity.setTextSize(16);
         quantity.setGravity(Gravity.CENTER);
         quantity.setLayoutParams(cellParams);
         quantity.setPadding(5,5,5,5);

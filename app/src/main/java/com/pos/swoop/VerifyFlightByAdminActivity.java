@@ -221,11 +221,12 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            HttpHandler handler = new HttpHandler();
-            handler.postRequest(getSIFDetailsXML(),"sifDetails");
-            handler.postRequest(getCartNumbers(),"cartNumbers");
-            handler.postRequest(getSealDetails(),"sealDetails");
-            handler.postRequest(getOpeningInventory(),"openingInventory");
+            HttpHandler httpHandler = new HttpHandler();
+            httpHandler.postRequest(getSIFDetailsXML(),"sifDetails");
+            httpHandler.postRequest(getCartNumbers(),"cartNumbers");
+            httpHandler.postRequest(getSealDetails(),"sealDetails");
+            httpHandler.postRequest(getOpeningInventory(),"openingInventory");
+            handler.insertBondMessages( httpHandler.makeServiceCall("messagesToHHC"));
             return null;
         }
 

@@ -166,6 +166,7 @@ public class MainActivity extends AppCompatActivity {
             String deviceId = basicOptV2.getSysParam(AidlConstantsV2.SysParam.SN);
             SaveSharedPreference.setStringValues(this, Constants.SHARED_PREFERENCE_DEVICE_ID,deviceId);
             root.addElement("deviceId").addText(deviceId);
+            root.addElement("syncTime").addText(POSCommonUtils.getDateTimeString());
         } catch (RemoteException e) {
             Toast.makeText(this,"Error while reading system data",Toast.LENGTH_SHORT);
         }

@@ -5,8 +5,11 @@
     android:layout_height="fill_parent"
     android:background="@color/splashbg">
 
-    <ImageView android:id="@+id/splashscreen" android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
+
+    <ImageView android:id="@+id/splashscreen"
+        android:layout_width="100dp"
+        android:layout_height="150dp"
+        android:layout_marginTop="150dp"
         android:src="@drawable/splash_logo"
         android:layout_gravity="center"/>
 

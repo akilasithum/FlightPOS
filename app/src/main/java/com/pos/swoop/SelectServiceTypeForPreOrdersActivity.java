@@ -43,6 +43,8 @@ public class SelectServiceTypeForPreOrdersActivity extends AppCompatActivity {
             public void onClick(View view) {
                 intent.putExtra("serviceType", "DTP");
                 startActivity(intent);
+                /*Intent intent = new Intent(SelectServiceTypeForPreOrdersActivity.this, UploadSalesDataActivity.class);
+                startActivity(intent);*/
             }
         });
         LinearLayout addDTFSeals = findViewById(R.id.verifyDutyFree);

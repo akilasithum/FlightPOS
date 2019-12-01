@@ -93,6 +93,7 @@ public class SyncActivity extends AppCompatActivity {
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("sifDetails");
         root.addElement("deviceId").addText("10");
+        root.addElement("syncTime").addText(POSCommonUtils.getDateTimeString());
         return document.asXML();
     }
 

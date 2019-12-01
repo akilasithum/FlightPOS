@@ -7,6 +7,9 @@ public class AcceptPreOrder {
     String flightNumber;
     String flightDate;
     String flightSector;
+    String pnr;
+    String serviceType;
+    String amount;
 
     public String getOrderNumber() {
         return orderNumber;
@@ -46,5 +49,29 @@ public class AcceptPreOrder {
 
     public void setFlightSector(String flightSector) {
         this.flightSector = flightSector;
+    }
+
+    public String getPnr() {
+        return pnr;
+    }
+
+    public void setPnr(String pnr) {
+        this.pnr = pnr;
+    }
+
+    public String getServiceType() {
+        return serviceType;
+    }
+
+    public void setServiceType(String serviceType) {
+        this.serviceType = serviceType;
+    }
+
+    public String getAmount() {
+        return amount;
+    }
+
+    public void setAmount(String amount) {
+        this.amount = amount;
     }
 }

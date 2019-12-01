@@ -1,13 +1,52 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoadPreOrderAdminActivity">
+    >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/flight_bg">
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
+    <TableLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dp"
+        android:paddingTop="10dp"
+        android:paddingRight="10dp">
+        <TableRow
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:paddingBottom="10dp">
+            <ImageButton
+                android:id="@+id/backPressBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:background="@drawable/back_arrow_icon"
+                android:layout_weight="1"
+                android:clickable="true" />
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Pre Order Delivery"
+                android:textColor="@color/white"
+                android:gravity="center"
+                android:layout_weight="8"
+                android:textStyle="bold"
+                android:textSize="20dp"/>
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"/>
+        </TableRow>
+    </TableLayout>
 
     <TableLayout
         android:id="@+id/preOrdersTable"
@@ -60,7 +99,7 @@
         android:layout_marginRight="20dp"
         android:layout_marginTop="20dp"
         android:background="@drawable/layoutbackgroundborder"
-        android:paddingBottom="20dp"
+        android:paddingBottom="10dp"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
         android:paddingTop="10dp">
@@ -70,8 +109,8 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:background="@drawable/icon_delivered"
                 android:textSize="20dp" />
@@ -81,7 +120,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text=" - Delivered"
-                android:textSize="20dp" />
+                android:textSize="12dp" />
         </TableRow>
 
         <TableRow
@@ -89,8 +128,8 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:background="@drawable/icon_not_delivered"
                 android:textSize="20dp" />
@@ -100,7 +139,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text=" - Not Delivered"
-                android:textSize="20dp" />
+                android:textSize="12dp" />
         </TableRow>
 
         <TableRow
@@ -108,8 +147,8 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:background="@drawable/icon_reject"
                 android:textSize="20dp" />
@@ -119,7 +158,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text=" - Rejected"
-                android:textSize="20dp" />
+                android:textSize="12dp" />
         </TableRow>
 
         <TableRow
@@ -127,8 +166,8 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
                 android:layout_gravity="center"
                 android:background="@drawable/icon_passenger_not_available"
                 android:textSize="20dp" />
@@ -138,26 +177,17 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="10dp"
                 android:text=" - Pax not onboard"
-                android:textSize="20dp" />
+                android:textSize="12dp" />
         </TableRow>
     </TableLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="0dip"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="20dp"
-        android:layout_weight="1"
-        android:gravity="left|bottom"
-        android:orientation="vertical">
-
-        <ImageButton
-            android:id="@+id/backPressBtn"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center_horizontal|left"
-            android:background="@drawable/icon_left_arrow"
-            android:clickable="true" />
-    </LinearLayout>
 </LinearLayout>
-</ScrollView>
+    </ScrollView>
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/verifiy_admin_sky">
+    </LinearLayout>
+</RelativeLayout>
