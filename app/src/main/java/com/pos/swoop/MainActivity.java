@@ -102,8 +102,26 @@ public class MainActivity extends AppCompatActivity {
         uploadLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(MainActivity.this, UploadSalesDataActivity.class);
-                startActivity(intent);
+
+                if(POSCommonUtils.isNetworkAvailable(MainActivity.this)){
+
+                    Intent intent = new Intent(MainActivity.this, UploadSalesDataActivity.class);
+                    startActivity(intent);
+                }
+                else{
+                    new AlertDialog.Builder(MainActivity.this)
+                            .setTitle("Network not available")
+                            .setMessage("Please switch on wifi.")
+                            .setIcon(android.R.drawable.ic_dialog_alert)
+                            .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+
+                                public void onClick(DialogInterface dialog, int whichButton) {
+                                    Intent intent = new Intent(MainActivity.this, MainActivity.class);
+                                    intent.putExtra("parent", "");
+                                    startActivity(intent);
+                                }}).show();
+                }
+
             }
         });
         if(parent == null || parent.isEmpty() || !parent.equals("SelectModeActivity") || parent.equals("UploadSalesDataActivity")){

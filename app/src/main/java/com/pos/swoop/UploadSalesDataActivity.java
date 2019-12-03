@@ -77,7 +77,7 @@ public class UploadSalesDataActivity extends AppCompatActivity {
         protected void onPostExecute(Void aVoid) {
             if(resultList.size() == 9){
                 dia.cancel();
-                //posdbHandler.clearDailySalesTable();
+                posdbHandler.clearDailySalesTable();
                 showMsgAndExit("Sync Completed","POS data update completed. Click ok to continue",true);
             }
             else{
