@@ -30,6 +30,7 @@ public class Constants {
     public static final String SHARED_PREFERENCE_BASE_STATION = "baseStation";
     public static final String SHARED_PREFERENCE_BASE_CURRENCY = "baseCurrency";
     public static final String SHARED_PREFERENCE_CART_SCAN = "cartScan";
+    public static final String SHARED_PREFERENCE_IS_UPLOAD_SALES_DATA = "uploadSalesData";
 
     public static final String PRINTER_LOGO_LOCATION = "/res/drawable/porter_print_bg.PNG";
     public static final String FILED_NAME_SERVICE_TYPE = "serviceType";
@@ -39,6 +40,7 @@ public class Constants {
             TableRow.LayoutParams.WRAP_CONTENT);
 
     public static final String PUBLIC_STATIC_STRING_IDENTIFIER = "intentIdentifier";
-    //public static final String webServiceURL = "http://192.168.8.103:8080/";
-    public static final String webServiceURL = "http://163.172.156.224:8080/back-office-ws/";
+    public static final String webServiceURL = "http://192.168.8.102:8080/";
+    //public static final String webServiceURL = "http://back-office-ws.us-east-2.elasticbeanstalk.com/";
+    //public static final String webServiceURL = "http://163.172.156.224:8080/back-office-ws/";
 }

@@ -78,7 +78,7 @@ public class MessageToBondActivity extends AppCompatActivity {
         else {
             String flightNo = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FLIGHT_NAME);
             String flightDate = POSCommonUtils.getFlightDateString(this);
-            handler.insertMsgToBond(messageBody,flightNo,flightDate,faName);
+            handler.insertUserComments(faName,flightNo,"General",messageBody);
             Toast.makeText(this,"Message saved successfully",Toast.LENGTH_SHORT).show();
         }
     }

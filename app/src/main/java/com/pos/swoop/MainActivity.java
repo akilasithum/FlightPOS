@@ -104,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
 
                 if(POSCommonUtils.isNetworkAvailable(MainActivity.this)){
-
                     Intent intent = new Intent(MainActivity.this, UploadSalesDataActivity.class);
                     startActivity(intent);
                 }
@@ -121,7 +120,6 @@ public class MainActivity extends AppCompatActivity {
                                     startActivity(intent);
                                 }}).show();
                 }
-
             }
         });
         if(parent == null || parent.isEmpty() || !parent.equals("SelectModeActivity") || parent.equals("UploadSalesDataActivity")){

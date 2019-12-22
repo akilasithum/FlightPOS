@@ -226,7 +226,9 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
             httpHandler.postRequest(getCartNumbers(),"cartNumbers");
             httpHandler.postRequest(getSealDetails(),"sealDetails");
             httpHandler.postRequest(getOpeningInventory(),"openingInventory");
-            handler.insertBondMessages( httpHandler.makeServiceCall("messagesToHHC"));
+            handler.insertBondMessages(httpHandler.makeGetCallWithParams("messagesToHHC","flightNumber="+
+                    SaveSharedPreference.getStringValues(VerifyFlightByAdminActivity.this,Constants.SHARED_PREFERENCE_FLIGHT_NAME).replace(" ","--")+"&flightDate="+
+                    SaveSharedPreference.getStringValues(VerifyFlightByAdminActivity.this,Constants.SHARED_PREFERENCE_FLIGHT_DATE).replace("/","-")));
             return null;
         }
 
@@ -258,6 +260,8 @@ public class VerifyFlightByAdminActivity extends AppCompatActivity {
         root.addElement("programs").addText(sif.getPrograms());
         root.addElement("flightDate").addText(SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_DATE));
         root.addElement("packedUser").addText(SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_ADMIN_USER_NAME));
+        String kitCode = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_KIT_CODE);
+        root.addElement("kitCodes").addText(kitCode);
         return document.asXML();
     }
 

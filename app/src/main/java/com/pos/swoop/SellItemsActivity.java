@@ -97,7 +97,7 @@ public class SellItemsActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 if(isItemsAvailableToSell("BOB")) {
-                    new GetContacts().execute();
+                    //new GetContacts().execute();
                     Intent intent = new Intent(SellItemsActivity.this, BuyOnBoardItemsActivity.class);
                     intent.putExtra("serviceType", "BOB");
                     startActivity(intent);

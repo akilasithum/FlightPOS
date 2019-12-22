@@ -35,6 +35,8 @@ import com.pos.swoop.objects.XMLMapper.PreOrderItem;
 import com.pos.swoop.objects.XMLMapper.PreOrderMain;
 import com.pos.swoop.objects.XMLMapper.Promotion;
 import com.pos.swoop.objects.XMLMapper.SIFDetails;
+import com.pos.swoop.objects.XMLMapper.SIFSheet;
+import com.pos.swoop.objects.XMLMapper.UserComment;
 import com.pos.swoop.objects.XMLMapper.Voucher;
 
 import org.json.JSONArray;
@@ -54,6 +56,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -90,7 +93,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 "drawer VARCHAR,isValidated VARCHAR,userMode VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS dailySales (orderNumber VARCHAR,itemNo VARCHAR," +
                 "equipmentNo VARCHAR,drawer VARCHAR,quantity VARCHAR,serviceType VARCHAR," +
-                "totalPrice VARCHAR,buyerType VARCHAR,sellarName VARCHAR,date VARCHAR);");
+                "totalPrice VARCHAR,buyerType VARCHAR,sellarName VARCHAR,date VARCHAR,flightType VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS currency (currencyCode VARCHAR,currencyDesc VARCHAR," +
                 "currencyRate VARCHAR, currencyType VARCHAR,priorityOrder VARCHAR,effectiveDate VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS preOrders (preOrderId VARCHAR,PNR VARCHAR,customerName VARCHAR," +
@@ -101,7 +104,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 "itemId VARCHAR, discount VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS comboDiscounts (comboId VARCHAR,discount VARCHAR," +
                 "items VARCHAR);");
-        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS userComments (userId VARCHAR,area VARCHAR," +
+        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS userComments (userId VARCHAR,flightNo VARCHAR,flightDate VARCHAR, area VARCHAR," +
                 "comment VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS paymentMethods (orderNumber VARCHAR,paymentType VARCHAR," +
                 "amount VARCHAR);");
@@ -131,7 +134,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS faDetails (flightNo VARCHAR,sector VARCHAR" +
                 ",flightDate VARCHAR,faName VARCHAR);");
         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS bondMessages (messageId VARCHAR,messageBody VARCHAR);");
-        sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS messageToBond (messageBody VARCHAR,flightId VARCHAR,flightDate VARCHAR,faName VARCHAR);");
+         sqLiteDatabase.execSQL("CREATE TABLE IF NOT EXISTS SIFSheetDetails (itemNo VARCHAR,itemDesc VARCHAR,price VARCHAR,cart VARCHAR,drawer VARCHAR,obOpenQty VARCHAR," +
+                "obSoldqty VARCHAR,obClosingQty VARCHAR,ibOpenQty VARCHAR,ibSoldQty VARCHAR,ibClosingQty VARCHAR,serviceType VARCHAR);");
     }
 
     public void clearTable(){
@@ -168,8 +172,127 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.execSQL("delete from posFlights");
         db.execSQL("delete from cartNumbers");
         db.execSQL("delete from faDetails");
+        db.execSQL("delete from SIFSheetDetails");
+        db.execSQL("delete from userComments");
+        db.execSQL("VACUUM");
         db.close();
         resetDrawerValidation();
+    }
+
+    public List<SIFSheet> getSifSheetDetails(){
+        List<SIFSheet> sifSheetList = new ArrayList<>();
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from SIFSheetDetails", null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                SIFSheet sheet = new SIFSheet();
+                sheet.setItemNo(cursor.getString(cursor.getColumnIndex("itemNo")));
+                sheet.setItemDesc(cursor.getString(cursor.getColumnIndex("itemDesc")));
+                sheet.setPrice(cursor.getString(cursor.getColumnIndex("price")));
+                sheet.setCart(cursor.getString(cursor.getColumnIndex("cart")));
+                sheet.setDrawer(cursor.getString(cursor.getColumnIndex("drawer")));
+                sheet.setObOpenQty(cursor.getString(cursor.getColumnIndex("obOpenQty")));
+                sheet.setObSoldQty(cursor.getString(cursor.getColumnIndex("obSoldqty")));
+                sheet.setObClosingQty(cursor.getString(cursor.getColumnIndex("obClosingQty")));
+                sheet.setIbOpenQty(cursor.getString(cursor.getColumnIndex("ibOpenQty")));
+                sheet.setIbSoldQty(cursor.getString(cursor.getColumnIndex("ibSoldQty")));
+                sheet.setIbClosingQty(cursor.getString(cursor.getColumnIndex("ibClosingQty")));
+                sheet.setServiceType(cursor.getString(cursor.getColumnIndex("serviceType")));
+                sifSheetList.add(sheet);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+
+        return sifSheetList;
+    }
+
+    public void insertOpeningInventory(List<KITItem> kitItems){
+
+        List<Item> items = getAllItems();
+        Map<String,Item> itemNoPriceMap = new HashMap<>();
+        for(Item item : items){
+            itemNoPriceMap.put(item.getItemNo(),item);
+        }
+        SQLiteDatabase db = this.getWritableDatabase();
+        for(KITItem item : kitItems){
+            Item beItem = itemNoPriceMap.get(item.getItemNo());
+            db.execSQL("INSERT INTO SIFSheetDetails (itemNo,itemDesc,price,cart,drawer,obOpenQty,serviceType) VALUES('"+item.getItemNo()+"'," +
+                    "'"+beItem.getItemName()+"','"+beItem.getPrice()+"','"+item.getEquipmentNo()+"','"+item.getDrawer()+"'," +
+                    "'"+item.getQuantity()+"','"+beItem.getServiceType()+"');");
+        }
+        db.close();
+    }
+
+    public void updateOBIBSales(List<KITItem> kitItems,String flightType){
+
+        List<ItemSale> itemSales = getItemSale(flightType);
+        Map<String,String> itemIdQtyMap = new HashMap<>();
+        for(ItemSale item : itemSales){
+            String uniqueKey = item.getItemId()+"-"+item.getEquipmentType()+"-"+item.getDrawer();
+            if(itemIdQtyMap.containsKey(uniqueKey)){
+                String qty = String.valueOf(Integer.parseInt(itemIdQtyMap.get(uniqueKey))+Integer.parseInt(item.getQuantity()));
+                itemIdQtyMap.put(uniqueKey,qty);
+            }
+            else {
+                itemIdQtyMap.put(uniqueKey,item.getQuantity());
+            }
+        }
+        SQLiteDatabase db = this.getReadableDatabase();
+        if(flightType.equalsIgnoreCase("outBound")){
+            for(KITItem item : kitItems){
+                String uniqueKey = item.getItemNo()+"-"+item.getEquipmentNo()+"-"+item.getDrawer();
+                if(itemIdQtyMap.containsKey(uniqueKey)){
+                    db.execSQL("update SIFSheetDetails set obSoldqty =" +"'"+itemIdQtyMap.get(uniqueKey)+"',obClosingQty='"+item.getQuantity()+"'" +
+                            "where itemNo = '"+item.getItemNo()+"' and cart = '"+item.getEquipmentNo()+"' and drawer = '"+item.getDrawer()+"';");
+                }
+                else{
+                    db.execSQL("update SIFSheetDetails set obClosingQty='"+item.getQuantity()+"',obSoldqty='"+0+"'" +
+                            "where itemNo = '"+item.getItemNo()+"' and cart = '"+item.getEquipmentNo()+"' and drawer = '"+item.getDrawer()+"';");
+                }
+            }
+        }
+        else {
+            for(KITItem item : kitItems){
+                String uniqueKey = item.getItemNo()+"-"+item.getEquipmentNo()+"-"+item.getDrawer();
+                if(itemIdQtyMap.containsKey(uniqueKey)){
+                    db.execSQL("update SIFSheetDetails set ibSoldQty =" +"'"+itemIdQtyMap.get(uniqueKey)+"',ibClosingQty='"+item.getQuantity()+"'" +
+                            "where itemNo = '"+item.getItemNo()+"' and cart = '"+item.getEquipmentNo()+"' and drawer = '"+item.getDrawer()+"';");
+                }
+                else{
+                    db.execSQL("update SIFSheetDetails set ibClosingQty='"+item.getQuantity()+"',ibSoldQty='"+0+"'" +
+                            "where itemNo = '"+item.getItemNo()+"' and cart = '"+item.getEquipmentNo()+"' and drawer = '"+item.getDrawer()+"';");
+                }
+            }
+        }
+        db.close();
+    }
+
+    public void updateSectorInventory(List<KITItem> kitItems){
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        for(KITItem item : kitItems){
+
+                db.execSQL("update SIFSheetDetails set ibOpenQty='"+item.getQuantity()+"'" +
+                        "where itemNo = '"+item.getItemNo()+"' and cart = '"+item.getEquipmentNo()+"' and drawer = '"+item.getDrawer()+"';");
+
+        }
+        db.close();
+    }
+
+    public boolean isSifSheetDetailsAvailable(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor res = db.rawQuery("select * from SIFSheetDetails", null);
+        if(res.getCount() > 0) {
+            res.close();
+            db.close();
+            return true;
+        }
+        res.close();
+        db.close();
+        return false;
     }
 
     public void insertSIFDetails(String sifNo,String deviceId){
@@ -300,6 +423,27 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return sif;
     }
 
+    public SIFDetails getSIFDetails(){
+        SIFDetails sif = new SIFDetails();
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from SIFDetails", null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                sif.setSifNo(cursor.getString(cursor.getColumnIndex("sifNo")));
+                sif.setDeviceId(cursor.getString(cursor.getColumnIndex("deviceId")));
+                sif.setPrograms(cursor.getString(cursor.getColumnIndex("programs")));
+                sif.setPackedFor(cursor.getString(cursor.getColumnIndex("packedFor")));
+                sif.setPackedTime(cursor.getString(cursor.getColumnIndex("packedDateTime")));
+                sif.setCrewOpenedTime(cursor.getString(cursor.getColumnIndex("crewOpenedDateTime")));
+                sif.setCrewClosedTime(cursor.getString(cursor.getColumnIndex("crewClosedDateTime")));
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return sif;
+    }
+
     public List<AcceptPreOrder> getAllAcceptPreOrders(){
         SQLiteDatabase db = this.getWritableDatabase();
         Cursor cursor = db.rawQuery("select * from acceptPreOrder", null);
@@ -354,9 +498,10 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return acceptPreOrderMap;
     }
 
-    public void insertUserComments(String userId,String area,String comment){
+    public void insertUserComments(String userId,String flightNo,String area,String comment){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("INSERT INTO userComments VALUES('"+userId+"','"+area+"','"+comment+"');");
+        String flightDate = POSCommonUtils.getDateString(new Date());
+        db.execSQL("INSERT INTO userComments VALUES('"+userId+"','"+flightNo+"','"+flightDate+"','"+area+"','"+comment+"');");
         db.close();
     }
 
@@ -454,17 +599,17 @@ public class POSDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void deleteSealsByAdmin(String sealType){
+    public void deleteSealsByAdmin(String sealType,String serviceType){
         SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("delete from sealDetails where sealType = '" + sealType+"'");
+        db.execSQL("delete from sealDetails where sealType = '" + sealType+"' and serviceType = '"+serviceType+"'");
         db.close();
     }
 
     public void insertDailySalesEntry(String orderNumber,String itemNo,String serviceType,String equipmentNo,String drawer,
-                                      String quantity,String total,String buyerType,String sellerId,String date){
+                                      String quantity,String total,String buyerType,String sellerId,String date,String flightType){
         SQLiteDatabase db = this.getWritableDatabase();
         db.execSQL("INSERT INTO dailySales VALUES('"+orderNumber+"','"+itemNo+"','"+equipmentNo+"','"+drawer+"','"
-                +quantity+"','"+serviceType+"', '"+total+"','"+buyerType+"','"+sellerId+"','"+date+"');");
+                +quantity+"','"+serviceType+"', '"+total+"','"+buyerType+"','"+sellerId+"','"+date+"','"+flightType+"');");
         db.close();
     }
 
@@ -558,6 +703,28 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return orderDetails;
     }
 
+    public List<UserComment> getUserComments(){
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<UserComment> userComments = new ArrayList<>();
+        Cursor cursor = db.rawQuery("select * from userComments"
+                , null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                UserComment userComment = new UserComment();
+                userComment.setUserId(cursor.getString(cursor.getColumnIndex("userId")));
+                userComment.setFlightNo(cursor.getString(cursor.getColumnIndex("flightNo")));
+                userComment.setFlightDate(cursor.getString(cursor.getColumnIndex("flightDate")));
+                userComment.setArea(cursor.getString(cursor.getColumnIndex("area")));
+                userComment.setComment(cursor.getString(cursor.getColumnIndex("comment")));
+                userComments.add(userComment);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return userComments;
+    }
+
     public List<PaymentMethods> getPaymentMethods(){
         SQLiteDatabase db = this.getWritableDatabase();
         List<PaymentMethods> paymentMethods = new ArrayList<>();
@@ -590,6 +757,31 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 details.setItemId(cursor.getString(cursor.getColumnIndex("itemNo")));
                 details.setQuantity(cursor.getString(cursor.getColumnIndex("quantity")));
                 details.setPrice(cursor.getString(cursor.getColumnIndex("totalPrice")));
+                details.setFlightType(cursor.getString(cursor.getColumnIndex("flightType")));
+                itemSales.add(details);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return itemSales;
+    }
+
+    public List<ItemSale> getItemSale(String flightType){
+        SQLiteDatabase db = this.getWritableDatabase();
+        List<ItemSale> itemSales = new ArrayList<>();
+        Cursor cursor = db.rawQuery("select * from dailySales where flightType = '"+flightType+"'"
+                , null);
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                ItemSale details = new ItemSale();
+                details.setOrderId(cursor.getString(cursor.getColumnIndex("orderNumber")));
+                details.setItemId(cursor.getString(cursor.getColumnIndex("itemNo")));
+                details.setQuantity(cursor.getString(cursor.getColumnIndex("quantity")));
+                details.setPrice(cursor.getString(cursor.getColumnIndex("totalPrice")));
+                details.setFlightType(cursor.getString(cursor.getColumnIndex("flightType")));
+                details.setEquipmentType(cursor.getString(cursor.getColumnIndex("equipmentNo")));
+                details.setDrawer(cursor.getString(cursor.getColumnIndex("drawer")));
                 itemSales.add(details);
                 cursor.moveToNext();
             }
@@ -645,7 +837,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         return posFlightList;
     }
 
-    public List<FAMessage> getFAMsgs(){
+/*    public List<FAMessage> getFAMsgs(){
         SQLiteDatabase db = this.getWritableDatabase();
         List<FAMessage> faDetailsList = new ArrayList<>();
         Cursor cursor = db.rawQuery("select * from messageToBond"
@@ -664,7 +856,7 @@ public class POSDBHandler extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return faDetailsList;
-    }
+    }*/
 
     public List<FADetails> getFADetails(){
         SQLiteDatabase db = this.getWritableDatabase();
@@ -937,9 +1129,9 @@ public class POSDBHandler extends SQLiteOpenHelper {
             Gson gson = new Gson();
             JSONObject data = new JSONObject(jsonObj.toString()).getJSONObject("BondMsgs");
             JSONArray itemsArr = data.getJSONArray("BondMsg");
-            List<BondMessage> kitList = gson.fromJson(itemsArr.toString(), new TypeToken<List<BondMessage>>(){}.getType());
+            List<BondMessage> bondMessages = gson.fromJson(itemsArr.toString(), new TypeToken<List<BondMessage>>(){}.getType());
             SQLiteDatabase db = this.getWritableDatabase();
-            for(BondMessage item : kitList){
+            for(BondMessage item : bondMessages){
                 if(item.getMessageId() != null && !item.getMessageId().isEmpty()) {
                     db.execSQL("INSERT INTO bondMessages VALUES" +
                             "('" + item.getMessageId() + "','" + item.getMessageBody() + "');");
@@ -950,13 +1142,6 @@ public class POSDBHandler extends SQLiteOpenHelper {
         catch (Exception e){
             e.printStackTrace();
         }
-    }
-
-    public void insertMsgToBond(String messageBody,String flightId,String flightDate,String faName){
-        SQLiteDatabase db = this.getWritableDatabase();
-        db.execSQL("INSERT INTO messageToBond VALUES" +
-                "('" + messageBody + "','" + flightId + "','"+flightDate+"','"+faName+"');");
-        db.close();
     }
 
     public List<String> getBondMessages(){
@@ -1013,6 +1198,27 @@ public class POSDBHandler extends SQLiteOpenHelper {
         cursor.close();
         db.close();
         return kitItems;
+    }
+
+    public List<Item> getAllItems(){
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery("select * from Items", null);
+        List<Item> items = new ArrayList<>();
+        if (cursor.moveToFirst()){
+            while(!cursor.isAfterLast()){
+                Item item = new Item();
+                item.setItemNo(cursor.getString(cursor.getColumnIndex("itemNo")));
+                item.setPrice(cursor.getString(cursor.getColumnIndex("price")));
+                item.setItemName(cursor.getString(cursor.getColumnIndex("itemName")));
+                item.setServiceType(cursor.getString(cursor.getColumnIndex("serviceType")));
+                items.add(item);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        db.close();
+        return items;
     }
 
     private void insertDrawerValidation(){
@@ -1346,6 +1552,26 @@ public class POSDBHandler extends SQLiteOpenHelper {
         }
     }
 
+    public List<PreOrderItem> getPreOrderItems(){
+        List<PreOrderItem> preOrderItems = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("select * from preOrderItems", null);
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast()) {
+                PreOrderItem preOrderItem = new PreOrderItem();
+                preOrderItem.setPreOrderId(cursor.getString(cursor.getColumnIndex("preOrderId")));
+                preOrderItem.setItemNo(cursor.getString(cursor.getColumnIndex("itemNo")));
+                preOrderItem.setAdminStatus(cursor.getString(cursor.getColumnIndex("adminStatus")));
+                preOrderItem.setDelivered(cursor.getString(cursor.getColumnIndex("delivered")));
+                preOrderItems.add(preOrderItem);
+                cursor.moveToNext();
+            }
+        }
+        db.close();
+        cursor.close();
+        return preOrderItems;
+    }
+
     public List<Voucher> getVouchers(){
         List<Voucher> voucherList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -1361,6 +1587,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 cursor.moveToNext();
             }
         }
+        db.close();
+        cursor.close();
         return voucherList;
     }
 
@@ -1380,6 +1608,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 cursor.moveToNext();
             }
         }
+        db.close();
+        cursor.close();
         return promotions;
     }
 
@@ -1398,6 +1628,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
                 cursor.moveToNext();
             }
         }
+        db.close();
+        cursor.close();
         return comboDiscounts;
     }
 
@@ -1786,6 +2018,8 @@ public class POSDBHandler extends SQLiteOpenHelper {
     public void updatePreOrderDeliveryStatus(String deliveryStatus,String itemId){
         SQLiteDatabase db = this.getReadableDatabase();
         db.execSQL("update preOrders set delivered = '"+deliveryStatus+"' where preOrderId = '"+itemId+"';");
+        db.execSQL("update preOrderItems set delivered = '"+deliveryStatus+"' where preOrderId = '"+itemId+"' " +
+                "and adminStatus = 'Loaded';");
         db.close();
     }
 

@@ -158,7 +158,8 @@ public class AddSeal extends AppCompatActivity {
         }
         String userName = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FA_NAME);
         String comment = remarkText.getText().toString();
-        handler.insertUserComments(userName,"Add Seals",comment);
+        String flightNo = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME);
+        handler.insertUserComments(userName,flightNo,"Add Seals",comment);
         Toast.makeText(getApplicationContext(), "Remark added successfully",
                 Toast.LENGTH_SHORT).show();
     }
@@ -329,7 +330,7 @@ public class AddSeal extends AppCompatActivity {
             }
 
             if(!isSealUsed) {
-                handler.deleteSealsByAdmin(sealType);
+                handler.deleteSealsByAdmin(sealType,serviceType);
                 for (String seal : sealList) {
                     handler.insertSealData(sealType, serviceType, String.valueOf(sealList.size()), seal, currentDateStr, flightName, flightDate);
                 }

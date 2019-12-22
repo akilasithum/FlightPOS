@@ -94,7 +94,8 @@ public class VerifyDrawerActivity extends AppCompatActivity {
                 SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FA_NAME) :
                 SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_ADMIN_USER);
         String comment = remarkText.getText().toString();
-        handler.insertUserComments(userName,"Verify drawer",comment);
+        String flightDate = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME);
+        handler.insertUserComments(userName,flightDate,"Verify drawer",comment);
         Toast.makeText(getApplicationContext(), "Remark added successfully",
                 Toast.LENGTH_SHORT).show();
     }

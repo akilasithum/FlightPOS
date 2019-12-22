@@ -12,9 +12,13 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.pos.swoop.objects.Constants;
+import com.pos.swoop.objects.XMLMapper.KITItem;
 import com.pos.swoop.utils.POSCommonUtils;
 import com.pos.swoop.utils.POSDBHandler;
 import com.pos.swoop.utils.SaveSharedPreference;
+
+import java.util.List;
+import java.util.Map;
 
 public class AttCheckInfo extends AppCompatActivity {
 
@@ -101,10 +105,23 @@ public class AttCheckInfo extends AppCompatActivity {
                         String deviceId = SaveSharedPreference.getStringValues(AttCheckInfo.this,Constants.SHARED_PREFERENCE_DEVICE_ID);
                         handler.updateSIFDetails("crewOpenedDateTime",POSCommonUtils.getDateTimeString(),deviceId);
                         SaveSharedPreference.setStringValues(AttCheckInfo.this,"isOpenFlight","yes");
+                        saveOpeningInventory();
                         Intent intent = new Intent(AttCheckInfo.this, SellItemsActivity.class);
                         startActivity(intent);
                     }})
                 .setNegativeButton(android.R.string.no, null).show();
+    }
+
+    private void saveOpeningInventory(){
+        List<String> eqNoList = POSCommonUtils.getAvailableEquipmentTypes(this);
+        List<KITItem> items = handler.getAllKitItems(eqNoList);
+        if(handler.isSifSheetDetailsAvailable()){
+            handler.updateSectorInventory(items);
+        }
+        else {
+            handler.insertOpeningInventory(items);
+        }
+
     }
 
     @Override

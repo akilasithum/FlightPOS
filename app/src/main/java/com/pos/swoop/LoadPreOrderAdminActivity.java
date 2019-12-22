@@ -224,7 +224,7 @@ public class LoadPreOrderAdminActivity extends AppCompatActivity {
             tr.addView(quantity);
 
             Map<String,Integer> buttonMap = new HashMap<>();
-            buttonMap.put("Rejected",R.drawable.icon_reject);
+            buttonMap.put("Not Available",R.drawable.icon_reject);
             buttonMap.put("Loaded",R.drawable.icon_delivered);
 
             tr.addView(getImageBtnLayout(buttonMap,item.getPreOrderId(),item.getItemNo(),item.getAdminStatus()));

@@ -339,48 +339,6 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    /*private List<SoldItem> getSellDataFromTable(){
-        List<Promotion> promotions = handler.getPromotionsFromServiceType(serviceType);
-        int rowCount = contentTable.getChildCount();
-        List<SoldItem> soldList = new ArrayList<>();
-        itemIds = new ArrayList<>();
-        subtotal = 0;
-        for(int i=1;i<rowCount-3;i++) {
-            TableRow tableRow = (TableRow) contentTable.getChildAt(i);
-            TextView itemID = (TextView) tableRow.getChildAt(0);
-            TextView itemDesc = (TextView) tableRow.getChildAt(1);
-            EditText qty = (EditText) tableRow.getChildAt(2);
-            TextView price = (TextView) tableRow.getChildAt(3);
-            TextView total = (TextView) tableRow.getChildAt(4);
-            TextView equipmentNo = (TextView) tableRow.getChildAt(5);
-            TextView drawer = (TextView) tableRow.getChildAt(6);
-            itemDesc.getText();
-            SoldItem soldItem = new SoldItem();
-            soldItem.setItemId(itemID.getText().toString());
-            soldItem.setItemDesc(itemDesc.getText().toString());
-            soldItem.setQuantity(qty.getText().toString());
-            soldItem.setEquipmentNo(equipmentNo.getText().toString());
-            soldItem.setDrawer(drawer.getText().toString());
-            soldItem.setTotal(total.getText().toString());
-            float discount = getDiscount(promotions,itemID.getText().toString());
-            *//*if(discount != 0){
-                float newPrice = Float.parseFloat(price.getText().toString()) * ((100-discount)/100);
-                String newPriceStr = POSCommonUtils.getTwoDecimalFloatFromFloat(newPrice);
-                soldItem.setPrice(newPriceStr);
-                soldItem.setPriceBeforeDiscount(price.getText().toString());
-                discountItemList.add(soldItem);
-                subtotal -= (Float.parseFloat(price.getText().toString()) - Float.parseFloat(newPriceStr));
-            }
-            else{*//*
-            subtotal += Float.parseFloat(total.getText().toString());
-                soldItem.setPrice(price.getText().toString());
-            //}
-            soldList.add(soldItem);
-            itemIds.add(itemID.getText().toString());
-        }
-        return soldList;
-    }*/
-
     private List<SoldItem> getSellDataFromTable(){
         int rowCount = contentLayout.getChildCount();
         List<SoldItem> soldList = new ArrayList<>();
@@ -393,11 +351,15 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
             EditText qty = (EditText) tableRow.getChildAt(3);
             TextView price = (TextView) tableRow.getChildAt(5);
             TextView total = (TextView) tableRow.getChildAt(7);
+            TextView equipment = (TextView) tableRow.getChildAt(8);
+            TextView drawer = (TextView) tableRow.getChildAt(9);
             SoldItem soldItem = new SoldItem();
             soldItem.setItemId(itemID.getText().toString());
             soldItem.setItemDesc(itemDesc.getText().toString());
             soldItem.setQuantity(qty.getText().toString());
             soldItem.setTotal(total.getText().toString());
+            soldItem.setEquipmentNo(equipment.getText().toString());
+            soldItem.setDrawer(drawer.getText().toString());
 
             subtotal += Float.parseFloat(total.getText().toString());
             soldItem.setPrice(price.getText().toString());
@@ -681,6 +643,16 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         totalDesc.setGravity(Gravity.CENTER);
         tr1.addView(totalDesc);
 
+        TextView equipmentHdnTxt = new TextView(this);
+        equipmentHdnTxt.setText(item.getEquipmentNo());
+        equipmentHdnTxt.setVisibility(View.GONE);
+        tr.addView(equipmentHdnTxt);
+
+        TextView cartHdnTxt = new TextView(this);
+        cartHdnTxt.setText(item.getDrawer());
+        cartHdnTxt.setVisibility(View.GONE);
+        tr.addView(cartHdnTxt);
+
         Button lookupBtn = new Button(this);
         lookupBtn.setLayoutParams(cellParams4);
         lookupBtn.setBackground(getResources().getDrawable(R.drawable.icon_llokup));
@@ -705,7 +677,8 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         soldItem.setItemDesc(item.getItemDesc());
         soldItem.setQuantity("1");
         soldItem.setPrice(item.getPrice());
-        soldItemList.add(soldItem);
+        item.setQuantity("1");
+        soldItemList.add(item);
         subTotalView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(subtotal));
         linearLayout.addView(tr);
         linearLayout.addView(tr1);
@@ -715,138 +688,6 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
 
 
     }
-
-    /*private void clickSubmitBtn(final SoldItem item,boolean isNFC){
-        if(item == null || item.equals("")){
-            Toast.makeText(getApplicationContext(), "select item first.",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
-        //POSCommonUtils.showDrawerAndEquipment(item,this);
-        itemCount++;
-        final TableRow tr = new TableRow(this);
-        tr.setId(itemCount);
-        tr.setLayoutParams(new TableRow.LayoutParams(
-                TableRow.LayoutParams.MATCH_PARENT,
-                TableRow.LayoutParams.WRAP_CONTENT));
-
-        TableRow.LayoutParams cellParams1 = new TableRow.LayoutParams(0,
-                TableRow.LayoutParams.WRAP_CONTENT, 6f);
-        TableRow.LayoutParams cellParams2 = new TableRow.LayoutParams(0,
-                TableRow.LayoutParams.WRAP_CONTENT, 3f);
-        TableRow.LayoutParams cellParams3 = new TableRow.LayoutParams(0,
-                35, 1f);
-
-        TextView itemIdHdn = new TextView(this);
-        TextView itemDesc = new TextView(this);
-        EditText qty = new EditText(this);
-        final TextView price = new TextView(this);
-        final TextView totalTextField = new TextView(this);
-        TextView equipmentNo = new TextView(this);
-        TextView drawer = new TextView(this);
-        Button removeItemBtn = new Button(this);
-        removeItemBtn.setLayoutParams(cellParams3);
-        removeItemBtn.setPadding(0,4,0,0);
-        removeItemBtn.setBackground(getResources().getDrawable(R.drawable.icon_cancel));
-        removeItemBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new AlertDialog.Builder(BuyOnBoardItemsActivity.this)
-                        .setTitle("Remove selection")
-                        .setMessage("Do you want to remove this item from selection?")
-                        .setIcon(android.R.drawable.ic_dialog_alert)
-                        .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-
-                            public void onClick(DialogInterface dialog, int whichButton) {
-                                subtotal -= Float.parseFloat(totalTextField.getText().toString());
-                                subTotalView.setText(String.valueOf(subtotal));
-                                itemCount--;
-                                contentTable.removeView(tr);
-                            }})
-                        .setNegativeButton(android.R.string.no, null).show();
-            }
-        });
-
-        Button lookupBtn = new Button(this);
-        lookupBtn.setLayoutParams(cellParams3);
-        lookupBtn.setBackground(getResources().getDrawable(R.drawable.icon_llokup));
-        lookupBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                POSCommonUtils.showDrawerAndEquipment(item,BuyOnBoardItemsActivity.this);
-            }
-        });
-
-        itemIdHdn.setText(item.getItemId());
-        itemIdHdn.setVisibility(View.GONE);
-        tr.addView(itemIdHdn);
-
-        itemDesc.setText(item.getItemDesc());
-        itemDesc.setTextSize(13);
-        itemDesc.setLayoutParams(cellParams1);
-        tr.addView(itemDesc);
-
-        qty.setText("1");
-        qty.setTextSize(13);
-        qty.setLayoutParams(cellParams2);
-        qty.setInputType(InputType.TYPE_CLASS_NUMBER);
-        qty.addTextChangedListener(new TextWatcher() {
-
-            @Override
-            public void afterTextChanged(Editable s) {}
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start,
-                                          int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start,
-                                      int before, int count) {
-
-                if(s != null && !s.toString().equals("")) {
-                    Float currentItemTotal = Float.parseFloat(totalTextField.getText().toString());
-                    Float newItemTotal = Float.parseFloat(s.toString())* Float.parseFloat(price.getText().toString());
-                    totalTextField.setText(String.valueOf(newItemTotal));
-                    updateTotalWhenChangeItemQty(newItemTotal - currentItemTotal);
-                }
-            }
-        });
-        tr.addView(qty);
-
-        price.setText(POSCommonUtils.getTwoDecimalFloatFromString(item.getPrice()));
-        price.setTextSize(13);
-        price.setLayoutParams(cellParams2);
-        tr.addView(price);
-
-        float total = Float.parseFloat(qty.getText().toString()) * Float.parseFloat(price.getText().toString());
-        totalTextField.setText(POSCommonUtils.getTwoDecimalFloatFromString(String.valueOf(total)));
-        totalTextField.setTextSize(13);
-        totalTextField.setLayoutParams(cellParams2);
-        tr.addView(totalTextField);
-
-        equipmentNo.setText(item.getEquipmentNo());
-        equipmentNo.setVisibility(View.GONE);
-        tr.addView(equipmentNo);
-
-        drawer.setText(item.getDrawer());
-        drawer.setVisibility(View.GONE);
-        tr.addView(drawer);
-
-        if(isNFC) {
-            tr.addView(lookupBtn);
-        }
-        tr.addView(removeItemBtn);
-
-        subtotal += total;
-        SoldItem soldItem = new SoldItem();
-        soldItem.setItemDesc(item.getItemDesc());
-        soldItem.setQuantity("1");
-        soldItem.setPrice(item.getPrice());
-        soldItemList.add(soldItem);
-        subTotalView.setText(POSCommonUtils.getTwoDecimalFloatFromFloat(subtotal));
-        contentTable.addView(tr,itemCount);
-    }*/
 
     private void updateTotalWhenChangeItemQty(Float diff){
         String currentSubTotal = subTotalView.getText().toString();
@@ -858,50 +699,6 @@ public class BuyOnBoardItemsActivity extends AppCompatActivity {
         List<String> kitCodes = POSCommonUtils.getServiceTypeKitCodeMap(this).get(serviceType);
        return POSCommonUtils.getCommaSeparateStrFromList(kitCodes);
     }
-
-    /*private void populateItemImages(String selectedCat){
-        String kitCodesStr = getKitCodes();
-        List<SoldItem> itemList = handler.getItemListFromItemCategory(selectedCat,kitCodesStr);
-        LinearLayout innerLayout = (LinearLayout) findViewById(R.id.innerLay);
-        innerLayout.removeAllViews();
-        for(final SoldItem item : itemList){
-            LinearLayout layout = new LinearLayout(this);
-            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT);
-            LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(150,150);
-            layout.setLayoutParams(params1);
-            layout.setGravity(Gravity.CENTER);
-            layout.setOrientation(LinearLayout.VERTICAL);
-            layout.setBackground(ContextCompat.getDrawable(this, R.drawable.textinputborder));
-            layout.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View view) {
-                    clickSubmitBtn(item,false);
-                }
-            });
-
-            ImageView imageView = new ImageView(this);
-            imageView.setLayoutParams(params);
-            imageView.setPadding(4,4,4,0);
-            //imageView.setImageResource(getItemResource(this,item.getItemDesc()));
-            imageView.setImageBitmap(getImageFromItemCode(item.getItemId()));
-
-            TextView textView = new TextView(this);
-            textView.setLayoutParams(params);
-            textView.setTextSize(10);
-            textView.setText(item.getItemDesc());
-
-            TextView priceText = new TextView(this);
-            priceText.setLayoutParams(params);
-            priceText.setTextSize(10);
-            priceText.setText("$"+POSCommonUtils.getTwoDecimalFloatFromString(item.getPrice()));
-
-            layout.addView(imageView);
-            layout.addView(textView);
-            layout.addView(priceText);
-            innerLayout.addView(layout);
-        }
-    }*/
 
     private void populateItemImages(String selectedCat){
         List<SoldItem> itemList = handler.getItemListFromItemCategory(selectedCat,getKitCodes());

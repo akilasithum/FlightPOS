@@ -754,11 +754,12 @@ public class PaymentMethodsActivity extends AppCompatActivity {
         Date date = new Date();
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         String currentDateStr = df.format(date);
+        String flightType = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_TYPE);
         for(SoldItem soldItem : soldItems) {
             String userID = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_FA_NAME);
             handler.insertDailySalesEntry(orderNumber, soldItem.getItemId(), serviceType,
                     soldItem.getEquipmentNo(), soldItem.getDrawer(), soldItem.getQuantity(),
-                    soldItem.getTotal(), "Passenger", userID,currentDateStr);
+                    soldItem.getTotal(), "Passenger", userID,currentDateStr,flightType);
             handler.updateSoldItemQty(soldItem.getItemId(), soldItem.getQuantity(),soldItem.getEquipmentNo(),
                     soldItem.getDrawer());
         }

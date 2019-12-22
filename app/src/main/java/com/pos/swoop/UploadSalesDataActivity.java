@@ -8,6 +8,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.amazonaws.transform.MapEntry;
 import com.google.gson.JsonObject;
 import com.pos.swoop.objects.AcceptPreOrder;
 import com.pos.swoop.objects.AcceptPreOrderItem;
@@ -21,7 +22,10 @@ import com.pos.swoop.objects.XMLMapper.ItemSale;
 import com.pos.swoop.objects.XMLMapper.POSFlight;
 import com.pos.swoop.objects.XMLMapper.PaymentMethods;
 import com.pos.swoop.objects.XMLMapper.PreOrder;
+import com.pos.swoop.objects.XMLMapper.PreOrderItem;
 import com.pos.swoop.objects.XMLMapper.SIFDetails;
+import com.pos.swoop.objects.XMLMapper.SIFSheet;
+import com.pos.swoop.objects.XMLMapper.UserComment;
 import com.pos.swoop.utils.HttpHandler;
 import com.pos.swoop.utils.POSCommonUtils;
 import com.pos.swoop.utils.POSDBHandler;
@@ -36,6 +40,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -68,21 +73,24 @@ public class UploadSalesDataActivity extends AppCompatActivity {
             resultList.add(handler.postRequest(getCreditCardXML(),"creditCardDetails"));
             resultList.add(handler.postRequest(getFlightDetailsXML(),"posFlightDetails"));
             resultList.add(handler.postRequest(getFADetailsXML(),"faDetails"));
-            resultList.add(handler.postRequest(getFAMsgsXML(),"faMessages"));
+            //resultList.add(handler.postRequest(getFAMsgsXML(),"faMessages"));
             resultList.add(handler.postRequestJson(getPreOrderDetails(),"preOrder"));
+            resultList.add(handler.postRequestJson(getSIFSheetDetails(),"sifSheet"));
+            resultList.add(handler.postRequestJson(getDeliveredPreOrders(),"deliveredPreOrder"));
+            resultList.add(handler.postRequestJson(getUserComments(),"userComments"));
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            if(resultList.size() == 9){
+            if(resultList.size() == 11){
                 dia.cancel();
                 posdbHandler.clearDailySalesTable();
                 showMsgAndExit("Sync Completed","POS data update completed. Click ok to continue",true);
             }
             else{
                 dia.cancel();
-                //showMsgAndExit("Something wrong","Some table may not updated correctly",false);
+                showMsgAndExit("Something wrong","Some table may not updated correctly",false);
             }
         }
     }
@@ -109,12 +117,45 @@ public class UploadSalesDataActivity extends AppCompatActivity {
                 .show();
     }
 
+    private String getSIFSheetDetails(){
+        List<SIFSheet> sifSheetList = posdbHandler.getSifSheetDetails();
+        JSONArray jsonArray = new JSONArray();
+        SIFDetails sifDetails = posdbHandler.getSIFDetails();
+        String sifNo = sifDetails.getSifNo();
+        Map<String,String> eqNoBarcodeMap = posdbHandler.getEqNoCartNoMap();
+        try {
+            for(SIFSheet sheet : sifSheetList){
+                JSONObject obj = new JSONObject();
+                obj.put("sifNo",sifNo);
+                obj.put("itemNo", sheet.getItemNo());
+                obj.put("itemDesc", sheet.getItemDesc());
+                obj.put("price", sheet.getPrice());
+                obj.put("cart", eqNoBarcodeMap.get(sheet.getCart()));
+                obj.put("drawer", sheet.getDrawer());
+                obj.put("obOpenQty", sheet.getObOpenQty());
+                obj.put("obSoldQty", sheet.getObSoldQty());
+                obj.put("obClosingQty", sheet.getObClosingQty());
+                obj.put("ibOpenQty", sheet.getIbOpenQty());
+                obj.put("ibSoldQty", sheet.getIbSoldQty());
+                obj.put("ibClosingQty", sheet.getIbClosingQty());
+                obj.put("serviceType", sheet.getServiceType());
+                jsonArray.put(obj);
+            }
+            JSONObject sifEntry = new JSONObject();
+            sifEntry.put("sifEntries", jsonArray);
+
+            return sifEntry.toString();
+        }
+        catch (Exception e){
+            return null;
+        }
+    }
+
     private String getPreOrderDetails() {
         List<AcceptPreOrder> preOrderList = posdbHandler.getAllAcceptPreOrders();
         Map<String, List<AcceptPreOrderItem>> itemMap = posdbHandler.getAllPreOrderItems();
         JSONArray preOrders = new JSONArray();
         try {
-
             for (AcceptPreOrder preOrder : preOrderList) {
                 JSONObject obj = new JSONObject();
                 obj.put("invoiceNumber", preOrder.getOrderNumber());
@@ -125,7 +166,7 @@ public class UploadSalesDataActivity extends AppCompatActivity {
                 obj.put("flightDate", POSCommonUtils.getDateString(POSCommonUtils.getDateFromString(preOrder.getFlightDate().replace("/", "-"))));
                 String[] secotrArr = preOrder.getFlightSector().split(" ");
                 obj.put("flightFrom", secotrArr[2]);
-                obj.put("flightTo", secotrArr[4]);
+                obj.put("flightTo", secotrArr[5]);
                 obj.put("typeOfOrder", "In Flight");
                 obj.put("serviceType", preOrder.getServiceType());
                 obj.put("purchaseAmount", Float.valueOf(preOrder.getAmount()));
@@ -141,7 +182,6 @@ public class UploadSalesDataActivity extends AppCompatActivity {
                     obj.put("products", items);
                 }
                 preOrders.put(obj);
-
             }
 
         JSONObject preOrdersObj = new JSONObject();
@@ -149,6 +189,63 @@ public class UploadSalesDataActivity extends AppCompatActivity {
 
         return preOrdersObj.toString();
     }catch (Exception e){
+            return null;
+        }
+    }
+
+    private String getDeliveredPreOrders() {
+        List<PreOrderItem> preOrderList = posdbHandler.getPreOrderItems();
+
+        JSONArray preOrders = new JSONArray();
+        try {
+            Map<String,String> preOrderIdStatusMap = new HashMap<>();
+            for(PreOrderItem item : preOrderList){
+                if(preOrderIdStatusMap.containsKey(item.getPreOrderId())){
+                    if(item.getDelivered() != null && item.getAdminStatus().equalsIgnoreCase("Not Available")
+                    && item.getAdminStatus().equalsIgnoreCase("Delivered")){
+                        preOrderIdStatusMap.put(item.getPreOrderId(),"Partially Delivered");
+                    }
+                }
+                else{
+                    preOrderIdStatusMap.put(item.getPreOrderId(),item.getDelivered());
+                }
+            }
+
+            for (Map.Entry<String,String> preOrder : preOrderIdStatusMap.entrySet()) {
+                JSONObject obj = new JSONObject();
+                obj.put("preOrderId", preOrder.getKey());
+                obj.put("preOrderStatus", preOrder.getValue());
+                preOrders.put(obj);
+            }
+
+            JSONObject preOrdersObj = new JSONObject();
+            preOrdersObj.put("preOrders", preOrders);
+
+            return preOrdersObj.toString();
+        }catch (Exception e){
+            return null;
+        }
+    }
+
+    private String getUserComments() {
+        List<UserComment> userComments = posdbHandler.getUserComments();
+
+        JSONArray commentArr = new JSONArray();
+        try {
+            for (UserComment comment : userComments) {
+                JSONObject obj = new JSONObject();
+                obj.put("userId", comment.getUserId());
+                obj.put("flightNo", comment.getFlightNo());
+                obj.put("flightDate", comment.getFlightDate());
+                obj.put("area", comment.getArea());
+                obj.put("comment", comment.getComment());
+            commentArr.put(obj);
+        }
+            JSONObject preOrdersObj = new JSONObject();
+            preOrdersObj.put("userComments", commentArr);
+
+            return preOrdersObj.toString();
+        }catch (Exception e){
             return null;
         }
     }
@@ -312,7 +409,7 @@ public class UploadSalesDataActivity extends AppCompatActivity {
         return document.asXML();
     }
 
-    private String getFAMsgsXML(){
+/*    private String getFAMsgsXML(){
         List<FAMessage> faMsgs = posdbHandler.getFAMsgs();
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("faMsgs");
@@ -331,5 +428,5 @@ public class UploadSalesDataActivity extends AppCompatActivity {
             orderMainDetail.addElement("faName").addText("");
         }
         return document.asXML();
-    }
+    }*/
 }

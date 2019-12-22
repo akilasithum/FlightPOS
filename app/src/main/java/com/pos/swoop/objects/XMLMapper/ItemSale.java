@@ -6,6 +6,9 @@ public class ItemSale {
     private String itemId;
     private String quantity;
     private String price;
+    private String flightType;
+    private String equipmentType;
+    private String drawer;
 
     public String getOrderId() {
         return orderId;
@@ -37,5 +40,29 @@ public class ItemSale {
 
     public void setPrice(String price) {
         this.price = price;
+    }
+
+    public String getFlightType() {
+        return flightType;
+    }
+
+    public void setFlightType(String flightType) {
+        this.flightType = flightType;
+    }
+
+    public String getEquipmentType() {
+        return equipmentType;
+    }
+
+    public void setEquipmentType(String equipmentType) {
+        this.equipmentType = equipmentType;
+    }
+
+    public String getDrawer() {
+        return drawer;
+    }
+
+    public void setDrawer(String drawer) {
+        this.drawer = drawer;
     }
 }

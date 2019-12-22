@@ -156,7 +156,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isAppExpired() throws ParseException {
-        String expiredDate = "01/01/2020";
+        String expiredDate = "01/01/2021";
         Date date=new SimpleDateFormat("dd/MM/yyyy").parse(expiredDate);
         Date today = new Date();
         if (today.compareTo(date) > 0) { //Date1 is after Date2 - system is expired.

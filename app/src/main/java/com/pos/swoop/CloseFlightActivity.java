@@ -13,6 +13,7 @@ import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.pos.swoop.objects.Constants;
+import com.pos.swoop.objects.XMLMapper.KITItem;
 import com.pos.swoop.utils.POSCommonUtils;
 import com.pos.swoop.utils.POSDBHandler;
 import com.pos.swoop.utils.SaveSharedPreference;
@@ -21,6 +22,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class CloseFlightActivity extends AppCompatActivity {
@@ -98,7 +100,6 @@ public class CloseFlightActivity extends AppCompatActivity {
     }
 
     private void showConfirmation(){
-
         new AlertDialog.Builder(this)
                 .setTitle("Close Flight")
                 .setMessage("Do you want to close the flight?")
@@ -108,7 +109,7 @@ public class CloseFlightActivity extends AppCompatActivity {
                     public void onClick(DialogInterface dialog, int whichButton) {
                         String deviceId = SaveSharedPreference.getStringValues(CloseFlightActivity.this,Constants.SHARED_PREFERENCE_DEVICE_ID);
                         handler.updateSIFDetails("crewClosedDateTime",POSCommonUtils.getDateTimeString(),deviceId);
-
+                        saveOpeningInventory();
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"isOpenFlight");
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"eClassPaxCount");
                         SaveSharedPreference.removeValue(CloseFlightActivity.this,"bClassPaxCount");
@@ -126,6 +127,13 @@ public class CloseFlightActivity extends AppCompatActivity {
                         startActivity(intent);
                     }})
                 .setNegativeButton(android.R.string.no, null).show();
+    }
+
+    private void saveOpeningInventory(){
+        List<String> eqNoList = POSCommonUtils.getAvailableEquipmentTypes(this);
+        List<KITItem> items = handler.getAllKitItems(eqNoList);
+        String flightType = SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_TYPE);
+        handler.updateOBIBSales(items,flightType);
     }
 
     private void printClosingSalesReport(){
