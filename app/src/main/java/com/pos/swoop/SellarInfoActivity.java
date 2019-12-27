@@ -84,10 +84,8 @@ public class SellarInfoActivity extends AppCompatActivity {
             EditText text = (EditText)mRlayout.getChildAt(i);
             if(text.getText() != null && !text.getText().toString().isEmpty()){
                 String name = text.getText().toString();
-                if(name.contains("Logged")){
+                if(!name.contains("Logged")){
                     //usersList.add(name.split(" -")[0]);
-                }
-                else {
                     usersList.add(name);
                 }
             }

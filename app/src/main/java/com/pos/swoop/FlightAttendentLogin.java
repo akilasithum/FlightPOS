@@ -146,10 +146,6 @@ public class FlightAttendentLogin extends AppCompatActivity implements LoaderCal
             SaveSharedPreference.setStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_TYPE,
                     "inBound");
         }
-
-        handler.insertFADetails(SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_NAME),
-                SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_SECTOR),
-                SaveSharedPreference.getStringValues(this,Constants.SHARED_PREFERENCE_FLIGHT_DATE), Arrays.asList(userName));
         startActivity(intent);
     }
 

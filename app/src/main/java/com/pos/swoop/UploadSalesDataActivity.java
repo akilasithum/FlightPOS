@@ -73,7 +73,6 @@ public class UploadSalesDataActivity extends AppCompatActivity {
             resultList.add(handler.postRequest(getCreditCardXML(),"creditCardDetails"));
             resultList.add(handler.postRequest(getFlightDetailsXML(),"posFlightDetails"));
             resultList.add(handler.postRequest(getFADetailsXML(),"faDetails"));
-            //resultList.add(handler.postRequest(getFAMsgsXML(),"faMessages"));
             resultList.add(handler.postRequestJson(getPreOrderDetails(),"preOrder"));
             resultList.add(handler.postRequestJson(getSIFSheetDetails(),"sifSheet"));
             resultList.add(handler.postRequestJson(getDeliveredPreOrders(),"deliveredPreOrder"));
@@ -392,19 +391,22 @@ public class UploadSalesDataActivity extends AppCompatActivity {
         List<FADetails> posFlightList = posdbHandler.getFADetails();
         Document document = DocumentHelper.createDocument();
         Element root = document.addElement("faDetails");
+        String sifNo = SaveSharedPreference.getStringValues(this, Constants.SHARED_PREFERENCE_SIF_NO);
         for(FADetails posFlight : posFlightList){
-            Element orderMainDetail = root.addElement("fa");
-            orderMainDetail.addElement("flightNo").addText(posFlight.getFlightNo());
-            orderMainDetail.addElement("sector").addText(posFlight.getSector());
-            orderMainDetail.addElement("flightDate").addText(posFlight.getFlightDate());
-            orderMainDetail.addElement("faName").addText(posFlight.getFaName());
+            Element faDetails = root.addElement("fa");
+            faDetails.addElement("flightNo").addText(posFlight.getFlightNo());
+            faDetails.addElement("sector").addText(posFlight.getSector());
+            faDetails.addElement("flightDate").addText(posFlight.getFlightDate());
+            faDetails.addElement("faName").addText(posFlight.getFaName());
+            faDetails.addElement("sifNo").addText(sifNo);
         }
         if(posFlightList.size() == 1){
-            Element orderMainDetail = root.addElement("fa");
-            orderMainDetail.addElement("flightNo").addText("");
-            orderMainDetail.addElement("sector").addText("");
-            orderMainDetail.addElement("flightDate").addText("");
-            orderMainDetail.addElement("faName").addText("");
+            Element faDetails = root.addElement("fa");
+            faDetails.addElement("flightNo").addText("");
+            faDetails.addElement("sector").addText("");
+            faDetails.addElement("flightDate").addText("");
+            faDetails.addElement("faName").addText("");
+            faDetails.addElement("sifNo").addText("");
         }
         return document.asXML();
     }

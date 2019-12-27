@@ -17,6 +17,7 @@ import com.pos.swoop.utils.POSCommonUtils;
 import com.pos.swoop.utils.POSDBHandler;
 import com.pos.swoop.utils.SaveSharedPreference;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -105,6 +106,10 @@ public class AttCheckInfo extends AppCompatActivity {
                         String deviceId = SaveSharedPreference.getStringValues(AttCheckInfo.this,Constants.SHARED_PREFERENCE_DEVICE_ID);
                         handler.updateSIFDetails("crewOpenedDateTime",POSCommonUtils.getDateTimeString(),deviceId);
                         SaveSharedPreference.setStringValues(AttCheckInfo.this,"isOpenFlight","yes");
+                        handler.insertFADetails(SaveSharedPreference.getStringValues(AttCheckInfo.this,Constants.SHARED_PREFERENCE_FLIGHT_NAME),
+                                SaveSharedPreference.getStringValues(AttCheckInfo.this,Constants.SHARED_PREFERENCE_FLIGHT_SECTOR),
+                                SaveSharedPreference.getStringValues(AttCheckInfo.this,Constants.SHARED_PREFERENCE_FLIGHT_DATE),
+                                Arrays.asList(SaveSharedPreference.getStringValues(AttCheckInfo.this,Constants.SHARED_PREFERENCE_FA_NAME)));
                         saveOpeningInventory();
                         Intent intent = new Intent(AttCheckInfo.this, SellItemsActivity.class);
                         startActivity(intent);
